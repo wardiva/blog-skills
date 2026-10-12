@@ -264,4 +264,5 @@ Two compositions that share the same **skeleton** (the arrangement of blocks) re
 ### Versus badge rule (approved 2026-10-13)
 - The "vs" is a **focal badge, not a small grey chip**: 96px circle, blue gradient `#3B86F0 → #0A5FD8`, white "VS" at 30px/600, a 7px white ring and a soft blue shadow.
 - It sits on the **bottom of the seam** where the two cards overlap and stays upright (counter-rotated). It must never touch text or a bullet.
+- **Table variant:** the same badge style at 84px, centred on the column seam and sitting across the card's **top edge** (about two-thirds above the card), so it never crowds the product names. The old small grey chip between the names was rejected ("vs needs to be improved").
 - Rejected: the split colour field version (did not match the design language) and the small 60px grey chip (too weak, covered a bullet).

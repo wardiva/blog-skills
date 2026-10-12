@@ -61,11 +61,11 @@ function versus() {
 .tr{height:${RH}px;border-bottom:1px solid #F1F2F5}.tr:last-child{border-bottom:0}
 .td0{font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}
 .td1,.td2{font-size:32px;color:#5D6675;line-height:1.25}.td1.a{color:#141A26;font-weight:500}.td2.a{color:#0A5FD8;font-weight:600}
-.tvs{position:absolute;left:${230 + 260 + 440 - 30}px;top:${top + 75 - 30}px;width:60px;height:60px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:21px;font-weight:500;color:#5D6675;box-shadow:0 10px 24px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.06)}
+.tvs{position:absolute;z-index:2;left:${230 + 260 + 440 - 42}px;top:${top - 58}px;width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;letter-spacing:.02em;box-shadow:0 0 0 7px #fff,0 16px 30px rgba(10,95,216,.28)}
 .vleg{left:230px;top:${top + 150 + n * RH + 46}px}
 </style>
 <div class="tcard"><div class="th"><span></span><span class="h1c"><b>${esc(L.label)}</b><em>${esc(L.heading)}</em></span><span class="h2c"><b>${esc(R.label)}</b><em>${esc(R.heading)}</em></span></div>${rows}</div>
-<div class="tvs">vs</div>${legend}`;
+<div class="tvs">VS</div>${legend}`;
   }
   const card = (d, x, rot, cls, extra = '') => `<div class="ovl ${cls}" style="left:${x}px;transform:rotate(${rot}deg)"><div class="olb">${esc(d.label)}</div><div class="oc">${extra}<h3>${esc(d.heading)}</h3><ul>${d.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div></div>`;
   return `<style>
