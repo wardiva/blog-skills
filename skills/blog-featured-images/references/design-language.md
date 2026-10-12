@@ -219,7 +219,14 @@ The user approved the plain Odoo vs Sage Intacct window (4 rows, a question, one
 
 ### Logos (user rule, 2026-10-13: "use Brandfetch… logos should always match the vibe")
 - **Where:** product names in hub cards, versus labels and table headers, window list rows (replacing the letter avatar), and ranked rows. Only where a real product is named; never decorative.
-- **Source:** Brandfetch Logo API, **hotlinked at render time** (its guidelines forbid downloading or re-hosting). The renderer tries the clean **symbol** (mark without text) first, then the square **icon**, then a lettermark. Google favicons are only a fallback when no client ID is set, because they're low-res.
+- **Source: a free logo chain, built into the renderer and fully automatic.** Each logo is hotlinked at render time (nothing downloaded or stored):
+  1. **Brandfetch symbol**: the clean mark without text (e.g. Microsoft, Acumatica, Odoo).
+  2. **Iconify `logos`**: full-colour SVG (`api.iconify.design/logos/<slug>-icon.svg`, then `<slug>.svg`).
+  3. **Simple Icons**: SVG in the official brand colour (`cdn.simpleicons.org/<slug>`), e.g. the transparent green Sage mark.
+  4. **Brandfetch icon**: shown **edge to edge as an app-style tile** (NetSuite, Epicor), so dark squares look intentional, not like blocks.
+  5. **Lettermark**: a grey tile with the first letter.
+  `<slug>` comes from the domain (`sage.com` → `sage`). Without a Brandfetch ID, steps 1 and 4 are skipped and Google favicons are the last image step.
+- **Why the chain:** Brandfetch alone gave unreadable square wordmarks for NetSuite, SAP and Sage. QA failed them as "dark blocks". The open SVG libraries are crisp and transparent, but don't cover niche B2B and healthcare vendors.
 - **Client ID:** free from brandfetch.com/developers. Keep it **local** in `~/.blog-featured-images/config.json` (`{"brandfetchClientId": "…"}`) or the `BRANDFETCH_CLIENT_ID` env var. Never commit it to the shared repo.
 - **Style (user picked A):** `logoStyle: "color"` (default): original brand colours in a small white rounded tile (46–52px) with a hairline border, beside the name. One style per image, so logos read as one set. `mono` (grey) and `tint` (soft blue) exist for images where colour logos would compete.
 - **Vibe check:** logos stay small and secondary. The hero (blue tile, VS badge, big number) remains the focal point. If a logo is an unreadable wordmark squeezed into a square, it's still acceptable as a brand-colour tile, but never enlarge it.

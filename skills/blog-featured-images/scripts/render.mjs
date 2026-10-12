@@ -44,14 +44,26 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const LOCAL_CFG = (() => { try { return JSON.parse(fs.readFileSync(path.join(os.homedir(), '.blog-featured-images', 'config.json'), 'utf8')); } catch { return {}; } })();
 const BF_CLIENT = process.env.BRANDFETCH_CLIENT_ID || LOCAL_CFG.brandfetchClientId || brand.brandfetchClientId || '';
 const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.logoStyle : 'color';   // user picked A (original colours)
-// Brandfetch: the clean "symbol" (mark without text) first, then its square "icon", then a lettermark. Google favicons only without a client ID.
+// Logo chain (all free): Brandfetch symbol -> Iconify "logos" colour icon -> Simple Icons in brand colour -> Brandfetch square icon
+// (shown edge to edge, like an app icon, so dark tiles look intentional) -> lettermark. Without a Brandfetch ID, the Brandfetch steps are skipped.
 const bf = (d, type, fb) => `https://cdn.brandfetch.io/${encodeURIComponent(d)}/w/256/h/256/fallback/${fb}/type/${type}?c=${encodeURIComponent(BF_CLIENT)}`;
-const logoImg = (d) => BF_CLIENT
-  ? `<img src="${bf(d, 'symbol', '404')}" onerror="this.onerror=null;this.src='${bf(d, 'icon', 'lettermark')}'" alt="">`
-  : `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128" alt="">`;
-const logo = (d, size = 48) => d ? `<span class="lg lg-${LOGO_STYLE}" style="width:${size}px;height:${size}px">${logoImg(d)}</span>` : '';
+const slugOfDomain = (d) => String(d).toLowerCase().replace(/^www\./, '').split('.')[0].replace(/[^a-z0-9]/g, '');
+const logoChain = (d, slug) => [
+  ...(BF_CLIENT ? [[bf(d, 'symbol', '404'), '']] : []),
+  [`https://api.iconify.design/logos/${slug}-icon.svg`, ''],
+  [`https://api.iconify.design/logos/${slug}.svg`, ''],
+  [`https://cdn.simpleicons.org/${slug}`, ''],
+  ...(BF_CLIENT ? [[bf(d, 'icon', 'lettermark'), 'full']] : [[`https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128`, '']]),
+];
+const LOGO_JS = `<script>function lgNext(img){const c=JSON.parse(img.dataset.chain);const k=+(img.dataset.k||0)+1;if(k>=c.length){img.onerror=null;img.parentNode.classList.add('lgx');img.parentNode.textContent=img.dataset.l;return;}img.dataset.k=k;if(c[k][1])img.parentNode.classList.add(c[k][1]);img.src=c[k][0];}</script>`;
+const logo = (d, size = 48, label = '') => {
+  if (!d) return '';
+  const chain = logoChain(d, slugOfDomain(d));
+  return `<span class="lg lg-${LOGO_STYLE}" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.46)}px"><img src="${chain[0][0]}" data-chain='${JSON.stringify(chain).replace(/'/g, '&#39;')}' data-l="${esc((label || slugOfDomain(d))[0].toUpperCase())}" onerror="lgNext(this)" alt=""></span>`;
+};
 const LOGO_CSS = `.lg{display:inline-grid;place-items:center;flex:none;border-radius:14px;overflow:hidden;box-sizing:border-box}.lg img{width:100%;height:100%;object-fit:contain;display:block}
 .lg-color{background:#fff;padding:7px;box-shadow:0 0 0 1px rgba(20,26,38,.08)}
+.lg.full{padding:0}.lg.full img{border-radius:inherit}.lg.lgx{font-weight:600;color:#5D6675;background:#EEF2F7}
 .lg-mono{background:#F1F3F6;padding:9px}.lg-mono img{filter:grayscale(1) contrast(1.15);opacity:.8;mix-blend-mode:multiply}
 .lg-tint{background:#E3F0FD;padding:9px}.lg-tint img{filter:grayscale(1) contrast(1.2);mix-blend-mode:luminosity;opacity:.75}`;
 
@@ -99,7 +111,7 @@ ${card(L, 250, -3, 'o1')}${card(R, 790, 3, 'o2', '<div class="ovs">VS</div>')}${
 // "hub" mode (Granola integrations): a blue centre tile, tilted white cards around it, hand-drawn arrows. Flat warm background.
 function hub() {
   const n = Math.min(spec.cards.length, 7), T = n === 7 ? 390 : 450;      // 7 cards: tile moves up, 7th card sits below it
-  const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 672, 2]];
+  const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 705, 2]];
   const LOGOS = spec.cards.some((c) => c.logo), CW = LOGOS ? 345 : 320, CH = spec.showSubs ? 160 : 112;
   if (LOGOS) slots.forEach((sl, i) => { if (i >= 3 && i < 6) sl[0] -= 25; if (i === 6) sl[0] -= 12; });   // wider cards: keep the right column inside x 1390   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
   let arrows = '', cards = '';
@@ -369,6 +381,7 @@ const BG_CSS = {
 const html = `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+${LOGO_JS}
 <style>
 ${LOGO_CSS}
 .th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}

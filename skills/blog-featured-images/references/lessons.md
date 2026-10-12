@@ -30,6 +30,9 @@ Read this before every batch. Each lesson cost at least one extra round with the
 - Parallel headless Chrome renders crash (exit 21) if they share one `--user-data-dir`. The renderer now uses one profile per process, so 3 renders take about 4 s in parallel.
 - Brandfetch's logo CDN needs a client ID (`?c=`) and must be hotlinked, not downloaded. Without an ID it redirects to its guidelines. The working URL is `/<domain>/w/256/h/256/fallback/<fb>/type/<symbol|icon>?c=<id>`, and it **blocks the "HeadlessChrome" user agent**, so the renderer sends a normal Chrome UA. Some brands (NetSuite, SAP, Sage, Epicor) have no symbol, only a wordmark icon.
 
+- **Logo chain** (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon full-bleed → lettermark) runs inside the renderer with no extra step. Makers only set `"logo": "<domain>"`. Don't hand-pick logo files; that's slow.
+- **Patch code with the Edit tool or a script file, never a script that patches another script.** Nested string matching failed twice in a row.
+
 ## 2. Pre-flight before briefing Makers (prevents most QA failures)
 
 QA failures in the test traced back to things the Orchestrator could have checked first:
