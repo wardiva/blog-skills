@@ -52,6 +52,7 @@ One JSON file per article. Top-level fields shared by all modes:
   "chips": ["Solo", "2 to 5 providers"] }
 ```
 - `panel.rows`: exactly 3 rows (they fade from top to bottom). `chips`: 1–2 short options.
+- `headline` is auto-sized (max 76px, about 760px wide). Keep it to about 24 characters so it stays large enough to read.
 
 ## Hub (`"mode": "hub"`; "best X" lists, integrations, ecosystems)
 ```json

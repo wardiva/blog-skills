@@ -100,7 +100,7 @@ body:before{background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),t
 .prs{position:absolute;left:290px;top:110px;display:grid;gap:26px}
 .pr{display:flex;align-items:center;gap:24px}.pr i{width:72px;height:72px;border-radius:16px;background:#F1F4F8;display:grid;place-items:center;font-size:36px;color:#8A93A5}
 .pr b{display:block;font-size:34px;font-weight:500;color:#2B3245}.pr span{font-size:26px;color:#7F8794}
-h1{position:absolute;left:0;right:0;top:405px;margin:0;text-align:center;font-size:102px;font-weight:600;letter-spacing:-.035em;color:#0E2A5C}
+h1{position:absolute;left:0;right:0;top:425px;margin:0;text-align:center;font-size:${Math.min(76, Math.floor(760 / (String(spec.headline).length * 0.52)))}px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
 .bar{position:absolute;left:250px;top:600px;width:1100px;height:124px;border-radius:62px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05);display:flex;align-items:center;padding:0 22px 0 46px;gap:16px}
 .bar .ph-txt{display:flex;align-items:center;gap:14px;font-size:36px;color:#8A93A5;margin-right:auto}
 .bar .ph-txt:before{content:"";width:4px;height:52px;background:#27ACF2;border-radius:2px}

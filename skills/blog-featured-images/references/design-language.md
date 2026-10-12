@@ -29,7 +29,7 @@ This file is the rulebook.
 | Background, wash variant | Soft pastel wash: peach `#FDEFE8` → `#F4F6FB` → sky `#DCEEFC` → `#CBE6FA` (135°), with a blurred sky pool `rgba(39,172,242,.35)` top-right and a warm pool bottom-left |
 | Background, flat variant | Warm off-white `#F1F0EC` (used for alternation, e.g. the hub) |
 | Background, cool variant | `#EEF6FE` → `#DCEEFC` → `#CDE6FB` with a sky pool at the bottom (prompt) |
-| Type | **Inter** only. Labels 50px/500, card headings 32–34px/500, bullets 29–30px, headlines 96–104px/600 with tracking −0.035em |
+| Type | **Inter** only. Labels 50px/500, card headings 32–34px/500, bullets 29–30px, headlines 56–76px/600 with tracking −0.03em (see "Typography balance") |
 | Ink colors | Primary text `#141A26`; muted `#7F8794` / `#5D6675`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` (tiles, buttons); sky `#27ACF2` (carets, legend dots) |
 | Cards | White, radius 20–22px, shadow `0 24px 50px rgba(30,60,110,.12)` plus a 1px hairline. Contents are **real text** from the article, never grey placeholder bars |
@@ -162,3 +162,25 @@ These rules make every image easy to take in at a glance. They work inside our d
 - If a grid is present: does it feel calm, not overwhelming? If not, set `"frame": false`.
 - No large empty area inside a card?
 - Does the cursor, if any, cover text?
+
+---
+
+## Typography balance (user rule, 2026-10-13: "font should look visually balanced")
+
+Text supports the hero; it never shouts over it. Sizes are for the 1600×900 master.
+
+| Role | Size | Rule |
+|---|---|---|
+| Headline (prompt, timeline, ranked) | **56–76px**, weight 600, tracking −0.03em | **Never wider than about 48% of the canvas (about 760px).** Auto-size down for longer lines, never up |
+| Hero number (stat only) | up to 210px, auto-fit to 690px wide | The only place giant type is allowed, because the number *is* the hero |
+| Section labels ("Old EMR export", "Dynamics 365") | 50px / 500 | Muted colour so they label rather than dominate |
+| Card headings | 32–36px / 500–600 | |
+| Bullets, rows, body | 22–30px | |
+| Small labels, subs, chips | 18–28px | Still readable at 350×250 (about 4px+), or cut them |
+
+**Balance checks:**
+- **One dominant text element per image.** If the headline and a card both feel loud, shrink the headline.
+- **Headline to body ratio about 2.5:1** (e.g. 76 : 30). Above 3.5:1 (like the old 102px headline) feels oversized.
+- Headlines sit with breathing room above and below (≥ 40px) and never crowd neighbouring elements.
+- Text width is under about 65% of its container. If a line runs edge to edge, the size is too big.
+- At 350×250, the headline should read clearly but not fill the card. If it is the first and only thing you notice, it is too big.
