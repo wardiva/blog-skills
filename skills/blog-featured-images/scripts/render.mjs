@@ -38,6 +38,17 @@ function findChrome() {
   return hit;
 }
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+// ---- logos: Brandfetch Logo API, hotlinked at render time (Brandfetch's guidelines: hotlink, don't re-host) ----
+// Needs a free client ID (brandfetch.com/developers): env BRANDFETCH_CLIENT_ID or "brandfetchClientId" in the brand file.
+// Without one, previews fall back to Google's favicon service. One treatment per image ("logoStyle") keeps logos on-vibe.
+const BF_CLIENT = process.env.BRANDFETCH_CLIENT_ID || brand.brandfetchClientId || '';
+const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.logoStyle : 'mono';
+const logoSrc = (d) => BF_CLIENT ? `https://cdn.brandfetch.io/${encodeURIComponent(d)}/w/128/h/128/icon?c=${encodeURIComponent(BF_CLIENT)}` : `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128`;
+const logo = (d, size = 48) => d ? `<span class="lg lg-${LOGO_STYLE}" style="width:${size}px;height:${size}px"><img src="${logoSrc(d)}" alt=""></span>` : '';
+const LOGO_CSS = `.lg{display:inline-grid;place-items:center;flex:none;border-radius:14px;overflow:hidden;box-sizing:border-box}.lg img{width:100%;height:100%;object-fit:contain;display:block}
+.lg-color{background:#fff;padding:7px;box-shadow:0 0 0 1px rgba(20,26,38,.08)}
+.lg-mono{background:#F1F3F6;padding:9px}.lg-mono img{filter:grayscale(1) contrast(1.15);opacity:.8;mix-blend-mode:multiply}
+.lg-tint{background:#E3F0FD;padding:9px}.lg-tint img{filter:grayscale(1) contrast(1.2);mix-blend-mode:luminosity;opacity:.75}`;
 
 const before = spec.before, after = spec.after;
 
@@ -84,7 +95,8 @@ ${card(L, 250, -3, 'o1')}${card(R, 790, 3, 'o2', '<div class="ovs">VS</div>')}${
 function hub() {
   const n = Math.min(spec.cards.length, 7), T = n === 7 ? 390 : 450;      // 7 cards: tile moves up, 7th card sits below it
   const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 672, 2]];
-  const CW = 320, CH = spec.showSubs ? 160 : 112;   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
+  const LOGOS = spec.cards.some((c) => c.logo), CW = LOGOS ? 345 : 320, CH = spec.showSubs ? 160 : 112;
+  if (LOGOS) slots.forEach((sl, i) => { if (i >= 3 && i < 6) sl[0] -= 25; if (i === 6) sl[0] -= 12; });   // wider cards: keep the right column inside x 1390   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
   let arrows = '', cards = '';
   spec.cards.slice(0, n).forEach((cd, i) => {
     const [x, y, r] = slots[i], left = i < 3;
@@ -96,13 +108,14 @@ function hub() {
     const ang = Math.atan2(ey - qy, ex - qx), h = 26;
     const p1 = [ex - h * Math.cos(ang - 0.5), ey - h * Math.sin(ang - 0.5)], p2 = [ex - h * Math.cos(ang + 0.5), ey - h * Math.sin(ang + 0.5)];
     arrows += `<path d="M${sx} ${sy} Q ${qx} ${qy} ${ex} ${ey}"/><path d="M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} L ${ex} ${ey} L ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}"/>`;
-    cards += `<div class="hc" style="left:${x}px;top:${y}px;transform:rotate(${r}deg)"><b>${esc(cd.name)}</b>${spec.showSubs && cd.sub ? `<span>${esc(cd.sub)}</span>` : ''}</div>`;
+    cards += `<div class="hc${cd.logo ? ' hl' : ''}" style="left:${x}px;top:${y}px;transform:rotate(${r}deg)">${logo(cd.logo, 46)}<div class="ht"><b>${esc(cd.name)}</b>${spec.showSubs && cd.sub ? `<span>${esc(cd.sub)}</span>` : ''}</div></div>`;
   });
   return `<style>
 body{background:#F1F0EC}body:before{display:none}
 .tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
 .tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap}
 .hc{position:absolute;width:${CW}px;height:${CH}px;background:#fff;border-radius:20px;border:2px solid #E3E1DC;display:flex;flex-direction:column;justify-content:center;padding:0 26px;gap:8px}
+.hc.hl{flex-direction:row;align-items:center;justify-content:flex-start;gap:18px;padding:0 22px}.ht{display:flex;flex-direction:column;gap:8px;min-width:0}.hl .ht b{font-size:28px}
 .hc b{white-space:nowrap;font-size:30px;font-weight:500;color:#141A26;letter-spacing:-.01em}.hc span{font-size:20px;color:#7F8794}
 svg.arr{position:absolute;inset:0;overflow:visible}
 </style>
@@ -352,6 +365,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 <style>
+${LOGO_CSS}
 *{box-sizing:border-box}html,body{margin:0;width:1600px;height:900px;overflow:hidden}
 body{position:relative;font-family:Inter,system-ui,sans-serif;color:#141A26;background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}
 body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}
@@ -401,8 +415,10 @@ Keep only the words that tell the story in 2 seconds.`);
 const file = path.join(outDir, 'page.html');
 fs.writeFileSync(file, out);
 const raw = path.join(outDir, 'raw.png');
+const PROFILE = path.join(os.tmpdir(), `bfi-chrome-${process.pid}`); // one profile per render, so parallel renders never collide
 execFileSync(findChrome(), ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1', '--window-size=1600,900',
-  '--virtual-time-budget=8000', `--user-data-dir=${path.join(os.tmpdir(), 'bfi-chrome-profile')}`, `--screenshot=${raw}`, pathToFileURL(file).href], { stdio: 'ignore' });
+  '--virtual-time-budget=8000', `--user-data-dir=${PROFILE}`, `--screenshot=${raw}`, pathToFileURL(file).href], { stdio: 'ignore' });
+fs.rmSync(PROFILE, { recursive: true, force: true });
 const master = await sharp(raw).png().toBuffer();
 fs.writeFileSync(path.join(outDir, 'master.png'), master);
 const crop75 = await sharp(master).extract({ left: 170, top: 0, width: 1260, height: 900 }).toBuffer();

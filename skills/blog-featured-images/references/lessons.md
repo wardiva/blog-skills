@@ -27,6 +27,8 @@ Read this before every batch. Each lesson cost at least one extra round with the
 - Paths with spaces ("Program Files"): never pass them through a shell. Call `node <tool>.js` directly, or use an env var such as `AGENT_BROWSER_EXECUTABLE_PATH`.
 - agent-browser's daemon keeps child pipes open. Finish on process **exit**, not pipe close, or the call hangs.
 - A message sent to an agent just as it finishes may be dropped. If no reply comes, send it again.
+- Parallel headless Chrome renders crash (exit 21) if they share one `--user-data-dir`. The renderer now uses one profile per process, so 3 renders take about 4 s in parallel.
+- Brandfetch's logo CDN needs a client ID (`?c=`) and must be hotlinked, not downloaded. Without an ID it redirects to its guidelines.
 
 ## 2. Pre-flight before briefing Makers (prevents most QA failures)
 
