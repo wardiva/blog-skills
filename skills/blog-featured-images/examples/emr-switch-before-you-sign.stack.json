@@ -4,11 +4,10 @@
  "mode": "stack",
  "slug": "emr-switch-before-you-sign",
  "icon": "ph ph-shield-check",
- "title": "Switch EMR vendors without losing data",
- "lead": "Extract and **validate every record** before you cut off the old system.",
+ "title": "Switch EMR without losing data",
+ "lead": "**Validate every record** before cutover",
  "items": [
-  "Keep read-only legacy access for 6 to 12 months",
-  "Scanned documents may not transfer cleanly"
+  "Keep legacy access 6–12 months"
  ],
  "articleTitle": "How to Switch EMR Vendors Without Losing Patient Data"
 }

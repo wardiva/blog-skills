@@ -6,19 +6,19 @@
  "title": "Best ERP for small business",
  "items": [
   {
-   "text": "Cost per user vs volume",
+   "text": "Cost per user",
    "done": true
   },
   {
-   "text": "Implementation timeline",
+   "text": "Timeline",
    "done": true
   },
   {
-   "text": "Core modules you need today",
+   "text": "Core modules",
    "done": false
   },
   {
-   "text": "Cloud, on-premise or hybrid",
+   "text": "Deployment",
    "done": false
   }
  ],

@@ -1,33 +1,49 @@
 {
+ "articleTitle": "7 Best ERP Software for Small Businesses in 2026",
  "brand": "medsoftwarehub",
  "category": "clinical-software",
+ "topic": "best-erp",
+ "slug": "7-best-erp-software-for-small-businesses-in-2026",
  "mode": "hub",
- "hubIcon": "ph-fill ph-storefront",
+ "hubLabel": {
+  "big": "7",
+  "small": "Best ERP"
+ },
  "cards": [
   {
    "name": "NetSuite",
-   "sub": "$999/mo base"
+   "sub": "$999/mo base",
+   "logo": "netsuite.com"
   },
   {
    "name": "SAP Business One",
-   "sub": "From $95/user"
+   "sub": "From $95/user/mo",
+   "logo": "sap.com"
   },
   {
    "name": "Dynamics 365",
-   "sub": "$80/user/mo"
+   "sub": "$80/user/mo",
+   "logo": "microsoft.com"
   },
   {
    "name": "Acumatica",
-   "sub": "From $6,396/yr"
+   "sub": "From $6,396/yr",
+   "logo": "acumatica.com"
   },
   {
    "name": "Odoo",
-   "sub": "$24.90/user/mo"
+   "sub": "$24.90/user/mo",
+   "logo": "odoo.com"
   },
   {
    "name": "Sage Intacct",
-   "sub": "From $15K/yr"
+   "sub": "From $15K/yr",
+   "logo": "sage.com"
+  },
+  {
+   "name": "Epicor Kinetic",
+   "sub": "$1,500/mo base",
+   "logo": "epicor.com"
   }
- ],
- "articleTitle": "7 Best ERP Software for Small Businesses in 2026"
+ ]
 }

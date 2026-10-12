@@ -4,7 +4,7 @@
  "mode": "ranked",
  "slug": "emr-monthly-price-ranked",
  "headline": "EMR Software Pricing, Ranked",
- "sub": "Published monthly prices, 2026",
+ "sub": "",
  "winner": 0,
  "rows": [
   {
@@ -31,11 +31,6 @@
    "name": "eClinicalWorks",
    "value": "$449/mo",
    "pct": 449
-  },
-  {
-   "name": "NextGen (est.)",
-   "value": "$800/mo",
-   "pct": 800
   }
  ],
  "articleTitle": "EMR Software Cost 2026: Pricing by Practice Size"

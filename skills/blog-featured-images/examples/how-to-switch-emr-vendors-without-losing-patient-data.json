@@ -4,22 +4,19 @@
  "before": {
   "label": "Old EMR export",
   "lines": [
-   "ALVAREZ, M · 1968",
-   "PCN · METF 500"
+   "ALVAREZ, M · 1968"
   ]
  },
  "after": {
   "label": "New EMR",
-  "heading": "Maria Alvarez · Patient overview",
+  "heading": "Maria Alvarez",
   "items": [
-   "Allergy: Penicillin",
-   "Medication: Metformin 500 mg",
-   "Last A1C: 6.9%, verified"
+   "Allergy: Penicillin"
   ]
  },
  "legend": [
-  "From your old EMR",
-  "Mapped and verified"
+  "Raw export",
+  "Verified"
  ],
  "articleTitle": "How to Switch EMR Vendors Without Losing Patient Data"
 }

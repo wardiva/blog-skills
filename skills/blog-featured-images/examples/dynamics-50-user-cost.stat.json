@@ -6,7 +6,7 @@
  "value": "$48,000",
  "valueSize": 180,
  "caption": "a year for 50 Dynamics 365 users",
- "sub": "Before implementation, which adds $25,000 to $80,000",
+ "sub": "",
  "card": {
   "heading": "Starting price",
   "rows": [
@@ -16,7 +16,7 @@
     "pct": 48000
    },
    {
-    "name": "Acumatica base",
+    "name": "Acumatica",
     "value": "$6,396/yr",
     "pct": 6396
    }

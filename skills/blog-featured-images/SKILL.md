@@ -96,6 +96,7 @@ Then put the batch side by side and confirm no two images look alike. Fix and re
 Show the images, ideally as one contact sheet for a batch. For each, list the mode chosen and the article facts used. Ask before uploading anything to a website.
 
 ## Notes
+- **First-time setup for new users:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast parallel article reading. **If agent-browser isn't installed**, read the articles with WebFetch in parallel (one message, all URLs) and save the text to `featured-images/articles/<slug>.md`, then continue as normal. A Brandfetch client ID is optional; it goes in `~/.blog-featured-images/config.json` (never commit it).
 - Fonts (Inter) and icons (Phosphor) load from the internet at render time.
 - Variety history is site-wide per brand (`~/.blog-featured-images/history-<brand>.json`, or the `FEATURED_HISTORY_DIR` env var). Re-rendering the same `slug` replaces its entry. To drop a discarded test image, delete its entry from that file.
 - Layouts available today: 13 (versus: `overlap`, `table`; stack: `default`, `split`; before-after: `default`, `flow`; every other mode has one). A category with more posts than layouts will cycle, always to the least-used layout. Add variants to lengthen the cycle.

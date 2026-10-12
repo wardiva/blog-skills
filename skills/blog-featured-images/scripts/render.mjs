@@ -223,7 +223,7 @@ function appwin() {
 .wd ul{margin:0;padding:0 0 0 24px;display:grid;gap:12px;font-size:22px;line-height:1.4;color:#5D6675}
 </style>
 <div class="win"><div class="wt"><i class="d" style="background:#FF5F57"></i><i class="d" style="background:#FEBC2E"></i><i class="d" style="background:#28C840"></i>
-<span class="s"><i class="ph ph-magnifying-glass"></i>${esc(W.search || 'Search')}</span><span class="a">${esc(W.action || 'New')}</span></div>
+<span class="s"><i class="ph ph-magnifying-glass"></i>${esc(W.search || '')}</span>${W.action ? `<span class="a">${esc(W.action)}</span>` : ''}</div>
 <div class="wb"><div class="wl"><div class="wi"><i class="${esc(L.icon || 'ph ph-list-bullets')}"></i></div><h2>${esc(L.heading)}</h2><div class="ws">${esc(L.sub || '')}</div>${rows}</div>
 <div class="wd"><div class="wq">${esc(D.question)}</div><h3>${esc(D.heading)}</h3><ul>${(D.points || []).map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div></div>`;
 }
@@ -471,7 +471,7 @@ fs.mkdirSync(outDir, { recursive: true });
 const MAX_WORDS = 15, MAX_RUN = 7;   // whole image / any single text element (no sentences)
 const bodyHtml = html.slice(html.indexOf('<body')).replace(/<(style|script|svg)[\s\S]*?<\/\1>/g, ' ').replace(/<\/?b>/g, '');   // <b> is inline emphasis, not a new element
 const runs = bodyHtml.split(/<[^>]+>/).map((t) => t.replace(/&[a-z#0-9]+;/gi, ' ').trim()).filter(Boolean);
-const wc = (t) => (t.match(/[A-Za-z0-9$€£%][^\s]*/g) || []).length;
+const wc = (t) => (t.match(/[A-Za-z0-9$€£%][^\s]*/g) || []).filter((w) => !/^0\d$/.test(w)).length;   // rank numbers (01, 02…) are decoration
 const WORDS = runs.reduce((n, t) => n + wc(t), 0);
 const longRuns = runs.filter((t) => wc(t) > MAX_RUN);
 if ((WORDS > MAX_WORDS || longRuns.length) && !args.includes('--force')) {

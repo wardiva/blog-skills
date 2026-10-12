@@ -1,6 +1,31 @@
-{ "brand":"medsoftwarehub","category":"clinical-software","topic":"odoo-vs-sage-intacct",
-  "slug":"odoo-vs-sage-intacct-for-small-to-mid-size-businesses-2026","mode":"versus","variant":"table",
-  "articleTitle":"Odoo vs Sage Intacct for Small to Mid-Size Businesses (2026)",
-  "dimensions":["Per user/mo","10 users/yr","Pricing"],
-  "left":{"label":"Odoo","heading":"Standard plan","items":["$24.90","$3,700 to $7,300","Published"]},
-  "right":{"label":"Sage Intacct","heading":"Cloud financials","items":["$150 to $400","$50,000 to $120,000","Quote only"]} }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "topic": "odoo-vs-sage-intacct",
+ "slug": "odoo-vs-sage-intacct-for-small-to-mid-size-businesses-2026",
+ "mode": "versus",
+ "variant": "table",
+ "articleTitle": "Odoo vs Sage Intacct for Small to Mid-Size Businesses (2026)",
+ "dimensions": [
+  "Per user/mo",
+  "Pricing"
+ ],
+ "left": {
+  "label": "Odoo",
+  "heading": "",
+  "items": [
+   "$24.90",
+   "Published"
+  ],
+  "logo": "odoo.com"
+ },
+ "right": {
+  "label": "Sage Intacct",
+  "heading": "",
+  "items": [
+   "$150 to $400",
+   "Quote only"
+  ],
+  "logo": "sage.com"
+ }
+}

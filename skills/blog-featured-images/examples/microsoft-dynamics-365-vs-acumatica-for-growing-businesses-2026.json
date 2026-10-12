@@ -4,30 +4,21 @@
  "mode": "versus",
  "left": {
   "label": "Dynamics 365",
-  "heading": "Business Central",
+  "heading": "",
   "items": [
-   "$80 per user / month",
-   "Paid per seat"
+   "$80/user/mo",
+   "Per seat"
   ],
   "logo": "microsoft.com"
  },
  "right": {
   "label": "Acumatica",
-  "heading": "Cloud ERP",
+  "heading": "",
   "items": [
-   "From $6,396 per year",
+   "From $6,396/yr",
    "Unlimited users"
   ],
   "logo": "acumatica.com"
  },
- "legend": [
-  "Priced per seat",
-  "Priced by transactions"
- ],
- "articleTitle": "Microsoft Dynamics 365 vs Acumatica for Growing Businesses (2026)",
- "dimensions": [
-  "Pricing",
-  "Users",
-  "Strength"
- ]
+ "articleTitle": "Microsoft Dynamics 365 vs Acumatica for Growing Businesses (2026)"
 }
