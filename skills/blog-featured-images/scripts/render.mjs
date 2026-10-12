@@ -170,22 +170,25 @@ h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-si
 function stack() {
   const lead = esc(spec.lead).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
   if (spec.variant === 'split') {
-    // "split": a definition card whose lower half is a two-column contrast (e.g. You | Vendor); back cards fan out to the lower right.
+    // "split": a short definition over a two-column contrast (e.g. You | Vendor). The card sizes to its text and is centred;
+    // the back cards fan to the lower right of whatever height the card ends up.
     const cols = (spec.split || []).slice(0, 2).map((c, i) => `<div class="sp${i}"><em>${esc(c.label)}</em><span>${esc(c.text)}</span></div>`).join('');
     return `<style>
-.sk{position:absolute;border-radius:28px;background:#fff}
-.sk1{left:330px;top:295px;width:1020px;height:420px;opacity:.5;box-shadow:0 10px 30px rgba(30,60,110,.08)}
-.sk2{left:290px;top:255px;width:1020px;height:420px;opacity:.78;box-shadow:0 10px 30px rgba(30,60,110,.10)}
-.skf{left:250px;top:215px;width:1020px;height:420px;padding:52px 60px 0;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05);overflow:hidden}
+.skw{position:absolute;left:320px;top:50%;width:960px;transform:translateY(-54%)}
+.skb{position:absolute;inset:0;border-radius:28px;background:#fff}
+.skb1{transform:translate(80px,80px);opacity:.5;box-shadow:0 10px 30px rgba(30,60,110,.08)}
+.skb2{transform:translate(40px,40px);opacity:.78;box-shadow:0 10px 30px rgba(30,60,110,.10)}
+.skf{position:relative;border-radius:28px;background:#fff;overflow:hidden;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)}
+.skt{padding:52px 60px 48px}
 .skh{display:flex;align-items:center;gap:16px;font-size:32px;color:#7F8794}.skh i{font-size:40px;color:#0A5FD8}
-.skl{margin:26px 0 0;font-size:44px;line-height:1.28;color:#141A26;letter-spacing:-.015em}.skl b{font-weight:600;color:#0A5FD8}
-.sks{position:absolute;left:0;right:0;bottom:0;height:150px;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #EEF0F4}
-.sks>div{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 60px}.sks .sp1{background:#F2F8FE;border-left:1px solid #E3ECF7}
+.skl{margin:22px 0 0;font-size:58px;font-weight:500;line-height:1.15;color:#141A26;letter-spacing:-.02em}.skl b{font-weight:600;color:#0A5FD8}
+.sks{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #EEF0F4}
+.sks>div{display:flex;flex-direction:column;gap:8px;padding:34px 60px 38px}.sks .sp1{background:#F2F8FE;border-left:1px solid #E3ECF7}
 .sks em{font-style:normal;font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}.sks .sp1 em{color:#2C5FAE}
-.sks span{font-size:32px;color:#141A26}
+.sks span{font-size:34px;color:#141A26}
 </style>
-<div class="sk sk1"></div><div class="sk sk2"></div>
-<div class="sk skf"><div class="skh"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i>${esc(spec.title)}</div><div class="skl">${lead}</div><div class="sks">${cols}</div></div>`;
+<div class="skw"><div class="skb skb1"></div><div class="skb skb2"></div>
+<div class="skf"><div class="skt"><div class="skh"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i>${esc(spec.title)}</div><div class="skl">${lead}</div></div><div class="sks">${cols}</div></div></div>`;
   }
   return `<style>
 .sk{position:absolute;border-radius:28px;background:#fff}
@@ -440,13 +443,15 @@ for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
 
 fs.mkdirSync(outDir, { recursive: true });
 // ---- text budget (forced, user rule: "need to show less text"): count every visible word and refuse text-heavy images ----
-const MAX_WORDS = 30;
-const visible = html.slice(html.indexOf('<body')).replace(/<(style|script|svg)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ');
-const WORDS = (visible.match(/[A-Za-z0-9$€£%][^\s]*/g) || []).length;
-if (WORDS > MAX_WORDS && !args.includes('--force')) {
-  console.error(`TEXT CHECK FAILED: ${WORDS} words on the image (max ${MAX_WORDS}).
-Cut secondary lines first: prices or subs that are not the point of the article, legends that repeat a row, extra bullets.
-Keep only the words that tell the story in 2 seconds.`);
+const MAX_WORDS = 15, MAX_RUN = 7;   // whole image / any single text element (no sentences)
+const bodyHtml = html.slice(html.indexOf('<body')).replace(/<(style|script|svg)[\s\S]*?<\/\1>/g, ' ').replace(/<\/?b>/g, '');   // <b> is inline emphasis, not a new element
+const runs = bodyHtml.split(/<[^>]+>/).map((t) => t.replace(/&[a-z#0-9]+;/gi, ' ').trim()).filter(Boolean);
+const wc = (t) => (t.match(/[A-Za-z0-9$€£%][^\s]*/g) || []).length;
+const WORDS = runs.reduce((n, t) => n + wc(t), 0);
+const longRuns = runs.filter((t) => wc(t) > MAX_RUN);
+if ((WORDS > MAX_WORDS || longRuns.length) && !args.includes('--force')) {
+  console.error(`TEXT CHECK FAILED: ${WORDS} words on the image (max ${MAX_WORDS})${longRuns.length ? `; sentence-like text (max ${MAX_RUN} words per element): ${longRuns.map((t) => `"${t}"`).join(', ')}` : ''}.
+Use labels, not sentences. Cut secondary lines first (subs, legends, extra rows), then shorten every phrase to its key words.`);
   process.exit(2);
 }
 const file = path.join(outDir, 'page.html');

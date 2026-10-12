@@ -207,15 +207,16 @@ The user approved the plain Odoo vs Sage Intacct window (4 rows, a question, one
 - **No stacked explanations.** Don't show the same fact twice in different forms (e.g. a heading *and* bars *and* bullets for the same numbers).
 - **UI mockups (window, prompt panel) keep UI-sized text:** rows about 24px, subs about 19px, bullets about 22px. They should look like a real app, not a slide. The "Body text must breathe" sizes apply to free-standing cards and lists, not to text inside a mock app window.
 - **The rule of thumb is subtraction.** Before rendering, remove one element and ask whether the image still tells the story. If it does, keep it removed.
-- **30 words maximum** (renderer-enforced; see "Text budget" below), and fewer is better.
+- **15 words maximum, no sentences** (renderer-enforced; see "Text budget" below).
 
 ---
 
-### Text budget: renderer-enforced (user rule, 2026-10-13: "need to show less text… force this rule")
-- **Hard cap: 30 visible words** on the whole image. The renderer counts every word and refuses anything over it with **"TEXT CHECK FAILED"**. Every render prints `words=N/30`. Aim for 15–25.
-- **Secondary lines only when they ARE the story.** A price belongs on a pricing or "vs" cost image, but not on a "7 best" list, where the names are the story. The first failure: the 7 Best ERP hub showed a price under every product name, and the user said "pricing text wasn't needed".
-- **Hub cards are names only** by default. Add `"showSubs": true` only when the second line is the article's point.
-- Cut in this order: subs that aren't the point → legends that repeat a row → extra bullets → subtitles.
+### Text budget: renderer-enforced (user rules, 2026-10-13: "need to show less text… force this rule"; "this is text heavy. MAKE RULE FORCE")
+- **Hard cap: 15 visible words** on the whole image, and **max 7 words per text element**. **No sentences:** labels and short phrases only. The renderer refuses either with **"TEXT CHECK FAILED"** and prints `words=N/15` on every render.
+- History: 30 words was still "text heavy". The cloud ERP card at 25 words, with a one-sentence definition, was rejected. The 7 Best ERP hub (15 words, names only) was accepted.
+- **Secondary lines only when they ARE the story.** A price belongs on a pricing image, but not on a "best of" list, where the names are the story. Hub cards are names only by default (`"showSubs": true` to override).
+- **Write labels, not prose:** "ERP on the vendor's servers", not "ERP that runs on the vendor's servers, delivered over the internet by subscription."
+- Cut in this order: secondary lines (subs, legends, extra rows) → sentence tails ("delivered over…", "which means…") → extra bullets → subtitles.
 
 ### Logos (user rule, 2026-10-13: "use Brandfetch… logos should always match the vibe")
 - **Where:** product names in hub cards, versus labels and table headers, window list rows (replacing the letter avatar), and ranked rows. Only where a real product is named; never decorative.

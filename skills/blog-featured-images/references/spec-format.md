@@ -18,7 +18,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `cursor` | no | `[x, y]`: a pointer cue at that position. It must point at the key fact and never cover text |
 | `bleed` | no | `window` mode only: the window runs off the bottom and right edge, Base44 style |
 
-**Text budget: 30 visible words per image, enforced by the renderer ("TEXT CHECK FAILED").** **Text limits keep things readable at 350×250.** Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
+**Text budget: 15 visible words per image and max 7 words per element, enforced by the renderer ("TEXT CHECK FAILED").** **Text limits keep things readable at 350×250.** Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
 
 ---
 

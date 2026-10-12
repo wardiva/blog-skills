@@ -49,7 +49,7 @@ Read SKILL.md, references/design-language.md and references/spec-format.md first
 For each article below, in order:
 1. Read the article file <featured-images>/articles/<slug>.md (already fetched; do not fetch the URL). Use only its own facts.
 2. Write <featured-images>/specs/<slug>.json for the ASSIGNED layout (mode + variant). Set articleTitle, brand, category, topic, slug.
-   Minimal rule: one idea, at most 30 words (the renderer enforces it), no fact shown twice, nothing added to fill space.
+   Minimal rule: one idea, at most 15 words and no sentence (max 7 words per element; the renderer enforces both). Write labels, not prose, no fact shown twice, nothing added to fill space.
    Logos: add "logo": "<official domain>" to every named product (e.g. "odoo.com", "sage.com"). Don't pick logo files; the renderer's chain does it.
 3. Render it: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>". (Other Makers render in parallel; that's fine.)
    Never use --force. If a check fails, fix the spec within the assigned layout; if the layout itself is refused, stop and report it.
@@ -81,7 +81,7 @@ Return, per image: PASS or FAIL, and for each FAIL the rule broken and the exact
 - Real words only, no jargon the article doesn't use.
 
 **3. Less text (minimal)**
-- 30 words maximum (the renderer enforces it; check `words=N/30` in the render output). FAIL any secondary line (price, sub, legend) that isn't the point of the article, even under 30.
+- 15 words maximum, max 7 words per element, no sentences (the renderer enforces it; check `words=N/15`). FAIL any secondary line (price, sub, legend) that isn't the point of the article, even under 30.
 - No fact shown twice, and nothing added just to fill space.
 
 **4. Visually balanced**
