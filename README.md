@@ -8,11 +8,9 @@ A Claude Code skill that makes premium, article-specific blog featured images (1
 npx skills add https://github.com/wardiva/blog-skills --skill blog-featured-images
 ```
 
-One-time setup for rendering (needs Node 18+ and Chrome or Edge):
+Add `-g` to install it for all your projects instead of only the current one.
 
-```bash
-cd ~/.claude/skills/blog-featured-images/scripts && npm install
-```
+**One-time setup:** rendering needs Node 18+ and Chrome or Edge. On first use, Claude runs `npm install` in the skill's `scripts` folder for you (this installs `sharp`).
 
 ## Use
 
