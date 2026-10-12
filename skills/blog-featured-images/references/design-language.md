@@ -137,3 +137,24 @@ Then compare the batch side by side as a contact sheet, and confirm no two image
 
 ### Approved reference
 The 10-composition sheet (rendered from the specs in `examples/`) is the quality bar. New images should look like they belong on that sheet.
+
+---
+
+## Visual balance rules (learned from base44.com/blog, 2026-10-13)
+
+These rules make every image easy to take in at a glance. They work inside our design language and don't change it.
+
+1. **One hero at 55–70% of the frame width.** Everything else is secondary and smaller. If two things compete for attention, make one smaller.
+2. **A structure layer frames the hero.** A faint grid (lines at about 5.5% opacity) and six small dark **registration squares** at the safe-zone corners and midsides (x 210 / 1390, y 75 / 450 / 825). This makes the empty space look intentional and anchors all four corners. It is on by default; set `"frame": false` only if it fights the hero.
+3. **Bleed for big UI.** Large windows or dashboards may run off the bottom or right edge (`"bleed": true` in window mode). The chrome bleeds, never the key text: all words stay inside x 210–1390.
+4. **Tactile texture.** Paper grain at about 9% over everything, including cards, so nothing looks flat or digital.
+5. **One interaction cue at most.** A cursor (`"cursor": [x, y]`) pointing at the key fact, a chip or a send button. It must point at something meaningful and never cover text.
+6. **Scale contrast.** One very large element (number, name, headline) against small labels. Big type carries the topic; small type supports it.
+7. **Calm field plus one pop.** One background field, one blue accent, nothing else saturated.
+8. **Optical centre.** The hero's visual mass sits at or slightly above the canvas centre, never sagging toward the bottom. Balance a left-heavy hero with a right-side element of similar weight.
+
+**Balance QA (add to every check):**
+- Squint at the 350×250 card: one clear focal point?
+- All four corners anchored by a square, card edge or bleed?
+- No large empty area inside a card?
+- Does the cursor, if any, cover text?

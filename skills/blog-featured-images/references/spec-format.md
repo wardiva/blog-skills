@@ -10,6 +10,9 @@ One JSON file per article. Top-level fields shared by all modes:
 | `slug` | yes | Output folder name and ledger key (unique per article) |
 | `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
 | `bg` | no | `wash`, `cool`, `white`, `flat`. Leave it out to auto-rotate |
+| `frame` | no | Grid plus registration squares (on by default). `false` to hide |
+| `cursor` | no | `[x, y]`: a pointer cue at that position. It must point at the key fact and never cover text |
+| `bleed` | no | `window` mode only: the window runs off the bottom and right edge, Base44 style |
 
 **Text limits keep things readable at 350×250.** Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
 

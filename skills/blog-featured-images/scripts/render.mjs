@@ -134,7 +134,7 @@ function appwin() {
   const W = spec.window || {}, L = spec.list, D = spec.detail;
   const rows = L.rows.slice(0, 5).map((r) => `<div class="wr"><span class="wav">${esc((r.title || '?').trim()[0])}</span><div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
   return `<style>
-.win{position:absolute;left:210px;top:95px;width:1180px;height:720px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
+.win{position:absolute;left:${spec.bleed ? 230 : 210}px;top:${spec.bleed ? 150 : 95}px;width:${spec.bleed ? 1300 : 1180}px;height:${spec.bleed ? 820 : 720}px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
 .wt{height:66px;display:flex;align-items:center;gap:10px;padding:0 26px;border-bottom:1px solid #EEF0F4;background:#FAFBFC}
 .wt i.d{width:14px;height:14px;border-radius:50%}.wt .s{margin:0 auto;width:440px;height:38px;border-radius:10px;background:#EEF0F4;display:flex;align-items:center;justify-content:center;gap:10px;font-size:18px;color:#7F8794}
 .wt .a{font-size:18px;font-weight:500;color:#141A26;background:#EEF0F4;border-radius:10px;padding:8px 16px}
@@ -144,7 +144,7 @@ function appwin() {
 .wl h2{margin:16px 0 4px;font-size:42px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
 .wr{display:flex;align-items:center;gap:16px;padding:13px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
 .wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
-.wd{padding:40px 40px}.wq{margin-left:auto;width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
+.wd{padding:40px 40px}.wq{margin-left:${spec.bleed ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
 .wd h3{margin:30px 0 16px;font-size:32px;font-weight:600;line-height:1.2;letter-spacing:-.015em}
 .wd ul{margin:0;padding:0 0 0 24px;display:grid;gap:12px;font-size:22px;line-height:1.4;color:#5D6675}
 </style>
@@ -236,6 +236,22 @@ function ranked() {
 <div class="rh">${esc(spec.headline)}</div><div class="rs">${esc(spec.sub || '')}</div><div class="rl">${rows}</div>`;
 }
 
+
+// ---- balance layer (learned from Base44): grid lines + registration squares framing the hero, an optional cursor cue ----
+function frameLayer() {
+  if (spec.frame === false) return '';
+  let g = '';
+  for (let k = 0; k <= 8; k++) { const x = 210 + k * 147.5; g += `<line x1="${x}" y1="0" x2="${x}" y2="900"/>`; }
+  for (let k = 0; k <= 5; k++) { const y = 75 + k * 150; g += `<line x1="0" y1="${y}" x2="1600" y2="${y}"/>`; }
+  const sq = [[210, 75], [1390, 75], [210, 825], [1390, 825], [210, 450], [1390, 450]].map(([x, y]) => `<rect x="${x - 6}" y="${y - 6}" width="12" height="12" rx="1"/>`).join('');
+  return `<svg class="frame" viewBox="0 0 1600 900" width="1600" height="900" style="position:absolute;inset:0;pointer-events:none">
+<g stroke="#141A26" stroke-opacity=".055" stroke-width="1.5">${g}</g><g fill="#141A26" fill-opacity=".8">${sq}</g></svg>`;
+}
+function cursorLayer() {
+  if (!spec.cursor) return '';
+  const [x, y] = spec.cursor;
+  return `<svg viewBox="0 0 64 80" width="96" height="120" style="position:absolute;left:${x}px;top:${y}px;filter:drop-shadow(0 8px 14px rgba(20,26,38,.25))"><path d="M6 4 L6 62 L20 49 L30 72 L40 67 L30 45 L50 45 Z" fill="#141A26" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>`;
+}
 const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked };
 
 // ---- variety: backgrounds rotate, and a ledger blocks a category from repeating a recent composition ----
@@ -291,13 +307,15 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 .legend{position:absolute;left:710px;top:700px;display:flex;gap:44px;font-size:30px;font-weight:500}
 .legend span{display:flex;align-items:center;gap:14px}.legend i{width:16px;height:16px;border-radius:50%}
 .lg1{color:#141A26}.lg1 i{background:#141A26}.lg2{color:#2C7BD8}.lg2 i{background:#27ACF2}
-.grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.05;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style></head><body>
+${frameLayer()}
 ${modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.label)}</div><div class="lbl l2">${esc(after.label)}</div>
 <div class="c c1"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900"><path d="M-30 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
 <div class="c c2"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>
 <div class="legend"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`}
+${cursorLayer()}
 <style>${BG_CSS[BG] || ''}</style>
 <div class="grain"></div></body></html>`;
 

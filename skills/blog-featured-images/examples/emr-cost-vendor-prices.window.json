@@ -1,8 +1,56 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "window", "slug": "emr-cost-vendor-prices",
-  "window": { "search": "Search EMR vendors", "action": "Compare" },
-  "list": { "icon": "ph ph-currency-dollar", "heading": "EMR pricing", "sub": "Per provider, per month",
-            "rows": [ { "title": "DrChrono", "sub": "Base tier", "meta": "$30" }, { "title": "SimplePractice", "sub": "Starter to Plus", "meta": "$49 to $99" },
-                      { "title": "RXNT", "sub": "Onboarding included", "meta": "From $118" }, { "title": "Practice Fusion", "sub": "Annual commitment", "meta": "$199" },
-                      { "title": "eClinicalWorks", "sub": "EHR only", "meta": "$449" } ] },
-  "detail": { "question": "What does a 2 to 5 provider practice pay?", "heading": "$40K to $150K in year one",
-              "points": ["Implementation: $5K to $20K", "Training: $1K to $5K", "Data migration: $2K to $10K"] } }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "window",
+ "slug": "emr-cost-vendor-prices",
+ "window": {
+  "search": "Search EMR vendors",
+  "action": "Compare"
+ },
+ "list": {
+  "icon": "ph ph-currency-dollar",
+  "heading": "EMR pricing",
+  "sub": "Per provider, per month",
+  "rows": [
+   {
+    "title": "DrChrono",
+    "sub": "Base tier",
+    "meta": "$30"
+   },
+   {
+    "title": "SimplePractice",
+    "sub": "Starter to Plus",
+    "meta": "$49 to $99"
+   },
+   {
+    "title": "RXNT",
+    "sub": "Onboarding included",
+    "meta": "From $118"
+   },
+   {
+    "title": "Practice Fusion",
+    "sub": "Annual commitment",
+    "meta": "$199"
+   },
+   {
+    "title": "eClinicalWorks",
+    "sub": "EHR only",
+    "meta": "$449"
+   }
+  ]
+ },
+ "detail": {
+  "question": "What does a 2 to 5 provider practice pay?",
+  "heading": "$40K to $150K in year one",
+  "points": [
+   "Implementation: $5K to $20K",
+   "Training: $1K to $5K",
+   "Data migration: $2K to $10K"
+  ]
+ },
+ "bleed": true,
+ "cursor": [
+  830,
+  470
+ ]
+}

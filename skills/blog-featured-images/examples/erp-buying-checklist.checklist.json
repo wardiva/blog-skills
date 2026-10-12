@@ -1,4 +1,29 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "checklist", "slug": "erp-buying-checklist",
-  "title": "Small business ERP check",
-  "items": [ { "text": "Cost per user vs volume", "done": true }, { "text": "Implementation timeline", "done": true },
-             { "text": "Core modules you need today", "done": false }, { "text": "Cloud, on-premise or hybrid", "done": false } ] }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "checklist",
+ "slug": "erp-buying-checklist",
+ "title": "Small business ERP check",
+ "items": [
+  {
+   "text": "Cost per user vs volume",
+   "done": true
+  },
+  {
+   "text": "Implementation timeline",
+   "done": true
+  },
+  {
+   "text": "Core modules you need today",
+   "done": false
+  },
+  {
+   "text": "Cloud, on-premise or hybrid",
+   "done": false
+  }
+ ],
+ "cursor": [
+  1030,
+  520
+ ]
+}
