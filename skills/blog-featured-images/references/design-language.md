@@ -85,3 +85,55 @@ Rendered by `scripts/render.mjs`, selected with `"mode"` in the article spec.
 | 7 Best ERP Software for Small Businesses (2026) | Hub | Six ERPs on tilted cards with each one's starting price |
 
 Example specs for all four are in `examples/`.
+
+---
+
+## APPROVED: how the skill must work (user sign-off, 2026-10-13: "i really love it")
+
+This is the approved behaviour. Keep it. Any future change must keep all of the following true.
+
+### 1. Ten compositions, one family
+`before-after`, `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked`.
+All of them share the same ingredients:
+- the pastel backgrounds
+- Inter type
+- white rounded cards with real text
+- the blue accent gradient
+- grain
+- the crop-safe zone x 210–1390
+
+The **composition** is what makes each image different. The ingredients make the set one family.
+
+### 2. Variety is enforced, not hoped for
+- **Category rule:** a composition can't be reused within the **last 6 posts** of the same category.
+- **Topic rule:** articles on the same subject (including duplicate URLs such as `…-guide` and `…-guide-2`) share a `topic` and can **never** use the same composition. They must also show different facts or angles.
+- **Backgrounds auto-rotate** (`wash`, `cool`, `white`, `flat`), so neighbours never share a background unless one is set explicitly.
+- The renderer records every image in `featured-images/.featured-ledger.json` and refuses a repeat with **"VARIETY CHECK FAILED"**, listing the unused compositions. Never use `--force` unless the user explicitly asks.
+
+### 3. Batch planning before rendering
+For more than one article:
+1. Read **every** article in full.
+2. Write a plan table (article → composition → background → facts) and show it to the user when there are more than 3 articles.
+3. Then render.
+
+The same article type can map to several compositions:
+- cost → `prompt`, `stat`, `window` or `ranked`
+- how-to → `before-after`, `timeline`, `stack` or `checklist`
+
+Use this range to avoid repeats.
+
+### 4. Every image is about its article
+- Only facts that appear in the article: numbers, names, steps, comparisons.
+- Nothing invented and nothing generic.
+- It must be readable in 2 seconds at 350×250.
+
+### 5. Visual QA before delivering
+Check `master.png` and `card-350x250.png` for:
+- no wrapping, clipping or overlapping text
+- nothing outside the crop-safe zone
+- balanced vertical spacing, with no big empty card areas
+
+Then compare the batch side by side as a contact sheet, and confirm no two images look alike.
+
+### Approved reference
+The 10-composition sheet (rendered from the specs in `examples/`) is the quality bar. New images should look like they belong on that sheet.

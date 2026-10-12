@@ -5,6 +5,8 @@ description: Generate premium, article-specific blog featured images (1600x900 p
 
 # Blog featured images
 
+> **Approved behaviour** (user sign-off, 2026-10-13). The rules in this file and in the "APPROVED" section of `references/design-language.md` are the standard. Keep all of them when changing the skill.
+
 Make featured images that are **relatable to the article**, **understood in 2 seconds**, and **different from every other image in the same category**, while all of them look like one family.
 
 The full rulebook (colours, type, cards, "never" list) is in `references/design-language.md`. The JSON format for every composition is in `references/spec-format.md`. Read both before your first image in a session.
