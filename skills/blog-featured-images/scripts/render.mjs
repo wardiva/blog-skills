@@ -329,6 +329,31 @@ function cursorLayer() {
   const [x, y] = spec.cursor;
   return `<svg viewBox="0 0 64 80" width="96" height="120" style="position:absolute;left:${x}px;top:${y}px;filter:drop-shadow(0 8px 14px rgba(20,26,38,.25))"><path d="M6 4 L6 62 L20 49 L30 72 L40 67 L30 45 L50 45 Z" fill="#141A26" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>`;
 }
+// "before-after" variant "flow": a muted "before" card with an icon -> hand-drawn arrow -> a lifted "after" card with a blue icon tile
+// and checked items. Icons carry the meaning, so the text stays short.
+function baFlow() {
+  const B = spec.before, A = spec.after;
+  return `<style>
+.fb{position:absolute;left:240px;top:265px;width:370px;padding:44px 44px 48px;border-radius:26px;background:#F7F7F5;border:2px dashed #D9D6CF;box-sizing:border-box}
+.fb .fi{width:92px;height:92px;border-radius:22px;background:#ECEAE5;display:grid;place-items:center;font-size:54px;color:#8B857A}
+.fb b{display:block;margin-top:26px;font-size:40px;font-weight:500;color:#7C7468;letter-spacing:-.01em}
+.fb span{display:block;margin-top:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:28px;letter-spacing:.03em;color:#8F897D}
+.fa{position:absolute;left:880px;top:215px;width:480px;padding:52px 52px 56px;border-radius:30px;background:#fff;box-sizing:border-box;box-shadow:0 34px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.05)}
+.fa .fi{width:112px;height:112px;border-radius:28px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;font-size:66px;color:#fff;box-shadow:0 14px 28px rgba(10,95,216,.25)}
+.fa b{display:block;margin-top:28px;font-size:50px;font-weight:600;color:#2C5FAE;letter-spacing:-.02em}
+.fa ul{margin:22px 0 0;padding:0;list-style:none;display:grid;gap:16px}.fa li{display:flex;align-items:center;gap:14px;font-size:32px;color:#141A26}
+.fa li i{font-size:34px;color:#0A5FD8}
+svg.fl{position:absolute;inset:0;overflow:visible}
+.fleg{position:absolute;left:50%;transform:translateX(-50%);top:745px;display:flex;gap:44px;font-size:28px;font-weight:500}
+.fleg span{display:flex;align-items:center;gap:12px;white-space:nowrap}.fleg i{width:12px;height:12px;border-radius:50%}
+.fleg .f1{color:#7C7468}.fleg .f1 i{background:#B7B1A6}.fleg .f2{color:#2C5FAE}.fleg .f2 i{background:#27ACF2}
+</style>
+<div class="fb"><div class="fi"><i class="${esc(B.icon || 'ph ph-hard-drives')}"></i></div><b>${esc(B.label)}</b>${(B.lines || []).map((l) => `<span>${esc(l)}</span>`).join('')}</div>
+<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rgh"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
+<g filter="url(#rgh)" fill="none" stroke="#141A26" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M640 470 Q 745 380 838 452"/><path d="M808 428 L 842 455 L 804 476"/></g></svg>
+<div class="fa"><div class="fi"><i class="${esc(A.icon || 'ph-fill ph-cloud')}"></i></div><b>${esc(A.label)}</b><ul>${(A.items || []).map((t) => `<li><i class="ph-fill ph-check-circle"></i>${esc(t)}</li>`).join('')}</ul></div>
+${spec.legend ? `<div class="fleg"><span class="f1"><i></i>${esc(spec.legend[0])}</span><span class="f2"><i></i>${esc(spec.legend[1])}</span></div>` : ''}`;
+}
 const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked };
 
 
@@ -351,7 +376,7 @@ if (heading !== undefined && !args.includes('--force')) {
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
 // A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
-const LAYOUTS = { 'before-after': ['default'], versus: ['overlap', 'table'], prompt: ['default'], hub: ['default'], stack: ['default', 'split'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'] };
+const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table'], prompt: ['default'], hub: ['default'], stack: ['default', 'split'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'] };
 const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
 const VARIANT = spec.variant || LAYOUTS[MODE][0];
@@ -426,7 +451,7 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style></head><body>
 ${frameLayer()}
-${modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.label)}</div><div class="lbl l2">${esc(after.label)}</div>
+${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.label)}</div><div class="lbl l2">${esc(after.label)}</div>
 <div class="c c1"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900"><path d="M-30 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
 <div class="c c2"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>

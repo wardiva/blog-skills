@@ -33,7 +33,7 @@ Read `references/lessons.md` first. In short:
 ## The 10 compositions (`mode`)
 | mode | Shows | Best for |
 |---|---|---|
-| `before-after` (default) | raw card → clean card, plus a legend | how-to, migration, transformation |
+| `before-after` (default) | raw card → clean card, plus a legend (`flow`: icon card → hand-drawn arrow → lifted icon card) | how-to, migration, transformation; `flow` for "old way → new way" |
 | `versus` | `overlap` (default): two tilted overlapping cards, blue VS badge, legend. `table`: one comparison table card | X vs Y |
 | `prompt` | faded data panel, big headline, pill bar with chips | cost, pricing, FAQ, "what is" |
 | `hub` | blue centre tile, 6 tilted cards, hand-drawn arrows | best-of lists, integrations |
@@ -98,4 +98,4 @@ Show the images, ideally as one contact sheet for a batch. For each, list the mo
 ## Notes
 - Fonts (Inter) and icons (Phosphor) load from the internet at render time.
 - Variety history is site-wide per brand (`~/.blog-featured-images/history-<brand>.json`, or the `FEATURED_HISTORY_DIR` env var). Re-rendering the same `slug` replaces its entry. To drop a discarded test image, delete its entry from that file.
-- Layouts available today: 12 (versus: `overlap`, `table`; stack: `default`, `split`; every other mode has one). A category with more posts than layouts will cycle, always to the least-used layout. Add variants to lengthen the cycle.
+- Layouts available today: 13 (versus: `overlap`, `table`; stack: `default`, `split`; before-after: `default`, `flow`; every other mode has one). A category with more posts than layouts will cycle, always to the least-used layout. Add variants to lengthen the cycle.

@@ -50,6 +50,9 @@ QA failures in the test traced back to things the Orchestrator could have checke
 
 - **Less text is forced.** At most 15 words, max 7 per element, no sentences (renderer-enforced; 30 was still "text heavy"). The 7 Best ERP hub failed the user's eye with prices under every name: on a "best of" list the names are the story. Ask of every line: "is this the point of the article?" If not, cut it.
 
+- **Plain text cards get rejected even when they're short.** The cloud ERP stack/split card ("ERP on the vendor's servers" + You/Vendor columns) got "I DONT LIKE IT". The user then picked option C from an A/B/C sheet: icons + arrow + 2 checked items. **Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.** For any "I don't like it", answer with an A/B/C sheet at once (2–3 concepts, each ≤15 words). That turned a dead end into a pick in one round.
+- When the user asks "does it reflect the article and title?", answer with a table mapping every element on the image to the sentence it comes from.
+
 ## 4. Variety must be structural
 
 - Two images were "exact same" because the old check only knew one output folder. Now one site-wide history per brand counts every render (`~/.blog-featured-images/history-<brand>.json`).

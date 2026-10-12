@@ -194,7 +194,7 @@ Failed images go back to the Maker, for up to 3 rounds. Only images that passed 
 4. **Same topic:** articles on the same topic never share a mode.
 5. A failure prints "VARIETY CHECK FAILED" with the allowed layouts. Use one of them. Never `--force` (unless the user asks), and never render into another folder to dodge the check.
 
-**Cycle length = number of layouts (12 today: stack `split` was added when the cloud ERP stack image copied the EMR stack image).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
+**Cycle length = number of layouts (13 today: stack `split` and before-after `flow` were added for the cloud ERP article).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
 
 ---
 
