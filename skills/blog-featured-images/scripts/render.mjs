@@ -41,10 +41,15 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 // ---- logos: Brandfetch Logo API, hotlinked at render time (Brandfetch's guidelines: hotlink, don't re-host) ----
 // Needs a free client ID (brandfetch.com/developers): env BRANDFETCH_CLIENT_ID or "brandfetchClientId" in the brand file.
 // Without one, previews fall back to Google's favicon service. One treatment per image ("logoStyle") keeps logos on-vibe.
-const BF_CLIENT = process.env.BRANDFETCH_CLIENT_ID || brand.brandfetchClientId || '';
-const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.logoStyle : 'mono';
-const logoSrc = (d) => BF_CLIENT ? `https://cdn.brandfetch.io/${encodeURIComponent(d)}/w/128/h/128/icon?c=${encodeURIComponent(BF_CLIENT)}` : `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128`;
-const logo = (d, size = 48) => d ? `<span class="lg lg-${LOGO_STYLE}" style="width:${size}px;height:${size}px"><img src="${logoSrc(d)}" alt=""></span>` : '';
+const LOCAL_CFG = (() => { try { return JSON.parse(fs.readFileSync(path.join(os.homedir(), '.blog-featured-images', 'config.json'), 'utf8')); } catch { return {}; } })();
+const BF_CLIENT = process.env.BRANDFETCH_CLIENT_ID || LOCAL_CFG.brandfetchClientId || brand.brandfetchClientId || '';
+const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.logoStyle : 'color';   // user picked A (original colours)
+// Brandfetch: the clean "symbol" (mark without text) first, then its square "icon", then a lettermark. Google favicons only without a client ID.
+const bf = (d, type, fb) => `https://cdn.brandfetch.io/${encodeURIComponent(d)}/w/256/h/256/fallback/${fb}/type/${type}?c=${encodeURIComponent(BF_CLIENT)}`;
+const logoImg = (d) => BF_CLIENT
+  ? `<img src="${bf(d, 'symbol', '404')}" onerror="this.onerror=null;this.src='${bf(d, 'icon', 'lettermark')}'" alt="">`
+  : `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128" alt="">`;
+const logo = (d, size = 48) => d ? `<span class="lg lg-${LOGO_STYLE}" style="width:${size}px;height:${size}px">${logoImg(d)}</span>` : '';
 const LOGO_CSS = `.lg{display:inline-grid;place-items:center;flex:none;border-radius:14px;overflow:hidden;box-sizing:border-box}.lg img{width:100%;height:100%;object-fit:contain;display:block}
 .lg-color{background:#fff;padding:7px;box-shadow:0 0 0 1px rgba(20,26,38,.08)}
 .lg-mono{background:#F1F3F6;padding:9px}.lg-mono img{filter:grayscale(1) contrast(1.15);opacity:.8;mix-blend-mode:multiply}
@@ -75,10 +80,10 @@ function versus() {
 .tvs{position:absolute;z-index:2;left:${230 + 260 + 440 - 42}px;top:${top + 150 - 42}px;width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;letter-spacing:.02em;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
 .vleg{left:230px;top:${top + 150 + n * RH + 46}px}
 </style>
-<div class="tcard"><div class="th"><span></span><span class="h1c"><b>${esc(L.label)}</b><em>${esc(L.heading)}</em></span><span class="h2c"><b>${esc(R.label)}</b><em>${esc(R.heading)}</em></span></div>${rows}</div>
+<div class="tcard"><div class="th"><span></span><span class="h1c"><b>${logo(L.logo, 46)}${esc(L.label)}</b><em>${esc(L.heading)}</em></span><span class="h2c"><b>${logo(R.logo, 46)}${esc(R.label)}</b><em>${esc(R.heading)}</em></span></div>${rows}</div>
 <div class="tvs">VS</div>${legend}`;
   }
-  const card = (d, x, rot, cls, extra = '') => `<div class="ovl ${cls}" style="left:${x}px;transform:rotate(${rot}deg)"><div class="olb">${esc(d.label)}</div><div class="oc">${extra}<h3>${esc(d.heading)}</h3><ul>${d.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div></div>`;
+  const card = (d, x, rot, cls, extra = '') => `<div class="ovl ${cls}" style="left:${x}px;transform:rotate(${rot}deg)"><div class="olb">${logo(d.logo, 50)}${esc(d.label)}</div><div class="oc">${extra}<h3>${esc(d.heading)}</h3><ul>${d.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div></div>`;
   return `<style>
 .ovl{position:absolute;top:170px;width:560px}
 .olb{font-size:46px;font-weight:500;letter-spacing:-.02em;margin:0 0 22px 8px}.o1 .olb{color:#7C7468}.o2 .olb{color:#2C5FAE}
@@ -168,7 +173,7 @@ function stack() {
 // "window" (Granola app-window shots): a whole macOS-style window, list pane + detail pane, real text.
 function appwin() {
   const W = spec.window || {}, L = spec.list, D = spec.detail;
-  const rows = L.rows.slice(0, 5).map((r) => `<div class="wr"><span class="wav">${esc((r.title || '?').trim()[0])}</span><div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
+  const rows = L.rows.slice(0, 5).map((r) => `<div class="wr">${r.logo ? logo(r.logo, 46) : `<span class="wav">${esc((r.title || '?').trim()[0])}</span>`}<div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
   return `<style>
 .win{position:absolute;left:${spec.bleed ? 230 : 210}px;top:${spec.bleed ? 150 : 95}px;width:${spec.bleed ? 1300 : 1180}px;height:${spec.bleed ? 820 : 720}px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
 .wt{height:66px;display:flex;align-items:center;gap:10px;padding:0 26px;border-bottom:1px solid #EEF0F4;background:#FAFBFC}
@@ -258,7 +263,7 @@ function stat() {
 function ranked() {
   const max = Math.max(...spec.rows.map((r) => r.pct));
   const win = spec.winner ?? 0;
-  const rows = spec.rows.slice(0, 6).map((r, i) => `<div class="rr${i === win ? ' w' : ''}"><span class="rn">${String(i + 1).padStart(2, '0')}</span><b>${esc(r.name)}</b><i><i style="width:${Math.max(4, Math.round((r.pct / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
+  const rows = spec.rows.slice(0, 6).map((r, i) => `<div class="rr${i === win ? ' w' : ''}"><span class="rn">${String(i + 1).padStart(2, '0')}</span><b>${logo(r.logo, 40)}${esc(r.name)}</b><i><i style="width:${Math.max(4, Math.round((r.pct / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
   return `<style>
 .rh{position:absolute;left:210px;top:120px;font-size:56px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
 .rs{position:absolute;left:212px;top:196px;font-size:28px;color:#7F8794}
@@ -366,6 +371,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 <style>
 ${LOGO_CSS}
+.th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}
 *{box-sizing:border-box}html,body{margin:0;width:1600px;height:900px;overflow:hidden}
 body{position:relative;font-family:Inter,system-ui,sans-serif;color:#141A26;background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}
 body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}
@@ -417,7 +423,7 @@ fs.writeFileSync(file, out);
 const raw = path.join(outDir, 'raw.png');
 const PROFILE = path.join(os.tmpdir(), `bfi-chrome-${process.pid}`); // one profile per render, so parallel renders never collide
 execFileSync(findChrome(), ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1', '--window-size=1600,900',
-  '--virtual-time-budget=8000', `--user-data-dir=${PROFILE}`, `--screenshot=${raw}`, pathToFileURL(file).href], { stdio: 'ignore' });
+  '--virtual-time-budget=8000', `--user-data-dir=${PROFILE}`, '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36', `--screenshot=${raw}`, pathToFileURL(file).href], { stdio: 'ignore' });
 fs.rmSync(PROFILE, { recursive: true, force: true });
 const master = await sharp(raw).png().toBuffer();
 fs.writeFileSync(path.join(outDir, 'master.png'), master);

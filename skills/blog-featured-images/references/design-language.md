@@ -217,6 +217,14 @@ The user approved the plain Odoo vs Sage Intacct window (4 rows, a question, one
 - **Hub cards are names only** by default. Add `"showSubs": true` only when the second line is the article's point.
 - Cut in this order: subs that aren't the point → legends that repeat a row → extra bullets → subtitles.
 
+### Logos (user rule, 2026-10-13: "use Brandfetch… logos should always match the vibe")
+- **Where:** product names in hub cards, versus labels and table headers, window list rows (replacing the letter avatar), and ranked rows. Only where a real product is named; never decorative.
+- **Source:** Brandfetch Logo API, **hotlinked at render time** (its guidelines forbid downloading or re-hosting). The renderer tries the clean **symbol** (mark without text) first, then the square **icon**, then a lettermark. Google favicons are only a fallback when no client ID is set, because they're low-res.
+- **Client ID:** free from brandfetch.com/developers. Keep it **local** in `~/.blog-featured-images/config.json` (`{"brandfetchClientId": "…"}`) or the `BRANDFETCH_CLIENT_ID` env var. Never commit it to the shared repo.
+- **Style (user picked A):** `logoStyle: "color"` (default): original brand colours in a small white rounded tile (46–52px) with a hairline border, beside the name. One style per image, so logos read as one set. `mono` (grey) and `tint` (soft blue) exist for images where colour logos would compete.
+- **Vibe check:** logos stay small and secondary. The hero (blue tile, VS badge, big number) remains the focal point. If a logo is an unreadable wordmark squeezed into a square, it's still acceptable as a brand-colour tile, but never enlarge it.
+- Logos add no words to the text budget.
+
 ## Typography balance (user rule, 2026-10-13: "font should look visually balanced")
 
 Text supports the hero; it never shouts over it. Sizes are for the 1600×900 master.

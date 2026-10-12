@@ -7,18 +7,18 @@
   "heading": "Business Central",
   "items": [
    "$80 per user / month",
-   "Paid per seat",
-   "Teams and Outlook"
-  ]
+   "Paid per seat"
+  ],
+  "logo": "microsoft.com"
  },
  "right": {
   "label": "Acumatica",
   "heading": "Cloud ERP",
   "items": [
    "From $6,396 per year",
-   "Unlimited users",
-   "Low-code, open APIs"
-  ]
+   "Unlimited users"
+  ],
+  "logo": "acumatica.com"
  },
  "legend": [
   "Priced per seat",
