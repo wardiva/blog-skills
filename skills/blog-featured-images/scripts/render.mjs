@@ -41,31 +41,45 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 const before = spec.before, after = spec.after;
 
-// "versus" (split-field poster): two colour fields meeting at a seam with a big VS badge; each side shows the
-// product, its plan, ONE hero fact in a white card and two supporting facts. Structurally unlike before-after.
+// "versus": in the approved card language, structurally unlike before-after.
+//   variant "table" (default): ONE comparison card, products as column headers, matched rows, the right column tinted.
+//   variant "overlap": two cards tilted toward each other, overlapping at the centre with the vs chip on the overlap.
 function versus() {
-  const side = (d, cx, tag, cls) => `<div class="vside ${cls}" style="left:${cx - 260}px">
-<span class="vtag">${esc(tag)}</span><div class="vname">${esc(d.label)}</div><div class="vsub">${esc(d.heading)}</div>
-<div class="vhero">${esc(d.items[0])}</div>
-<div class="vfacts">${d.items.slice(1, 3).map((t) => `<span><i class="ph-bold ph-check"></i>${esc(t)}</span>`).join('')}</div></div>`;
-  return `<style>
-.vl{position:absolute;left:0;top:0;width:800px;height:900px;background:#F3F1EC}
-.vr{position:absolute;left:800px;top:0;width:800px;height:900px;background:linear-gradient(160deg,#E8F3FE 0%,#D2E8FB 60%,#C4E1FA 100%);overflow:hidden}
-.vr:after{content:"";position:absolute;inset:-100px;filter:blur(70px);background:radial-gradient(45% 50% at 70% 25%,rgba(39,172,242,.35),transparent 70%)}
-.vside{position:absolute;top:185px;width:520px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.vtag{font-size:20px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7F8794;background:rgba(255,255,255,.7);border-radius:99px;padding:9px 18px}
-.vname{margin-top:26px;font-size:64px;font-weight:600;letter-spacing:-.03em;line-height:1.05;color:#141A26;white-space:nowrap}
-.vsub{margin-top:10px;font-size:28px;color:#7F8794}
-.vhero{margin-top:34px;width:460px;min-height:150px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:24px;padding:28px 30px;font-size:40px;font-weight:600;line-height:1.18;letter-spacing:-.02em;color:#141A26;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
-.vfacts{margin-top:28px;display:grid;gap:12px}.vfacts span{display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;color:#5D6675}
-.vfacts i{font-size:22px;color:#9AA3B2}
-.vR .vtag{color:#0A5FD8}.vR .vname{color:#0E2A5C}.vR .vhero{color:#0A5FD8}.vR .vfacts i{color:#0A5FD8}
-.vbadge{position:absolute;left:744px;top:418px;width:112px;height:112px;border-radius:50%;background:#141A26;color:#fff;display:grid;place-items:center;font-size:34px;font-weight:600;letter-spacing:.02em;box-shadow:0 16px 36px rgba(20,26,38,.25),0 0 0 10px rgba(255,255,255,.6)}
+  const L = spec.left, R = spec.right, dims = spec.dimensions || [];
+  const legend = `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`;
+  if (spec.variant === 'table') {
+    const n = Math.max(L.items.length, R.items.length);
+    const RH = 104, top = Math.round((900 - (150 + n * RH + 46 + 40)) / 2);
+    const rows = Array.from({ length: n }, (_, i) => `<div class="tr"><span class="td0">${esc(dims[i] || '')}</span><span class="td1${i === 0 ? ' a' : ''}">${esc(L.items[i] || '')}</span><span class="td2${i === 0 ? ' a' : ''}">${esc(R.items[i] || '')}</span></div>`).join('');
+    return `<style>
+.tcard{position:absolute;left:230px;top:${top}px;width:1140px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
+.tcol{position:absolute;top:0;bottom:0;left:${230 + 260 + 440}px}
+.th,.tr{display:grid;grid-template-columns:260px 440px 440px;align-items:center}
+.th{height:150px;border-bottom:1px solid #EEF0F4}.th b{display:block;font-size:44px;font-weight:600;letter-spacing:-.02em}.th em{display:block;margin-top:6px;font-style:normal;font-size:24px;color:#8A93A5}
+.th .h1c b{color:#7C7468}.th .h2c b{color:#2C5FAE}
+.th>span,.tr>span{padding:0 36px}.th .h2c,.tr .td2{background:#F2F8FE;height:100%;display:flex;flex-direction:column;justify-content:center}
+.tr{height:${RH}px;border-bottom:1px solid #F1F2F5}.tr:last-child{border-bottom:0}
+.td0{font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}
+.td1,.td2{font-size:32px;color:#5D6675;line-height:1.25}.td1.a{color:#141A26;font-weight:500}.td2.a{color:#0A5FD8;font-weight:600}
+.tvs{position:absolute;left:${230 + 260 + 440 - 30}px;top:${top + 75 - 30}px;width:60px;height:60px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:21px;font-weight:500;color:#5D6675;box-shadow:0 10px 24px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.06)}
+.vleg{left:230px;top:${top + 150 + n * RH + 46}px}
 </style>
-<div class="vl"></div><div class="vr"></div>
-${side(spec.left, 505, spec.legend[0], 'vL')}${side(spec.right, 1095, spec.legend[1], 'vR')}
-<div class="vbadge">VS</div>`;
+<div class="tcard"><div class="th"><span></span><span class="h1c"><b>${esc(L.label)}</b><em>${esc(L.heading)}</em></span><span class="h2c"><b>${esc(R.label)}</b><em>${esc(R.heading)}</em></span></div>${rows}</div>
+<div class="tvs">vs</div>${legend}`;
+  }
+  const card = (d, x, rot, cls, extra = '') => `<div class="ovl ${cls}" style="left:${x}px;transform:rotate(${rot}deg)"><div class="olb">${esc(d.label)}</div><div class="oc">${extra}<h3>${esc(d.heading)}</h3><ul>${d.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div></div>`;
+  return `<style>
+.ovl{position:absolute;top:170px;width:560px}
+.olb{font-size:46px;font-weight:500;letter-spacing:-.02em;margin:0 0 22px 8px}.o1 .olb{color:#7C7468}.o2 .olb{color:#2C5FAE}
+.oc{position:relative;background:#fff;border-radius:24px;padding:42px 44px;min-height:0;box-shadow:0 30px 60px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
+.oc h3{margin:0 0 20px;font-size:30px;font-weight:500;color:#5D6675}.oc ul{margin:0;padding:0 0 0 28px;display:grid;gap:16px;font-size:32px;line-height:1.3;color:#7F8794}.oc li.a{color:#141A26}
+.o2 .oc li.a{color:#0A5FD8;font-weight:500}.o2{z-index:2}
+.ovs{position:absolute;left:-50px;bottom:-64px;width:96px;height:96px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:30px;font-weight:600;letter-spacing:.02em;transform:rotate(-3deg);box-shadow:0 0 0 7px #fff,0 18px 34px rgba(10,95,216,.30)}
+.vleg{left:50%;transform:translateX(-50%);top:700px}
+</style>
+${card(L, 250, -3, 'o1')}${card(R, 790, 3, 'o2', '<div class="ovs">VS</div>')}${legend}`;
 }
+
 // "hub" mode (Granola integrations): a blue centre tile, tilted white cards around it, hand-drawn arrows. Flat warm background.
 function hub() {
   const slots = [[215, 100, -5], [200, 360, 4], [245, 615, -3], [1095, 90, 4], [1105, 355, -4], [1085, 620, 3]];

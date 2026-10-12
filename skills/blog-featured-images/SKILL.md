@@ -21,7 +21,7 @@ The full rulebook (colours, type, cards, "never" list) is in `references/design-
 | mode | Shows | Best for |
 |---|---|---|
 | `before-after` (default) | raw card → clean card, plus a legend | how-to, migration, transformation |
-| `versus` | split colour field, big VS badge on the seam, one hero fact per side | X vs Y |
+| `versus` | two tilted overlapping cards, blue VS badge on the seam, legend | X vs Y |
 | `prompt` | faded data panel, big headline, pill bar with chips | cost, pricing, FAQ, "what is" |
 | `hub` | blue centre tile, 6 tilted cards, hand-drawn arrows | best-of lists, integrations |
 | `stack` | one takeaway card over offset cards | guides with one key rule or warning |

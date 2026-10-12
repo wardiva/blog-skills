@@ -33,13 +33,16 @@ One JSON file per article. Top-level fields shared by all modes:
 ## Versus (`"mode": "versus"`; X vs Y)
 ```json
 { "brand": "medsoftwarehub", "mode": "versus",
+  "dimensions": ["Pricing", "Users", "Strength"],
   "left":  { "label": "Dynamics 365", "heading": "Business Central",
-             "items": ["$80 per user / month", "Native Teams and Outlook", "Up to 200 companies"] },
+             "items": ["$80 per user / month", "Paid per seat", "Teams and Outlook"] },
   "right": { "label": "Acumatica", "heading": "Cloud ERP",
-             "items": ["Unlimited users, usage-based", "From $6,396 per year", "Low-code, open APIs"] },
+             "items": ["From $6,396 per year", "Unlimited users", "Low-code, open APIs"] },
   "legend": ["Priced per seat", "Priced by transactions"] }
 ```
-- Renders as a **split colour field** with a VS badge. `label` becomes the big product name and `heading` the plan line. `items[0]` is the **hero fact** shown large in a white card (keep it under ~28 characters); `items[1..2]` become checked facts. `legend[0]` and `legend[1]` become the tag pill above each side. Use the same dimensions on both sides, in the same order.
+- Renders as **two tilted, overlapping cards** with a blue **VS** badge on the seam. `label` is the product name above each card, `heading` the plan line, and `items` 2–3 facts (up to ~22 characters each so nothing wraps). `items[0]` is the key fact (dark on the left, blue on the right). Use the same dimensions on both sides, in the same order.
+- `legend[0]` and `legend[1]` name the key difference.
+- Optional `"variant": "table"` renders one comparison table card instead; `dimensions` become its row labels.
 
 ## Prompt (`"mode": "prompt"`; cost, pricing, "what is", FAQ)
 ```json

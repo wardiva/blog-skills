@@ -47,7 +47,7 @@ Rendered by `scripts/render.mjs`, selected with `"mode"` in the article spec.
 | Archetype | `mode` | Best for | What it shows |
 |---|---|---|---|
 | **Before → After** | *(default)* | How-to, migration, "without losing…", transformations | A raw "before" card with a caret → dashed connector → a clean "after" card with heading and bullets, plus a 2-dot legend |
-| **Versus** | `versus` | "X vs Y" comparisons | Two equal cards (name, plan, 3 key facts) with a "vs" chip, plus a legend naming the key difference |
+| **Versus** | `versus` | "X vs Y" comparisons | Two **overlapping cards tilted toward each other** (−3° / +3°, right card on top), product name above each, a blue-gradient **VS badge** on the seam, plus a legend naming the key difference |
 | **Prompt** | `prompt` | Cost, pricing, "what is", FAQ-style articles | A faded app panel listing the article's figures, a big headline, and a pill input bar with chips and a blue send button |
 | **Hub** | `hub` | "Best X" listicles, integrations, ecosystems | A blue center tile (Phosphor icon), six tilted white cards (name + one fact), hand-drawn arrows, flat warm background |
 | **Stack** | `stack` | Guides with one key rule or warning | One front card holding the takeaway over 2 offset cards |
@@ -221,7 +221,7 @@ Two compositions that share the same **skeleton** (the arrangement of blocks) re
 | mode | Skeleton (what you see at a glance) |
 |---|---|
 | before-after | small raw card → dashed connector → big clean card, legend below |
-| versus | **split colour field** (warm left / blue right) with a big **VS** badge on the seam; each side has a name, one hero card and checked facts |
+| versus | **two tilted, overlapping cards** (−3° / +3°, right on top) with a 96px blue-gradient **VS** badge (white text, white ring) on the bottom of the seam. Differs from before-after by tilt, overlap and the badge. Optional `"variant":"table"` = one comparison table card |
 | prompt | faded panel bleeding off the top, centred headline, pill input bar |
 | hub | centre tile with 6 tilted cards around it and hand-drawn arrows |
 | stack | wide takeaway card with 2 cards peeking above it |
@@ -232,3 +232,8 @@ Two compositions that share the same **skeleton** (the arrangement of blocks) re
 | ranked | headline top-left, horizontal bar list |
 
 **When adding or changing a composition:** squint at its 350×250 card next to every other mode. If two share a skeleton, redesign one (different field split, scale, depth or orientation). Never ship two modes that differ only in their text.
+
+### Versus badge rule (approved 2026-10-13)
+- The "vs" is a **focal badge, not a small grey chip**: 96px circle, blue gradient `#3B86F0 → #0A5FD8`, white "VS" at 30px/600, a 7px white ring and a soft blue shadow.
+- It sits on the **bottom of the seam** where the two cards overlap and stays upright (counter-rotated). It must never touch text or a bullet.
+- Rejected: the split colour field version (did not match the design language) and the small 60px grey chip (too weak, covered a bullet).
