@@ -9,7 +9,7 @@
  },
  "list": {
   "icon": "ph ph-currency-dollar",
-  "heading": "EMR pricing",
+  "heading": "EMR Software Cost",
   "sub": "Per provider, per month",
   "rows": [
    {
@@ -52,5 +52,6 @@
  "cursor": [
   830,
   470
- ]
+ ],
+ "articleTitle": "EMR Software Cost 2026: Pricing by Practice Size"
 }

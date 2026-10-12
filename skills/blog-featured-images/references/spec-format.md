@@ -4,6 +4,7 @@ One JSON file per article. Top-level fields shared by all modes:
 
 | Field | Required | Meaning |
 |---|---|---|
+| `articleTitle` | yes | The blog post's real title (H1). The image heading must reuse its words, shorter. See "Heading rule" in design-language.md |
 | `brand` | no | Brand file name in `brands/` (e.g. `"medsoftwarehub"`). Defaults to `default` |
 | `category` | yes | The site's blog category. The variety ledger never repeats a recent mode within it |
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They can never share a mode |
@@ -47,7 +48,7 @@ One JSON file per article. Top-level fields shared by all modes:
     { "title": "Solo provider", "sub": "$15,000 to $30,000" },
     { "title": "2 to 5 providers", "sub": "$40,000 to $150,000" },
     { "title": "26+ providers", "sub": "$100,000 to $500,000+" } ] },
-  "headline": "What EMR really costs",
+  "headline": "EMR Cost by Practice Size",
   "placeholder": "Your practice size",
   "chips": ["Solo", "2 to 5 providers"] }
 ```

@@ -1,5 +1,42 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "ranked", "slug": "emr-monthly-price-ranked",
-  "headline": "Cheapest EMRs per provider", "sub": "Published monthly prices, 2026", "winner": 0,
-  "rows": [ { "name": "DrChrono", "value": "$30/mo", "pct": 30 }, { "name": "SimplePractice", "value": "$49+/mo", "pct": 49 },
-            { "name": "RXNT", "value": "$118+/mo", "pct": 118 }, { "name": "Practice Fusion", "value": "$199/mo", "pct": 199 },
-            { "name": "eClinicalWorks", "value": "$449/mo", "pct": 449 }, { "name": "NextGen (est.)", "value": "$800/mo", "pct": 800 } ] }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "ranked",
+ "slug": "emr-monthly-price-ranked",
+ "headline": "EMR Software Pricing, Ranked",
+ "sub": "Published monthly prices, 2026",
+ "winner": 0,
+ "rows": [
+  {
+   "name": "DrChrono",
+   "value": "$30/mo",
+   "pct": 30
+  },
+  {
+   "name": "SimplePractice",
+   "value": "$49+/mo",
+   "pct": 49
+  },
+  {
+   "name": "RXNT",
+   "value": "$118+/mo",
+   "pct": 118
+  },
+  {
+   "name": "Practice Fusion",
+   "value": "$199/mo",
+   "pct": 199
+  },
+  {
+   "name": "eClinicalWorks",
+   "value": "$449/mo",
+   "pct": 449
+  },
+  {
+   "name": "NextGen (est.)",
+   "value": "$800/mo",
+   "pct": 800
+  }
+ ],
+ "articleTitle": "EMR Software Cost 2026: Pricing by Practice Size"
+}

@@ -1,8 +1,29 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "prompt",
-  "panel": { "label": "Year-one EMR cost", "rows": [
-    { "title": "Solo provider", "sub": "$15,000 to $30,000" },
-    { "title": "2 to 5 providers", "sub": "$40,000 to $150,000" },
-    { "title": "26+ providers", "sub": "$100,000 to $500,000+" } ] },
-  "headline": "What EMR really costs",
-  "placeholder": "Your practice size",
-  "chips": ["Solo", "2 to 5 providers"] }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "prompt",
+ "panel": {
+  "label": "Year-one EMR cost",
+  "rows": [
+   {
+    "title": "Solo provider",
+    "sub": "$15,000 to $30,000"
+   },
+   {
+    "title": "2 to 5 providers",
+    "sub": "$40,000 to $150,000"
+   },
+   {
+    "title": "26+ providers",
+    "sub": "$100,000 to $500,000+"
+   }
+  ]
+ },
+ "headline": "EMR Cost by Practice Size",
+ "placeholder": "Your practice size",
+ "chips": [
+  "Solo",
+  "2 to 5 providers"
+ ],
+ "articleTitle": "EMR Software Cost 2026: Pricing by Practice Size"
+}

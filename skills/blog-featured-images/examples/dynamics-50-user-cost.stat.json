@@ -1,5 +1,26 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "stat", "slug": "dynamics-50-user-cost",
-  "value": "$48,000", "valueSize": 180, "caption": "a year to license 50 users on Business Central",
-  "sub": "Before implementation, which adds $25,000 to $80,000",
-  "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "value": "$48,000/yr", "pct": 48000 },
-                                                   { "name": "Acumatica base", "value": "$6,396/yr", "pct": 6396 } ] } }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "stat",
+ "slug": "dynamics-50-user-cost",
+ "value": "$48,000",
+ "valueSize": 180,
+ "caption": "a year for 50 Dynamics 365 users",
+ "sub": "Before implementation, which adds $25,000 to $80,000",
+ "card": {
+  "heading": "Starting price",
+  "rows": [
+   {
+    "name": "Dynamics 365",
+    "value": "$48,000/yr",
+    "pct": 48000
+   },
+   {
+    "name": "Acumatica base",
+    "value": "$6,396/yr",
+    "pct": 6396
+   }
+  ]
+ },
+ "articleTitle": "Microsoft Dynamics 365 vs Acumatica for Growing Businesses (2026)"
+}

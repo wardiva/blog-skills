@@ -1,6 +1,28 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "versus",
-  "left":  { "label": "Dynamics 365", "heading": "Business Central",
-             "items": ["$80 per user / month", "Native Teams and Outlook", "Up to 200 companies"] },
-  "right": { "label": "Acumatica", "heading": "Cloud ERP",
-             "items": ["Unlimited users, usage-based", "From $6,396 per year", "Low-code, open APIs"] },
-  "legend": ["Priced per seat", "Priced by transactions"] }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "versus",
+ "left": {
+  "label": "Dynamics 365",
+  "heading": "Business Central",
+  "items": [
+   "$80 per user / month",
+   "Native Teams and Outlook",
+   "Up to 200 companies"
+  ]
+ },
+ "right": {
+  "label": "Acumatica",
+  "heading": "Cloud ERP",
+  "items": [
+   "Unlimited users, usage-based",
+   "From $6,396 per year",
+   "Low-code, open APIs"
+  ]
+ },
+ "legend": [
+  "Priced per seat",
+  "Priced by transactions"
+ ],
+ "articleTitle": "Microsoft Dynamics 365 vs Acumatica for Growing Businesses (2026)"
+}

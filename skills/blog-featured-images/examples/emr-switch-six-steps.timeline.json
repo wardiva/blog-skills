@@ -1,5 +1,40 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "timeline", "slug": "emr-switch-six-steps",
-  "headline": "Six steps to a safe EMR switch", "sub": "No record leaves the old system until it is validated",
-  "steps": [ { "label": "Audit", "sub": "Count records" }, { "label": "Sign + BAA", "sub": "New vendor" }, { "label": "Extract", "sub": "CCDA + CSV" },
-             { "label": "Validate", "sub": "Spot-check charts" }, { "label": "Parallel run", "sub": "Read-only legacy" }, { "label": "Go live", "sub": "Decommission" } ],
-  "highlight": 3, "callout": { "title": "6 to 12 weeks", "text": "Typical migration, planning to completion" } }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "timeline",
+ "slug": "emr-switch-six-steps",
+ "headline": "Switch EMR Vendors Without Losing Data",
+ "sub": "No record leaves the old system until it is validated",
+ "steps": [
+  {
+   "label": "Audit",
+   "sub": "Count records"
+  },
+  {
+   "label": "Sign + BAA",
+   "sub": "New vendor"
+  },
+  {
+   "label": "Extract",
+   "sub": "CCDA + CSV"
+  },
+  {
+   "label": "Validate",
+   "sub": "Spot-check charts"
+  },
+  {
+   "label": "Parallel run",
+   "sub": "Read-only legacy"
+  },
+  {
+   "label": "Go live",
+   "sub": "Decommission"
+  }
+ ],
+ "highlight": 3,
+ "callout": {
+  "title": "6 to 12 weeks",
+  "text": "Typical migration, planning to completion"
+ },
+ "articleTitle": "How to Switch EMR Vendors Without Losing Patient Data"
+}

@@ -257,6 +257,23 @@ function cursorLayer() {
 }
 const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked };
 
+
+// ---- heading must mirror the blog title: same key words, same meaning, just shorter ----
+const STOP = new Set('a an the and or of for to in on at by with your you our is are be how what why when which who vs versus its it this that from into without about best top guide per 2024 2025 2026 2027'.split(' '));
+const stem = (w) => w.endsWith('sses') ? w.slice(0, -2) : w.endsWith('ss') ? w : w.length > 4 && /(ches|shes|xes|zes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w;
+const words = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9+ ]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w)).map(stem);
+const HEADING = { prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
+const heading = HEADING[spec.mode || 'before-after'];
+if (heading !== undefined && !args.includes('--force')) {
+  if (!spec.articleTitle) { console.error('HEADING CHECK FAILED: add "articleTitle" (the blog post\'s real title) to the spec. The image heading must reuse its words.'); process.exit(3); }
+  const tw = new Set(words(spec.articleTitle)), hw = words(heading), shared = hw.filter((w) => tw.has(w));
+  const need = spec.mode === 'stat' ? shared.length >= 2 : shared.length >= 2 && shared.length / hw.length >= 0.75;
+  if (!need) {
+    const extra = hw.filter((w) => !tw.has(w));
+    console.error(`HEADING CHECK FAILED: the image heading must use the blog title's own words (shorter, same meaning).\n  Blog title : ${spec.articleTitle}\n  Heading    : ${heading}\n  Not in title: ${extra.join(', ') || '(too few shared words)'}\nRewrite the heading from the title's key words, e.g. drop the year and filler, keep the subject and angle.`);
+    process.exit(3);
+  }
+}
 // ---- variety: backgrounds rotate, and a ledger blocks a category from repeating a recent composition ----
 const MODE = spec.mode || 'before-after';
 const ALL_MODES = ['before-after', 'versus', 'prompt', 'hub', 'stack', 'window', 'timeline', 'checklist', 'stat', 'ranked'];

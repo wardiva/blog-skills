@@ -184,3 +184,23 @@ Text supports the hero; it never shouts over it. Sizes are for the 1600×900 mas
 - Headlines sit with breathing room above and below (≥ 40px) and never crowd neighbouring elements.
 - Text width is under about 65% of its container. If a line runs edge to edge, the size is too big.
 - At 350×250, the headline should read clearly but not fill the card. If it is the first and only thing you notice, it is too big.
+
+---
+
+## Heading rule: mirror the blog title (user rule, 2026-10-13)
+
+The heading on the image must use **the blog title's own words and meaning, just shorter**. No creative rewording, puns or new angles.
+
+**How to shorten a title:**
+1. Keep the **subject** (EMR, ERP, Dynamics 365) and the **angle** (cost, switch, best, vs, by practice size).
+2. Drop the year, filler words, "How to", "Complete guide", and brackets.
+3. Keep at least 75% of the heading's key words straight from the title.
+
+| Blog title | Good image heading | Bad (rewritten) |
+|---|---|---|
+| EMR Software Cost 2026: Pricing by Practice Size | EMR Cost by Practice Size | What EMR really costs |
+| How to Switch EMR Vendors Without Losing Patient Data | Switch EMR Vendors Without Losing Data | Every chart makes the move |
+| 7 Best ERP Software for Small Businesses in 2026 | Best ERP for Small Business | Seven ERPs. One right fit. |
+| Microsoft Dynamics 365 vs Acumatica for Growing Businesses | Dynamics 365 vs Acumatica | Seat vs usage |
+
+**Enforced:** every spec carries `"articleTitle"` (the real H1). The renderer fails with **"HEADING CHECK FAILED"** when the image heading (`headline` in prompt, timeline or ranked; `title` in stack or checklist; `list.heading` in window; `caption` in stat) uses too few of the title's words. Compositions without a heading (before-after, versus, hub) must use the title's key terms in their labels.

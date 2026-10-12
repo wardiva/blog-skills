@@ -1,4 +1,14 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "stack", "slug": "emr-switch-before-you-sign",
-  "icon": "ph ph-shield-check", "title": "Before you switch EMR vendors",
-  "lead": "Extract and **validate every record** before you cut off the old system.",
-  "items": ["Keep read-only legacy access for 6 to 12 months", "Scanned documents may not transfer cleanly"] }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "mode": "stack",
+ "slug": "emr-switch-before-you-sign",
+ "icon": "ph ph-shield-check",
+ "title": "Switch EMR vendors without losing data",
+ "lead": "Extract and **validate every record** before you cut off the old system.",
+ "items": [
+  "Keep read-only legacy access for 6 to 12 months",
+  "Scanned documents may not transfer cleanly"
+ ],
+ "articleTitle": "How to Switch EMR Vendors Without Losing Patient Data"
+}

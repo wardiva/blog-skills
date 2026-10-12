@@ -11,7 +11,8 @@ Make featured images that are **relatable to the article**, **understood in 2 se
 
 The full rulebook (colours, type, cards, "never" list) is in `references/design-language.md`. The JSON format for every composition is in `references/spec-format.md`. Read both before your first image in a session.
 
-## The three hard rules
+## The hard rules
+0. **The heading mirrors the blog title.** Use the title's own words and meaning, just shorter (drop the year and filler). Never reword creatively. Set `"articleTitle"` in every spec; the renderer blocks headings that drift ("HEADING CHECK FAILED").
 1. **Relatable.** Read the full article. Use only its own facts (numbers, names, steps, comparisons). Never invent figures or use generic concepts.
 2. **Easy to understand.** One idea, one focal point, short real words. Check it at 350×250.
 3. **Different every time.** Never give two posts in the same category, or two articles on the same topic, the same composition. The renderer enforces this.
@@ -47,7 +48,7 @@ Write a short plan table: article → mode → background → key facts. Rules:
 Show the plan to the user when doing more than 3 images.
 
 ### 3. Write the specs
-One `<slug>.json` per article, following `references/spec-format.md`. Always set `brand`, `category`, `slug`, and `topic` when a topic is shared. Keep text short so nothing wraps. Look at `examples/` for one approved spec per mode.
+One `<slug>.json` per article, following `references/spec-format.md`. Always set `articleTitle` (the real H1), `brand`, `category`, `slug`, and `topic` when a topic is shared. Keep text short so nothing wraps. Look at `examples/` for one approved spec per mode.
 
 New site? Copy `brands/_template.json` to `brands/<site>.json` and fill in the site's real brand colours (check the live site).
 
@@ -58,7 +59,7 @@ node "<skill-dir>/scripts/render.mjs" "<spec>.json" --out "featured-images/<slug
 ```
 Outputs: `master.png` (1600×900), `7x5.webp` (theme crop), `16x9-1200.webp` (social/OG), `card-350x250.png` (size check). Each render is recorded in `featured-images/.featured-ledger.json`.
 
-**If you see "VARIETY CHECK FAILED", choose one of the suggested modes and rewrite the spec.** Do not use `--force` unless the user explicitly asks for a repeat.
+**If you see "HEADING CHECK FAILED", rewrite the heading from the title's key words.** **If you see "VARIETY CHECK FAILED", choose one of the suggested modes and rewrite the spec.** Do not use `--force` unless the user explicitly asks for a repeat.
 
 ### 5. Check, then fix
 Open `master.png` and `card-350x250.png` and confirm:

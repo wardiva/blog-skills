@@ -1,5 +1,25 @@
-{ "brand": "medsoftwarehub", "category": "clinical-software",
-  "before": { "label": "Old EMR export", "lines": ["ALVAREZ, M · 1968", "PCN · METF 500"] },
-  "after": { "label": "New EMR", "heading": "Maria Alvarez · Patient overview",
-             "items": ["Allergy: Penicillin", "Medication: Metformin 500 mg", "Last A1C: 6.9%, verified"] },
-  "legend": ["From your old EMR", "Mapped and verified"] }
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "before": {
+  "label": "Old EMR export",
+  "lines": [
+   "ALVAREZ, M · 1968",
+   "PCN · METF 500"
+  ]
+ },
+ "after": {
+  "label": "New EMR",
+  "heading": "Maria Alvarez · Patient overview",
+  "items": [
+   "Allergy: Penicillin",
+   "Medication: Metformin 500 mg",
+   "Last A1C: 6.9%, verified"
+  ]
+ },
+ "legend": [
+  "From your old EMR",
+  "Mapped and verified"
+ ],
+ "articleTitle": "How to Switch EMR Vendors Without Losing Patient Data"
+}
