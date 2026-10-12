@@ -15,7 +15,8 @@ The full rulebook (colours, type, cards, "never" list) is in `references/design-
 0. **The heading mirrors the blog title.** Use the title's own words and meaning, just shorter (drop the year and filler). Never reword creatively. Set `"articleTitle"` in every spec; the renderer blocks headings that drift ("HEADING CHECK FAILED").
 1. **Relatable.** Read the full article. Use only its own facts (numbers, names, steps, comparisons). Never invent figures or use generic concepts.
 2. **Easy to understand.** One idea, one focal point, short real words. Check it at 350×250.
-3. **Different every time.** Never give two posts in the same category, or two articles on the same topic, the same composition. The renderer enforces this. Compositions must also differ in **skeleton** (block arrangement), not just text; see "Skeleton rule".
+3. **Minimal, never text-heavy.** One idea, the fewest facts that prove it (3–4 rows or 2–3 bullets), about 60 words max. Whitespace is good; never add elements just to fill space. See "Minimal rule" in `references/design-language.md`.
+4. **Different every time.** Never give two posts in the same category, or two articles on the same topic, the same composition. The renderer enforces this. Compositions must also differ in **skeleton** (block arrangement), not just text; see "Skeleton rule".
 
 ## The 10 compositions (`mode`)
 | mode | Shows | Best for |
@@ -66,7 +67,7 @@ Open `master.png` and `card-350x250.png` and confirm:
 - The topic is clear in 2 seconds.
 - No text wraps, clips or overlaps, and nothing falls outside x 210–1390.
 - Every number appears in the article.
-- **Balance** (see "Visual balance rules" in `references/design-language.md`): one clear focal point at 350×250, all four corners anchored, the grid used only where it fits the vibe (on by default for stat, ranked, timeline and window only), no large empty card areas, **type balanced** (headline 56–76px and never wider than about 760px; body rows ≥ 32px with ≥ 28px gaps, never cramped; headline about 2× the body, not more; only the stat number may be giant; see "Typography balance"), and the cursor (if any) never covering text.
+- **Balance** (see "Visual balance rules" in `references/design-language.md`): one clear focal point at 350×250, all four corners anchored, the grid used only where it fits the vibe (on by default for stat, ranked, timeline and window only), minimal (nothing added to fill space), **type balanced** (headline 56–76px and never wider than about 760px; body rows ≥ 32px with ≥ 28px gaps, never cramped, except text inside mock app windows, which stays UI-sized; headline about 2× the body, not more; only the stat number may be giant; see "Typography balance"), and the cursor (if any) never covering text.
 
 Then put the batch side by side and confirm no two images look alike. Fix and re-render until all of this passes.
 

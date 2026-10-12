@@ -131,7 +131,7 @@ Use this range to avoid repeats.
 Check `master.png` and `card-350x250.png` for:
 - no wrapping, clipping or overlapping text
 - nothing outside the crop-safe zone
-- balanced vertical spacing, with no big empty card areas
+- balanced vertical spacing (calm whitespace is fine; never fill it with extra content; see "Minimal rule")
 
 Then compare the batch side by side as a contact sheet, and confirm no two images look alike.
 
@@ -160,8 +160,21 @@ These rules make every image easy to take in at a glance. They work inside our d
 - Squint at the 350×250 card: one clear focal point?
 - All four corners anchored by a card edge, bleed or (on grid layouts) a registration square?
 - If a grid is present: does it feel calm, not overwhelming? If not, set `"frame": false`.
-- No large empty area inside a card?
+- Minimal? No element added just to fill space, and no fact shown twice (see "Minimal rule")
 - Does the cursor, if any, cover text?
+
+---
+
+## Minimal rule: never text-heavy (user rule, 2026-10-13)
+
+The user approved the plain Odoo vs Sage Intacct window (4 rows, a question, one heading, 3 short bullets, calm whitespace below) as **"really good, minimal"**. They called the version with extra comparison bars, bigger UI text and a bleeding window **"ugly"**.
+
+- **One idea per image, carried by the fewest facts that prove it.** Usually 3–4 rows or 2–3 bullets, never more. Pick the strongest facts; don't put every fact from the article on the image.
+- **Whitespace is good.** Empty space inside a card or window is calm and premium. **Never add bars, rows, bullets, badges or text just to fill a gap.**
+- **No stacked explanations.** Don't show the same fact twice in different forms (e.g. a heading *and* bars *and* bullets for the same numbers).
+- **UI mockups (window, prompt panel) keep UI-sized text:** rows about 24px, subs about 19px, bullets about 22px. They should look like a real app, not a slide. The "Body text must breathe" sizes apply to free-standing cards and lists, not to text inside a mock app window.
+- **The rule of thumb is subtraction.** Before rendering, remove one element and ask whether the image still tells the story. If it does, keep it removed.
+- Roughly **60 words or fewer** of visible text on the whole image, and fewer is better.
 
 ---
 

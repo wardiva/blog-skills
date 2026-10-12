@@ -39,22 +39,10 @@
  "detail": {
   "question": "What do 10 users cost per year?",
   "heading": "$3.7K vs $50K+ a year",
-  "bars": [
-   {
-    "name": "Odoo",
-    "value": "$3,700 to $7,300",
-    "pct": 7300
-   },
-   {
-    "name": "Sage Intacct",
-    "value": "$50,000 to $120,000",
-    "pct": 120000
-   }
-  ],
   "points": [
-   "Sage Intacct pricing is quote only",
-   "Odoo prices are published"
+   "Odoo: $3,700 to $7,300",
+   "Sage Intacct: $50,000 to $120,000",
+   "Sage Intacct is quote only"
   ]
- },
- "bleed": true
+ }
 }

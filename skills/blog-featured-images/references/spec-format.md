@@ -85,9 +85,8 @@ One JSON file per article. Top-level fields shared by all modes:
   "detail": { "question": "What does a 2 to 5 provider practice pay?", "heading": "$40K to $150K in year one",
               "points": ["Implementation: $5K to $20K", "Training: $1K to $5K"] } }
 ```
-- `rows` holds up to 5 items. `points` holds 2–4 items (1–2 when `bars` is used).
-- Optional `detail.bars`: 2–3 `{ "name", "value", "pct" }` comparison bars under the heading (e.g. 10-user annual cost per vendor). `pct` is the raw number; `detail.highlight` (default 0) is the blue bar. Use it whenever the detail pane would otherwise have a large empty area.
-- With `bleed`, the detail pane keeps its content inside x 1390 so the 7x5 crop never cuts it.
+- `rows` holds up to 5 items. `points` holds 2–4 items.
+- Keep it minimal: 3–4 `rows` and 2–3 short `points` (see "Minimal rule"). `bleed` is optional and keeps detail text inside x 1390.
 
 ## Timeline (`"mode": "timeline"`; processes, implementation, durations)
 ```json
