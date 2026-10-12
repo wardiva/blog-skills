@@ -10,6 +10,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They can never share a mode |
 | `slug` | yes | Output folder name and ledger key (unique per article) |
 | `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
+| `variant` | no | Layout variant of the mode. Today only `versus` has two: `overlap` (default) and `table`. The variety check counts mode + variant as one layout |
 | `bg` | no | `wash`, `cool`, `white`, `flat`. Leave it out to auto-rotate |
 | `frame` | no | Faint grid plus registration squares. On by default only for `stat`, `ranked`, `timeline` and `window`; off for the rest. `true` or `false` overrides. Use it only where it fits the vibe |
 | `cursor` | no | `[x, y]`: a pointer cue at that position. It must point at the key fact and never cover text |
@@ -42,7 +43,7 @@ One JSON file per article. Top-level fields shared by all modes:
 ```
 - Renders as **two tilted, overlapping cards** with a blue **VS** badge on the seam. `label` is the product name above each card, `heading` the plan line, and `items` 2–3 facts (up to ~22 characters each so nothing wraps). `items[0]` is the key fact (dark on the left, blue on the right). Use the same dimensions on both sides, in the same order.
 - `legend[0]` and `legend[1]` name the key difference.
-- Optional `"variant": "table"` renders one comparison table card instead; `dimensions` become its row labels.
+- `"variant": "table"` renders one comparison table card instead: `dimensions` become its row labels (up to ~12 characters, e.g. "Per user/mo"), and `legend` is optional. Leave the legend out when it would repeat a row (minimal rule).
 
 ## Prompt (`"mode": "prompt"`; cost, pricing, "what is", FAQ)
 ```json

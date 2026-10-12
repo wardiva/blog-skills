@@ -165,6 +165,21 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ---
 
+## Variety enforcement (user rule, 2026-10-13: "make this rule forceful")
+
+**What failed:** the Odoo vs Sage Intacct window and the EMR Software Cost window were the same thumbnail. The old check only read the ledger in its own output folder and only compared mode names, so it never saw the EMR window, which was rendered elsewhere.
+
+**How it is enforced now (in the renderer):**
+1. **One site-wide history per brand** at `~/.blog-featured-images/history-<brand>.json`. Every render is recorded there, wherever its output folder is (tests and alternates included), because anything the user has seen counts.
+2. **Layout = mode + variant.** Bleed, cursor, background, colours and text do **not** make a new layout.
+3. **Strict rotation:** in a category, only the **least-used** layouts are allowed. No layout repeats until every layout has been used there.
+4. **Same topic:** articles on the same topic never share a mode.
+5. A failure prints "VARIETY CHECK FAILED" with the allowed layouts. Use one of them. Never `--force` (unless the user asks), and never render into another folder to dodge the check.
+
+**Cycle length = number of layouts (11 today).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
+
+---
+
 ## Minimal rule: never text-heavy (user rule, 2026-10-13)
 
 The user approved the plain Odoo vs Sage Intacct window (4 rows, a question, one heading, 3 short bullets, calm whitespace below) as **"really good, minimal"**. They called the version with extra comparison bars, bigger UI text and a bleeding window **"ugly"**.
@@ -234,7 +249,7 @@ Two compositions that share the same **skeleton** (the arrangement of blocks) re
 | mode | Skeleton (what you see at a glance) |
 |---|---|
 | before-after | small raw card → dashed connector → big clean card, legend below |
-| versus | **two tilted, overlapping cards** (−3° / +3°, right on top) with a 96px blue-gradient **VS** badge (white text, white ring) on the bottom of the seam. Differs from before-after by tilt, overlap and the badge. Optional `"variant":"table"` = one comparison table card |
+| versus (overlap) | **two tilted, overlapping cards** (−3° / +3°, right on top) with a 96px blue-gradient **VS** badge (white text, white ring) on the bottom of the seam. Differs from before-after by tilt, overlap and the badge. Optional `"variant":"table"` = one comparison table card |
 | prompt | faded panel bleeding off the top, centred headline, pill input bar |
 | hub | centre tile with 6 tilted cards around it and hand-drawn arrows |
 | stack | wide takeaway card with 2 cards peeking above it |

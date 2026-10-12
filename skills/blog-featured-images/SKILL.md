@@ -16,13 +16,13 @@ The full rulebook (colours, type, cards, "never" list) is in `references/design-
 1. **Relatable.** Read the full article. Use only its own facts (numbers, names, steps, comparisons). Never invent figures or use generic concepts.
 2. **Easy to understand.** One idea, one focal point, short real words. Check it at 350×250.
 3. **Minimal, never text-heavy.** One idea, the fewest facts that prove it (3–4 rows or 2–3 bullets), about 60 words max. Whitespace is good; never add elements just to fill space. See "Minimal rule" in `references/design-language.md`.
-4. **Different every time.** Never give two posts in the same category, or two articles on the same topic, the same composition. The renderer enforces this. Compositions must also differ in **skeleton** (block arrangement), not just text; see "Skeleton rule".
+4. **Different every time (hard-enforced).** A **layout** (mode + variant) never repeats in a category until every layout has been used there, and same-topic articles never share a mode. The renderer checks a **site-wide history** (`~/.blog-featured-images/history-<brand>.json`) that records every image ever rendered for that brand, whatever folder it went to, so test renders and alternates count too. Compositions must also differ in **skeleton** (block arrangement), not just text; see "Skeleton rule".
 
 ## The 10 compositions (`mode`)
 | mode | Shows | Best for |
 |---|---|---|
 | `before-after` (default) | raw card → clean card, plus a legend | how-to, migration, transformation |
-| `versus` | two tilted overlapping cards, blue VS badge on the seam, legend | X vs Y |
+| `versus` | `overlap` (default): two tilted overlapping cards, blue VS badge, legend. `table`: one comparison table card | X vs Y |
 | `prompt` | faded data panel, big headline, pill bar with chips | cost, pricing, FAQ, "what is" |
 | `hub` | blue centre tile, 6 tilted cards, hand-drawn arrows | best-of lists, integrations |
 | `stack` | one takeaway card over offset cards | guides with one key rule or warning |
@@ -43,7 +43,7 @@ Fetch each whole page. For each one, note the article type, core idea, 3–6 har
 Write a short plan table: article → mode → background → key facts. Rules:
 - Within a category, no mode repeats until most of the 10 have been used. Never repeat a mode within 6 consecutive posts.
 - Articles with the same `topic` get different modes and different angles (different facts, not the same facts redrawn).
-- If `featured-images/.featured-ledger.json` exists, read it first. It lists what this category has already used.
+- Read the site-wide history `~/.blog-featured-images/history-<brand>.json` first. It lists every layout this category has already used, and only the **least-used** layouts are allowed.
 - Vary the background too (`wash`, `cool`, `white`, `flat`). The renderer rotates it automatically if you leave `bg` out.
 
 Show the plan to the user when doing more than 3 images.
@@ -58,9 +58,9 @@ First time only: run `npm install` in the skill's `scripts` folder (installs `sh
 ```bash
 node "<skill-dir>/scripts/render.mjs" "<spec>.json" --out "featured-images/<slug>"
 ```
-Outputs: `master.png` (1600×900), `7x5.webp` (theme crop), `16x9-1200.webp` (social/OG), `card-350x250.png` (size check). Each render is recorded in `featured-images/.featured-ledger.json`.
+Outputs: `master.png` (1600×900), `7x5.webp` (theme crop), `16x9-1200.webp` (social/OG), `card-350x250.png` (size check). Each render is recorded in the local `featured-images/.featured-ledger.json` **and** the site-wide history.
 
-**If you see "HEADING CHECK FAILED", rewrite the heading from the title's key words.** **If you see "VARIETY CHECK FAILED", choose one of the suggested modes and rewrite the spec.** Do not use `--force` unless the user explicitly asks for a repeat.
+**If you see "HEADING CHECK FAILED", rewrite the heading from the title's key words.** **If you see "VARIETY CHECK FAILED", use one of the layouts it lists (set `mode`, plus `variant` when it is not `default`) and rewrite the spec.** Never use `--force` unless the user explicitly asks for a repeat, and never work around the check by rendering into a different folder. Bleed, cursor, background or different text do **not** make a different layout.
 
 ### 5. Check, then fix
 Open `master.png` and `card-350x250.png` and confirm:
@@ -76,4 +76,5 @@ Show the images, ideally as one contact sheet for a batch. For each, list the mo
 
 ## Notes
 - Fonts (Inter) and icons (Phosphor) load from the internet at render time.
-- The ledger lives next to the output folders. Keep using the same `featured-images` folder per site so the variety history carries across sessions.
+- Variety history is site-wide per brand (`~/.blog-featured-images/history-<brand>.json`, or the `FEATURED_HISTORY_DIR` env var). Re-rendering the same `slug` replaces its entry. To drop a discarded test image, delete its entry from that file.
+- Layouts available today: 11 (versus has `overlap` and `table`; every other mode has one). A category with more posts than layouts will cycle, always to the least-used layout. Add variants to lengthen the cycle.

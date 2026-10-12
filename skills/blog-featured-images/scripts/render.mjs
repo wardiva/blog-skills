@@ -46,10 +46,10 @@ const before = spec.before, after = spec.after;
 //   variant "overlap": two cards tilted toward each other, overlapping at the centre with the vs chip on the overlap.
 function versus() {
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
-  const legend = `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`;
+  const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'table') {
     const n = Math.max(L.items.length, R.items.length);
-    const RH = 104, top = Math.round((900 - (150 + n * RH + 46 + 40)) / 2);
+    const RH = 104, top = Math.round((900 - (150 + n * RH + (spec.legend ? 86 : 0))) / 2);
     const rows = Array.from({ length: n }, (_, i) => `<div class="tr"><span class="td0">${esc(dims[i] || '')}</span><span class="td1${i === 0 ? ' a' : ''}">${esc(L.items[i] || '')}</span><span class="td2${i === 0 ? ' a' : ''}">${esc(R.items[i] || '')}</span></div>`).join('');
     return `<style>
 .tcard{position:absolute;left:230px;top:${top}px;width:1140px;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
@@ -295,31 +295,50 @@ if (heading !== undefined && !args.includes('--force')) {
     process.exit(3);
   }
 }
-// ---- variety: backgrounds rotate, and a ledger blocks a category from repeating a recent composition ----
+// ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
+// A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
-const ALL_MODES = ['before-after', 'versus', 'prompt', 'hub', 'stack', 'window', 'timeline', 'checklist', 'stat', 'ranked'];
+const LAYOUTS = { 'before-after': ['default'], versus: ['overlap', 'table'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'] };
+const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
+const VARIANT = spec.variant || LAYOUTS[MODE][0];
+if (!LAYOUTS[MODE].includes(VARIANT)) { console.error(`Unknown variant "${VARIANT}" for ${MODE}. Variants: ${LAYOUTS[MODE].join(', ')}`); process.exit(1); }
+const LAYOUT = `${MODE}/${VARIANT}`;
+const ALL_LAYOUTS = ALL_MODES.flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
+const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
 const DEFAULT_BG = { 'before-after': 'wash', versus: 'wash', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'cool', stat: 'white', ranked: 'flat' };
 const BGS = ['wash', 'cool', 'white', 'flat'];
 const category = spec.category || spec.brand || 'default';
+const brandKey = (spec.brand || 'default').replace(/[^a-z0-9-]/gi, '');
 const ledgerFile = path.join(path.dirname(outDir), '.featured-ledger.json');
-const ledger = fs.existsSync(ledgerFile) ? JSON.parse(fs.readFileSync(ledgerFile, 'utf8')) : [];
-const prior = ledger.filter((e) => e.category === category && e.slug !== slug);
-const recent = prior.slice(-6);
+const historyDir = process.env.FEATURED_HISTORY_DIR || path.join(os.homedir(), '.blog-featured-images');
+const historyFile = path.join(historyDir, `history-${brandKey}.json`);
+const readJson = (f) => { try { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : []; } catch { return []; } };
+const ledger = readJson(ledgerFile), siteHistory = readJson(historyFile);
+const bySlug = new Map();
+for (const e of [...siteHistory, ...ledger]) bySlug.set(e.slug, { ...bySlug.get(e.slug), ...e });
+const history = [...bySlug.values()].sort((x, y) => String(x.at).localeCompare(String(y.at)));
+const prior = history.filter((e) => e.category === category && e.slug !== slug);
+const force = args.includes('--force');
 const topic = spec.topic || null;
-const sameTopic = topic ? ledger.filter((e) => e.topic === topic && e.slug !== slug) : [];
-if (sameTopic.some((e) => e.mode === MODE) && !args.includes('--force')) {
+const sameTopic = topic ? history.filter((e) => e.topic === topic && e.slug !== slug) : [];
+if (sameTopic.some((e) => e.mode === MODE) && !force) {
   console.error(`VARIETY CHECK FAILED: another article on topic "${topic}" (${sameTopic.filter((e) => e.mode === MODE).map((e) => e.slug).join(', ')}) already uses mode "${MODE}".
 Same-topic articles must use different compositions. Used for this topic: ${sameTopic.map((e) => e.mode).join(', ')}`);
   process.exit(2);
 }
-if (recent.some((e) => e.mode === MODE) && !args.includes('--force')) {
-  const free = ALL_MODES.filter((m) => !recent.some((e) => e.mode === m));
-  console.error(`VARIETY CHECK FAILED: mode "${MODE}" was already used by a recent "${category}" post (${recent.filter((e) => e.mode === MODE).map((e) => e.slug).join(', ')}).\nRecent modes: ${recent.map((e) => e.mode).join(', ')}\nPick one of: ${free.join(', ')}  (or pass --force)`);
+const uses = Object.fromEntries(ALL_LAYOUTS.map((l) => [l, prior.filter((e) => layoutOf(e) === l).length]));
+const minUse = Math.min(...Object.values(uses));
+const allowed = ALL_LAYOUTS.filter((l) => uses[l] === minUse && !sameTopic.some((e) => l.startsWith(e.mode + '/')));
+if (uses[LAYOUT] > minUse && !force) {
+  const users = prior.filter((e) => layoutOf(e) === LAYOUT).map((e) => e.slug);
+  console.error(`VARIETY CHECK FAILED: layout "${LAYOUT}" is already used in "${category}" by: ${users.join(', ')}.
+A layout may not repeat in a category until every layout has been used there (site-wide history: ${historyFile}).
+Pick one of: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "default")`);
   process.exit(2);
 }
 let BG = spec.bg || DEFAULT_BG[MODE];
-const prevBg = prior.length ? prior[prior.length - 1].bg : null;
+const prevBg = prior.length ? prior[prior.length - 1].bg : null; // history is sorted by time
 if (!spec.bg && BG === prevBg) BG = BGS.find((b) => b !== prevBg && b !== DEFAULT_BG[MODE]) || BG;
 const BG_CSS = {
   wash: `body{background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}body:before{display:block;background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}`,
@@ -379,8 +398,9 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const next = ledger.filter((e) => e.slug !== slug);
-next.push({ slug, category, topic, mode: MODE, bg: BG, at: new Date().toISOString() });
-fs.writeFileSync(ledgerFile, JSON.stringify(next, null, 1));
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, at: new Date().toISOString() };
+fs.writeFileSync(ledgerFile, JSON.stringify([...ledger.filter((e) => e.slug !== slug), entry], null, 1));
+fs.mkdirSync(historyDir, { recursive: true });
+fs.writeFileSync(historyFile, JSON.stringify([...siteHistory.filter((e) => e.slug !== slug), entry], null, 1));
 console.log(`${outDir}
-  mode=${MODE} bg=${BG} category=${category}`);
+  layout=${LAYOUT} bg=${BG} category=${category}`);
