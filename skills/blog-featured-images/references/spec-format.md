@@ -67,7 +67,8 @@ One JSON file per article. Top-level fields shared by all modes:
     { "name": "Dynamics 365", "sub": "$80/user/mo" }, { "name": "Acumatica", "sub": "From $6,396/yr" },
     { "name": "Odoo", "sub": "$24.90/user/mo" }, { "name": "Sage Intacct", "sub": "From $15K/yr" } ] }
 ```
-- Exactly 6 cards: names up to ~17 characters, `sub` is one fact.
+- 6 or 7 cards (use 7 for a "7 best" list, so the image matches the title): names up to ~17 characters, `sub` is one fact (the article's starting price, shortened).
+- Optional `"hubLabel": { "big": "7", "small": "Best ERP" }` replaces the icon on the blue tile. Use it to carry the title's key words (the hub has no headline).
 - `hubIcon` is any Phosphor class (https://phosphoricons.com), e.g. `ph-fill ph-heartbeat`, `ph-fill ph-graduation-cap`, `ph-fill ph-shield-check`.
 
 ## Stack (`"mode": "stack"`; one key rule or warning)

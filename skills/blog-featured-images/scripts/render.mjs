@@ -82,15 +82,17 @@ ${card(L, 250, -3, 'o1')}${card(R, 790, 3, 'o2', '<div class="ovs">VS</div>')}${
 
 // "hub" mode (Granola integrations): a blue centre tile, tilted white cards around it, hand-drawn arrows. Flat warm background.
 function hub() {
-  const slots = [[215, 100, -5], [200, 360, 4], [245, 615, -3], [1095, 90, 4], [1105, 355, -4], [1085, 620, 3]];
-  const CW = 280, CH = 160;
+  const n = Math.min(spec.cards.length, 7), T = n === 7 ? 390 : 450;      // 7 cards: tile moves up, 7th card sits below it
+  const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 672, 2]];
+  const CW = 320, CH = 160;   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
   let arrows = '', cards = '';
-  spec.cards.slice(0, 6).forEach((cd, i) => {
+  spec.cards.slice(0, n).forEach((cd, i) => {
     const [x, y, r] = slots[i], left = i < 3;
     const cy = y + CH / 2;
-    const sx = left ? 630 : 970, sy = 450 + (cy - 450) * 0.45;           // start at the tile edge
-    const ex = left ? x + CW + 22 : x - 22, ey = cy;                        // end just short of the card
-    const qx = (sx + ex) / 2, qy = Math.min(sy, ey) - 70;                   // arc over the top
+    let sx = left ? 630 : 970, sy = T + (cy - T) * 0.45;                   // start at the tile edge
+    let ex = left ? x + CW + 24 : x - 24, ey = cy;                          // end just short of the card
+    let qx = sx, qy = ey + (ey < sy ? 20 : -20);                            // leave the tile vertically, bend into the card's inner edge
+    if (i === 6) { sx = 800; sy = T + 172; ex = 806; ey = y - 18; qx = 850; qy = (sy + ey) / 2; } // short arc down to the bottom card
     const ang = Math.atan2(ey - qy, ex - qx), h = 26;
     const p1 = [ex - h * Math.cos(ang - 0.5), ey - h * Math.sin(ang - 0.5)], p2 = [ex - h * Math.cos(ang + 0.5), ey - h * Math.sin(ang + 0.5)];
     arrows += `<path d="M${sx} ${sy} Q ${qx} ${qy} ${ex} ${ey}"/><path d="M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} L ${ex} ${ey} L ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}"/>`;
@@ -98,15 +100,15 @@ function hub() {
   });
   return `<style>
 body{background:#F1F0EC}body:before{display:none}
-.tile{position:absolute;left:640px;top:290px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
-.tile i{font-size:150px;color:#fff}
+.tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
+.tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap}
 .hc{position:absolute;width:${CW}px;height:${CH}px;background:#fff;border-radius:20px;border:2px solid #E3E1DC;display:flex;flex-direction:column;justify-content:center;padding:0 26px;gap:8px}
 .hc b{white-space:nowrap;font-size:29px;font-weight:500;color:#141A26;letter-spacing:-.01em}.hc span{font-size:20px;color:#7F8794}
 svg.arr{position:absolute;inset:0;overflow:visible}
 </style>
 <svg class="arr" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
 <g filter="url(#rough)" fill="none" stroke="#141A26" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">${arrows}</g></svg>
-<div class="tile"><i class="${esc(spec.hubIcon || 'ph-fill ph-buildings')}"></i></div>${cards}`;
+<div class="tile">${spec.hubLabel ? `<div class="tl"><b>${esc(spec.hubLabel.big)}</b><span>${esc(spec.hubLabel.small || '')}</span></div>` : `<i class="${esc(spec.hubIcon || 'ph-fill ph-buildings')}"></i>`}</div>${cards}`;
 }
 
 // "prompt" mode (Granola "Introducing Recipes"): a faded app panel, a big headline over it, a pill input bar with chips.
@@ -398,9 +400,16 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, at: new Date().toISOString() };
-fs.writeFileSync(ledgerFile, JSON.stringify([...ledger.filter((e) => e.slug !== slug), entry], null, 1));
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, out: path.resolve(outDir), at: new Date().toISOString() };
+// Parallel renders share these files: take a lock, re-read, then write, so no entry is lost.
 fs.mkdirSync(historyDir, { recursive: true });
-fs.writeFileSync(historyFile, JSON.stringify([...siteHistory.filter((e) => e.slug !== slug), entry], null, 1));
+const lock = historyFile + '.lock';
+for (let i = 0; ; i++) {
+  try { fs.mkdirSync(lock); break; } catch { if (i > 300) { fs.rmSync(lock, { recursive: true, force: true }); } Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50); }
+}
+try {
+  fs.writeFileSync(ledgerFile, JSON.stringify([...readJson(ledgerFile).filter((e) => e.slug !== slug), entry], null, 1));
+  fs.writeFileSync(historyFile, JSON.stringify([...readJson(historyFile).filter((e) => e.slug !== slug), entry], null, 1));
+} finally { fs.rmSync(lock, { recursive: true, force: true }); }
 console.log(`${outDir}
   layout=${LAYOUT} bg=${BG} category=${category}`);

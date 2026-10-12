@@ -5,15 +5,40 @@ Every featured-image request runs with three roles. One agent never both makes a
 | Role | Who | Does | Never does |
 |---|---|---|---|
 | **Orchestrator** | The main Claude running this skill | Reads the articles and the site history, plans the batch, assigns each article a distinct layout, starts the Maker and the QA agent, loops fixes, delivers | Render or approve images itself |
-| **Maker** | Subagent (Agent tool) | Writes the spec from the article's facts, renders it, returns paths + facts used | Choose its own layout, use `--force`, render into another folder to dodge a check |
+| **Maker** | Subagents (Agent tool), several in parallel | Writes the spec from the article file's facts, renders it, returns paths + facts used | Choose its own layout, use `--force`, render into another folder to dodge a check |
 | **QA** | A separate subagent (Agent tool), fresh context | Checks every image against the QA checklist and returns PASS or FAIL with exact fixes | Edit specs or render; it only judges |
 
-## Flow
+## Flow: fast batch mode (default; user rule: "work fast")
 
-1. **Orchestrator: plan.** Read every article (the full page). Read `~/.blog-featured-images/history-<brand>.json`. Assign each article a layout (mode + variant) from the **least-used** layouts in its category, never the same layout twice in the batch, and never the same mode for articles on the same topic. Show the plan table to the user when there are more than 3 images.
-2. **Orchestrator → Maker.** Start one Maker with the plan: per article, the URL, assigned layout, category, topic, slug and brand. The Maker renders **one image at a time** (the history file is shared, so parallel renders could overwrite each other).
-3. **Orchestrator → QA.** When the Maker returns, start the QA agent with the image paths, specs, article URLs and history file. The QA agent must not have seen the Maker's reasoning.
-4. **Fix loop.** For each FAIL, send the QA agent's fixes back to the Maker (same agent via SendMessage, or a new one), then re-run QA on the fixed images only. Stop after 3 rounds and tell the user what still fails. Never ship a FAIL silently.
+Speed comes from doing each step once, all articles at the same time.
+
+1. **Read all URLs in parallel, once (Orchestrator, about 5–10 s for the whole batch).**
+   `node <skill-dir>/scripts/read-articles.mjs <url1> <url2> ... --out <featured-images>/articles`
+   It uses the agent-browser CLI (`npm i -g agent-browser`; your existing Chrome, no extra download). It writes one `articles/<slug>.md` per URL with the H1, headings, paragraphs, lists and tables. **Nobody fetches a page again.** Makers and QA read these files.
+2. **Plan and reserve all layouts in one command (Orchestrator).**
+   `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` prints layout usage, least-used first. Pick the best-fitting layout per article from the lowest tier (different for every article, different modes per topic), then reserve them all at once:
+   `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c> --reserve <slug>=<mode>[/<variant>][@<topic>] ...`
+   It refuses the whole plan if any assignment breaks the rotation. Reservations make parallel renders safe.
+3. **Makers in parallel.** Start one Maker per article (or per 2–3 articles), **all in a single message**, in the background. Each gets its article file path, assigned layout and slug, so there are no web fetches. Renders run in parallel; the renderer locks the history file while it writes.
+4. **One QA pass for the whole batch.** When the Makers finish, build one contact sheet:
+   `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out <featured-images>/qa-sheet.png --highlight <slug1,slug2,...>`
+   Start **one** QA agent with the sheet, the batch's master.png paths, specs and article files. It checks every batch image against the checklist and the whole category in one look.
+5. **Fix only the failures, in parallel.** Send each FAIL's fixes to its Maker (SendMessage), all at once. Renderer bugs are the Orchestrator's to fix. QA re-checks only the fixed images. Up to 3 rounds.
+6. **Deliver** the QA-passed images as one contact sheet, with layouts and facts.
+
+**Speed rules:**
+- Never fetch an article twice.
+- Never run Makers one after another.
+- Never open images one by one when the sheet shows them.
+- Give agents only the files they need (article .md, spec-format section for their mode, the Minimal rule), not the whole rulebook every time.
+- Report progress in one line per step.
+
+## Flow: details
+
+1. **Orchestrator: plan.** Read every article (via `read-articles.mjs`). Assign each article a layout from the **least-used** tier in its category (`plan.mjs`), never the same layout twice in the batch, and never the same mode for articles on the same topic. Show the plan table to the user when there are more than 3 images.
+2. **Orchestrator → Makers.** Start the Makers in parallel with the plan: per article, the article file, assigned layout, category, topic, slug and brand.
+3. **Orchestrator → QA.** When the Makers return, start the QA agent with the contact sheet, image paths, specs and article files. The QA agent must not have seen the Makers' reasoning.
+4. **Fix loop.** For each FAIL, send the QA agent's fixes back to that Maker (SendMessage), then re-run QA on the fixed images only. Stop after 3 rounds and tell the user what still fails. Never ship a FAIL silently.
 5. **Orchestrator: deliver.** Show only images that passed QA, as a contact sheet, with each one's layout and the article facts used.
 
 ## Maker prompt (template)
@@ -22,13 +47,13 @@ Every featured-image request runs with three roles. One agent never both makes a
 You are the MAKER for blog featured images. Use the blog-featured-images skill at <skill-dir>.
 Read SKILL.md, references/design-language.md and references/spec-format.md first.
 For each article below, in order:
-1. Read the full article at the URL. Use only its own facts.
+1. Read the article file <featured-images>/articles/<slug>.md (already fetched; do not fetch the URL). Use only its own facts.
 2. Write <featured-images>/specs/<slug>.json for the ASSIGNED layout (mode + variant). Set articleTitle, brand, category, topic, slug.
    Minimal rule: one idea, 3–4 rows or 2–3 bullets, about 60 words max, no fact shown twice, nothing added to fill space.
-3. Render it: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>". One render at a time.
+3. Render it: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>". (Other Makers render in parallel; that's fine.)
    Never use --force. If a check fails, fix the spec within the assigned layout; if the layout itself is refused, stop and report it.
 4. Open master.png and card-350x250.png and fix obvious wraps or clipping.
-Articles: <list: url, layout, category, topic, slug, brand>
+Articles: <list: article file, layout, category, topic, slug, brand>
 Return, per article: slug, layout, spec path, master.png path, card path, and the facts used (each with the sentence it came from).
 ```
 
@@ -38,7 +63,7 @@ Return, per article: slug, layout, spec path, master.png path, card path, and th
 You are the QA reviewer for blog featured images. Be strict: you pass nothing that breaks a rule.
 You do not edit or render anything. You judge.
 Read <skill-dir>/references/design-language.md (APPROVED, Minimal rule, Variety enforcement, Visual balance, Typography balance, Heading rule, Skeleton rule).
-Inputs: image folders <paths>, specs <paths>, article URLs <urls>, site history <~/.blog-featured-images/history-<brand>.json>, and the folders of every other image in the same category <paths>.
+Inputs: the category contact sheet <qa-sheet.png> (batch images framed in blue), the batch's master.png and card paths, specs, article files <featured-images>/articles/<slug>.md, and the site history <~/.blog-featured-images/history-<brand>.json>. Don't fetch the web; the article files are the source of truth.
 Check every image against the QA checklist in references/agents.md. Look at the actual PNGs, not just the specs.
 Return, per image: PASS or FAIL, and for each FAIL the rule broken and the exact fix (e.g. "cut bullet 3", "shorten row 2 to 'Quote only'", "layout window/default repeats emr-cost-vendor-prices: use stat/default").
 ```

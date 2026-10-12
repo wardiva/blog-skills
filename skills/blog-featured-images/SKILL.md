@@ -37,9 +37,11 @@ The full rulebook (colours, type, cards, "never" list) is in `references/design-
 ## Three agents, always (required)
 Every request runs with three roles. Full prompts and the QA checklist are in `references/agents.md`.
 - **Orchestrator (you):** read the articles and the site history, assign each article a distinct least-used layout, start the Maker and the QA agent, loop fixes, deliver. You don't render or approve images yourself.
-- **Maker (subagent):** writes each spec from the article's facts and renders it, one at a time. It uses its assigned layout and never `--force`.
+- **Makers (subagents, in parallel):** write each spec from the article file's facts and render it. They use the assigned layout and never `--force`.
 - **QA (separate subagent):** checks every image: **no layout used twice** (history plus a side-by-side look at every card in the category), **easy to scan** in 2 seconds at 350×250, **little text** (about 60 words max, no fact twice), **visually balanced**, heading and facts true to the article. It returns PASS or FAIL with exact fixes.
-- Failed images go back to the Maker, then to QA again, for up to 3 rounds. Only images that passed are shown to the user.
+- Failed images go back to their Maker, then to QA again, for up to 3 rounds. Only images that passed are shown to the user.
+
+**Fast batch mode (default):** read all URLs in parallel once (`scripts/read-articles.mjs`, agent-browser), plan and reserve every layout in one command (`scripts/plan.mjs`), run all Makers at once, run **one** QA pass over a single contact sheet (`scripts/sheet.mjs`), and fix only the failures, in parallel. Exact commands are in `references/agents.md`. One-time setup: `npm i -g agent-browser`, plus `npm install` in `scripts/`.
 
 ## Workflow
 
