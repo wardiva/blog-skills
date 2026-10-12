@@ -169,6 +169,24 @@ h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-si
 // "stack" (Granola "Brief prepared overnight"): one front card holding the takeaway over two offset cards.
 function stack() {
   const lead = esc(spec.lead).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  if (spec.variant === 'split') {
+    // "split": a definition card whose lower half is a two-column contrast (e.g. You | Vendor); back cards fan out to the lower right.
+    const cols = (spec.split || []).slice(0, 2).map((c, i) => `<div class="sp${i}"><em>${esc(c.label)}</em><span>${esc(c.text)}</span></div>`).join('');
+    return `<style>
+.sk{position:absolute;border-radius:28px;background:#fff}
+.sk1{left:330px;top:295px;width:1020px;height:420px;opacity:.5;box-shadow:0 10px 30px rgba(30,60,110,.08)}
+.sk2{left:290px;top:255px;width:1020px;height:420px;opacity:.78;box-shadow:0 10px 30px rgba(30,60,110,.10)}
+.skf{left:250px;top:215px;width:1020px;height:420px;padding:52px 60px 0;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05);overflow:hidden}
+.skh{display:flex;align-items:center;gap:16px;font-size:32px;color:#7F8794}.skh i{font-size:40px;color:#0A5FD8}
+.skl{margin:26px 0 0;font-size:44px;line-height:1.28;color:#141A26;letter-spacing:-.015em}.skl b{font-weight:600;color:#0A5FD8}
+.sks{position:absolute;left:0;right:0;bottom:0;height:150px;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #EEF0F4}
+.sks>div{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:0 60px}.sks .sp1{background:#F2F8FE;border-left:1px solid #E3ECF7}
+.sks em{font-style:normal;font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}.sks .sp1 em{color:#2C5FAE}
+.sks span{font-size:32px;color:#141A26}
+</style>
+<div class="sk sk1"></div><div class="sk sk2"></div>
+<div class="sk skf"><div class="skh"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i>${esc(spec.title)}</div><div class="skl">${lead}</div><div class="sks">${cols}</div></div>`;
+  }
   return `<style>
 .sk{position:absolute;border-radius:28px;background:#fff}
 .sk1{left:390px;top:170px;width:820px;height:140px;opacity:.5;box-shadow:0 10px 30px rgba(30,60,110,.08)}
@@ -330,7 +348,7 @@ if (heading !== undefined && !args.includes('--force')) {
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
 // A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
-const LAYOUTS = { 'before-after': ['default'], versus: ['overlap', 'table'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'] };
+const LAYOUTS = { 'before-after': ['default'], versus: ['overlap', 'table'], prompt: ['default'], hub: ['default'], stack: ['default', 'split'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'] };
 const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
 const VARIANT = spec.variant || LAYOUTS[MODE][0];

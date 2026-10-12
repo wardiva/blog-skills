@@ -10,7 +10,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They can never share a mode |
 | `slug` | yes | Output folder name and ledger key (unique per article) |
 | `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
-| `variant` | no | Layout variant of the mode. Today only `versus` has two: `overlap` (default) and `table`. The variety check counts mode + variant as one layout |
+| `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default) and `table`; `stack` has `default` and `split`. The variety check counts mode + variant as one layout |
 | `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]` and ranked `rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
 | `bg` | no | `wash`, `cool`, `white`, `flat`. Leave it out to auto-rotate |
@@ -80,6 +80,7 @@ One JSON file per article. Top-level fields shared by all modes:
   "items": ["Keep read-only legacy access for 6 to 12 months", "Scanned documents may not transfer cleanly"] }
 ```
 - `lead` is up to ~80 characters. `**bold**` marks the key phrase (shown in blue). `items` holds 1–3 bullets.
+- **Variant `"split"`** (definitions, "what is X", who-does-what): instead of `items`, set `"split": [{"label": "You", "text": "Log in through a browser"}, {"label": "Vendor", "text": "Patches and backups"}]`. The card's bottom half becomes two columns (the right one tinted blue), and the back cards fan to the lower right. Column text up to ~22 characters.
 
 ## Window (`"mode": "window"`; vendor lists, pricing tables)
 ```json
