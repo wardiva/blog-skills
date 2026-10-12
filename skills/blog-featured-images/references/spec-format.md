@@ -16,7 +16,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `cursor` | no | `[x, y]`: a pointer cue at that position. It must point at the key fact and never cover text |
 | `bleed` | no | `window` mode only: the window runs off the bottom and right edge, Base44 style |
 
-**Text limits keep things readable at 350×250.** Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
+**Text budget: 30 visible words per image, enforced by the renderer ("TEXT CHECK FAILED").** **Text limits keep things readable at 350×250.** Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
 
 ---
 
@@ -67,7 +67,7 @@ One JSON file per article. Top-level fields shared by all modes:
     { "name": "Dynamics 365", "sub": "$80/user/mo" }, { "name": "Acumatica", "sub": "From $6,396/yr" },
     { "name": "Odoo", "sub": "$24.90/user/mo" }, { "name": "Sage Intacct", "sub": "From $15K/yr" } ] }
 ```
-- 6 or 7 cards (use 7 for a "7 best" list, so the image matches the title): names up to ~17 characters, `sub` is one fact (the article's starting price, shortened).
+- 6 or 7 cards (use 7 for a "7 best" list, so the image matches the title): names up to ~17 characters. **Cards show names only.** `sub` is ignored unless `"showSubs": true`, which you set only when the second line is the article's point.
 - Optional `"hubLabel": { "big": "7", "small": "Best ERP" }` replaces the icon on the blue tile. Use it to carry the title's key words (the hub has no headline).
 - `hubIcon` is any Phosphor class (https://phosphoricons.com), e.g. `ph-fill ph-heartbeat`, `ph-fill ph-graduation-cap`, `ph-fill ph-shield-check`.
 

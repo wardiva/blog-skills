@@ -84,7 +84,7 @@ ${card(L, 250, -3, 'o1')}${card(R, 790, 3, 'o2', '<div class="ovs">VS</div>')}${
 function hub() {
   const n = Math.min(spec.cards.length, 7), T = n === 7 ? 390 : 450;      // 7 cards: tile moves up, 7th card sits below it
   const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 672, 2]];
-  const CW = 320, CH = 160;   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
+  const CW = 320, CH = spec.showSubs ? 160 : 112;   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
   let arrows = '', cards = '';
   spec.cards.slice(0, n).forEach((cd, i) => {
     const [x, y, r] = slots[i], left = i < 3;
@@ -96,14 +96,14 @@ function hub() {
     const ang = Math.atan2(ey - qy, ex - qx), h = 26;
     const p1 = [ex - h * Math.cos(ang - 0.5), ey - h * Math.sin(ang - 0.5)], p2 = [ex - h * Math.cos(ang + 0.5), ey - h * Math.sin(ang + 0.5)];
     arrows += `<path d="M${sx} ${sy} Q ${qx} ${qy} ${ex} ${ey}"/><path d="M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} L ${ex} ${ey} L ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}"/>`;
-    cards += `<div class="hc" style="left:${x}px;top:${y}px;transform:rotate(${r}deg)"><b>${esc(cd.name)}</b><span>${esc(cd.sub)}</span></div>`;
+    cards += `<div class="hc" style="left:${x}px;top:${y}px;transform:rotate(${r}deg)"><b>${esc(cd.name)}</b>${spec.showSubs && cd.sub ? `<span>${esc(cd.sub)}</span>` : ''}</div>`;
   });
   return `<style>
 body{background:#F1F0EC}body:before{display:none}
 .tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
 .tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap}
 .hc{position:absolute;width:${CW}px;height:${CH}px;background:#fff;border-radius:20px;border:2px solid #E3E1DC;display:flex;flex-direction:column;justify-content:center;padding:0 26px;gap:8px}
-.hc b{white-space:nowrap;font-size:29px;font-weight:500;color:#141A26;letter-spacing:-.01em}.hc span{font-size:20px;color:#7F8794}
+.hc b{white-space:nowrap;font-size:30px;font-weight:500;color:#141A26;letter-spacing:-.01em}.hc span{font-size:20px;color:#7F8794}
 svg.arr{position:absolute;inset:0;overflow:visible}
 </style>
 <svg class="arr" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
@@ -388,6 +388,16 @@ let out = html;
 for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
 
 fs.mkdirSync(outDir, { recursive: true });
+// ---- text budget (forced, user rule: "need to show less text"): count every visible word and refuse text-heavy images ----
+const MAX_WORDS = 30;
+const visible = html.slice(html.indexOf('<body')).replace(/<(style|script|svg)[\s\S]*?<\/\1>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ');
+const WORDS = (visible.match(/[A-Za-z0-9$€£%][^\s]*/g) || []).length;
+if (WORDS > MAX_WORDS && !args.includes('--force')) {
+  console.error(`TEXT CHECK FAILED: ${WORDS} words on the image (max ${MAX_WORDS}).
+Cut secondary lines first: prices or subs that are not the point of the article, legends that repeat a row, extra bullets.
+Keep only the words that tell the story in 2 seconds.`);
+  process.exit(2);
+}
 const file = path.join(outDir, 'page.html');
 fs.writeFileSync(file, out);
 const raw = path.join(outDir, 'raw.png');
@@ -412,4 +422,4 @@ try {
   fs.writeFileSync(historyFile, JSON.stringify([...readJson(historyFile).filter((e) => e.slug !== slug), entry], null, 1));
 } finally { fs.rmSync(lock, { recursive: true, force: true }); }
 console.log(`${outDir}
-  layout=${LAYOUT} bg=${BG} category=${category}`);
+  layout=${LAYOUT} bg=${BG} category=${category} words=${WORDS}/${MAX_WORDS}`);

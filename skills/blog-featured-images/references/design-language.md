@@ -207,9 +207,15 @@ The user approved the plain Odoo vs Sage Intacct window (4 rows, a question, one
 - **No stacked explanations.** Don't show the same fact twice in different forms (e.g. a heading *and* bars *and* bullets for the same numbers).
 - **UI mockups (window, prompt panel) keep UI-sized text:** rows about 24px, subs about 19px, bullets about 22px. They should look like a real app, not a slide. The "Body text must breathe" sizes apply to free-standing cards and lists, not to text inside a mock app window.
 - **The rule of thumb is subtraction.** Before rendering, remove one element and ask whether the image still tells the story. If it does, keep it removed.
-- Roughly **60 words or fewer** of visible text on the whole image, and fewer is better.
+- **30 words maximum** (renderer-enforced; see "Text budget" below), and fewer is better.
 
 ---
+
+### Text budget: renderer-enforced (user rule, 2026-10-13: "need to show less text… force this rule")
+- **Hard cap: 30 visible words** on the whole image. The renderer counts every word and refuses anything over it with **"TEXT CHECK FAILED"**. Every render prints `words=N/30`. Aim for 15–25.
+- **Secondary lines only when they ARE the story.** A price belongs on a pricing or "vs" cost image, but not on a "7 best" list, where the names are the story. The first failure: the 7 Best ERP hub showed a price under every product name, and the user said "pricing text wasn't needed".
+- **Hub cards are names only** by default. Add `"showSubs": true` only when the second line is the article's point.
+- Cut in this order: subs that aren't the point → legends that repeat a row → extra bullets → subtitles.
 
 ## Typography balance (user rule, 2026-10-13: "font should look visually balanced")
 

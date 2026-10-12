@@ -43,6 +43,8 @@ QA failures in the test traced back to things the Orchestrator could have checke
 - **Approved VS badge:** blue gradient, white "VS". On overlap cards it sits on the seam. On the table it sits where the header line crosses the column line, with **no glow** (white ring and a faint neutral shadow).
 - **Rejected:** split colour fields, small grey chips, badges straddling a card edge, heavy blue shadows, dark backgrounds, AI-looking art.
 
+- **Less text is forced.** At most 30 words (renderer-enforced). The 7 Best ERP hub failed the user's eye with prices under every name: on a "best of" list the names are the story. Ask of every line: "is this the point of the article?" If not, cut it.
+
 ## 4. Variety must be structural
 
 - Two images were "exact same" because the old check only knew one output folder. Now one site-wide history per brand counts every render (`~/.blog-featured-images/history-<brand>.json`).

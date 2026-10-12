@@ -26,7 +26,7 @@ Read `references/lessons.md` first. In short:
 0. **The heading mirrors the blog title.** Use the title's own words and meaning, just shorter (drop the year and filler). Never reword creatively. Set `"articleTitle"` in every spec; the renderer blocks headings that drift ("HEADING CHECK FAILED").
 1. **Relatable.** Read the full article. Use only its own facts (numbers, names, steps, comparisons). Never invent figures or use generic concepts.
 2. **Easy to understand.** One idea, one focal point, short real words. Check it at 350×250.
-3. **Minimal, never text-heavy.** One idea, the fewest facts that prove it (3–4 rows or 2–3 bullets), about 60 words max. Whitespace is good; never add elements just to fill space. See "Minimal rule" in `references/design-language.md`.
+3. **Minimal, never text-heavy (hard-enforced).** At most **30 visible words**: the renderer refuses more with "TEXT CHECK FAILED". One idea, the fewest facts that prove it. Show a secondary line (price, sub) only when it IS the story; a "best of" list shows names only. Whitespace is good; never fill space. See "Minimal rule" and "Text budget" in `references/design-language.md`.
 4. **Different every time (hard-enforced).** A **layout** (mode + variant) never repeats in a category until every layout has been used there, and same-topic articles never share a mode. The renderer checks a **site-wide history** (`~/.blog-featured-images/history-<brand>.json`) that records every image ever rendered for that brand, whatever folder it went to, so test renders and alternates count too. Compositions must also differ in **skeleton** (block arrangement), not just text; see "Skeleton rule".
 
 ## The 10 compositions (`mode`)
@@ -80,7 +80,7 @@ node "<skill-dir>/scripts/render.mjs" "<spec>.json" --out "featured-images/<slug
 ```
 Outputs: `master.png` (1600×900), `7x5.webp` (theme crop), `16x9-1200.webp` (social/OG), `card-350x250.png` (size check). Each render is recorded in the local `featured-images/.featured-ledger.json` **and** the site-wide history.
 
-**If you see "HEADING CHECK FAILED", rewrite the heading from the title's key words.** **If you see "VARIETY CHECK FAILED", use one of the layouts it lists (set `mode`, plus `variant` when it is not `default`) and rewrite the spec.** Never use `--force` unless the user explicitly asks for a repeat, and never work around the check by rendering into a different folder. Bleed, cursor, background or different text do **not** make a different layout.
+**If you see "HEADING CHECK FAILED", rewrite the heading from the title's key words.** **If you see "TEXT CHECK FAILED", cut words (subs that aren't the point first) until you are at 30 or fewer.** **If you see "VARIETY CHECK FAILED", use one of the layouts it lists (set `mode`, plus `variant` when it is not `default`) and rewrite the spec.** Never use `--force` unless the user explicitly asks for a repeat, and never work around the check by rendering into a different folder. Bleed, cursor, background or different text do **not** make a different layout.
 
 ### 5. Check, then fix (QA agent, then Maker)
 Open `master.png` and `card-350x250.png` and confirm:

@@ -80,7 +80,7 @@ Return, per image: PASS or FAIL, and for each FAIL the rule broken and the exact
 - Real words only, no jargon the article doesn't use.
 
 **3. Less text (minimal)**
-- About 60 words or fewer on the whole image, 3–4 rows or 2–3 bullets at most.
+- 30 words maximum (the renderer enforces it; check `words=N/30` in the render output). FAIL any secondary line (price, sub, legend) that isn't the point of the article, even under 30.
 - No fact shown twice, and nothing added just to fill space.
 
 **4. Visually balanced**
