@@ -27,6 +27,7 @@ Read `references/lessons.md` first. In short:
 1. **Relatable.** Read the full article. Use only its own facts (numbers, names, steps, comparisons). Never invent figures or use generic concepts.
 2. **Easy to understand.** One idea, one focal point, short real words. Check it at 350×250.
 3. **Minimal, never text-heavy (hard-enforced).** At most **30 visible words**: the renderer refuses more with "TEXT CHECK FAILED". One idea, the fewest facts that prove it. Show a secondary line (price, sub) only when it IS the story; a "best of" list shows names only. Whitespace is good; never fill space. See "Minimal rule" and "Text budget" in `references/design-language.md`.
+5. **Logos where products are named.** Set `"logo": "<domain>"` on every named product (hub cards, versus sides, window rows, ranked rows). The renderer fetches it through the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon as an app tile → lettermark) in the user-approved style A (original colours, small white tile). Logos stay small and secondary. See "Logos" in `references/design-language.md`. Brandfetch client ID: `~/.blog-featured-images/config.json` (local, never committed).
 4. **Different every time (hard-enforced).** A **layout** (mode + variant) never repeats in a category until every layout has been used there, and same-topic articles never share a mode. The renderer checks a **site-wide history** (`~/.blog-featured-images/history-<brand>.json`) that records every image ever rendered for that brand, whatever folder it went to, so test renders and alternates count too. Compositions must also differ in **skeleton** (block arrangement), not just text; see "Skeleton rule".
 
 ## The 10 compositions (`mode`)
@@ -69,7 +70,7 @@ Write a short plan table: article → mode → background → key facts. Rules:
 Show the plan to the user when doing more than 3 images.
 
 ### 3. Write the specs (Maker)
-One `<slug>.json` per article, following `references/spec-format.md`. Always set `articleTitle` (the real H1), `brand`, `category`, `slug`, and `topic` when a topic is shared. Keep text short so nothing wraps. Look at `examples/` for one approved spec per mode.
+One `<slug>.json` per article, following `references/spec-format.md`. Always set `articleTitle` (the real H1), `brand`, `category`, `slug`, `topic` when a topic is shared, and `logo` (the product's domain) on every named product. Keep text short so nothing wraps. Look at `examples/` for one approved spec per mode.
 
 New site? Copy `brands/_template.json` to `brands/<site>.json` and fill in the site's real brand colours (check the live site).
 

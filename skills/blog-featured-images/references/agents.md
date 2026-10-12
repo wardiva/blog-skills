@@ -49,7 +49,8 @@ Read SKILL.md, references/design-language.md and references/spec-format.md first
 For each article below, in order:
 1. Read the article file <featured-images>/articles/<slug>.md (already fetched; do not fetch the URL). Use only its own facts.
 2. Write <featured-images>/specs/<slug>.json for the ASSIGNED layout (mode + variant). Set articleTitle, brand, category, topic, slug.
-   Minimal rule: one idea, 3–4 rows or 2–3 bullets, about 60 words max, no fact shown twice, nothing added to fill space.
+   Minimal rule: one idea, at most 30 words (the renderer enforces it), no fact shown twice, nothing added to fill space.
+   Logos: add "logo": "<official domain>" to every named product (e.g. "odoo.com", "sage.com"). Don't pick logo files; the renderer's chain does it.
 3. Render it: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>". (Other Makers render in parallel; that's fine.)
    Never use --force. If a check fails, fix the spec within the assigned layout; if the layout itself is refused, stop and report it.
 4. Open master.png and card-350x250.png and fix obvious wraps or clipping.
@@ -92,6 +93,10 @@ Return, per image: PASS or FAIL, and for each FAIL the rule broken and the exact
 **5. True to the article**
 - The heading mirrors the blog title's own words, shorter.
 - Every number and name appears in the article.
+
+**5b. Logos**
+- Every named product has a logo, and every logo loaded (no broken image, no stray letter tile where a real logo exists).
+- Logos read as one set (style A: original colours in small white tiles; app-style tiles are fine). They stay small and never compete with the hero.
 
 **6. In the design language**
 - Approved backgrounds, white cards, blue accent, warm-grey/blue labels, grain.

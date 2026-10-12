@@ -11,7 +11,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `slug` | yes | Output folder name and ledger key (unique per article) |
 | `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
 | `variant` | no | Layout variant of the mode. Today only `versus` has two: `overlap` (default) and `table`. The variety check counts mode + variant as one layout |
-| `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]` and ranked `rows[]`. Renders the Brandfetch logo beside the name |
+| `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]` and ranked `rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
 | `bg` | no | `wash`, `cool`, `white`, `flat`. Leave it out to auto-rotate |
 | `frame` | no | Faint grid plus registration squares. On by default only for `stat`, `ranked`, `timeline` and `window`; off for the rest. `true` or `false` overrides. Use it only where it fits the vibe |
