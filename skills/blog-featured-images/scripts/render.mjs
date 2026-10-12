@@ -153,6 +153,8 @@ function stack() {
 // "window" (Granola app-window shots): a whole macOS-style window, list pane + detail pane, real text.
 function appwin() {
   const W = spec.window || {}, L = spec.list, D = spec.detail;
+  const bars = D.bars || [], bmax = Math.max(1, ...bars.map((b) => b.pct || 0)), bhi = D.highlight ?? 0;
+  const barsHtml = bars.length ? `<div class="wbs">${bars.map((b, i) => `<div class="wbr${i === bhi ? ' on' : ''}"><div class="wbt"><b>${esc(b.name)}</b><em>${esc(b.value)}</em></div><div class="wtk"><i style="width:${Math.max(4, (100 * (b.pct || 0)) / bmax)}%"></i></div></div>`).join('')}</div>` : '';
   const rows = L.rows.slice(0, 5).map((r) => `<div class="wr"><span class="wav">${esc((r.title || '?').trim()[0])}</span><div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
   return `<style>
 .win{position:absolute;left:${spec.bleed ? 230 : 210}px;top:${spec.bleed ? 150 : 95}px;width:${spec.bleed ? 1300 : 1180}px;height:${spec.bleed ? 820 : 720}px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
@@ -162,17 +164,19 @@ function appwin() {
 .wb{display:grid;grid-template-columns:640px 1fr;height:654px}
 .wl{padding:40px 44px;border-right:1px solid #EEF0F4}
 .wi{width:54px;height:54px;border-radius:14px;background:#E3F0FD;display:grid;place-items:center;font-size:30px;color:#0A5FD8}
-.wl h2{margin:16px 0 4px;font-size:42px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
-.wr{display:flex;align-items:center;gap:16px;padding:13px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
-.wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
-.wd{padding:40px 40px}.wq{margin-left:${spec.bleed ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
-.wd h3{margin:30px 0 16px;font-size:32px;font-weight:600;line-height:1.2;letter-spacing:-.015em}
-.wd ul{margin:0;padding:0 0 0 24px;display:grid;gap:12px;font-size:22px;line-height:1.4;color:#5D6675}
+.wl h2{margin:16px 0 4px;font-size:46px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:26px;color:#7F8794;margin-bottom:20px}
+.wr{display:flex;align-items:center;gap:18px;padding:12px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
+.wr b{display:block;font-size:29px;font-weight:500}.wr span{font-size:22px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:26px;color:#141A26;font-weight:500;white-space:nowrap}
+.wd{padding:40px ${spec.bleed ? 150 : 40}px 40px 40px}.wq{margin-left:${spec.bleed ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:14px 22px;font-size:24px;color:#141A26}
+.wd h3{margin:30px 0 22px;font-size:40px;font-weight:600;line-height:1.2;letter-spacing:-.015em}
+.wbs{display:grid;gap:26px;margin:6px 0 34px}.wbr .wbt{display:flex;justify-content:space-between;align-items:baseline;font-size:26px;color:#5D6675}.wbr .wbt b{font-weight:500;color:#141A26}.wbr .wbt em{font-style:normal;font-weight:600;color:#141A26}
+.wbr .wtk{margin-top:12px;height:20px;border-radius:10px;background:#EEF2F7}.wbr .wtk i{display:block;height:100%;border-radius:10px;background:#B9C4D3}.wbr.on .wtk i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}.wbr.on .wbt em{color:#0A5FD8}
+.wd ul{margin:0;padding:0 0 0 26px;display:grid;gap:14px;font-size:26px;line-height:1.4;color:#5D6675}
 </style>
 <div class="win"><div class="wt"><i class="d" style="background:#FF5F57"></i><i class="d" style="background:#FEBC2E"></i><i class="d" style="background:#28C840"></i>
 <span class="s"><i class="ph ph-magnifying-glass"></i>${esc(W.search || 'Search')}</span><span class="a">${esc(W.action || 'New')}</span></div>
 <div class="wb"><div class="wl"><div class="wi"><i class="${esc(L.icon || 'ph ph-list-bullets')}"></i></div><h2>${esc(L.heading)}</h2><div class="ws">${esc(L.sub || '')}</div>${rows}</div>
-<div class="wd"><div class="wq">${esc(D.question)}</div><h3>${esc(D.heading)}</h3><ul>${D.points.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div></div>`;
+<div class="wd"><div class="wq">${esc(D.question)}</div><h3>${esc(D.heading)}</h3>${barsHtml}<ul>${(D.points || []).map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div></div>`;
 }
 
 // "timeline": steps on a track, steps up to the highlight filled, a callout card on the highlighted step.
