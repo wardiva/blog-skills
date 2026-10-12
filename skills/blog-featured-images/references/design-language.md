@@ -135,6 +135,14 @@ Check `master.png` and `card-350x250.png` for:
 
 Then compare the batch side by side as a contact sheet, and confirm no two images look alike.
 
+### Approved reference: "What is Cloud ERP" (user: "I really like it", 2026-10-13)
+`examples/what-is-cloud-erp.before-after-flow.json` (layout `before-after/flow`). **Why it works:**
+- One idea told visually: server icon (muted, dashed card) → hand-drawn arrow → blue cloud tile (lifted white card).
+- 15 words, all labels, no sentences.
+- Every word traces to the article.
+
+Aim for this: **icon or visual first, text as short labels, one clear before → after or contrast.**
+
 ### Approved reference
 The 10-composition sheet (rendered from the specs in `examples/`) is the quality bar. New images should look like they belong on that sheet.
 
