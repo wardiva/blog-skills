@@ -165,6 +165,11 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ---
 
+## Lessons learned and speed
+What each session taught us (speed tools, pre-flight checks, taste, gotchas) lives in the skill's `references/lessons.md`. Read it before every batch. The top rule is to **work fast**: parallel reads, reserved layouts, parallel Makers, one QA contact sheet.
+
+---
+
 ## Three-agent rule (user rule, 2026-10-13)
 
 Featured images are always made by **three agents**: an **Orchestrator** (plans and assigns a distinct layout per article, runs the loop, delivers), a **Maker** (writes the spec and renders) and a separate **QA agent** (judges every image and never edits). QA checks:

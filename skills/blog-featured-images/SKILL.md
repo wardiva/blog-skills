@@ -9,7 +9,18 @@ description: Generate premium, article-specific blog featured images (1600x900 p
 
 Make featured images that are **relatable to the article**, **understood in 2 seconds**, and **different from every other image in the same category**, while all of them look like one family.
 
-The full rulebook (colours, type, cards, "never" list) is in `references/design-language.md`. The JSON format for every composition is in `references/spec-format.md`. The three-agent workflow is in `references/agents.md`. Read all three before your first image in a session.
+The full rulebook (colours, type, cards, "never" list) is in `references/design-language.md`. The JSON format for every composition is in `references/spec-format.md`. The three-agent workflow is in `references/agents.md` and the lessons learned are in `references/lessons.md`. Read them before your first image in a session.
+
+## Work fast (user rule: "WORK FAST")
+Read `references/lessons.md` first. In short:
+- Read all URLs at once (`scripts/read-articles.mjs`, agent-browser).
+- Reserve all layouts in one command (`scripts/plan.mjs`).
+- Start every Maker in one message, in the background.
+- Run one QA agent on one contact sheet (`scripts/sheet.mjs`).
+- Fix by SendMessage, never by new agents.
+- Run pre-flight checks before briefing (item count, name lengths, title words).
+- Never sit idle, deliver each passed image at once, and keep updates to one line.
+- For style changes, show A/B/C side by side.
 
 ## The hard rules
 0. **The heading mirrors the blog title.** Use the title's own words and meaning, just shorter (drop the year and filler). Never reword creatively. Set `"articleTitle"` in every spec; the renderer blocks headings that drift ("HEADING CHECK FAILED").
