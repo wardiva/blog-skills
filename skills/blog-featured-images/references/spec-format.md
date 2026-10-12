@@ -5,8 +5,11 @@ One JSON file per article. Top-level fields shared by all modes:
 | Field | Required | Meaning |
 |---|---|---|
 | `brand` | no | Brand file name in `brands/` (e.g. `"medsoftwarehub"`). Defaults to `default` |
-| `slug` | no | Output folder name. Defaults to the spec file name |
-| `mode` | no | Composition: omit for **before/after**, or `"versus"`, `"prompt"`, `"hub"` |
+| `category` | yes | The site's blog category. The variety ledger never repeats a recent mode within it |
+| `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They can never share a mode |
+| `slug` | yes | Output folder name and ledger key (unique per article) |
+| `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
+| `bg` | no | `wash`, `cool`, `white`, `flat`. Leave it out to auto-rotate |
 
 **Text limits keep things readable at 350×250.** Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
 
@@ -57,3 +60,52 @@ One JSON file per article. Top-level fields shared by all modes:
 ```
 - Exactly 6 cards: names up to ~17 characters, `sub` is one fact.
 - `hubIcon` is any Phosphor class (https://phosphoricons.com), e.g. `ph-fill ph-heartbeat`, `ph-fill ph-graduation-cap`, `ph-fill ph-shield-check`.
+
+## Stack (`"mode": "stack"`; one key rule or warning)
+```json
+{ "mode": "stack", "icon": "ph ph-shield-check", "title": "Before you switch EMR vendors",
+  "lead": "Extract and **validate every record** before you cut off the old system.",
+  "items": ["Keep read-only legacy access for 6 to 12 months", "Scanned documents may not transfer cleanly"] }
+```
+- `lead` is up to ~80 characters. `**bold**` marks the key phrase (shown in blue). `items` holds 1–3 bullets.
+
+## Window (`"mode": "window"`; vendor lists, pricing tables)
+```json
+{ "mode": "window", "window": { "search": "Search EMR vendors", "action": "Compare" },
+  "list": { "icon": "ph ph-currency-dollar", "heading": "EMR pricing", "sub": "Per provider, per month",
+            "rows": [ { "title": "DrChrono", "sub": "Base tier", "meta": "$30" } ] },
+  "detail": { "question": "What does a 2 to 5 provider practice pay?", "heading": "$40K to $150K in year one",
+              "points": ["Implementation: $5K to $20K", "Training: $1K to $5K"] } }
+```
+- `rows` holds up to 5 items. `points` holds 2–4 items.
+
+## Timeline (`"mode": "timeline"`; processes, implementation, durations)
+```json
+{ "mode": "timeline", "headline": "Six steps to a safe EMR switch", "sub": "No record leaves the old system until it is validated",
+  "steps": [ { "label": "Audit", "sub": "Count records" }, { "label": "Validate", "sub": "Spot-check charts" }, { "label": "Go live", "sub": "Decommission" } ],
+  "highlight": 1, "callout": { "title": "6 to 12 weeks", "text": "Typical migration, planning to completion" } }
+```
+- `steps` holds 3–6 items, each label up to ~14 characters. `highlight` is the index of the step to emphasise.
+
+## Checklist (`"mode": "checklist"`; how to choose, requirements)
+```json
+{ "mode": "checklist", "title": "Small business ERP check",
+  "items": [ { "text": "Cost per user vs volume", "done": true }, { "text": "Core modules you need today", "done": false } ] }
+```
+- `items` holds 3–7 entries, each up to ~32 characters. The first unchecked item is shown as "current".
+
+## Stat (`"mode": "stat"`; one headline number)
+```json
+{ "mode": "stat", "value": "$48,000", "caption": "a year to license 50 users on Business Central",
+  "sub": "Before implementation, which adds $25,000 to $80,000",
+  "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "value": "$48,000/yr", "pct": 48000 },
+                                                 { "name": "Acumatica base", "value": "$6,396/yr", "pct": 6396 } ] } }
+```
+- `value` is up to ~8 characters and is auto-sized. Card `rows` holds 2–4 items; `pct` is the raw number used to size the bars.
+
+## Ranked (`"mode": "ranked"`; rankings by a real metric)
+```json
+{ "mode": "ranked", "headline": "Cheapest EMRs per provider", "sub": "Published monthly prices, 2026", "winner": 0,
+  "rows": [ { "name": "DrChrono", "value": "$30/mo", "pct": 30 }, { "name": "SimplePractice", "value": "$49+/mo", "pct": 49 } ] }
+```
+- `rows` holds 3–6 items, names up to ~16 characters. `pct` sets bar length. `winner` is the highlighted row.

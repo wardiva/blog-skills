@@ -1,4 +1,4 @@
-{ "brand": "medsoftwarehub", "mode": "prompt",
+{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "prompt",
   "panel": { "label": "Year-one EMR cost", "rows": [
     { "title": "Solo provider", "sub": "$15,000 to $30,000" },
     { "title": "2 to 5 providers", "sub": "$40,000 to $150,000" },

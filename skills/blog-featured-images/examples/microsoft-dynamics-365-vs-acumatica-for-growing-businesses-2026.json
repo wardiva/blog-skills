@@ -1,4 +1,4 @@
-{ "brand": "medsoftwarehub", "mode": "versus",
+{ "brand": "medsoftwarehub", "category": "clinical-software", "mode": "versus",
   "left":  { "label": "Dynamics 365", "heading": "Business Central",
              "items": ["$80 per user / month", "Native Teams and Outlook", "Up to 200 companies"] },
   "right": { "label": "Acumatica", "heading": "Cloud ERP",

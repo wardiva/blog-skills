@@ -24,7 +24,7 @@ Or invoke it directly with `/blog-featured-images`.
 
 - `SKILL.md`: workflow and the three hard rules (relatable, easy to understand, different every time)
 - `references/design-language.md`: colours, type, cards and composition archetypes
-- `references/spec-format.md`: spec format for each composition (before/after, versus, prompt, hub)
-- `scripts/render.mjs`: the renderer
+- `references/spec-format.md`: spec format for all 10 compositions (before-after, versus, prompt, hub, stack, window, timeline, checklist, stat, ranked)
+- `scripts/render.mjs`: the renderer, with a variety ledger that blocks a category (or two articles on the same topic) from reusing a composition
 - `brands/`: brand colour files, with `_template.json` for new sites
-- `examples/`: four sample specs
+- `examples/`: one approved spec per composition

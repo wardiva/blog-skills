@@ -50,13 +50,16 @@ Rendered by `scripts/render.mjs`, selected with `"mode"` in the article spec.
 | **Versus** | `versus` | "X vs Y" comparisons | Two equal cards (name, plan, 3 key facts) with a "vs" chip, plus a legend naming the key difference |
 | **Prompt** | `prompt` | Cost, pricing, "what is", FAQ-style articles | A faded app panel listing the article's figures, a big headline, and a pill input bar with chips and a blue send button |
 | **Hub** | `hub` | "Best X" listicles, integrations, ecosystems | A blue center tile (Phosphor icon), six tilted white cards (name + one fact), hand-drawn arrows, flat warm background |
-| **Stack** *(to build)* | `stack` | Checklists, briefs, guides with one key takeaway | One front card holding the takeaway over 2–3 offset cards behind it |
-| **Window** *(to build)* | `window` | Feature/software walkthroughs | A whole app window (sidebar + list + detail) with real labels, on the wash |
-| **Split** *(to build)* | `split` | Stories, case studies, people | A color block with the title on one side and a photo on the other |
+| **Stack** | `stack` | Guides with one key rule or warning | One front card holding the takeaway over 2 offset cards |
+| **Window** | `window` | Vendor lists, pricing tables, walkthroughs | A whole app window: list pane + detail pane, real text |
+| **Timeline** | `timeline` | Processes, implementation, "how long" | Steps on a track, one highlighted, plus a callout card |
+| **Checklist** | `checklist` | How to choose, requirements | A tilted checklist card with progress |
+| **Stat** | `stat` | One headline number | A giant number, caption, and breakdown card |
+| **Ranked** | `ranked` | Rankings by a real metric | Named bars, winner in the accent |
 
 ### Picking an archetype
 1. Match the article type (table above).
-2. Check the same category's recent posts. If the natural archetype was used by a neighbour, choose the next-best one and **vary the background** (wash, flat or cool).
+2. Check the same category's recent posts (the renderer's ledger blocks a mode used within the last 6 posts, and any mode already used by an article on the same `topic`). If the natural archetype was used by a neighbour, choose the next-best one and **vary the background** (wash, flat or cool).
 3. Vary scale and depth too: a tight crop of one element vs. a whole window; flat vs. stacked.
 
 ---

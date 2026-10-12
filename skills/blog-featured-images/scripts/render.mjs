@@ -113,7 +113,163 @@ h1{position:absolute;left:0;right:0;top:405px;margin:0;text-align:center;font-si
 <div class="bar"><span class="ph-txt">${esc(spec.placeholder)}</span>${chips}<span class="go"><i class="ph-bold ph-arrow-up"></i></span></div>`;
 }
 
-const modes = { versus, hub, prompt };
+// "stack" (Granola "Brief prepared overnight"): one front card holding the takeaway over two offset cards.
+function stack() {
+  const lead = esc(spec.lead).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  return `<style>
+.sk{position:absolute;border-radius:28px;background:#fff}
+.sk1{left:390px;top:170px;width:820px;height:140px;opacity:.5;box-shadow:0 10px 30px rgba(30,60,110,.08)}
+.sk2{left:330px;top:215px;width:940px;height:140px;opacity:.78;box-shadow:0 10px 30px rgba(30,60,110,.10)}
+.skf{left:270px;top:265px;width:1060px;height:430px;padding:56px 64px;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)}
+.skh{display:flex;align-items:center;gap:16px;font-size:32px;color:#7F8794}.skh i{font-size:40px;color:#0A5FD8}
+.skl{margin:30px 0 28px;font-size:46px;line-height:1.28;color:#141A26;letter-spacing:-.015em}.skl b{font-weight:600;color:#0A5FD8}
+.sku{margin:0;padding:0 0 0 34px;display:grid;gap:14px;font-size:32px;line-height:1.35;color:#7F8794}.sku li:first-child{color:#141A26}
+</style>
+<div class="sk sk1"></div><div class="sk sk2"></div>
+<div class="sk skf"><div class="skh"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i>${esc(spec.title)}</div><div class="skl">${lead}</div><ul class="sku">${spec.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+}
+
+// "window" (Granola app-window shots): a whole macOS-style window, list pane + detail pane, real text.
+function appwin() {
+  const W = spec.window || {}, L = spec.list, D = spec.detail;
+  const rows = L.rows.slice(0, 5).map((r) => `<div class="wr"><span class="wav">${esc((r.title || '?').trim()[0])}</span><div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
+  return `<style>
+.win{position:absolute;left:210px;top:95px;width:1180px;height:720px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
+.wt{height:66px;display:flex;align-items:center;gap:10px;padding:0 26px;border-bottom:1px solid #EEF0F4;background:#FAFBFC}
+.wt i.d{width:14px;height:14px;border-radius:50%}.wt .s{margin:0 auto;width:440px;height:38px;border-radius:10px;background:#EEF0F4;display:flex;align-items:center;justify-content:center;gap:10px;font-size:18px;color:#7F8794}
+.wt .a{font-size:18px;font-weight:500;color:#141A26;background:#EEF0F4;border-radius:10px;padding:8px 16px}
+.wb{display:grid;grid-template-columns:640px 1fr;height:654px}
+.wl{padding:40px 44px;border-right:1px solid #EEF0F4}
+.wi{width:54px;height:54px;border-radius:14px;background:#E3F0FD;display:grid;place-items:center;font-size:30px;color:#0A5FD8}
+.wl h2{margin:16px 0 4px;font-size:42px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
+.wr{display:flex;align-items:center;gap:16px;padding:13px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
+.wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
+.wd{padding:40px 40px}.wq{margin-left:auto;width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
+.wd h3{margin:30px 0 16px;font-size:32px;font-weight:600;line-height:1.2;letter-spacing:-.015em}
+.wd ul{margin:0;padding:0 0 0 24px;display:grid;gap:12px;font-size:22px;line-height:1.4;color:#5D6675}
+</style>
+<div class="win"><div class="wt"><i class="d" style="background:#FF5F57"></i><i class="d" style="background:#FEBC2E"></i><i class="d" style="background:#28C840"></i>
+<span class="s"><i class="ph ph-magnifying-glass"></i>${esc(W.search || 'Search')}</span><span class="a">${esc(W.action || 'New')}</span></div>
+<div class="wb"><div class="wl"><div class="wi"><i class="${esc(L.icon || 'ph ph-list-bullets')}"></i></div><h2>${esc(L.heading)}</h2><div class="ws">${esc(L.sub || '')}</div>${rows}</div>
+<div class="wd"><div class="wq">${esc(D.question)}</div><h3>${esc(D.heading)}</h3><ul>${D.points.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div></div>`;
+}
+
+// "timeline": steps on a track, steps up to the highlight filled, a callout card on the highlighted step.
+function timeline() {
+  const n = spec.steps.length, h = spec.highlight ?? n - 1, x = (i) => 270 + i * (1060 / (n - 1));
+  const cw = 440, cx = Math.min(Math.max(x(h) - cw / 2, 210), 1390 - cw);
+  const steps = spec.steps.map((s, i) => `<div class="ts${i < h ? ' done' : ''}${i === h ? ' on' : ''}" style="left:${x(i)}px"><b>${esc(s.label)}</b><i></i><span>${esc(s.sub || '')}</span></div>`).join('');
+  return `<style>
+.th{position:absolute;left:210px;top:150px;font-size:58px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
+.tsb{position:absolute;left:212px;top:228px;font-size:28px;color:#7F8794}
+.tt{position:absolute;left:270px;top:665px;width:1060px;height:8px;border-radius:4px;background:#DDE2EA}
+.tf{position:absolute;left:270px;top:665px;width:${x(h) - 270}px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
+.ts{position:absolute;top:590px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;width:240px;text-align:center}
+.ts b{font-size:26px;font-weight:500;color:#5D6675;white-space:nowrap;height:40px}
+.ts i{margin-top:22px;width:30px;height:30px;border-radius:50%;background:#fff;border:4px solid #C9D0DB}
+.ts span{margin-top:18px;font-size:21px;color:#9AA3B2;white-space:nowrap}
+.ts.done i{background:#0A5FD8;border-color:#0A5FD8}.ts.done b{color:#141A26}
+.ts.on i{width:46px;height:46px;margin-top:14px;background:#0A5FD8;border-color:#fff;box-shadow:0 0 0 8px rgba(10,95,216,.18)}.ts.on b{color:#0A5FD8;font-weight:600}
+.tc{position:absolute;left:${cx}px;top:360px;width:${cw}px;background:#fff;border-radius:20px;padding:26px 30px;box-shadow:0 24px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
+.tc b{display:block;font-size:30px;font-weight:600;color:#141A26}.tc span{display:block;margin-top:8px;font-size:22px;line-height:1.35;color:#7F8794}
+</style>
+<div class="th">${esc(spec.headline)}</div><div class="tsb">${esc(spec.sub || '')}</div>
+<div class="tt"></div><div class="tf"></div>${steps}
+<div class="tc"><b>${esc(spec.callout.title)}</b><span>${esc(spec.callout.text)}</span></div>`;
+}
+
+// "checklist": a tilted checklist card with real items, progress pill and bar.
+function checklist() {
+  const done = spec.items.filter((i) => i.done).length, total = spec.items.length;
+  const ch = 230 + Math.min(total, 7) * 66, ct = Math.round((900 - ch) / 2);
+  const items = spec.items.slice(0, 7).map((it, i) => {
+    const cur = !it.done && (i === 0 || spec.items[i - 1].done);
+    return `<div class="ck${it.done ? ' ckd' : ''}${cur ? ' ckc' : ''}"><span class="bx">${it.done ? '<i class="ph-bold ph-check"></i>' : ''}</span><span>${esc(it.text)}</span></div>`;
+  }).join('');
+  return `<style>
+.cb{position:absolute;left:480px;top:${ct + 15}px;width:680px;height:${ch - 10}px;border-radius:30px;background:#E4EFFC;transform:rotate(4deg)}
+.cf{position:absolute;left:440px;top:${ct}px;width:720px;height:${ch}px;border-radius:30px;background:#fff;transform:rotate(-2deg);padding:50px 56px;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)}
+.ch{display:flex;align-items:center;justify-content:space-between}.ch b{font-size:36px;font-weight:600;letter-spacing:-.02em}
+.ch span{font-size:22px;font-weight:600;color:#0A5FD8;background:#E3F0FD;border-radius:99px;padding:8px 16px}
+.cp{margin:22px 0 30px;height:10px;border-radius:5px;background:#EEF2F7}.cp i{display:block;height:100%;width:${Math.round((done / total) * 100)}%;border-radius:5px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
+.ck{display:flex;align-items:center;gap:20px;font-size:29px;color:#7F8794;padding:11px 0}
+.ck .bx{width:40px;height:40px;border-radius:11px;border:3px solid #CBD2DC;display:grid;place-items:center;flex:none}
+.ck.ckd{color:#141A26}.ck.ckd .bx{background:#0A5FD8;border-color:#0A5FD8;color:#fff;font-size:22px}
+.ck.ckc{color:#141A26;font-weight:500}.ck.ckc .bx{border-color:#0A5FD8;box-shadow:0 0 0 6px rgba(10,95,216,.15)}
+</style>
+<div class="cb"></div><div class="cf"><div class="ch"><b>${esc(spec.title)}</b><span>${done} of ${total}</span></div><div class="cp"><i></i></div>${items}</div>`;
+}
+
+// "stat": one giant number from the article, a caption, and a breakdown card.
+function stat() {
+  const max = Math.max(...spec.card.rows.map((r) => r.pct || 1));
+  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === 0 ? ' a' : ''}"><div><b>${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
+  return `<style>
+.sv{position:absolute;left:200px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
+.sc{position:absolute;left:212px;top:470px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
+.ss{position:absolute;left:212px;top:620px;width:600px;font-size:26px;line-height:1.4;color:#7F8794}
+.scard{position:absolute;left:960px;top:250px;width:430px;background:#fff;border-radius:24px;padding:42px 44px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
+.scard h3{margin:0 0 26px;font-size:28px;font-weight:500;color:#5D6675}
+.sr{margin-bottom:24px}.sr div{display:flex;justify-content:space-between;align-items:baseline;font-size:25px;color:#7F8794}.sr b{font-weight:500}.sr em{font-style:normal;white-space:nowrap}
+.sr>i{display:block;margin-top:10px;height:12px;border-radius:6px;background:#EEF2F7}.sr>i>i{display:block;height:100%;border-radius:6px;background:#CBD2DC}
+.sr.a div{color:#141A26}.sr.a>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
+</style>
+<div class="sv">${esc(spec.value)}</div><div class="sc">${esc(spec.caption)}</div><div class="ss">${esc(spec.sub || '')}</div>
+<div class="scard"><h3>${esc(spec.card.heading)}</h3>${rows}</div>`;
+}
+
+// "ranked": named bars ranked by a real metric; the winner in the accent, the rest neutral.
+function ranked() {
+  const max = Math.max(...spec.rows.map((r) => r.pct));
+  const win = spec.winner ?? 0;
+  const rows = spec.rows.slice(0, 6).map((r, i) => `<div class="rr${i === win ? ' w' : ''}"><span class="rn">${String(i + 1).padStart(2, '0')}</span><b>${esc(r.name)}</b><i><i style="width:${Math.max(4, Math.round((r.pct / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
+  return `<style>
+.rh{position:absolute;left:210px;top:120px;font-size:56px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
+.rs{position:absolute;left:212px;top:196px;font-size:28px;color:#7F8794}
+.rl{position:absolute;left:210px;top:285px;width:1180px;display:grid;gap:22px}
+.rr{display:grid;grid-template-columns:56px 340px 1fr 190px;align-items:center;gap:18px}
+.rn{font-size:22px;font-weight:600;color:#9AA3B2}.rr b{font-size:30px;font-weight:500;color:#2B3245;white-space:nowrap}
+.rr>i{height:48px;border-radius:12px;background:#E6E4DF;overflow:hidden}.rr>i>i{display:block;height:100%;border-radius:12px;background:#CFCDC6}
+.rr em{font-style:normal;font-size:26px;color:#7F8794;white-space:nowrap}
+.rr.w b{color:#141A26;font-weight:600}.rr.w .rn{color:#0A5FD8}.rr.w>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}.rr.w em{color:#0A5FD8;font-weight:600}
+</style>
+<div class="rh">${esc(spec.headline)}</div><div class="rs">${esc(spec.sub || '')}</div><div class="rl">${rows}</div>`;
+}
+
+const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked };
+
+// ---- variety: backgrounds rotate, and a ledger blocks a category from repeating a recent composition ----
+const MODE = spec.mode || 'before-after';
+const ALL_MODES = ['before-after', 'versus', 'prompt', 'hub', 'stack', 'window', 'timeline', 'checklist', 'stat', 'ranked'];
+if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
+const DEFAULT_BG = { 'before-after': 'wash', versus: 'wash', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'cool', stat: 'white', ranked: 'flat' };
+const BGS = ['wash', 'cool', 'white', 'flat'];
+const category = spec.category || spec.brand || 'default';
+const ledgerFile = path.join(path.dirname(outDir), '.featured-ledger.json');
+const ledger = fs.existsSync(ledgerFile) ? JSON.parse(fs.readFileSync(ledgerFile, 'utf8')) : [];
+const prior = ledger.filter((e) => e.category === category && e.slug !== slug);
+const recent = prior.slice(-6);
+const topic = spec.topic || null;
+const sameTopic = topic ? ledger.filter((e) => e.topic === topic && e.slug !== slug) : [];
+if (sameTopic.some((e) => e.mode === MODE) && !args.includes('--force')) {
+  console.error(`VARIETY CHECK FAILED: another article on topic "${topic}" (${sameTopic.filter((e) => e.mode === MODE).map((e) => e.slug).join(', ')}) already uses mode "${MODE}".
+Same-topic articles must use different compositions. Used for this topic: ${sameTopic.map((e) => e.mode).join(', ')}`);
+  process.exit(2);
+}
+if (recent.some((e) => e.mode === MODE) && !args.includes('--force')) {
+  const free = ALL_MODES.filter((m) => !recent.some((e) => e.mode === m));
+  console.error(`VARIETY CHECK FAILED: mode "${MODE}" was already used by a recent "${category}" post (${recent.filter((e) => e.mode === MODE).map((e) => e.slug).join(', ')}).\nRecent modes: ${recent.map((e) => e.mode).join(', ')}\nPick one of: ${free.join(', ')}  (or pass --force)`);
+  process.exit(2);
+}
+let BG = spec.bg || DEFAULT_BG[MODE];
+const prevBg = prior.length ? prior[prior.length - 1].bg : null;
+if (!spec.bg && BG === prevBg) BG = BGS.find((b) => b !== prevBg && b !== DEFAULT_BG[MODE]) || BG;
+const BG_CSS = {
+  wash: `body{background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}body:before{display:block;background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}`,
+  cool: `body{background:linear-gradient(160deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}body:before{display:block;background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at 5% 10%,rgba(255,180,150,.18),transparent 70%)}`,
+  flat: `body{background:#F1F0EC}body:before{display:none}`,
+  white: `body{background:#FBFBFC}body:before{display:block;background:radial-gradient(45% 60% at 0% 100%,rgba(39,172,242,.22),transparent 70%),radial-gradient(40% 50% at 100% 0%,rgba(255,180,150,.2),transparent 70%)}`,
+};
 const html = `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
@@ -142,6 +298,7 @@ ${modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.labe
 <svg class="conn" viewBox="0 0 80 900"><path d="M-30 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
 <div class="c c2"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>
 <div class="legend"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`}
+<style>${BG_CSS[BG] || ''}</style>
 <div class="grain"></div></body></html>`;
 
 
@@ -163,4 +320,8 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-console.log(outDir);
+const next = ledger.filter((e) => e.slug !== slug);
+next.push({ slug, category, topic, mode: MODE, bg: BG, at: new Date().toISOString() });
+fs.writeFileSync(ledgerFile, JSON.stringify(next, null, 1));
+console.log(`${outDir}
+  mode=${MODE} bg=${BG} category=${category}`);
