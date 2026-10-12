@@ -165,6 +165,19 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ---
 
+## Three-agent rule (user rule, 2026-10-13)
+
+Featured images are always made by **three agents**: an **Orchestrator** (plans and assigns a distinct layout per article, runs the loop, delivers), a **Maker** (writes the spec and renders) and a separate **QA agent** (judges every image and never edits). QA checks:
+- no layout used twice (history plus a visual side-by-side)
+- easy to scan in 2 seconds at 350×250
+- less text
+- visually balanced
+- true to the article
+
+Failed images go back to the Maker, for up to 3 rounds. Only images that passed are delivered. Prompts and the checklist are in `references/agents.md` (skill folder).
+
+---
+
 ## Variety enforcement (user rule, 2026-10-13: "make this rule forceful")
 
 **What failed:** the Odoo vs Sage Intacct window and the EMR Software Cost window were the same thumbnail. The old check only read the ledger in its own output folder and only compared mode names, so it never saw the EMR window, which was rendered elsewhere.
