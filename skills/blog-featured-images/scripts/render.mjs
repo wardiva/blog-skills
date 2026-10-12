@@ -238,8 +238,11 @@ function ranked() {
 
 
 // ---- balance layer (learned from Base44): grid lines + registration squares framing the hero, an optional cursor cue ----
+// Grid only where it matches the vibe: open, data-led layouts on calm fields. Card-heavy or busy layouts stay clean.
+const FRAME_DEFAULT = { stat: true, ranked: true, timeline: true, window: true };
 function frameLayer() {
-  if (spec.frame === false) return '';
+  const on = spec.frame ?? FRAME_DEFAULT[spec.mode || 'before-after'] ?? false;
+  if (!on) return '';
   let g = '';
   for (let k = 0; k <= 8; k++) { const x = 210 + k * 147.5; g += `<line x1="${x}" y1="0" x2="${x}" y2="900"/>`; }
   for (let k = 0; k <= 5; k++) { const y = 75 + k * 150; g += `<line x1="0" y1="${y}" x2="1600" y2="${y}"/>`; }

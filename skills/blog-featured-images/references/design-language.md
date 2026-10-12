@@ -145,7 +145,10 @@ The 10-composition sheet (rendered from the specs in `examples/`) is the quality
 These rules make every image easy to take in at a glance. They work inside our design language and don't change it.
 
 1. **One hero at 55–70% of the frame width.** Everything else is secondary and smaller. If two things compete for attention, make one smaller.
-2. **A structure layer frames the hero.** A faint grid (lines at about 5.5% opacity) and six small dark **registration squares** at the safe-zone corners and midsides (x 210 / 1390, y 75 / 450 / 825). This makes the empty space look intentional and anchors all four corners. It is on by default; set `"frame": false` only if it fights the hero.
+2. **A structure layer, used selectively.** A faint grid (lines at about 5.5% opacity) and six small dark **registration squares** at the safe-zone corners and midsides (x 210 / 1390, y 75 / 450 / 825) make empty space look intentional. **Use it only where it matches the vibe and doesn't overwhelm:**
+   - **On by default:** `stat`, `ranked`, `timeline`, `window`. These are open, data-led layouts with breathing room, where the grid reads as structure.
+   - **Off by default:** `before-after`, `versus`, `prompt`, `hub`, `stack`, `checklist`. These are card-heavy, tilted or busy layouts, where a grid adds noise.
+   - Override per image with `"frame": true` or `"frame": false`. If the grid competes with the hero or makes the image feel crowded at 350×250, turn it off. Never add it to more than about half the images in a batch.
 3. **Bleed for big UI.** Large windows or dashboards may run off the bottom or right edge (`"bleed": true` in window mode). The chrome bleeds, never the key text: all words stay inside x 210–1390.
 4. **Tactile texture.** Paper grain at about 9% over everything, including cards, so nothing looks flat or digital.
 5. **One interaction cue at most.** A cursor (`"cursor": [x, y]`) pointing at the key fact, a chip or a send button. It must point at something meaningful and never cover text.
@@ -155,6 +158,7 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 **Balance QA (add to every check):**
 - Squint at the 350×250 card: one clear focal point?
-- All four corners anchored by a square, card edge or bleed?
+- All four corners anchored by a card edge, bleed or (on grid layouts) a registration square?
+- If a grid is present: does it feel calm, not overwhelming? If not, set `"frame": false`.
 - No large empty area inside a card?
 - Does the cursor, if any, cover text?
