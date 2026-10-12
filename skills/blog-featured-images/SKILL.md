@@ -66,7 +66,7 @@ Open `master.png` and `card-350x250.png` and confirm:
 - The topic is clear in 2 seconds.
 - No text wraps, clips or overlaps, and nothing falls outside x 210–1390.
 - Every number appears in the article.
-- **Balance** (see "Visual balance rules" in `references/design-language.md`): one clear focal point at 350×250, all four corners anchored, the grid used only where it fits the vibe (on by default for stat, ranked, timeline and window only), no large empty card areas, **type balanced** (headline 56–76px and never wider than about 760px; only the stat number may be giant; see "Typography balance"), and the cursor (if any) never covering text.
+- **Balance** (see "Visual balance rules" in `references/design-language.md`): one clear focal point at 350×250, all four corners anchored, the grid used only where it fits the vibe (on by default for stat, ranked, timeline and window only), no large empty card areas, **type balanced** (headline 56–76px and never wider than about 760px; body rows ≥ 32px with ≥ 28px gaps, never cramped; headline about 2× the body, not more; only the stat number may be giant; see "Typography balance"), and the cursor (if any) never covering text.
 
 Then put the batch side by side and confirm no two images look alike. Fix and re-render until all of this passes.
 

@@ -90,18 +90,18 @@ svg.arr{position:absolute;inset:0;overflow:visible}
 
 // "prompt" mode (Granola "Introducing Recipes"): a faded app panel, a big headline over it, a pill input bar with chips.
 function prompt() {
-  const rows = spec.panel.rows.map((r, i) => `<div class="pr" style="opacity:${[1, 0.6, 0.3][i] ?? 0.2}"><i class="ph ph-file-text"></i><div><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></div></div>`).join('');
+  const rows = spec.panel.rows.map((r, i) => `<div class="pr" style="opacity:${[1, 0.72, 0.48][i] ?? 0.35}"><i class="ph ph-file-text"></i><div><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></div></div>`).join('');
   const chips = spec.chips.map((t) => `<span class="chip"><i></i>${esc(t)}</span>`).join('');
   return `<style>
 body{background:linear-gradient(160deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}
 body:before{background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at 5% 10%,rgba(255,180,150,.18),transparent 70%)}
-.panel{position:absolute;left:210px;top:-20px;width:1180px;height:780px;border-radius:0 0 48px 48px;background:linear-gradient(180deg,#FFFFFF 35%,#D9ECFC 100%);box-shadow:0 30px 60px rgba(30,60,110,.10)}
-.plbl{position:absolute;left:290px;top:62px;font-size:24px;color:#9AA3B2}
-.prs{position:absolute;left:290px;top:110px;display:grid;gap:26px}
-.pr{display:flex;align-items:center;gap:24px}.pr i{width:72px;height:72px;border-radius:16px;background:#F1F4F8;display:grid;place-items:center;font-size:36px;color:#8A93A5}
-.pr b{display:block;font-size:34px;font-weight:500;color:#2B3245}.pr span{font-size:26px;color:#7F8794}
-h1{position:absolute;left:0;right:0;top:425px;margin:0;text-align:center;font-size:${Math.min(76, Math.floor(760 / (String(spec.headline).length * 0.52)))}px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
-.bar{position:absolute;left:250px;top:600px;width:1100px;height:124px;border-radius:62px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05);display:flex;align-items:center;padding:0 22px 0 46px;gap:16px}
+.panel{position:absolute;left:210px;top:-20px;width:1180px;height:810px;border-radius:0 0 48px 48px;background:linear-gradient(180deg,#FFFFFF 35%,#D9ECFC 100%);box-shadow:0 30px 60px rgba(30,60,110,.10)}
+.plbl{position:absolute;left:290px;top:66px;font-size:26px;font-weight:500;color:#8A93A5;letter-spacing:.01em}
+.prs{position:absolute;left:290px;top:122px;display:grid;gap:30px}
+.pr{display:flex;align-items:center;gap:28px}.pr i{width:80px;height:80px;border-radius:16px;background:#F1F4F8;display:grid;place-items:center;font-size:36px;color:#8A93A5}
+.pr b{display:block;font-size:36px;font-weight:500;line-height:1.2;color:#2B3245}.pr span{display:block;margin-top:4px;font-size:28px;line-height:1.25;color:#6B7487}
+h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-size:${Math.min(66, Math.floor(820 / (String(spec.headline).length * 0.52)))}px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
+.bar{position:absolute;left:250px;top:620px;width:1100px;height:124px;border-radius:62px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05);display:flex;align-items:center;padding:0 22px 0 46px;gap:16px}
 .bar .ph-txt{display:flex;align-items:center;gap:14px;font-size:36px;color:#8A93A5;margin-right:auto}
 .bar .ph-txt:before{content:"";width:4px;height:52px;background:#27ACF2;border-radius:2px}
 .chip{display:flex;align-items:center;gap:12px;font-size:28px;font-weight:500;color:#141A26;background:#fff;border-radius:40px;padding:16px 26px;box-shadow:0 0 0 1px rgba(20,26,38,.07)}

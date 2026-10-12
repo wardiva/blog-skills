@@ -171,16 +171,22 @@ Text supports the hero; it never shouts over it. Sizes are for the 1600×900 mas
 
 | Role | Size | Rule |
 |---|---|---|
-| Headline (prompt, timeline, ranked) | **56–76px**, weight 600, tracking −0.03em | **Never wider than about 48% of the canvas (about 760px).** Auto-size down for longer lines, never up |
+| Headline (prompt, timeline, ranked) | **56–66px** in prompt, up to 76px in others; weight 600, tracking −0.03em | **Never wider than about 48% of the canvas (about 760px).** Auto-size down for longer lines, never up |
 | Hero number (stat only) | up to 210px, auto-fit to 690px wide | The only place giant type is allowed, because the number *is* the hero |
 | Section labels ("Old EMR export", "Dynamics 365") | 50px / 500 | Muted colour so they label rather than dominate |
 | Card headings | 32–36px / 500–600 | |
-| Bullets, rows, body | 22–30px | |
+| Bullets, rows, body | 28–36px for primary rows, 22–28px for bullets | See "Body text must breathe" |
 | Small labels, subs, chips | 18–28px | Still readable at 350×250 (about 4px+), or cut them |
+
+**Body text must breathe (user rule: body text was "too short and congested"):**
+- Primary row or list text **≥ 32px** (ideally 36), secondary or price text **≥ 26px** (ideally 28), with line height ≥ 1.2.
+- Space between list rows **≥ 28px**; icon tiles ≥ 72px so rows have presence.
+- Faded rows never drop below about 45% opacity, so the third row is still readable.
+- Vertical rhythm: the gaps between stacked blocks (label → rows → headline → bar) are even and **≥ 40px**. No block touches the next.
 
 **Balance checks:**
 - **One dominant text element per image.** If the headline and a card both feel loud, shrink the headline.
-- **Headline to body ratio about 2.5:1** (e.g. 76 : 30). Above 3.5:1 (like the old 102px headline) feels oversized.
+- **Headline to body ratio about 1.6–2.2:1** (e.g. 63 : 36). Above 3:1 (like the old 102px headline over 34px rows) feels oversized and makes the body look tiny.
 - Headlines sit with breathing room above and below (≥ 40px) and never crowd neighbouring elements.
 - Text width is under about 65% of its container. If a line runs edge to edge, the size is too big.
 - At 350×250, the headline should read clearly but not fill the card. If it is the first and only thing you notice, it is too big.
