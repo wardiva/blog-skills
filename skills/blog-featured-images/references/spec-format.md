@@ -39,7 +39,7 @@ One JSON file per article. Top-level fields shared by all modes:
              "items": ["Unlimited users, usage-based", "From $6,396 per year", "Low-code, open APIs"] },
   "legend": ["Priced per seat", "Priced by transactions"] }
 ```
-- Use the same 3 dimensions on both sides, in the same order. The legend names the core difference.
+- Renders as a **split colour field** with a VS badge. `label` becomes the big product name and `heading` the plan line. `items[0]` is the **hero fact** shown large in a white card (keep it under ~28 characters); `items[1..2]` become checked facts. `legend[0]` and `legend[1]` become the tag pill above each side. Use the same dimensions on both sides, in the same order.
 
 ## Prompt (`"mode": "prompt"`; cost, pricing, "what is", FAQ)
 ```json

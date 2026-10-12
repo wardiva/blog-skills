@@ -15,13 +15,13 @@ The full rulebook (colours, type, cards, "never" list) is in `references/design-
 0. **The heading mirrors the blog title.** Use the title's own words and meaning, just shorter (drop the year and filler). Never reword creatively. Set `"articleTitle"` in every spec; the renderer blocks headings that drift ("HEADING CHECK FAILED").
 1. **Relatable.** Read the full article. Use only its own facts (numbers, names, steps, comparisons). Never invent figures or use generic concepts.
 2. **Easy to understand.** One idea, one focal point, short real words. Check it at 350×250.
-3. **Different every time.** Never give two posts in the same category, or two articles on the same topic, the same composition. The renderer enforces this.
+3. **Different every time.** Never give two posts in the same category, or two articles on the same topic, the same composition. The renderer enforces this. Compositions must also differ in **skeleton** (block arrangement), not just text; see "Skeleton rule".
 
 ## The 10 compositions (`mode`)
 | mode | Shows | Best for |
 |---|---|---|
 | `before-after` (default) | raw card → clean card, plus a legend | how-to, migration, transformation |
-| `versus` | two equal cards plus a "vs" chip | X vs Y |
+| `versus` | split colour field, big VS badge on the seam, one hero fact per side | X vs Y |
 | `prompt` | faded data panel, big headline, pill bar with chips | cost, pricing, FAQ, "what is" |
 | `hub` | blue centre tile, 6 tilted cards, hand-drawn arrows | best-of lists, integrations |
 | `stack` | one takeaway card over offset cards | guides with one key rule or warning |

@@ -41,23 +41,30 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
 const before = spec.before, after = spec.after;
 
-// "versus" mode for X vs Y articles: two equal cards, a "vs" chip on the dashed connector, same wash/labels/legend.
+// "versus" (split-field poster): two colour fields meeting at a seam with a big VS badge; each side shows the
+// product, its plan, ONE hero fact in a white card and two supporting facts. Structurally unlike before-after.
 function versus() {
-  const card = (side, x, cls) => `<div class="lbl ${cls}" style="left:${x}px">${esc(side.label)}</div>
-<div class="c vc" style="left:${x}px"><h3>${esc(side.heading)}</h3><ul>${side.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>`;
+  const side = (d, cx, tag, cls) => `<div class="vside ${cls}" style="left:${cx - 260}px">
+<span class="vtag">${esc(tag)}</span><div class="vname">${esc(d.label)}</div><div class="vsub">${esc(d.heading)}</div>
+<div class="vhero">${esc(d.items[0])}</div>
+<div class="vfacts">${d.items.slice(1, 3).map((t) => `<span><i class="ph-bold ph-check"></i>${esc(t)}</span>`).join('')}</div></div>`;
   return `<style>
-.vc{width:555px;height:330px;padding:46px 46px}
-.vc h3{margin:0 0 22px;font-size:32px;font-weight:500;color:#5D6675;letter-spacing:-.01em}
-.vc ul{margin:0;padding:0 0 0 28px;display:grid;gap:12px;font-size:29px;line-height:1.3}
-.vc li{color:#7F8794}.vc li.a{color:#141A26}
-.lbl{top:205px}.vc{top:295px}
-.vsline{position:absolute;left:765px;top:460px;width:70px;border-top:3px dashed #9AA3B2}
-.vs{position:absolute;left:772px;top:432px;width:56px;height:56px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:20px;font-weight:500;color:#5D6675;box-shadow:0 10px 24px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
-.legend{left:210px;top:695px}
+.vl{position:absolute;left:0;top:0;width:800px;height:900px;background:#F3F1EC}
+.vr{position:absolute;left:800px;top:0;width:800px;height:900px;background:linear-gradient(160deg,#E8F3FE 0%,#D2E8FB 60%,#C4E1FA 100%);overflow:hidden}
+.vr:after{content:"";position:absolute;inset:-100px;filter:blur(70px);background:radial-gradient(45% 50% at 70% 25%,rgba(39,172,242,.35),transparent 70%)}
+.vside{position:absolute;top:185px;width:520px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.vtag{font-size:20px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#7F8794;background:rgba(255,255,255,.7);border-radius:99px;padding:9px 18px}
+.vname{margin-top:26px;font-size:64px;font-weight:600;letter-spacing:-.03em;line-height:1.05;color:#141A26;white-space:nowrap}
+.vsub{margin-top:10px;font-size:28px;color:#7F8794}
+.vhero{margin-top:34px;width:460px;min-height:150px;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:24px;padding:28px 30px;font-size:40px;font-weight:600;line-height:1.18;letter-spacing:-.02em;color:#141A26;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
+.vfacts{margin-top:28px;display:grid;gap:12px}.vfacts span{display:flex;align-items:center;justify-content:center;gap:10px;font-size:26px;color:#5D6675}
+.vfacts i{font-size:22px;color:#9AA3B2}
+.vR .vtag{color:#0A5FD8}.vR .vname{color:#0E2A5C}.vR .vhero{color:#0A5FD8}.vR .vfacts i{color:#0A5FD8}
+.vbadge{position:absolute;left:744px;top:418px;width:112px;height:112px;border-radius:50%;background:#141A26;color:#fff;display:grid;place-items:center;font-size:34px;font-weight:600;letter-spacing:.02em;box-shadow:0 16px 36px rgba(20,26,38,.25),0 0 0 10px rgba(255,255,255,.6)}
 </style>
-${card(spec.left, 210, 'l1')}${card(spec.right, 835, 'l2')}
-<div class="vsline"></div><div class="vs">vs</div>
-<div class="legend"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`;
+<div class="vl"></div><div class="vr"></div>
+${side(spec.left, 505, spec.legend[0], 'vL')}${side(spec.right, 1095, spec.legend[1], 'vR')}
+<div class="vbadge">VS</div>`;
 }
 // "hub" mode (Granola integrations): a blue centre tile, tilted white cards around it, hand-drawn arrows. Flat warm background.
 function hub() {

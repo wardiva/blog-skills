@@ -210,3 +210,25 @@ The heading on the image must use **the blog title's own words and meaning, just
 | Microsoft Dynamics 365 vs Acumatica for Growing Businesses | Dynamics 365 vs Acumatica | Seat vs usage |
 
 **Enforced:** every spec carries `"articleTitle"` (the real H1). The renderer fails with **"HEADING CHECK FAILED"** when the image heading (`headline` in prompt, timeline or ranked; `title` in stack or checklist; `list.heading` in window; `caption` in stat) uses too few of the title's words. Compositions without a heading (before-after, versus, hub) must use the title's key terms in their labels.
+
+---
+
+## Skeleton rule: compositions must differ in structure, not just content (user rule, 2026-10-13)
+
+Two compositions that share the same **skeleton** (the arrangement of blocks) read as the same image at thumbnail size, even with different words. Example that failed: the old `versus` was before-after's skeleton again (two labels → two white cards side by side → connector → two-dot legend).
+
+**Each composition owns a distinct skeleton:**
+| mode | Skeleton (what you see at a glance) |
+|---|---|
+| before-after | small raw card → dashed connector → big clean card, legend below |
+| versus | **split colour field** (warm left / blue right) with a big **VS** badge on the seam; each side has a name, one hero card and checked facts |
+| prompt | faded panel bleeding off the top, centred headline, pill input bar |
+| hub | centre tile with 6 tilted cards around it and hand-drawn arrows |
+| stack | wide takeaway card with 2 cards peeking above it |
+| window | full app window, list pane plus detail pane |
+| timeline | headline top-left, horizontal track with step dots |
+| checklist | single tilted checklist card |
+| stat | giant number left, breakdown card right |
+| ranked | headline top-left, horizontal bar list |
+
+**When adding or changing a composition:** squint at its 350×250 card next to every other mode. If two share a skeleton, redesign one (different field split, scale, depth or orientation). Never ship two modes that differ only in their text.
