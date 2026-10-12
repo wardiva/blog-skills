@@ -264,5 +264,5 @@ Two compositions that share the same **skeleton** (the arrangement of blocks) re
 ### Versus badge rule (approved 2026-10-13)
 - The "vs" is a **focal badge, not a small grey chip**: 96px circle, blue gradient `#3B86F0 → #0A5FD8`, white "VS" at 30px/600, a 7px white ring and a soft blue shadow.
 - It sits on the **bottom of the seam** where the two cards overlap and stays upright (counter-rotated). It must never touch text or a bullet.
-- **Table variant:** the same badge style at 84px, centred on the column seam and sitting across the card's **top edge** (about two-thirds above the card), so it never crowds the product names. The old small grey chip between the names was rejected ("vs needs to be improved").
+- **Table variant:** the same badge style at 84px, centred on the column seam **inside the header, between the two product names** (reads "Odoo VS Sage Intacct"). The right column's text is padded 72px from the seam so the badge never touches it. Rejected: the small grey chip ("vs needs to be improved"), the badge straddling the card's top edge (looked like a notification bubble: "vs position is not right"), and the badge on the header/row line crossing (floats).
 - Rejected: the split colour field version (did not match the design language) and the small 60px grey chip (too weak, covered a bullet).

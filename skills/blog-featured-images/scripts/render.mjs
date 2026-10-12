@@ -57,11 +57,11 @@ function versus() {
 .th,.tr{display:grid;grid-template-columns:260px 440px 440px;align-items:center}
 .th{height:150px;border-bottom:1px solid #EEF0F4}.th b{display:block;font-size:44px;font-weight:600;letter-spacing:-.02em}.th em{display:block;margin-top:6px;font-style:normal;font-size:24px;color:#8A93A5}
 .th .h1c b{color:#7C7468}.th .h2c b{color:#2C5FAE}
-.th>span,.tr>span{padding:0 36px}.th .h2c,.tr .td2{background:#F2F8FE;height:100%;display:flex;flex-direction:column;justify-content:center}
+.th>span,.tr>span{padding:0 36px}.th .h2c,.tr .td2{padding-left:72px}.th .h2c,.tr .td2{background:#F2F8FE;height:100%;display:flex;flex-direction:column;justify-content:center}
 .tr{height:${RH}px;border-bottom:1px solid #F1F2F5}.tr:last-child{border-bottom:0}
 .td0{font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}
 .td1,.td2{font-size:32px;color:#5D6675;line-height:1.25}.td1.a{color:#141A26;font-weight:500}.td2.a{color:#0A5FD8;font-weight:600}
-.tvs{position:absolute;z-index:2;left:${230 + 260 + 440 - 42}px;top:${top - 58}px;width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;letter-spacing:.02em;box-shadow:0 0 0 7px #fff,0 16px 30px rgba(10,95,216,.28)}
+.tvs{position:absolute;z-index:2;left:${230 + 260 + 440 - 42}px;top:${top + 75 - 42}px;width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;letter-spacing:.02em;box-shadow:0 0 0 7px #fff,0 16px 30px rgba(10,95,216,.28)}
 .vleg{left:230px;top:${top + 150 + n * RH + 46}px}
 </style>
 <div class="tcard"><div class="th"><span></span><span class="h1c"><b>${esc(L.label)}</b><em>${esc(L.heading)}</em></span><span class="h2c"><b>${esc(R.label)}</b><em>${esc(R.heading)}</em></span></div>${rows}</div>
