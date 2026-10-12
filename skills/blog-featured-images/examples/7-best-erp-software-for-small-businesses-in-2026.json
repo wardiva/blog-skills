@@ -1,0 +1,8 @@
+{ "brand": "medsoftwarehub", "mode": "hub", "hubIcon": "ph-fill ph-storefront",
+  "cards": [
+    { "name": "NetSuite", "sub": "$999/mo base" },
+    { "name": "SAP Business One", "sub": "From $95/user" },
+    { "name": "Dynamics 365", "sub": "$80/user/mo" },
+    { "name": "Acumatica", "sub": "From $6,396/yr" },
+    { "name": "Odoo", "sub": "$24.90/user/mo" },
+    { "name": "Sage Intacct", "sub": "From $15K/yr" } ] }

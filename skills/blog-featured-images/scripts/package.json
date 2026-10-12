@@ -1,0 +1,1 @@
+{ "name": "blog-featured-images-renderer", "private": true, "type": "module", "dependencies": { "sharp": "^0.34.5" } }
