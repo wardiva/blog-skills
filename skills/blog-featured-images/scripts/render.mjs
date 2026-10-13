@@ -519,13 +519,8 @@ const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:l
 .tex .acc{background:${acc}}`;
 // anchor (the one high-contrast element): approved blue gradient by default, or navy
 const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
-// Vibrant brand-blue field with a Granola-style glow: one colour family, deep edges, a brighter cyan-leaning glow behind the hero.
-const BLUE_PRESETS = [
-  'radial-gradient(62% 70% at 50% 54%,#63B4FA 0%,#3F86F0 42%,#2459D8 78%,#1C49C2 100%)',                                          // 0: centre glow
-  'radial-gradient(80% 70% at 50% 100%,#6CC0FB 0%,#3E89F1 40%,#2558D6 75%,#1D47BF 100%)',                                         // 1: glow rising from the bottom
-  'radial-gradient(70% 80% at 72% 60%,#66B9FA 0%,#3C83EF 40%,#2356D5 74%,#1B45BE 100%)',                                           // 2: glow offset behind a right-side hero
-];
-const BLUE_GLOW = BLUE_PRESETS[Number.isInteger(spec.bluePreset) && BLUE_PRESETS[spec.bluePreset] ? spec.bluePreset : 0];
+// Vibrant brand-blue field: the near-flat blue the user approved. Centre-glow gradients were rejected ("ew").
+const BLUE_GLOW = 'linear-gradient(180deg,#2F6FEA 0%,#1F5BD8 100%)';
 const CRAFT = spec.craft === true;
 // text and structure that sit directly on a saturated field turn white
 const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}

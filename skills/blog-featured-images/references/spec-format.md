@@ -13,7 +13,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default), `table` and `logos`; `stack` has `default` and `split`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
 | `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]` and stat `card.rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
-| `bg` | no | `blue` (vibrant brand-blue field with a glow; at most 1 in 3 per category, `bluePreset` 0–2), `sky` (B, crisp, texture on), `wash` (A, approved warm wash), `cool`, `white`, `flat`. Leave it out to auto-rotate |
+| `bg` | no | `blue` (vibrant near-flat brand blue; at most 1 in 3 per category), `sky` (B, crisp, texture on), `wash` (A, approved warm wash), `cool`, `white`, `flat`. Leave it out to auto-rotate |
 | `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky`; set `true` to add it to `wash` (option A). Never with the frame grid |
 | `craft` | no | `true` = the craft kit: near-black ink, mono caps labels, grey off-states, line-icon tiles, clean connector |
 | `series` | no | With `craft`: the site mark + mono series tag (e.g. `"Pricing"`). Only on some images: at most 1 in 3 per category, never on neighbours ("SERIES CHECK FAILED") |
