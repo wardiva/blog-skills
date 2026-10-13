@@ -4,6 +4,7 @@
 //   brand : colour overrides (default: brands/default.json). See brands/_template.json
 //   out   : output folder (default: ./featured-images/<slug>)
 // Writes master.png (1600x900), 7x5.webp (theme crop), 16x9-1200.webp (social), card-350x250.png (check size), page.html
+import { LAYOUTS } from './layouts.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -433,7 +434,6 @@ const wcDefs = (id, P, seed = 3, ang = [0, 1, 1, 0]) => {
 <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .14 0" result="ga"/><feComposite in="ga" in2="SourceGraphic" operator="in" result="gm"/>
 <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="lm"/><feMergeNode in="dm"/><feMergeNode in="gm"/></feMerge></filter>`;
 };
-const cbPill = (id, x, y, len, h, rot) => `<rect x="${x}" y="${y}" width="${len}" height="${h}" rx="${h / 2}" fill="url(#${id}g)" filter="url(#${id}f)" transform="rotate(${rot} ${x} ${y + h / 2})"/>`;
 // headline markup: {{key phrase}} = blue gradient text, "\n" = line break
 const cbHl = (t) => esc(t).replace(/\{\{([\s\S]+?)\}\}/g, '<span class="bt">$1</span>').replace(/\n/g, '<br>');
 const cbFs = (t, max, width) => { const lines = String(t).replace(/\{\{|\}\}/g, '').split('\n'); const long = Math.max(...lines.map((l) => l.length)); return Math.min(max, Math.floor(width / (Math.max(long, lines.length > 1 ? 1 : long / 2.4) * 0.5))); };
@@ -540,7 +540,6 @@ if (heading !== undefined && !args.includes('--force')) {
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
 // A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
-const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'logos', 'pills', 'connect', 'slash'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'], dark: ['default'] };
 const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
 const VARIANT = spec.variant || LAYOUTS[MODE][0];
@@ -637,7 +636,6 @@ if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force) {
 const FRAME_ON = spec.bg !== 'blue' && (spec.frame ?? FRAME_DEFAULT[MODE] ?? false);
 const TEX = !FRAME_ON && !CB_LAYOUT && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
 const texRand = (() => { let h = 2166136261; for (const c of String(slug)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; })();
-const texDiag = texRand() < 0.5;   // which diagonal the two dot patches sit on
 const pt = (x, y) => [Math.round(x), Math.round(y)];
 const accDots = [0, 1, 2, 3, 4].map((i) => {     // outer margins only: never near text or cards
   const zone = i % 4, r = texRand();
@@ -645,11 +643,8 @@ const accDots = [0, 1, 2, 3, 4].map((i) => {     // outer margins only: never ne
     : zone === 2 ? pt(240 + r * 1120, 26 + texRand() * 40) : pt(240 + r * 1120, 846 + texRand() * 34);
 });
 const acc = accDots.map(([x, y], i) => `radial-gradient(circle,${i % 2 ? '#27ACF2' : '#3B86F0'} 3px,transparent 3.6px) ${x}px ${y}px/12px 12px no-repeat`).join(',');
-const [p1x, p1y, p2x, p2y] = texDiag ? [18 + texRand() * 10, 14 + texRand() * 8, 80 + texRand() * 8, 86 + texRand() * 6] : [82 + texRand() * 8, 14 + texRand() * 8, 20 + texRand() * 8, 86 + texRand() * 6];
-const DOTS = 'none';   // guide lines + margin dots only
 const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 1389px 0/1px 100% no-repeat}
 .tex i{position:absolute;inset:0}
-.tex .dots{display:${DOTS === 'none' ? 'none' : 'block'};background-image:radial-gradient(circle,rgba(44,95,174,${DOTS === 'subtle' ? '.16' : '.30'}) 1.3px,transparent 1.8px);background-size:${DOTS === 'subtle' ? '30px 30px' : '22px 22px'};-webkit-mask-image:radial-gradient(${DOTS === 'subtle' ? '24% 22%' : '38% 32%'} at ${p1x}% ${p1y}%,#000 20%,transparent 72%),radial-gradient(${DOTS === 'subtle' ? '22% 22%' : '36% 32%'} at ${p2x}% ${p2y}%,#000 20%,transparent 72%)}
 .tex .acc{background:${acc}}${BG === 'cream' ? `.tex{background:linear-gradient(rgba(150,120,80,.18),rgba(150,120,80,.18)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(150,120,80,.18),rgba(150,120,80,.18)) 1389px 0/1px 100% no-repeat}.tex .acc{display:none}` : ''}`;
 // anchor (the one high-contrast element): the approved blue gradient
 const ANCHOR = 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
@@ -663,7 +658,7 @@ const CRAFT = spec.craft === true;
 const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}
 body.fd .lgs b,body.fd .l1 b,body.fd .l2 b{color:#fff}body.fd .lgs span{background:rgba(255,255,255,.16);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
 body.fd .lgv{box-shadow:0 0 0 6px rgba(255,255,255,.9)}body.fd .lgband{border-color:rgba(255,255,255,.3);background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 2px,transparent 2px 16px)}
-body.fd .tex .acc,body.fd .tex .dots{display:none}body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
+body.fd .tex .acc{display:none}body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
 body.fd svg.fl g{stroke:#fff}body.fd .fb{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}body.fd .fb b{color:#fff}body.fd .fb span{color:rgba(255,255,255,.8)}body.fd .fb .fi{background:rgba(255,255,255,.2);color:#fff}
 body.fd .grain{opacity:.06;mix-blend-mode:soft-light}`;
 const MONO = "'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
@@ -730,7 +725,7 @@ body:before{content:"";position:absolute;inset:-100px;display:none}
 .lg1{color:#141A26}.lg1 i{background:#141A26}.lg2{color:#2C7BD8}.lg2 i{background:#27ACF2}
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style></head><body class="${BG === 'blue' ? 'fd' : ''}">${GRAIN ? '<div class="bgn"></div>' : ''}
-${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
+${TEX ? '<div class="tex"><i class="acc"></i></div>' : ''}${frameLayer()}
 ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1" style="top:${baTop}px">${esc(before.label)}</div><div class="lbl l2" style="top:${baTop}px">${esc(after.label)}</div>
 <div class="c c1" style="top:${baTop + 90}px"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900" style="transform:translateY(${baTop + 90 - 250}px)"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>

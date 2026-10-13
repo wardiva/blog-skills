@@ -1,0 +1,2 @@
+// The single list of layouts (mode -> variants, default first). Shared by render.mjs and plan.mjs.
+export const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'logos', 'pills', 'connect', 'slash'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'], dark: ['default'] };

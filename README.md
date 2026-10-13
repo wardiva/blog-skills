@@ -82,7 +82,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 **The look:**
 - **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue** on about 1 in 3 images, only behind a big white card.
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
-- **Shadows follow the background:** none on the blue, minimal and tinted on light fields.
+- **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
 - **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons become the tile, and "best of" hubs show logos only.
 
@@ -123,11 +123,11 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 |---|---|
 | `SKILL.md` | Hard rules, layouts and workflow (Claude reads this first) |
 | `references/approved/` | The finalized reference images: the target look |
-| `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, never-do list |
+| `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails |
 | `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
 | `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |
 | `references/lessons.md` | Speed tools, gotchas, pre-flight checks, taste |
-| `scripts/` | `render.mjs` (renderer + checks), `read-articles.mjs`, `plan.mjs`, `sheet.mjs` |
+| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `sheet.mjs` |
 | `examples/` | Approved specs for every layout |
 
 ## Troubleshooting
