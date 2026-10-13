@@ -190,6 +190,70 @@ Calm is good; **bland is not**. Every image needs these, learned from Mintlify's
 
 ---
 
+## Craft spec: the Mintlify level (studied 2026-10-13; reference images in `blog-feature-images/research/mintlify/refs/`)
+
+Measured from their 2000×1125 thumbnails and converted to our 1600×900 canvas (×0.8). **Our colours replace theirs:** their green becomes our blue (`#3B86F0 → #0A5FD8`); their black stays near-black (`#141A26`).
+
+### 1. Colour: neutral field, dark ink, ONE accent
+- **Field:** a near-neutral light background (their `#F0F0F0`). Ours: the `sky` tint or the approved wash, kept **light and quiet**. The field is never the interesting part.
+- **Ink:** icons, headlines and buttons in **near-black** (`#141A26`). That's where the contrast comes from: black line icons on white tiles, black text on a light field. *Our blandness came from blue-on-blue mid-tones.*
+- **One accent, used in solid shapes:** filled pill bars, ON toggles, arrows, a tag chip. Never as a tint over everything.
+- **Neutral grey for "off" and "secondary":** skeleton bars `#E3E7EE`, OFF toggles, third-party logos. Grey makes the accent pop.
+- **At most one second accent, rarely** (their orange cursor tag). Ours: the warm `#F2A27A` from the wash, only for a second "actor".
+
+### 2. Type: two families, strict roles
+- **Headline:** sans, weight 500, near-black, tight tracking (−0.02 to −0.03em), **56–72px**, 1–2 lines, left-aligned beside a visual or centred above it.
+- **Labels and tags:** **monospace UPPERCASE**, tracking +0.04em, 18–28px: `AGENT 130`, `WEB MCP TOOLS`, `789.6M TOTAL REQUESTS`, `CURSOR`. The mono labels make it feel technical and crafted. *We use only Inter; add a mono (JetBrains Mono / IBM Plex Mono).*
+- **Big numbers:** sans bold, 72–88px, accent or near-black, with a mono caps label underneath.
+- Nothing in between: no grey 22px sentences.
+
+### 3. Skeletons tell the story without words
+- **Pill bars**, fully rounded, 24–28px tall in big UI, 14–18px in small UI. Widths vary (40–100%) so they read as real content.
+- **State contrast:** the important rows are **accent-filled** (2 rows), the rest **grey** (2–3 rows). Toggles ON (accent) vs OFF (grey) say "enabled / active" with zero words.
+- Real words appear only where they carry meaning: one button ("Create workflow"), one path ("docs / files"), one command (`grep -r "OAuth"`).
+
+### 4. Icons and tiles
+- **Line icons in near-black**, stroke about 2–2.5px, drawn **large** (48–100px) inside **white rounded tiles** (radius about 22% of the tile; tiles 180–280px).
+- Icon tiles are white with a very soft shadow on the light field; no borders. *Ours used blue-filled icon tiles; reserve blue fill for the single anchor.*
+- One icon family (Phosphor regular/bold), never mixed.
+
+### 5. Logos
+- **Their own brand** appears once, small, with a **mono series tag** (`LAUNCH`, `UPDATE`, `SHIPPED`) in the accent: a consistent "series label" across the whole blog.
+- **Partner/third-party logos are often greyed** (React and Astro in `#BDBDBD`) when two or more sit together, so the one accent stays the only colour. A single hero logo (GitHub) is black.
+- *For us:* keep colour logos (style A, user-approved) for named products in comparisons and lists. Use grey (`"logoStyle": "mono"`) when 3+ logos would compete with the anchor.
+
+### 6. Connectors and motion cues
+- **Clean geometric connectors:** 2–3px lines, smooth S-curves or rounded right angles, **dot terminals** where they meet a node, landing exactly on row or tile centres.
+- **Open chevron arrowheads**, the same stroke as the line.
+- **Cursor tags:** a filled cursor arrow + a mono caps tag (`AGENT 007`) to show actors acting on the UI.
+- *Ours had only hand-drawn arrows (hub). Keep those for hub; use clean connectors for flows, trees and cycles.*
+
+### 7. Composition and balance
+- **Two templates cover most posts:**
+  - (a) **centred stack**: series tag → headline → hero visual
+  - (b) **left text column at about 35% + hero visual at about 65%**, often bleeding off the right or bottom edge
+- Hero visual: **50–75% of the width**, centred on the optical centre; equal outer margins of about 10%.
+- **Exact alignment:** connectors hit centres, rows share one left edge, gaps are equal (multiples of 8).
+- Depth is soft: card shadows with a large blur and about 6% opacity; stacked rows offset by a few px; occasional isometric layers for "platform" ideas.
+
+### 8. Background pattern (structure without noise)
+- **Large-scale outline shapes** at about 4–6% contrast, full bleed: repeating arches, rounded-rectangle diagonals, soft waves. Shapes 500–700px, so they read as texture, never as content.
+- Or the dot-matrix patches (already built). Never both.
+
+### 9. Dark variant (rare, for big statements)
+- Near-black field (`#17181C`), dark cards (`#0F1013`), skeletons in dark grey, accent bars and arrows, one white tile as the focal contrast. **Our rule "no dark backgrounds" stands** unless the user approves a dark variant explicitly.
+
+### 10. Our gaps vs this level, in priority order
+1. Icons: blue-filled tiles → **near-black line icons in white tiles**; blue only for the one anchor.
+2. Add a **mono caps label** style for tags, labels and small numbers.
+3. **Skeleton rows with ON/OFF state** (accent vs grey pills and toggles) in every UI card.
+4. **Clean connectors with dot terminals** for flow, tree and cycle layouts.
+5. **Series tag + small site mark** (e.g. a medsoftwarehub mark + `GUIDE` / `PRICING` / `COMPARISON`) for consistency across the blog.
+6. **Large-scale outline pattern** background as an alternative to dot patches.
+7. Headline weight 500 near-black (not light navy), 56–72px.
+
+---
+
 ## Inspiration: Mintlify blog (studied 2026-10-13, about 40 thumbnails)
 
 Mintlify's thumbnails match our vibe: a calm light field, real product UI, one accent colour, lots of air. They're a **reference for ideas, not a new style**. Keep our palette (pastel wash, white cards, blue accent).
