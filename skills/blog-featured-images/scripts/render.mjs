@@ -79,19 +79,20 @@ function versus() {
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'logos') {
+    const LG_TOP = Math.round((900 - (240 + 30 + 53 + 18 + 58)) / 2);   // optically centred group: tiles + names + chips
     // "logos" (Mintlify "A x B" lockup): two large logo tiles, the VS badge between them, the names, one fact chip each.
-    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 200, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
+    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 150, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
     return `<style>
-.lgband{position:absolute;left:0;right:0;top:196px;height:300px;border-top:1px solid rgba(59,134,240,.45);border-bottom:1px solid rgba(59,134,240,.45);background:repeating-linear-gradient(135deg,rgba(59,134,240,.16) 0 2px,transparent 2px 16px)}
-.lgw{position:absolute;left:50%;top:206px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:150px}
-.lgs{width:380px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.lgt{width:280px;height:280px;border-radius:64px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
-.lgt .lg{box-shadow:none;background:transparent}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt .lg.full{transform:scale(.66)}
-.lgs b{margin-top:34px;font-size:46px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}.l1 b{color:#7C7468}.l2 b{color:#2C5FAE}
-.lgs span{margin-top:16px;padding:10px 22px;border-radius:999px;background:rgba(255,255,255,.75);box-shadow:0 0 0 1px rgba(20,26,38,.06);font-size:32px;color:#5D6675;white-space:nowrap}
-.lgv{position:absolute;left:50%;top:140px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
+.lgband{position:absolute;left:0;right:0;top:${LG_TOP - 14}px;height:268px;border-top:1px solid rgba(59,134,240,.35);border-bottom:1px solid rgba(59,134,240,.35);background:repeating-linear-gradient(135deg,rgba(59,134,240,.12) 0 2px,transparent 2px 16px)}
+.lgw{position:absolute;left:50%;top:${LG_TOP}px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:120px}
+.lgs{width:440px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.lgt{width:240px;height:240px;border-radius:56px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
+.lgt .lg{box-shadow:none;background:transparent}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt .lg.full{transform:scale(.62);border-radius:40px}
+.lgs b{margin-top:30px;font-size:44px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;color:#0E2A5C}.l1 b,.l2 b{color:#0E2A5C}
+.lgs span{margin-top:18px;width:340px;box-sizing:border-box;padding:12px 0;border-radius:999px;background:#fff;box-shadow:0 0 0 1px rgba(20,26,38,.07),0 8px 20px rgba(30,60,110,.06);font-size:28px;color:#5D6675;white-space:nowrap;text-align:center}
+.lgv{position:absolute;left:50%;top:120px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
 </style>
-<div class="lgband"></div><div class="lgw">${side(L, 'l1')}${side(R, 'l2')}<div class="lgv">VS</div></div>`;
+${spec.band === false ? '' : '<div class="lgband"></div>'}<div class="lgw">${side(L, 'l1')}${side(R, 'l2')}<div class="lgv">VS</div></div>`;
   }
   if (spec.variant === 'table') {
     const n = Math.max(L.items.length, R.items.length);
@@ -297,7 +298,7 @@ function checklist() {
 // "stat": one giant number from the article, a caption, and a breakdown card.
 function stat() {
   const max = Math.max(...spec.card.rows.map((r) => r.pct || 1));
-  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${logo(r.logo, 30)}${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
+  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${logo(r.logo, 40)}${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
   return `<style>
 .sv{position:absolute;left:205px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
 .sc{position:absolute;left:212px;top:470px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
@@ -536,16 +537,24 @@ const CRAFT_CSS = `
 .fleg{font-family:${MONO};text-transform:uppercase;font-size:22px;letter-spacing:.06em}.fleg .f1{color:#7F8794}.fleg .f2{color:#0A5FD8}
 `;
 // wash / cool vary per article (user: "why every image has same exact this gradient"): seeded by slug, same palette
+// Designed gradient presets (the random seeding looked bad). Seeded choice among APPROVED presets; spec.washPreset overrides.
+// Gradients learned from the references (Granola, Littlebird, Base44, Mintlify): ONE colour family, glow BEHIND the hero
+// (centre), edges pale. Never colour pools in the corners, never two competing hues.
+const WASH_PRESETS = [
+  { name: 'sky-glow',   from: '#F3F8FE', to: '#E4EFFB', ang: 180, gx: 50, gy: 56, gs: 52, glow: 'rgba(39,172,242,.26)', warm: null },
+  { name: 'airy-white', from: '#FAFCFF', to: '#EDF4FC', ang: 180, gx: 50, gy: 62, gs: 46, glow: 'rgba(59,134,240,.16)', warm: null },
+  { name: 'dawn',       from: '#FBF6F2', to: '#E8F1FB', ang: 165, gx: 54, gy: 58, gs: 50, glow: 'rgba(39,172,242,.22)', warm: 'rgba(255,190,160,.14)' },
+  { name: 'deep-sky',   from: '#E9F3FD', to: '#D3E7FA', ang: 180, gx: 50, gy: 52, gs: 56, glow: 'rgba(255,255,255,.75)', warm: null },
+];
+const WASH_OK = [0, 1, 2, 3];
 const WV = (() => {
+  if (Number.isInteger(spec.washPreset) && WASH_PRESETS[spec.washPreset]) return WASH_PRESETS[spec.washPreset];
   let h = 2166136261; for (const ch of String(slug) + '#wash') h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
-  const r = () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296;
-  const spots = [[85, 18], [88, 84], [50, 6], [14, 86], [12, 14], [60, 92]];
-  const [px, py] = spots[Math.floor(r() * spots.length)];
-  return { ang: Math.round(105 + r() * 70), px, py, ps: Math.round(34 + r() * 16), wx: 100 - px + Math.round(r() * 10 - 5), wy: 100 - py + Math.round(r() * 10 - 5), ws: Math.round(28 + r() * 14), warmOn: r() > 0.3 };
+  return WASH_PRESETS[WASH_OK[(h >>> 0) % WASH_OK.length]];
 })();
 const BG_CSS = {
-  wash: `body{background:linear-gradient(${WV.ang}deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}body:before{display:block;background:radial-gradient(${WV.ps}% ${WV.ps + 10}% at ${WV.px}% ${WV.py}%,${w.pool},transparent 70%),radial-gradient(${WV.ws}% ${WV.ws + 10}% at ${WV.wx}% ${WV.wy}%,${WV.warmOn ? w.warmPool : 'transparent'},transparent 70%)}`,
-  cool: `body{background:linear-gradient(${WV.ang + 20}deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}body:before{display:block;background:radial-gradient(${WV.ps + 5}% ${WV.ps + 15}% at ${WV.px}% ${WV.py}%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at ${WV.wx}% ${WV.wy}%,rgba(255,180,150,${WV.warmOn ? '.18' : '0'}),transparent 70%)}`,
+  wash: `body{background:linear-gradient(${WV.ang}deg,${WV.from} 0%,${WV.to} 100%)}body:before{display:block;inset:0;filter:blur(40px);background:radial-gradient(${WV.gs}% ${WV.gs}% at ${WV.gx}% ${WV.gy}%,${WV.glow},transparent 72%)${WV.warm ? `,radial-gradient(60% 40% at 50% 0%,${WV.warm},transparent 70%)` : ''}}`,
+  cool: `body{background:linear-gradient(180deg,#EEF6FE 0%,#D9EBFB 100%)}body:before{display:block;inset:0;filter:blur(40px);background:radial-gradient(52% 52% at 50% 55%,rgba(255,255,255,.7),transparent 72%)}`,
   flat: `body{background:#F1F0EC}body:before{display:none}`,
   paper: `body{background:#F1F3F6}body:before{display:none}`,
   sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}`,

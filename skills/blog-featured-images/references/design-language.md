@@ -173,6 +173,32 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ---
 
+## What every inspiration shares (Granola, Littlebird, Base44, Mintlify, Arcade; studied together 2026-10-13)
+
+| Reference | Background | Hero | Accent |
+|---|---|---|---|
+| Granola | One colour family (mint → lime); **glow directly behind the hero**, pale edges | Big product card or prompt bar, often cropped | Brand green on one control |
+| Littlebird | Flat cream, no gradient | Serif headline + quiet skeleton tiles | **One** green-outlined tile = the "selected" one |
+| Base44 | One flat saturated field (blue, orange, green) | Large UI panel, grid + corner squares | White/blue data on the field |
+| Mintlify | Flat neutral grey | UI with skeleton bars, mono labels | One green, in solid shapes |
+
+**Rules we take from all of them:**
+1. **Background = one colour family**, flat or a gentle top-to-bottom gradient, with the **glow behind the hero** to lift it. **Never colour pools in the corners, never two competing hues** (our old peach-corner + blue-corner wash looked "so bad").
+2. **The lightest, calmest area is where the content sits.** Edges carry the colour, the centre carries the hero.
+3. **One hero**, big (50–70% of the width), often touching or crossing an edge.
+4. **One accent on one element** (the selected tile, the active bar, the VS badge). Everything else is neutral.
+5. **Minimal text**, with greeked or skeleton UI for detail.
+
+**Our wash is now 4 designed presets in one colour family:**
+- `sky-glow`: light sky with a soft blue glow behind the hero
+- `airy-white`: near-white, faint blue glow
+- `dawn`: near-white with a whisper of warm at the top, blue glow behind the hero
+- `deep-sky`: a deeper sky with a white glow behind the hero
+
+They rotate per article (seeded by slug); `"washPreset": 0–3` forces one. Corner pools and random angles were removed.
+
+---
+
 ## FINAL approved look (user: "I have finalized these images. Set in skill to follow the same vibe", 2026-10-13)
 
 **These 6 images are the target.** They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
@@ -188,7 +214,7 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 **The shared vibe:**
 - **Soft, light fields:** pastel wash, light sky or warm flat grey. Structure comes from **thin guide lines + a few tiny blue dots in the margins** (texture), or from the faint grid with corner squares (timeline, window, stat).
-- **The wash and cool backgrounds vary per article** (user: "why every image has same exact this gradient"). The gradient angle, the blue glow's position (top-right, bottom-right, top-centre, bottom-left…), the opposite warm tint (sometimes none) and the glow size are seeded from the slug. Same palette, different light in every image. Never hard-code one gradient for all images.
+- **The wash varies per article, using 4 designed one-family presets with the glow behind the hero** (see "What every inspiration shares"). The old random corner pools were rejected ("the gradients look so bad").
 - **No dot patches.** The user picked B ("too much dots in the bg"); `dots` defaults to `none`. Never use outline-shape backgrounds either (rejected).
 - **One big white card or hero** with real UI: checkboxes, progress bar, bars, skeleton rows, timeline dots, an app window. It's centred or cleanly left-aligned and fills about 60%+ of the width.
 - **Blue gradient = the active state and the one anchor:** checked boxes, the progress bar, the winning bar, the highlighted row, the "2 of 8" chip, the selection box, the current timeline dot. **Grey = inactive:** unchecked boxes, the other bars, skeletons, empty dots.
