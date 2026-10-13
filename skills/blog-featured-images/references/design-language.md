@@ -173,6 +173,28 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ---
 
+## Inspiration: Mintlify blog (studied 2026-10-13, about 40 thumbnails)
+
+Mintlify's thumbnails match our vibe: a calm light field, real product UI, one accent colour, lots of air. They're a **reference for ideas, not a new style**. Keep our palette (pastel wash, white cards, blue accent).
+
+**What they do well, and how we borrow it:**
+
+1. **Skeleton bars instead of secondary text.** UI cards show greeked rows: grey and accent bars of different lengths in place of real text. The card looks real with zero words. *Borrow:* in window, prompt, stack and other UI cards, draw blue/grey bars for supporting rows, so the few real words (title, key fact) carry the meaning. This is the best tool for our 15-word budget.
+2. **One hero, lots of air.** Many thumbnails are a single element on a flat field: one icon tile, one number, one short headline. *Borrow:* when an article has one idea, show one thing; whitespace is the design.
+3. **Selection-box highlight.** The key phrase sits in a thin accent frame with small square corner handles (like a design tool's selection), sometimes with hatched side bands. It fits our registration squares. *Borrow:* frame the one key word or number in a blue selection box.
+4. **Logo constellation.** "Mintlify Index": a centre wordmark with small brand logos scattered around it, no cards or arrows. *Borrow:* a lighter hub variant for "best X" and integrations articles (logos only, no names when the logos are recognisable).
+5. **Big number + tiny label.** "$67M / Raised to date", "66% [AGENTS]", "52.1% faster agents" on a thin progress line. *Borrow:* our stat layout, with even less text: number + 2–4 word label.
+6. **Thin connector diagrams.** Icon tiles joined by thin accent lines (a tree, a cycle, a workflow). *Borrow:* for process and "how it works" articles, as an alternative to the timeline.
+7. **UI cropped at the edge.** Windows and panels bleed off the side or bottom, which feels like a peek into the product. *Borrow:* the existing `bleed`, with the key text kept inside x 210–1390.
+8. **Light-weight display type.** Headlines in a large, light weight ("Analytics Agent", "Instant rollbacks"), not bold. *Borrow:* try Inter 300–400 for big headlines on minimal layouts.
+9. **Partnership lockup "A × B".** Two logos with a small "×". *Borrow:* a minimal versus for two-product posts (two logos + "vs", 3–5 words in total).
+
+**Family consistency:** they keep one background family (light sage paper, or near-black for big announcements), one accent and one UI style. Variety comes from **layout**, never from colour or type. That's the same as our rule.
+
+**Don't copy:** their green, their dark/black backgrounds (our rule: no dark), photography and painted illustrations, and the mono "terminal" look. None of these fit our approved look.
+
+---
+
 ## Lessons learned and speed
 What each session taught us (speed tools, pre-flight checks, taste, gotchas) lives in the skill's `references/lessons.md`. Read it before every batch. The top rule is to **work fast**: parallel reads, reserved layouts, parallel Makers, one QA contact sheet.
 
