@@ -1,5 +1,21 @@
-{ "name": "yoursite.com: copy this file to brands/<site>.json and change the colours to the site's brand",
-  "wash": { "warm": "#FDEFE8", "mid": "#F4F6FB", "cool": "#DCEEFC", "deep": "#CBE6FA", "pool": "rgba(39,172,242,.35)", "warmPool": "rgba(255,170,140,.25)" },
-  "accentLight": "lighter brand colour (gradient start)", "accent": "main brand colour (gradient end, buttons, tiles)", "sky": "bright tint for carets and legend dots",
-  "labelBefore": "#7C7468", "labelAfter": "darker brand shade for the right/after label", "legendAfter": "brand shade for the second legend item",
-  "headline": "very dark brand shade for big headlines", "flat": "#F1F0EC" }
+{
+ "name": "yoursite.com: copy this file to brands/<site>.json and change the colours to the site's brand",
+ "wash": {
+  "warm": "#FDEFE8",
+  "mid": "#F4F6FB",
+  "cool": "#DCEEFC",
+  "deep": "#CBE6FA",
+  "pool": "rgba(39,172,242,.35)",
+  "warmPool": "rgba(255,170,140,.25)"
+ },
+ "accentLight": "lighter brand colour (gradient start)",
+ "accent": "main brand colour (gradient end, buttons, tiles)",
+ "sky": "bright tint for carets and legend dots",
+ "labelBefore": "#7C7468",
+ "labelAfter": "darker brand shade for the right/after label",
+ "legendAfter": "brand shade for the second legend item",
+ "headline": "very dark brand shade for big headlines",
+ "flat": "#F1F0EC",
+ "markUrl": "optional: URL of the site's own square icon (e.g. its apple-touch-icon), used by the site mark",
+ "markName": "optional: the site name shown next to the mark"
+}

@@ -66,7 +66,7 @@ QA failures in the test traced back to things the Orchestrator could have checke
 
 - Two images were "exact same" because the old check only knew one output folder. Now one site-wide history per brand counts every render (`~/.blog-featured-images/history-<brand>.json`).
 - Pixel-similarity hashing was tested and **doesn't work** here: the same window layout scored 0.11 because background and position swamp the structure. Layout identity (mode + variant) is the rule, and QA does the visual side-by-side.
-- With 12 layouts, a category repeats after 12 images. **That already happened:** once every layout had one use, the least-used tier allowed `stack`, and QA failed it as a copy of the other stack image. The fix was a new variant (`stack/split`). When a category's least-used tier is at 1 or more use each, add a variant **before** briefing Makers. Next candidates: window, stat, ranked, hub.
+- With 15 layouts, a category repeats after 15 images. **That already happened:** once every layout had one use, the least-used tier allowed `stack`, and QA failed it as a copy of the other stack image. The fix was a new variant (`stack/split`). When a category's least-used tier is at 1 or more use each, add a variant **before** briefing Makers. Next candidates: window, stat, ranked, hub.
 
 ## 5. Facts
 

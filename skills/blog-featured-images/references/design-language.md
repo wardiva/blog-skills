@@ -411,7 +411,11 @@ Two compositions that share the same **skeleton** (the arrangement of blocks) re
 | before-after | small raw card → dashed connector → big clean card, legend below |
 | versus (overlap) | **two tilted, overlapping cards** (−3° / +3°, right on top) with a 96px blue-gradient **VS** badge (white text, white ring) on the bottom of the seam. Differs from before-after by tilt, overlap and the badge. Optional `"variant":"table"` = one comparison table card |
 | prompt | faded panel bleeding off the top, centred headline, pill input bar |
-| hub | centre tile with 6 tilted cards around it and hand-drawn arrows |
+| hub | centre tile with 6–7 product cards (logos + names) around it and hand-drawn arrows |
+| focus | centred headline with a blue selection box on the key phrase; UI card with skeleton rows bleeding off the bottom |
+| versus (logos) | two large logo tiles on an edge-to-edge hatched band, VS badge, one fact chip each |
+| before-after (flow) | muted icon card → arrow → lifted blue-icon card, legend |
+| stack (split) | definition card whose lower half is a two-column contrast |
 | stack | wide takeaway card with 2 cards peeking above it |
 | window | full app window, list pane plus detail pane |
 | timeline | headline top-left, horizontal track with step dots |
