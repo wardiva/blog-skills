@@ -191,6 +191,8 @@ Mintlify's thumbnails match our vibe: a calm light field, real product UI, one a
 
 **Family consistency:** they keep one background family (light sage paper, or near-black for big announcements), one accent and one UI style. Variety comes from **layout**, never from colour or type. That's the same as our rule.
 
+**Built so far:** `focus` (selection box + skeleton rows + bottom peek) and versus `logos` (A × B lockup), first used on EMR cost and NetSuite vs SAP B1.
+
 **Don't copy:** their green, their dark/black backgrounds (our rule: no dark), photography and painted illustrations, and the mono "terminal" look. None of these fit our approved look.
 
 ---
@@ -224,7 +226,7 @@ Failed images go back to the Maker, for up to 3 rounds. Only images that passed 
 4. **Same topic:** articles on the same topic never share a mode.
 5. A failure prints "VARIETY CHECK FAILED" with the allowed layouts. Use one of them. Never `--force` (unless the user asks), and never render into another folder to dodge the check.
 
-**Cycle length = number of layouts (13 today: stack `split` and before-after `flow` were added for the cloud ERP article).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
+**Cycle length = number of layouts (15 today: stack `split` and before-after `flow` for cloud ERP; `focus` and versus `logos` from the Mintlify study).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
 
 ---
 

@@ -75,6 +75,20 @@ const before = spec.before, after = spec.after;
 function versus() {
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
+  if (spec.variant === 'logos') {
+    // "logos" (Mintlify "A x B" lockup): two large logo tiles, the VS badge between them, the names, one fact chip each.
+    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 168, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
+    return `<style>
+.lgw{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);display:flex;align-items:flex-start;gap:120px}
+.lgs{width:380px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.lgt{width:236px;height:236px;border-radius:56px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
+.lgt .lg{box-shadow:none;background:transparent}.lgt .lg.full{transform:scale(.66)}
+.lgs b{margin-top:34px;font-size:46px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}.l1 b{color:#7C7468}.l2 b{color:#2C5FAE}
+.lgs span{margin-top:16px;padding:10px 22px;border-radius:999px;background:rgba(255,255,255,.75);box-shadow:0 0 0 1px rgba(20,26,38,.06);font-size:32px;color:#5D6675;white-space:nowrap}
+.lgv{position:absolute;left:50%;top:118px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
+</style>
+<div class="lgw">${side(L, 'l1')}${side(R, 'l2')}<div class="lgv">VS</div></div>`;
+  }
   if (spec.variant === 'table') {
     const n = Math.max(L.items.length, R.items.length);
     const RH = 104, top = Math.round((900 - (150 + n * RH + (spec.legend ? 86 : 0))) / 2);
@@ -97,7 +111,7 @@ function versus() {
   }
   const card = (d, x, rot, cls, extra = '') => `<div class="ovl ${cls}" style="left:${x}px;transform:rotate(${rot}deg)"><div class="olb">${logo(d.logo, 50)}${esc(d.label)}</div><div class="oc">${extra}<h3>${esc(d.heading)}</h3><ul>${d.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div></div>`;
   return `<style>
-.ovl{position:absolute;top:170px;width:560px}
+.ovl{position:absolute;top:${spec.legend ? 170 : 255}px;width:560px}
 .olb{font-size:46px;font-weight:500;letter-spacing:-.02em;margin:0 0 22px 8px}.o1 .olb{color:#7C7468}.o2 .olb{color:#2C5FAE}
 .oc{position:relative;background:#fff;border-radius:24px;padding:42px 44px;min-height:0;box-shadow:0 30px 60px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
 .oc h3{margin:0 0 20px;font-size:30px;font-weight:500;color:#5D6675}.oc ul{margin:0;padding:0 0 0 28px;display:grid;gap:16px;font-size:32px;line-height:1.3;color:#7F8794}.oc li.a{color:#141A26}
@@ -172,7 +186,7 @@ function stack() {
   if (spec.variant === 'split') {
     // "split": a short definition over a two-column contrast (e.g. You | Vendor). The card sizes to its text and is centred;
     // the back cards fan to the lower right of whatever height the card ends up.
-    const cols = (spec.split || []).slice(0, 2).map((c, i) => `<div class="sp${i}"><em>${esc(c.label)}</em><span>${esc(c.text)}</span></div>`).join('');
+    const cols = (spec.split || []).slice(0, 2).map((c, i) => `<div class="sp${i}"><em>${c.logo ? logo(c.logo, 44) : ''}${esc(c.label)}</em><span>${esc(c.text)}</span></div>`).join('');
     return `<style>
 .skw{position:absolute;left:320px;top:50%;width:960px;transform:translateY(-54%)}
 .skb{position:absolute;inset:0;border-radius:28px;background:#fff}
@@ -184,7 +198,7 @@ function stack() {
 .skl{margin:22px 0 0;font-size:58px;font-weight:500;line-height:1.15;color:#141A26;letter-spacing:-.02em}.skl b{font-weight:600;color:#0A5FD8}
 .sks{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #EEF0F4}
 .sks>div{display:flex;flex-direction:column;gap:8px;padding:34px 60px 38px}.sks .sp1{background:#F2F8FE;border-left:1px solid #E3ECF7}
-.sks em{font-style:normal;font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}.sks .sp1 em{color:#2C5FAE}
+.sks em{display:flex;align-items:center;gap:14px;font-style:normal;font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}.sks .sp1 em{color:#2C5FAE}
 .sks span{font-size:34px;color:#141A26}
 </style>
 <div class="skw"><div class="skb skb1"></div><div class="skb skb2"></div>
@@ -215,7 +229,7 @@ function appwin() {
 .wb{display:grid;grid-template-columns:640px 1fr;height:654px}
 .wl{padding:40px 44px;border-right:1px solid #EEF0F4}
 .wi{width:54px;height:54px;border-radius:14px;background:#E3F0FD;display:grid;place-items:center;font-size:30px;color:#0A5FD8}
-.wl h2{margin:16px 0 4px;font-size:42px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
+.wl h2{margin:16px 0 4px;white-space:nowrap;font-size:${Math.min(42, Math.floor(552 / (String(spec.list.heading || "").length * 0.56 || 1)))}px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
 .wr{display:flex;align-items:center;gap:16px;padding:13px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
 .wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
 .wd{padding:40px ${spec.bleed ? 150 : 40}px 40px 40px}.wq{margin-left:${spec.bleed ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
@@ -254,8 +268,8 @@ function timeline() {
 
 // "checklist": a tilted checklist card with real items, progress pill and bar.
 function checklist() {
-  const done = spec.items.filter((i) => i.done).length, total = spec.items.length;
-  const ch = 230 + Math.min(total, 7) * 66, ct = Math.round((900 - ch) / 2);
+  const done = spec.items.filter((i) => i.done).length, total = Number(spec.total) || spec.items.length;   // "total": the article's full count (e.g. 8-point list shown as 4 rows)
+  const ch = 230 + Math.min(spec.items.length, 7) * 66, ct = Math.round((900 - ch) / 2);
   const items = spec.items.slice(0, 7).map((it, i) => {
     const cur = !it.done && (i === 0 || spec.items[i - 1].done);
     return `<div class="ck${it.done ? ' ckd' : ''}${cur ? ' ckc' : ''}"><span class="bx">${it.done ? '<i class="ph-bold ph-check"></i>' : ''}</span><span>${esc(it.text)}</span></div>`;
@@ -279,10 +293,10 @@ function stat() {
   const max = Math.max(...spec.card.rows.map((r) => r.pct || 1));
   const rows = spec.card.rows.map((r, i) => `<div class="sr${i === 0 ? ' a' : ''}"><div><b>${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
   return `<style>
-.sv{position:absolute;left:200px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
+.sv{position:absolute;left:205px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
 .sc{position:absolute;left:212px;top:470px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
 .ss{position:absolute;left:212px;top:620px;width:600px;font-size:26px;line-height:1.4;color:#7F8794}
-.scard{position:absolute;left:960px;top:250px;width:430px;background:#fff;border-radius:24px;padding:42px 44px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
+.scard{position:absolute;left:930px;top:250px;width:430px;box-sizing:border-box;background:#fff;border-radius:24px;padding:42px 44px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
 .scard h3{margin:0 0 26px;font-size:28px;font-weight:500;color:#5D6675}
 .sr{margin-bottom:24px}.sr div{display:flex;justify-content:space-between;align-items:baseline;font-size:25px;color:#7F8794}.sr b{font-weight:500}.sr em{font-style:normal;white-space:nowrap}
 .sr>i{display:block;margin-top:10px;height:12px;border-radius:6px;background:#EEF2F7}.sr>i>i{display:block;height:100%;border-radius:6px;background:#CBD2DC}
@@ -354,7 +368,30 @@ svg.fl{position:absolute;inset:0;overflow:visible}
 <div class="fa"><div class="fi"><i class="${esc(A.icon || 'ph-fill ph-cloud')}"></i></div><b>${esc(A.label)}</b><ul>${(A.items || []).map((t) => `<li><i class="ph-fill ph-check-circle"></i>${esc(t)}</li>`).join('')}</ul></div>
 ${spec.legend ? `<div class="fleg"><span class="f1"><i></i>${esc(spec.legend[0])}</span><span class="f2"><i></i>${esc(spec.legend[1])}</span></div>` : ''}`;
 }
-const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked };
+// "focus" (Mintlify-inspired): a large light-weight headline whose key phrase sits in a blue selection box with corner
+// handles, beside a small UI card: up to 3 real rows (label + value + bar) and faded skeleton rows that add zero words.
+function focus() {
+  const head = esc(spec.headline).replace(/\{\{(.+?)\}\}/g, '<span class="sel">$1<i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="h4"></i></span>');
+  const rows = spec.rows || [], max = Math.max(1, ...rows.map((r) => r.pct || 1)), hi = spec.highlight ?? -1;
+  const real = rows.slice(0, 3).map((r, i) => `<div class="fr${i === hi ? ' on' : ''}"><b>${esc(r.name)}</b><i><i style="width:${Math.max(8, Math.round(((r.pct || 1) / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
+  const ghosts = [62, 44, 30].map((w) => `<div class="fr gh"><b><s style="width:70px"></s></b><i><i style="width:${w}%"></i></i><em><s style="width:80px"></s></em></div>`).join('');
+  return `<style>
+.fh{position:absolute;left:50%;top:172px;transform:translateX(-50%);width:1120px;text-align:center;font-size:64px;font-weight:300;line-height:1.12;letter-spacing:-.035em;color:#0E2A5C}
+.sel{position:relative;display:inline-block;padding:0 14px;margin:0 0 0 12px;font-weight:400;color:#0A5FD8;background:rgba(39,172,242,.08);outline:2px solid #3B86F0;outline-offset:0}
+.sel i{position:absolute;width:12px;height:12px;background:#fff;border:2px solid #0A5FD8;box-sizing:border-box}
+.sel .h1{left:-6px;top:-6px}.sel .h2{right:-6px;top:-6px}.sel .h3{left:-6px;bottom:-6px}.sel .h4{right:-6px;bottom:-6px}
+.fc{position:absolute;left:50%;top:388px;transform:translateX(-50%);width:760px;height:620px;padding:38px 44px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
+.fct{display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:22px;font-weight:500;color:#7F8794}.fct s{display:block;height:10px;width:90px;border-radius:5px;background:#EEF0F4;margin-left:auto}
+.fr{display:grid;grid-template-columns:130px 1fr 200px;align-items:center;gap:16px;padding:14px 0}
+.fr b{font-size:26px;font-weight:500;color:#141A26;white-space:nowrap}.fr em{font-style:normal;font-size:24px;color:#5D6675;text-align:right;white-space:nowrap}
+.fr>i{height:14px;border-radius:7px;background:#EEF0F4;overflow:hidden}.fr>i>i{display:block;height:100%;border-radius:7px;background:#C9D3E0}
+.fr.on b{color:#0A5FD8}.fr.on em{color:#0A5FD8;font-weight:600}.fr.on>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
+.fr.gh{opacity:.45}.fr.gh s{display:inline-block;height:12px;border-radius:6px;background:#E3E7EE}.fr.gh em{display:flex;justify-content:flex-end}
+</style>
+<div class="fh">${head}</div>
+<div class="fc"><div class="fct">${esc(spec.label || '')}<s></s></div>${real}${ghosts}</div>`;
+}
+const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus };
 
 
 // ---- heading must mirror the blog title: same key words, same meaning, just shorter ----
@@ -376,7 +413,7 @@ if (heading !== undefined && !args.includes('--force')) {
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
 // A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
-const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table'], prompt: ['default'], hub: ['default'], stack: ['default', 'split'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'] };
+const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'logos'], prompt: ['default'], hub: ['default'], stack: ['default', 'split'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'] };
 const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
 const VARIANT = spec.variant || LAYOUTS[MODE][0];
@@ -384,7 +421,7 @@ if (!LAYOUTS[MODE].includes(VARIANT)) { console.error(`Unknown variant "${VARIAN
 const LAYOUT = `${MODE}/${VARIANT}`;
 const ALL_LAYOUTS = ALL_MODES.flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
 const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
-const DEFAULT_BG = { 'before-after': 'wash', versus: 'wash', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'cool', stat: 'white', ranked: 'flat' };
+const DEFAULT_BG = { focus: 'flat', 'before-after': 'wash', versus: 'wash', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'cool', stat: 'white', ranked: 'flat' };
 const BGS = ['wash', 'cool', 'white', 'flat'];
 const category = spec.category || spec.brand || 'default';
 const brandKey = (spec.brand || 'default').replace(/[^a-z0-9-]/gi, '');
@@ -453,7 +490,7 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 ${frameLayer()}
 ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.label)}</div><div class="lbl l2">${esc(after.label)}</div>
 <div class="c c1"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
-<svg class="conn" viewBox="0 0 80 900"><path d="M-30 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
+<svg class="conn" viewBox="0 0 80 900"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
 <div class="c c2"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>
 <div class="legend"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`}
 ${cursorLayer()}

@@ -53,6 +53,10 @@ QA failures in the test traced back to things the Orchestrator could have checke
 - **Plain text cards get rejected even when they're short.** The cloud ERP stack/split card ("ERP on the vendor's servers" + You/Vendor columns) got "I DONT LIKE IT". The user then picked option C from an A/B/C sheet: icons + arrow + 2 checked items. **Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.** For any "I don't like it", answer with an A/B/C sheet at once (2–3 concepts, each ≤15 words). That turned a dead end into a pick in one round.
 - When the user asks "does it reflect the article and title?", answer with a table mapping every element on the image to the sentence it comes from.
 
+- **Logo weight:** a filled badge logo (e.g. NetSuite's navy disc) outweighs a flat wordmark (SAP). Big logo tiles scale `full` badges to 66% so both sides balance.
+- **Bleed needs content to the edge.** A card that runs off the bottom with empty white below its rows looks unfinished. Push the card down so it's cut just after the skeleton rows.
+- QA may suggest changes that break an approved rule (e.g. "make both versus names navy"). Approved rules win; say so in the fix message.
+
 ## 4. Variety must be structural
 
 - Two images were "exact same" because the old check only knew one output folder. Now one site-wide history per brand counts every render (`~/.blog-featured-images/history-<brand>.json`).
@@ -63,3 +67,10 @@ QA failures in the test traced back to things the Orchestrator could have checke
 
 - Use the article's own wording for names and numbers. QA compares every value against the article file.
 - Raw article text (agent-browser) beats a summary (WebFetch) for checking facts.
+
+## 6. Renderer gaps found in the 2026-10-13 batch (fixed)
+
+- **Checklist "N-point" titles:** the progress pill used to count only listed rows, so an 8-point article forced 8 rows (one hidden). Now set `"total": 8` and list 3–4 rows; the card height follows the rows actually drawn.
+- **stack/split columns take `logo`.** Use product logos when the two columns are products (e.g. NetSuite | SAP Business One); a text-only split was rejected before.
+- **No invented sample values** (patient names, drugs) in before-after cards, even if an old example used them. Use the article's own words (e.g. "Allergies", "Medications", "CCDA").
+- **Window list heading auto-sizes** to one line (long "X vs Y" headings used to wrap at 42px).

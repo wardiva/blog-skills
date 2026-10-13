@@ -54,7 +54,8 @@ const t0 = Date.now();
 const results = await Promise.all(urls.map(async (url, i) => {
   const session = `bfi-read-${process.pid}-${i}`;
   try {
-    await run(session, ['open', url]);
+    // one retry for transient network errors (e.g. ERR_QUIC_PROTOCOL_ERROR, timeouts)
+    try { await run(session, ['open', url]); } catch (e) { await new Promise((r) => setTimeout(r, 1500)); await run(session, ['open', url]); }
     let raw = (await run(session, ['eval', '--stdin'], EXTRACT)).trim();
     let data = JSON.parse(raw); if (typeof data === 'string') data = JSON.parse(data);
     const file = path.join(outDir, `${slugOf(url)}.md`);

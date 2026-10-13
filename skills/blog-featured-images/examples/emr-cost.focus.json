@@ -1,0 +1,16 @@
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "topic": "emr-cost",
+ "slug": "emr-software-cost-2026-pricing-by-practice-size",
+ "articleTitle": "EMR Software Cost 2026: Pricing by Practice Size",
+ "mode": "focus",
+ "headline": "EMR cost by {{practice size}}",
+ "label": "Year one",
+ "rows": [
+  { "name": "Solo", "value": "$15K–$30K", "pct": 30 },
+  { "name": "2–5", "value": "$40K–$150K", "pct": 150 },
+  { "name": "26+", "value": "$100K–$500K+", "pct": 500 }
+ ],
+ "highlight": 1
+}

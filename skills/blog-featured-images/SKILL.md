@@ -34,7 +34,7 @@ Read `references/lessons.md` first. In short:
 | mode | Shows | Best for |
 |---|---|---|
 | `before-after` (default) | raw card → clean card, plus a legend (`flow`: icon card → hand-drawn arrow → lifted icon card) | how-to, migration, transformation; `flow` for "old way → new way" |
-| `versus` | `overlap` (default): two tilted overlapping cards, blue VS badge, legend. `table`: one comparison table card | X vs Y |
+| `versus` | `overlap` (default): two tilted overlapping cards, blue VS badge, legend. `table`: one comparison table card. `logos`: two big logo tiles + one fact chip each | X vs Y |
 | `prompt` | faded data panel, big headline, pill bar with chips | cost, pricing, FAQ, "what is" |
 | `hub` | blue centre tile, 6 tilted cards, hand-drawn arrows | best-of lists, integrations |
 | `stack` | one takeaway card over offset cards (`split`: lower half is a two-column contrast) | guides with one key rule; `split` for definitions and "who does what" |
@@ -43,6 +43,7 @@ Read `references/lessons.md` first. In short:
 | `checklist` | tilted checklist card with progress | checklists, "how to choose", requirements |
 | `stat` | one giant number, caption, breakdown card | one headline statistic or cost |
 | `ranked` | named bars ranked by a real metric | rankings, cheapest/fastest, market share |
+| `focus` | centred headline with the key phrase in a selection box; UI card with skeleton rows peeking from the bottom | one key idea with 2–3 values (costs by tier, plans) |
 
 **The same article type can use several modes.** A cost article can be `prompt`, `stat`, `window` or `ranked`, and a how-to can be `before-after`, `timeline`, `stack` or `checklist`. Use this freedom to avoid repeats.
 
@@ -99,4 +100,4 @@ Show the images, ideally as one contact sheet for a batch. For each, list the mo
 - **First-time setup for new users:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast parallel article reading. **If agent-browser isn't installed**, read the articles with WebFetch in parallel (one message, all URLs) and save the text to `featured-images/articles/<slug>.md`, then continue as normal. A Brandfetch client ID is optional; it goes in `~/.blog-featured-images/config.json` (never commit it).
 - Fonts (Inter) and icons (Phosphor) load from the internet at render time.
 - Variety history is site-wide per brand (`~/.blog-featured-images/history-<brand>.json`, or the `FEATURED_HISTORY_DIR` env var). Re-rendering the same `slug` replaces its entry. To drop a discarded test image, delete its entry from that file.
-- Layouts available today: 13 (versus: `overlap`, `table`; stack: `default`, `split`; before-after: `default`, `flow`; every other mode has one). A category with more posts than layouts will cycle, always to the least-used layout. Add variants to lengthen the cycle.
+- Layouts available today: 15 (versus: `overlap`, `table`, `logos`; stack: `default`, `split`; before-after: `default`, `flow`; plus the new `focus` mode; every other mode has one). A category with more posts than layouts will cycle, always to the least-used layout. Add variants to lengthen the cycle.

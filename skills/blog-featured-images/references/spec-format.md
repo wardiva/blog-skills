@@ -10,7 +10,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They can never share a mode |
 | `slug` | yes | Output folder name and ledger key (unique per article) |
 | `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
-| `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default) and `table`; `stack` has `default` and `split`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
+| `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default), `table` and `logos`; `stack` has `default` and `split`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
 | `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]` and ranked `rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
 | `bg` | no | `wash`, `cool`, `white`, `flat`. Leave it out to auto-rotate |
@@ -46,7 +46,17 @@ One JSON file per article. Top-level fields shared by all modes:
 ```
 - Renders as **two tilted, overlapping cards** with a blue **VS** badge on the seam. `label` is the product name above each card, `heading` the plan line, and `items` 2–3 facts (up to ~22 characters each so nothing wraps). `items[0]` is the key fact (dark on the left, blue on the right). Use the same dimensions on both sides, in the same order.
 - `legend[0]` and `legend[1]` name the key difference.
+- `"variant": "logos"` (Mintlify-style "A × B" lockup): two large logo tiles, the VS badge, the names, and one fact chip each: `"left": {"label": "NetSuite", "logo": "netsuite.com", "fact": "$999/mo base fee"}`. One contrast only, about 11 words. Badge-style logos are scaled down so both tiles carry similar weight.
 - `"variant": "table"` renders one comparison table card instead: `dimensions` become its row labels (up to ~12 characters, e.g. "Per user/mo"), and `legend` is optional. Leave the legend out when it would repeat a row (minimal rule).
+
+## Focus (`"mode": "focus"`; one key idea + a few values; Mintlify-inspired)
+```json
+{ "mode": "focus", "headline": "EMR cost by {{practice size}}", "label": "Year one", "highlight": 1,
+  "rows": [ { "name": "Solo", "value": "$15K–$30K", "pct": 30 }, { "name": "2–5", "value": "$40K–$150K", "pct": 150 },
+            { "name": "26+", "value": "$100K–$500K+", "pct": 500 } ] }
+```
+- A centred, light-weight headline (the title's words). `{{ }}` puts the key phrase in a blue **selection box** with corner handles.
+- Below it, a UI card running off the bottom edge: up to 3 real rows (`name` ≤ ~6 characters, `value` ≤ ~12, `pct` = bar length) plus 3 faded **skeleton rows** that add zero words. `highlight` is the blue row.
 
 ## Prompt (`"mode": "prompt"`; cost, pricing, "what is", FAQ)
 ```json
@@ -81,7 +91,7 @@ One JSON file per article. Top-level fields shared by all modes:
   "items": ["Keep read-only legacy access for 6 to 12 months", "Scanned documents may not transfer cleanly"] }
 ```
 - `lead` is up to ~80 characters. `**bold**` marks the key phrase (shown in blue). `items` holds 1–3 bullets.
-- **Variant `"split"`** (definitions, "what is X", who-does-what): instead of `items`, set `"split": [{"label": "You", "text": "Log in through a browser"}, {"label": "Vendor", "text": "Patches and backups"}]`. The card's bottom half becomes two columns (the right one tinted blue), and the back cards fan to the lower right. Column text up to ~22 characters.
+- **Variant `"split"`** (definitions, "what is X", who-does-what): instead of `items`, set `"split": [{"label": "You", "text": "Log in through a browser"}, {"label": "Vendor", "text": "Patches and backups"}]`. The card's bottom half becomes two columns (the right one tinted blue), and the back cards fan to the lower right. Column text up to ~22 characters. Add `"logo": "<domain>"` to a column when it names a product (e.g. NetSuite | SAP Business One); prefer this over a text-only split.
 
 ## Window (`"mode": "window"`; vendor lists, pricing tables)
 ```json
@@ -107,7 +117,7 @@ One JSON file per article. Top-level fields shared by all modes:
 { "mode": "checklist", "title": "Small business ERP check",
   "items": [ { "text": "Cost per user vs volume", "done": true }, { "text": "Core modules you need today", "done": false } ] }
 ```
-- `items` holds 3–7 entries, each up to ~32 characters. The first unchecked item is shown as "current".
+- `items` holds 3–7 entries, each up to ~32 characters. Set `"total": 8` when the article has more points than you show (the pill then reads "3 of 8" with only 4 rows). The first unchecked item is shown as "current".
 
 ## Stat (`"mode": "stat"`; one headline number)
 ```json

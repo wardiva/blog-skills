@@ -1,0 +1,11 @@
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "topic": "netsuite-vs-sap-b1",
+ "slug": "netsuite-vs-sap-business-one-2026-small-business-guide",
+ "mode": "versus",
+ "variant": "logos",
+ "left": { "label": "NetSuite", "logo": "netsuite.com", "fact": "$999/mo base fee" },
+ "right": { "label": "SAP Business One", "logo": "sap.com", "fact": "No base fee" },
+ "articleTitle": "NetSuite vs SAP Business One 2026: Small Business Guide"
+}
