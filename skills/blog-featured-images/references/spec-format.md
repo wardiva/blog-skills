@@ -13,8 +13,8 @@ One JSON file per article. Top-level fields shared by all modes:
 | `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default), `table` and `logos`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
 | `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]` and stat `card.rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
-| `bg` | no | Light: `sky`, `paper`, `cream`, `g5`. Vibrant: `blue` (deep dunes + grain; at most 1 in 3 per category, never neighbours; only checklist, stack, versus/table, versus/overlap, window). Leave it out to use the layout default. Deleted names (`wash`, `cool`, `white`, `flat`, `skyfield`, `g4`) are refused |
-| `grain` | no | Field grain. Always on for `blue`; on by default for `g5` (`false` turns it off) |
+| `bg` | no | Light: `sky`, `paper`, `cream`, `g5`. Vibrant: `blue` (deep dunes + grain; at most 1 in 3 per category, never neighbours; only checklist, versus/table, window, before-after/flow). Leave it out to use the layout default. Deleted names (`wash`, `cool`, `white`, `flat`, `skyfield`, `g4`) are refused |
+| `grain` | no | Field grain. Always on for `blue`; on by default for every light background (`false` turns it off) |
 | `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky` and `paper`; set `true` to add it elsewhere. Never with the frame grid |
 | `craft` | no | `true` = the craft kit: near-black ink, mono caps labels, grey off-states, line-icon tiles, clean connector |
 | `series` | no | With `craft`: the site mark + mono series tag (e.g. `"Pricing"`). Only on some images: at most 1 in 3 per category, never on neighbours ("SERIES CHECK FAILED") |

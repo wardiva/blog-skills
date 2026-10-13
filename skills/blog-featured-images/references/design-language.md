@@ -37,10 +37,11 @@ An image that follows every other rule but doesn't look good **fails**. Judge ea
 | Light | `sky` | light sky, top to bottom, guide lines | ranked, focus, window, versus |
 | Light | `paper` | cool off-white `#F1F3F6` | stat, prompt |
 | Light | `cream` | warm off-white `#F6F2EA`, warm guide lines | hub, timeline |
-| Light | `g5` | Granola #5 in blue: near-white top glowing into bright sky under the hero, **with fine grain** (user-approved 2026-10-14; `"grain": false` turns it off) | checklist, stack, before-after |
+| Light | `g5` | Granola #5 in blue: near-white top glowing into bright sky under the hero, **with grain** | checklist, stack, before-after |
 | **Vibrant** | `blue` (only on the layouts in "Vibrant fit") | **"Deep dunes"**: bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands, **heavy grain on the field** (cards stay crisp), no margin dots. Inspired by grainient.supply. User: "this looks perfect" | set explicitly on about 1 in 3 images |
 
-- **Light backgrounds rotate**; neighbours never share one unless it's set explicitly.
+- **Grain on every background** (user 2026-10-14: "keep grain in all such backgrounds"): heavy overlay grain on the vibrant blue, fine grain on `sky`, `paper`, `cream` and `g5`. `"grain": false` turns it off on a light field.
+- **Light backgrounds rotate** within each layout's fit list; neighbours never share one unless it's set explicitly.
 - **Vibrant blue on about 1 in 3 images per category, never neighbours** ("VIBRANT CHECK FAILED").
 - **Dark/vibrant gradients always get grain plus the soft rolling bands.** Dunes is the only texture; ridge, sweep, silk, arc and bloom were tried and rejected ("all other looks bad").
 - **Deleted** (the renderer refuses them with "BACKGROUND CHECK FAILED"): `wash` and all pastel presets, `flat`, `cool`, `white`, `skyfield`, `g4`, and the arch outline pattern. Also rejected: centre-glow blue ("ew"), flat and diagonal blues ("none of the options look good").
@@ -50,10 +51,16 @@ User: "the logos look balanced, but this illustration doesn't look good with thi
 
 | On blue | Layouts |
 |---|---|
-| **Yes** | `checklist` (best), `stack`, `versus/table`, `versus/overlap`, `window` (its grid is removed on blue) |
-| **No** | `versus/logos` (floating tiles, white names and translucent chips look weak), `hub`, `stat`, `focus` (blue-heavy: too much blue; grey headline text on blue fails contrast), `ranked`, `timeline`, `prompt`, `before-after` |
+| **Yes** (user-picked) | `checklist`, `versus/table`, `window` (its grid is removed on blue), `before-after/flow` (no shadows on blue) |
+| **No** | `stack` (its big blue icon tile = too much blue), `versus/logos` (floating tiles look weak), `versus/overlap`, `hub`, `stat`, `focus` (blue-heavy; grey headline text on blue fails contrast), `ranked`, `timeline`, `prompt`, `before-after/default` |
 
-The renderer refuses anything else with **"VIBRANT FIT FAILED"**. On blue the frame grid and the margin dots are off; the card carries the image.
+The renderer refuses anything else with **"VIBRANT FIT FAILED"**. On blue the frame grid, the margin dots and all drop shadows are off; the white card carries the image.
+
+### Shadows depend on the background (user rule, 2026-10-14)
+- **Vibrant blue: no drop shadows at all.** Cards, tiles, icon tiles and the cursor sit flat on the field; the white card carries the image on its own.
+- **Light backgrounds: minimal shadows, tinted to the field:** cool on `sky`/`g5`, warm on `cream`, neutral on `paper`. They're short and soft (about a third of the old offset and half the blur, opacity at most 8%), just enough to lift the card.
+- 1px edge lines (`0 0 0 1px`) are card edges, not shadows; they stay on light fields.
+- The renderer applies this to every layout automatically. Never hand-add heavy shadows in a spec or a new layout.
 
 ### Background fit: the background must flatter the illustration (user rule, 2026-10-14)
 User: "when you decide what should be the bg make sure the illustration looks good visually with that bg." Judged with impeccable's colour principles: figure/ground contrast, temperature harmony, colour dosage.
@@ -268,7 +275,7 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ## FINAL approved look (user: "I have finalized these images. Set in skill to follow the same vibe", 2026-10-13)
 
-**These 7 images are the target** (6 light + 1 vibrant). They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
+**These 8 images are the target** (6 light + 2 vibrant). They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
 
 | # | Layout | Background | Example spec |
 |---|---|---|---|
@@ -278,7 +285,8 @@ These rules make every image easy to take in at a glance. They work inside our d
 | 4 | `focus` (blue selection box + skeleton card) | `sky` + texture | `emr-cost.focus.json` |
 | 5 | `timeline` | `cream` + grid and corner squares | `emr-switch-six-steps.timeline.json` |
 | 6 | `window` (bleed, logo rows, cursor) | `sky` + grid |
-| + | `checklist` on the vibrant blue (the vibrant example) | `blue` (deep dunes + grain) | `erp-checklist.blue.json` | `dynamics-vs-acumatica.window.json` |
+| 7 | `checklist` on the vibrant blue | `blue` (deep dunes + grain) | `erp-checklist.blue.json` |
+| 8 | `before-after/flow` on the vibrant blue (no shadows) | `blue` | `what-is-cloud-erp.flow-blue.json` | `dynamics-vs-acumatica.window.json` |
 
 **The shared vibe:**
 - **Soft, light fields:** sky, paper, cream or g5 (re-rendered 2026-10-14 after the old backgrounds were deleted). Structure comes from **thin guide lines + a few tiny blue dots in the margins** (texture), or from the faint grid with corner squares (timeline, window, stat).

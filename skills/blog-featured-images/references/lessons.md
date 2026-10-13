@@ -91,8 +91,8 @@ QA failures in the test traced back to things the Orchestrator could have checke
 ## Taste lessons (2026-10-14): visual appeal decides
 - **Pair the background with the illustration, never by rotation alone.** Grey-heavy → `sky`; floating white card → `g5`; big blue mass (hub tile) → `cream`/`paper`; app window → `sky`; thin timeline → `cream`.
 - **Blue dosage:** the hub's blue tile on `g5` was "too much blue". A blue-heavy illustration needs a neutral field.
-- **Vibrant blue only carries a big white card** (checklist is the best). versus/logos on blue "doesn't look good" even with balanced logos.
+- **Vibrant blue only carries a big white card:** checklist, versus/table, window, before-after/flow (user-picked). Stack failed (big blue icon = too much blue); versus/logos "doesn't look good" even with balanced logos. No drop shadows on blue; minimal, field-tinted shadows on light backgrounds.
 - **Logo balance:** a full app icon shrunk inside a white tile looked tiny and weird. The logo fills ~65% of its tile, and an app icon becomes the tile.
 - **Logos only** for best-of hubs (Granola integrations): the user called it "really really good".
-- **Grain:** heavy on the vibrant blue, fine on `g5`. Rejected along the way: pastel washes, centre glow, flat/diagonal blues, five other dune textures, arch outlines.
+- **Grain on every background:** heavy on the vibrant blue, fine on the light ones. Rejected along the way: pastel washes, centre glow, flat/diagonal blues, five other dune textures, arch outlines.
 - **Show options side by side before changing the look**, and judge them with a taste skill (impeccable) before sending.

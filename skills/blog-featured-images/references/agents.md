@@ -105,7 +105,7 @@ Return, per image: PASS or FAIL, and for each FAIL the rule broken and the exact
 - Would a design director ship it? FAIL on too much blue (a blue-heavy illustration on a blue-ish field), unbalanced logos (a big tile around a tiny logo, or a full app icon shrunk inside a white tile), logo + name cards where logos alone would do, weak figure/ground, or uneven sizes and gaps. See "Visual appeal is a hard gate" in the design language.
 
 **5d. Background fits the illustration**
-- On the vibrant blue, only a big white card (checklist, stack, versus/table or overlap, window). FAIL floating logo tiles, a blue-heavy illustration or grey headline text on blue.
+- On the vibrant blue, only a big white card (checklist, versus/table, window, before-after/flow) and no drop shadows. On light fields, shadows are minimal and tinted to the field. FAIL floating logo tiles, a big blue icon tile (stack), a blue-heavy illustration or grey headline text on blue.
 - The hero separates cleanly from the field at 350×250, and the field flatters the illustration (see "Background fit" in the design language). FAIL grey bars or skeletons on `paper`, a blue tile on `cream`, or a field whose colour competes with the hero.
 
 **6. In the design language**

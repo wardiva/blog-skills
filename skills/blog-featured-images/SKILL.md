@@ -16,8 +16,8 @@ Read these before your first image in a session:
 - `references/lessons.md`: what past sessions learned (speed, pre-flight checks, taste)
 
 ## The target look (user-finalized)
-Open `references/approved/` before your first image: 7 finalized images (checklist, hub, ranked, focus, timeline, window, plus the vibrant checklist on blue) define the vibe:
-- soft light fields (`sky`, `paper`, `cream`, `g5` with fine grain) with thin guide lines (no dot patches); about 1 in 3 on the vibrant deep-dunes blue, always with a big white card
+Open `references/approved/` before your first image: 8 finalized images (checklist, hub, ranked, focus, timeline, window, plus the vibrant checklist and flow on blue) define the vibe:
+- soft light fields (`sky`, `paper`, `cream`, `g5`, all with fine grain) with thin guide lines (no dot patches); about 1 in 3 on the vibrant deep-dunes blue, always with a big white card
 - one big white UI card or hero
 - blue gradient only for active and anchor elements; grey for inactive
 - navy headlines
@@ -45,8 +45,9 @@ Their specs are in `examples/`, and the renderer's per-layout defaults already m
 5. **Logos where products are named.** Set `"logo": "<domain>"` on every named product (hub cards, versus sides, window rows, ranked rows). The renderer fetches it through a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon as an app tile → lettermark) in style A (original colours, small white tile). Logos stay secondary.
 6. **Never bland.** One bold blue anchor, structure tied to the frame (soft dot texture or an edge-to-edge band), and a hero at least ~60% of the width. Light background `sky`, `paper`, `cream` or `g5`, **chosen to flatter the illustration** (each layout's fit list in `references/design-language.md`, "Background fit"; anything outside it is refused with "BACKGROUND FIT FAILED").
 7. **Site mark only sometimes (hard-enforced).** The site mark + series tag (`"series"`, needs `"craft": true`) goes only in a natural empty slot, on at most 1 in 3 images per category and never on neighbours ("SERIES CHECK FAILED").
-8. **Vibrant + subtle mix (hard-enforced).** About 1 in 3 images per category uses the vibrant brand-blue field (`"bg": "blue"`: the "deep dunes" gradient with heavy grain); never two neighbours ("VIBRANT CHECK FAILED"). **Only big-white-card illustrations go on blue:** checklist, stack, versus/table, versus/overlap, window ("VIBRANT FIT FAILED" otherwise). The rest stay light and subtle.
+8. **Vibrant + subtle mix (hard-enforced).** About 1 in 3 images per category uses the vibrant brand-blue field (`"bg": "blue"`: the "deep dunes" gradient with heavy grain); never two neighbours ("VIBRANT CHECK FAILED"). **Only big-white-card illustrations go on blue:** checklist, versus/table, window, before-after/flow ("VIBRANT FIT FAILED" otherwise). The rest stay light and subtle.
 9. **Visual appeal is a hard gate.** Watch blue dosage (a blue-heavy illustration gets a neutral field), keep logos balanced (~65% of the tile; full app icons become the tile), and prefer logos alone over logo + name. See "Visual appeal is a hard gate" in `references/design-language.md`.
+10. **Shadows follow the background.** None on the vibrant blue; minimal and tinted to the field on light backgrounds (the renderer applies this).
 
 ## Layouts: 11 modes, 14 layouts
 | mode | variants | Shows | Best for |
@@ -93,7 +94,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `VARIETY CHECK FAILED` | Use one of the layouts it lists (set `mode`, plus `variant` when not `default`) |
 | `SERIES CHECK FAILED` | Remove `"series"` from this spec |
 | `VIBRANT CHECK FAILED` | Use a light background; blue was used on a neighbour |
-| `VIBRANT FIT FAILED` | This illustration doesn't suit the blue; use its light background, or put blue on a checklist, stack, versus/table, versus/overlap or window image |
+| `VIBRANT FIT FAILED` | This illustration doesn't suit the blue; use its light background, or put blue on a checklist, versus/table, window or before-after/flow image |
 | `BACKGROUND FIT FAILED` | Use one of the backgrounds it lists for this layout |
 | `BACKGROUND CHECK FAILED` | That background was deleted; use `sky`, `paper`, `cream`, `g5` or `blue` |
 

@@ -527,7 +527,8 @@ const FIT = BG_FIT[MODE] || ['sky', 'g5'];
 // VIBRANT FIT (user 2026-10-14: "this illustration doesn't look good with this background"): the deep-dunes blue flatters only
 // illustrations built on a big white card (Granola: white UI on a bold field). Floating logo tiles, white headlines and grey
 // skeleton cards on blue looked weak. Blue-heavy illustrations (hub tile, stat number, focus box) never go on blue.
-const BLUE_FIT = ['checklist', 'stack', 'window', 'versus/table', 'versus/overlap'];
+// user-picked 2026-10-14: checklist, versus/table, window, before-after/flow. Stack was dropped (its big blue icon tile = too much blue).
+const BLUE_FIT = ['checklist', 'versus/table', 'window', 'before-after/flow'];
 if (spec.bg === 'blue' && !BLUE_FIT.includes(MODE) && !BLUE_FIT.includes(LAYOUT) && !force) {
   console.error(`VIBRANT FIT FAILED: the ${LAYOUT} illustration doesn't look good on the vibrant blue. Use blue only with: ${BLUE_FIT.join(', ')}.`);
   process.exit(2);
@@ -597,15 +598,17 @@ const CRAFT_CSS = `
 .fa b{color:#141A26;font-weight:600}.fa li{color:#141A26}
 .fleg{font-family:${MONO};text-transform:uppercase;font-size:22px;letter-spacing:.06em}.fleg .f1{color:#7F8794}.fleg .f2{color:#0A5FD8}
 `;
-// field grain (Grainient-style): always on the vibrant blue, and on g5 (user 2026-10-14); "grain": false turns it off for g5
-const GRAIN = BG === 'blue' || (BG === 'g5' && spec.grain !== false);
+// field grain (Grainient-style), on EVERY background (user 2026-10-14: "keep grain in all such backgrounds"); always on blue,
+// "grain": false turns it off on a light field. Light fields use multiply (overlay barely shows on near-white).
+const GRAIN = BG === 'blue' || spec.grain !== false;
+const LIGHT_GRAIN = `.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:multiply;opacity:.2}`;
 const BG_CSS = {
   blue: `body{background:${BLUE_GLOW};background-size:cover}body:before{display:none}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85}`,
-  cream: `body{background:#F6F2EA}body:before{display:none}`,
+  cream: `body{background:#F6F2EA}body:before{display:none}${LIGHT_GRAIN}`,
   // Granola #5 in blue: near-white top, a bright clear sky glowing up from under the hero card
   g5: `body{background:linear-gradient(180deg,#F7FBFF 0%,#EAF5FE 38%,#A9DCFB 78%,#7CC8F8 100%)}body:before{display:block;inset:0;filter:blur(30px);background:radial-gradient(60% 45% at 62% 100%,rgba(70,175,245,.55),transparent 70%)}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.6}`,
-  paper: `body{background:#F1F3F6}body:before{display:none}`,
-  sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}`,
+  paper: `body{background:#F1F3F6}body:before{display:none}${LIGHT_GRAIN}`,
+  sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}${LIGHT_GRAIN}`,
 };
 const html = `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -650,6 +653,21 @@ ${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}<div class="grain"></d
 const swaps = { '#3B86F0': brand.accentLight, '#0A5FD8': brand.accent, '#27ACF2': brand.sky, '#2C5FAE': brand.labelAfter, '#2C7BD8': brand.legendAfter, '#0E2A5C': brand.headline, '#7C7468': brand.labelBefore, '#F1F0EC': brand.flat };
 let out = html;
 for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
+// SHADOWS (user 2026-10-14): none on the vibrant blue; minimal and tinted to the field on light backgrounds.
+// 1px "ring" shadows (0 0 0 Npx) are card edges, not drop shadows, and are kept on light fields.
+const SHADOW_TINT = { sky: '30,60,110', g5: '30,80,140', paper: '20,26,38', cream: '90,70,40' }[BG] || '30,60,110';
+const softShadow = (decl) => decl.split(/,(?![^(]*\))/).map((sh) => {
+  const m = sh.trim().match(/^(inset\s+)?(-?[\d.]+)(?:px)?\s+(-?[\d.]+)(?:px)?\s+([\d.]+)(?:px)?(\s+-?[\d.]+(?:px)?)?\s+(rgba?\([^)]*\)|#[0-9a-fA-F]{3,8}|[a-z]+)$/);
+  if (!m) return sh;
+  const [, inset, x, y, blur, spread, col] = m;
+  if (+blur === 0) return BG === 'blue' ? null : sh;                         // ring/edge line
+  if (BG === 'blue') return null;                                           // no drop shadows on the vibrant blue
+  const a = (col.match(/rgba?\([^)]*,\s*([\d.]+)\)/) || [])[1];
+  const alpha = Math.min(0.08, (a ? +a : 0.1) * 0.55);
+  return `${inset || ''}${(+x * 0.4).toFixed(1)}px ${(+y * 0.35).toFixed(1)}px ${(+blur * 0.45).toFixed(1)}px${spread || ''} rgba(${SHADOW_TINT},${alpha.toFixed(3)})`;
+}).filter(Boolean).join(',') || 'none';
+out = out.replace(/box-shadow:\s*([^;}"!]+)(!important)?/g, (all, v, imp) => v.trim() === 'none' ? all : `box-shadow:${softShadow(v)}${imp || ''}`);
+if (BG === 'blue') out = out.replace(/filter:\s*drop-shadow\([^;"]*\)/g, 'filter:none');
 
 fs.mkdirSync(outDir, { recursive: true });
 // ---- text budget (forced, user rule: "need to show less text"): count every visible word and refuse text-heavy images ----

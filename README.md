@@ -4,7 +4,7 @@ Turn blog article URLs into **premium, article-specific featured images** (1600�
 
 ![Example featured images](assets/examples.webp)
 
-*The finalized reference set: six light images and one vibrant. The same 7 images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
+*The finalized reference set: six light images and two vibrant. The same 8 images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
 
 Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
@@ -79,12 +79,12 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 | `VIBRANT CHECK FAILED` | The vibrant blue appears on at most 1 in 3 images per category, never on neighbours |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
-| `VIBRANT FIT FAILED` | Only checklist, stack, versus/table, versus/overlap and window go on the vibrant blue |
+| `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration (e.g. no grey bars on grey `paper`) |
 
 **Look:**
 - **Never bland:** one bold blue anchor (a selection box, VS badge, checked box or active bar), thin guide lines on the safe edges (no busy dot patterns), and a hero at least about 60% of the width.
-- **Backgrounds:** light `sky`, `paper`, `cream` or `g5` (rotating), plus the vibrant **deep-dunes blue** with grain on about 1 in 3 images (only with big-white-card layouts). `g5` has fine grain too.
+- **Backgrounds:** light `sky`, `paper`, `cream` or `g5` (rotating), plus the vibrant **deep-dunes blue** on about 1 in 3 images (only checklist, versus/table, window and before-after/flow). Every background has grain. Shadows follow the background: none on the vibrant blue, minimal and tinted on light fields.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time with nothing stored. Add `"logo": "<domain>"` to any named product.
 - **Optional craft kit** (`"craft": true`): near-black ink, monospace uppercase labels, grey "off" states, line-icon tiles, clean connectors, and an occasional site mark + series tag (`PRICING`, `COMPARISON`, `GUIDE`).
 
@@ -113,7 +113,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | Path | Contents |
 |---|---|
 | `SKILL.md` | Hard rules and workflow (Claude reads this first) |
-| `references/approved/` | The 7 finalized reference images: the target look |
+| `references/approved/` | The 8 finalized reference images: the target look |
 | `references/design-language.md` | The approved visual rulebook: final look, colours, type, balance, text budget, logos, anti-bland, craft spec, rejected looks |
 | `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |
 | `references/lessons.md` | What past sessions learned: speed, pre-flight checks, taste |

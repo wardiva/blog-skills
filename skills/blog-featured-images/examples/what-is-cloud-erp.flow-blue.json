@@ -1,0 +1,30 @@
+{
+ "articleTitle": "What Is Cloud ERP and How Does It Work in 2026?",
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "topic": "cloud-erp",
+ "slug": "what-is-cloud-erp-and-how-does-it-work-in-2026",
+ "mode": "before-after",
+ "variant": "flow",
+ "before": {
+  "label": "On-premise",
+  "icon": "ph ph-hard-drives",
+  "lines": [
+   "SERVER ROOM",
+   "IT PATCHES"
+  ]
+ },
+ "after": {
+  "label": "Cloud ERP",
+  "icon": "ph-fill ph-cloud",
+  "items": [
+   "Browser login",
+   "Vendor upgrades"
+  ]
+ },
+ "legend": [
+  "Your servers",
+  "Vendor's servers"
+ ],
+ "bg": "blue"
+}
