@@ -75,6 +75,9 @@ const baTop = Math.round((900 - (baH + 190)) / 2);
 //   variant "table" (default): ONE comparison card, products as column headers, matched rows, the right column tinted.
 //   variant "overlap": two cards tilted toward each other, overlapping at the centre with the vs chip on the overlap.
 function versus() {
+  if (spec.variant === 'pills') return cbVersusPills();
+  if (spec.variant === 'connect') return cbVersusConnect();
+  if (spec.variant === 'slash') return cbVersusSlash();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'logos') {
@@ -413,14 +416,158 @@ function focus() {
 <div class="fh">${head}</div>
 <div class="fc"><div class="fct">${esc(spec.label || '')}<s></s></div>${real}${ghosts}</div>`;
 }
-const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus };
+// ---- Chatbase-inspired headline layouts (studied chatbase.co/blog 2026-10-14; user: "LOVE IT") ----
+// A giant tight headline (key phrase in blue gradient text via {{ }}), colour carried by watercolour shapes or a fluted-glass panel.
+// Colours sampled from Chatbase: watercolour blue #EAF4FE -> #AEDAFB -> #6AB2FF -> #2A74FB -> #0B5BF0. "color" swaps in a brand hex.
+// user 2026-10-14: the SUBTLE Chatbase blue (near-solid vivid blue, faint tonal drift); the cloudy watercolour was "too much and too bad"
+const CB_BLUE = { stops: ['#0A6EF5', '#0F7DFF', '#1D8BFF', '#0B74FA'], light: '#45A2FF', dark: '#065FE0' };
+const hexMix = (h, t, w) => '#' + [1, 3, 5].map((i) => Math.round(parseInt(h.slice(i, i + 2), 16) * (1 - w) + parseInt(t.slice(i, i + 2), 16) * w).toString(16).padStart(2, '0')).join('');
+const cbPal = (hex) => /^#[0-9a-f]{6}$/i.test(hex || '') ? { stops: [hexMix(hex, '#000000', 0.06), hex, hexMix(hex, '#ffffff', 0.1), hexMix(hex, '#000000', 0.04)], light: hexMix(hex, '#ffffff', 0.28), dark: hexMix(hex, '#000000', 0.14) } : CB_BLUE;
+const cbRgb = (h) => [1, 3, 5].map((i) => (parseInt(h.slice(i, i + 2), 16) / 255).toFixed(3));
+// watercolour: smooth gradient + soft light washes + darker ink veins + fine grain, clipped to the shape
+const wcDefs = (id, P, seed = 3, ang = [0, 1, 1, 0]) => {
+  const [lr, lg, lb] = cbRgb(P.light), [dr, dg, db] = cbRgb(P.dark);
+  return `<linearGradient id="${id}g" x1="${ang[0]}" y1="${ang[1]}" x2="${ang[2]}" y2="${ang[3]}">${P.stops.map((c, i) => `<stop offset="${i / (P.stops.length - 1)}" stop-color="${c}"/>`).join('')}</linearGradient>
+<filter id="${id}f" x="-5%" y="-5%" width="110%" height="110%">
+<feTurbulence type="fractalNoise" baseFrequency=".0032 .0055" numOctaves="3" seed="${seed}" result="t1"/><feColorMatrix in="t1" type="matrix" values="0 0 0 0 ${lr}  0 0 0 0 ${lg}  0 0 0 0 ${lb}  0 0 0 -0.5 0.3" result="l"/><feComposite in="l" in2="SourceGraphic" operator="in" result="lm"/>
+<feTurbulence type="fractalNoise" baseFrequency=".004 .006" numOctaves="3" seed="${seed + 7}" result="t2"/><feColorMatrix in="t2" type="matrix" values="0 0 0 0 ${dr}  0 0 0 0 ${dg}  0 0 0 0 ${db}  0 0 0 1.1 -0.62" result="d"/><feComposite in="d" in2="SourceGraphic" operator="in" result="dm"/>
+<feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .14 0" result="ga"/><feComposite in="ga" in2="SourceGraphic" operator="in" result="gm"/>
+<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="lm"/><feMergeNode in="dm"/><feMergeNode in="gm"/></feMerge></filter>`;
+};
+const cbPill = (id, x, y, len, h, rot) => `<rect x="${x}" y="${y}" width="${len}" height="${h}" rx="${h / 2}" fill="url(#${id}g)" filter="url(#${id}f)" transform="rotate(${rot} ${x} ${y + h / 2})"/>`;
+// headline markup: {{key phrase}} = blue gradient text, "\n" = line break
+const cbHl = (t) => esc(t).replace(/\{\{([\s\S]+?)\}\}/g, '<span class="bt">$1</span>').replace(/\n/g, '<br>');
+const cbFs = (t, max, width) => { const lines = String(t).replace(/\{\{|\}\}/g, '').split('\n'); const long = Math.max(...lines.map((l) => l.length)); return Math.min(max, Math.floor(width / (Math.max(long, lines.length > 1 ? 1 : long / 2.4) * 0.5))); };
+const CB_CSS = `<style>.cbf{position:absolute;inset:0}.cbh{position:absolute;font-weight:700;letter-spacing:-.045em;line-height:1.02;color:#0A0A0B}
+.bt{background:linear-gradient(180deg,#1E88F5,#0F6FE0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ct{position:absolute;background:#fff;display:grid;place-items:center;overflow:hidden}.ct .lg{background:transparent;box-shadow:none;padding:0}.ct .lg:not(.full){border-radius:0;overflow:visible}
+.ct:has(.lg.full) .lg{width:100%!important;height:100%!important;border-radius:0}
+.cbm{position:absolute;left:96px;top:90px;width:96px;height:96px;border-radius:24px}</style>`;
+const cbTile = (d, S, x, y, round = 0.22, label = '') => `<div class="ct" style="left:${x}px;top:${y}px;width:${S}px;height:${S}px;border-radius:${Math.round(S * round)}px;box-shadow:0 10px 26px rgba(10,40,120,.12)">${logo(d, Math.round(S * 0.62), label)}</div>`;
+// WHITE FRAME RULE (user 2026-10-14): a white design always sits in a white rounded panel inset 28px on a light-grey frame,
+// so the featured image reads as its own block on a white blog page. Inner content keeps canvas coordinates.
+const cbFramed = (inner, right = 28) => `<div class="cbf" style="background:#F2F2F3"></div><div style="position:absolute;left:28px;top:28px;right:${right}px;bottom:28px;border-radius:28px;background:#fff;overflow:hidden"><div style="position:absolute;left:-28px;top:-28px;width:1600px;height:900px">${inner}</div></div>`;
+const cbMark = () => brand.markUrl ? `<img class="cbm" src="${brand.markUrl}" alt="">` : '';
+
+// "pills" (user reference, Chatbase "AI Customer Service Statistics"): TWO white panels on the grey frame - the title panel and
+// the shapes panel - with the grey gutter as the divider. Three thick pills, each its own tone (aqua, royal, deep -> cyan),
+// subtle watercolour texture. Headline medium weight, the {{ }} phrase in blue on top.
+const CB_PILLS = [
+  { stops: ['#86E3F1', '#40CFF2', '#12BDEE'], light: '#A6EBF6', dark: '#0FA6D4' },
+  { stops: ['#3A8AF6', '#2463EC', '#1D4ED8'], light: '#4F95F7', dark: '#1A43C4' },
+  { stops: ['#1C44D6', '#2563EE', '#2EA6F2'], light: '#3D7DF2', dark: '#1838B8' },
+];
+function cbPills() {
+  const fs = cbFs(spec.headline, 104, 720), W = 584, H = 844;
+  const pal = spec.color ? [cbPal(spec.color), cbPal(spec.color), cbPal(spec.color)] : CB_PILLS;
+  const pills = [[210, 40, 220], [52, 250, 260], [60, 640, 230]].map(([x, y, h], i) => `<rect x="${x}" y="${y}" width="1100" height="${h}" rx="${h / 2}" fill="url(#pp${i}g)" filter="url(#pp${i}f)" transform="rotate(40 ${x} ${y + h / 2})"/>`).join('');
+  return `${CB_CSS}<div class="cbf" style="background:#F2F2F3"></div>
+<div style="position:absolute;left:28px;top:28px;width:932px;bottom:28px;border-radius:28px;background:#fff"></div>
+<div class="cbh" style="left:110px;top:50%;transform:translateY(-50%);width:760px;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;line-height:1.06">${cbHl(spec.headline)}</div>
+<div style="position:absolute;left:988px;top:28px;right:28px;bottom:28px;border-radius:28px;background:#fff;overflow:hidden">
+<svg width="${W}" height="${H}" style="position:absolute;inset:0"><defs>${pal.map((P, i) => wcDefs('pp' + i, P, 3 + i * 4, [0, 0, 1, 0])).join('')}</defs>${pills}</svg></div>`;
+}
+
+// "versus/pills": grey canvas, two white panels; two watercolour pills face each other with the logos at the tips; the question below
+function cbVersusPills() {
+  const L = spec.left, R = spec.right, P = cbPal(spec.color), Pr = { ...P, stops: [...P.stops].reverse() };
+  const head = spec.headline || `${L.label} or\n{{${R.label}?}}`, fs = cbFs(head, 108, 1300);
+  return `${CB_CSS}<div class="cbf" style="background:#F2F2F3"></div>
+<div style="position:absolute;left:28px;right:28px;top:28px;height:380px;border-radius:28px;background:#fff;overflow:hidden">
+<svg width="1544" height="380" style="position:absolute;inset:0"><defs>${wcDefs('va', Pr, 6, [0, 0, 1, 0])}${wcDefs('vb', P, 11, [0, 0, 1, 0])}</defs>
+<rect x="-60" y="80" width="760" height="210" rx="105" fill="url(#vag)" filter="url(#vaf)"/><rect x="844" y="80" width="760" height="210" rx="105" fill="url(#vbg)" filter="url(#vbf)"/></svg>
+${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.5, R.label)}</div>
+<div style="position:absolute;left:28px;right:28px;top:436px;bottom:28px;border-radius:28px;background:#fff;display:grid;place-items:center">
+<div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head)}</div></div>`;
+}
+
+// "split": white left (site mark + giant headline), right = fluted-glass panel with a small white card and up to two logo tiles
+function cbSplit() {
+  const P = cbPal(spec.color), C = spec.card || {}, rows = (C.rows || []).slice(0, 3), fs = cbFs(spec.headline, 104, 760);
+  const hi = C.highlight === undefined ? rows.length - 1 : C.highlight, tiles = (spec.tiles || []).slice(0, 2);
+  const row = (r, i) => `<div style="display:flex;align-items:center;gap:16px;padding:18px 0;${i < rows.length - 1 ? 'border-bottom:1px solid #EEF0F3' : ''}">${logo(r.logo, 38, r.name)}<b style="font-size:28px;font-weight:600">${esc(r.name)}</b><span style="margin-left:auto;font-size:28px;${i === hi ? `color:${P.stops[3] || '#0B57E0'};font-weight:600` : ''}">${esc(r.value)}</span></div>`;
+  return `${CB_CSS}${cbFramed(`${cbMark()}<div class="cbh" style="left:96px;bottom:110px;width:740px;font-size:${fs}px">${cbHl(spec.headline)}</div>`, 728)}
+<div style="position:absolute;left:900px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,${P.stops[P.stops.length - 1]} 0%,${P.stops[P.stops.length - 2]} 60%,${P.stops[1]} 100%)">
+<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.16) 22px,rgba(10,30,120,.12) 44px,rgba(255,255,255,0) 58px)"></div>
+<div style="position:absolute;inset:0;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.5"></div>
+${rows.length ? `<div style="position:absolute;left:100px;top:${Math.round(426 - (90 + rows.length * 80) / 2)}px;width:480px;padding:34px 36px;border-radius:26px;background:#fff">${C.label ? `<div style="font-size:22px;color:#6B7280;margin-bottom:22px">${esc(C.label)}</div>` : ''}${rows.map(row).join('')}</div>` : ''}
+${tiles[0] ? cbTile(tiles[0], 130, 40, 560) : ''}${tiles[1] ? cbTile(tiles[1], 130, 512, 110) : ''}</div>`;
+}
+
+// "dark": black field, site mark, tag pill, white headline; right = watercolour panel in the brand colour with the white logo
+function cbDark() {
+  const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 740), d = spec.panelLogo;
+  const white = spec.panelLogoUrl || (d ? `https://cdn.simpleicons.org/${slugOfDomain(d)}/ffffff` : '');
+  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${cbMark()}
+<div style="position:absolute;left:96px;bottom:110px;width:740px">
+${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
+<div class="cbh" style="position:static;font-size:${fs}px;color:#fff">${cbHl(spec.headline)}</div></div>
+<div style="position:absolute;left:860px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden">
+<svg width="712" height="844" style="position:absolute;inset:0"><defs>${wcDefs('dk', P, 5, [0, 0, 1, 1])}</defs><rect width="712" height="844" fill="url(#dkg)" filter="url(#dkf)"/></svg>
+${white ? `<img src="${white}" alt="" style="position:absolute;left:50%;top:50%;width:330px;max-height:260px;object-fit:contain;transform:translate(-50%,-50%)" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">${cbTile(d, 220, 248, 316, 0.22).replace('class="ct" style="', 'class="ct" style="display:none;')}` : ''}</div>`;
+}
+
+// "number": a giant watercolour number with the headline beside it
+function cbNumber() {
+  const P = cbPal(spec.color), n = String(spec.number || '').slice(0, 3), nfs = n.length === 1 ? 760 : n.length === 2 ? 600 : 460;
+  const nw = Math.round(n.length * nfs * 0.6), hx = 120 + nw + 60, fs = cbFs(spec.headline, 110, 1480 - hx);
+  return `${CB_CSS}${cbFramed(`<svg width="1600" height="900" style="position:absolute;inset:0"><defs>${wcDefs('nb', { ...P, stops: [...P.stops].reverse() }, 8, [0, 0, 1, 1])}
+<mask id="nm"><rect width="1600" height="900" fill="#000"/><text x="120" y="${450 + nfs * 0.42}" font-family="Inter" font-weight="800" font-size="${nfs}" letter-spacing="-${Math.round(nfs * 0.05)}" fill="#fff">${esc(n)}</text></mask></defs>
+<rect width="1600" height="900" fill="url(#nbg)" filter="url(#nbf)" mask="url(#nm)"/></svg>
+<div class="cbh" style="left:${hx}px;top:50%;transform:translateY(-50%);width:${1480 - hx}px;font-size:${fs}px">${cbHl(spec.headline)}</div>`)}`;
+}
+
+// "versus/connect" (user reference, Chatbase "Open Source Chatbot Platforms"): centred headline with a gradient phrase, a divider
+// with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
+function cbVersusConnect() {
+  const L = spec.left, R = spec.right, head = spec.headline || `{{${L.label} vs}}\n${R.label}`, fs = cbFs(head, 104, 1200);
+  const S = 240, cy = 620, lx = 330, rx = 1270, cr = 74;
+  const dots = (x0) => { let d = ''; for (let r = 0; r < 6; r++) for (let c = 0; c < 8; c++) d += `<circle cx="${x0 + c * 22}" cy="${70 + r * 22}" r="2.6"/>`; return d; };
+  const wave = (x1, x2, a, ph) => { const k = (x2 - x1) * 0.42; return `M${x1} ${cy} C ${x1 + k} ${cy - a * ph}, ${x2 - k} ${cy + a * ph}, ${x2} ${cy}`; };   // one long gentle S per strand; the pair crosses mid-way
+  const le = lx + S / 2 + 10, re = rx - S / 2 - 10;
+  const strands = [wave(le, 800 - cr, 34, 1), wave(le, 800 - cr, 34, -1), wave(800 + cr, re, 34, 1), wave(800 + cr, re, 34, -1)].map((d) => `<path d="${d}"/>`).join('');
+  return `${CB_CSS}<style>.bt2{background:linear-gradient(90deg,#1E88F5,#0F6FE0 60%,#2E6BFF);-webkit-background-clip:text;background-clip:text;color:transparent}</style>
+${cbFramed(`<div style="position:absolute;inset:0;background:radial-gradient(60% 45% at 50% 82%,rgba(47,123,255,.09),transparent 70%)"></div>
+<svg width="1600" height="900" style="position:absolute;inset:0"><defs><linearGradient id="fdL" x1="0" x2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="fdm" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient><mask id="dmk"><rect width="1600" height="900" fill="url(#fdm)"/></mask></defs>
+<g fill="#C3CAD8">${dots(96)}${dots(1350)}</g>
+<g stroke="#9DB8F2" stroke-width="2" fill="none" stroke-linecap="round">${strands}</g>
+<g fill="#fff" stroke="#9DB8F2" stroke-width="2.5"><circle cx="${le}" cy="${cy}" r="8"/><circle cx="${re}" cy="${cy}" r="8"/></g>
+<g stroke="#9DB8F2" stroke-width="2"><line x1="590" y1="372" x2="770" y2="372"/><line x1="830" y1="372" x2="1010" y2="372"/></g>
+<path d="M800 356 C802 368 804 370 816 372 C804 374 802 376 800 388 C798 376 796 374 784 372 C796 370 798 368 800 356Z" fill="#2F6BFF"/></svg>
+<div class="cbh" style="left:0;right:0;top:118px;text-align:center;font-size:${fs}px">${cbHl(head).replace(/class="bt"/g, 'class="bt2"')}</div>
+${cbTile(L.logo, S, lx - S / 2, cy - S / 2, 0.24, L.label)}${cbTile(R.logo, S, rx - S / 2, cy - S / 2, 0.24, R.label)}
+<div style="position:absolute;left:${800 - cr}px;top:${cy - cr}px;width:${cr * 2}px;height:${cr * 2}px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 12px 30px rgba(47,90,200,.16),0 0 0 1px rgba(47,90,200,.08)"><b class="bt2" style="font-size:46px;font-weight:800;letter-spacing:-.03em">VS</b></div>`)}`;
+}
+
+// "versus/slash" (user reference, Chatbase "AI Chatbot vs ChatGPT"): black field with a fine dot grid, the two names in heavy caps
+// (a coloured part each), a big italic VS with a glowing diagonal streak. The {{ }} part of each label takes that side's colour.
+function cbVersusSlash() {
+  const L = spec.left, R = spec.right;
+  const split = (t) => /\{\{/.test(t) ? t : (t.trim().includes(' ') ? t.trim().replace(/^(.*)\s(\S+)$/, '$1\n{{$2}}') : `{{${t}}}`);
+  const name = (t, col) => esc(split(t)).replace(/\{\{([\s\S]+?)\}\}/g, `<span style="color:${col}">$1</span>`).replace(/\n/g, '<br>');
+  const longest = Math.max(...[L.label, R.label].flatMap((t) => split(t).replace(/\{\{|\}\}/g, '').split('\n')).map((l) => l.length));
+  const fs = Math.min(104, Math.floor(500 / (longest * 0.88)));   // Poppins 800 caps ~0.88em per letter; names stay inside x 210-1390   // Poppins 800 caps run ~0.9em per letter
+  const lc = L.color || '#3D5BFF', rc = R.color || '#2BB673';
+  return `<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,800;1,800&display=swap" rel="stylesheet">
+<div style="position:absolute;inset:0;background:#050507"></div>
+<div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.22) 1.4px,transparent 1.9px);background-size:26px 26px;-webkit-mask-image:radial-gradient(75% 85% at 50% 50%,rgba(0,0,0,.25),#000)"></div>
+<svg width="1600" height="900" style="position:absolute;inset:0"><defs><linearGradient id="sl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7B4DFF" stop-opacity="0"/><stop offset=".5" stop-color="#8F6BFF"/><stop offset="1" stop-color="#3D5BFF" stop-opacity="0"/></linearGradient>
+<filter id="gl"><feGaussianBlur stdDeviation="6"/></filter></defs>
+<line x1="880" y1="250" x2="720" y2="650" stroke="url(#sl)" stroke-width="10" filter="url(#gl)"/><line x1="880" y1="250" x2="720" y2="650" stroke="url(#sl)" stroke-width="3"/></svg>
+<div style="position:absolute;left:800px;top:450px;transform:translate(-50%,-50%) skewX(-10deg);font:italic 800 132px/1 Poppins,Inter,sans-serif;color:#fff;letter-spacing:-.06em">VS</div>
+<div style="position:absolute;left:210px;width:520px;top:450px;transform:translateY(-50%);text-align:center;font:800 ${fs}px/1.02 Poppins,Inter,sans-serif;color:#fff;text-transform:uppercase;letter-spacing:-.01em">${name(L.label, lc)}</div>
+<div style="position:absolute;left:870px;width:520px;top:450px;transform:translateY(-50%);text-align:center;font:800 ${fs}px/1.02 Poppins,Inter,sans-serif;color:#fff;text-transform:uppercase;letter-spacing:-.01em">${name(R.label, rc)}</div>`;
+}
+
+const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, pills: cbPills, split: cbSplit, dark: cbDark, number: cbNumber };
 
 
 // ---- heading must mirror the blog title: same key words, same meaning, just shorter ----
 const STOP = new Set('a an the and or of for to in on at by with your you our is are be how what why when which who vs versus its it this that from into without about best top guide per 2024 2025 2026 2027'.split(' '));
 const stem = (w) => w.endsWith('sses') ? w.slice(0, -2) : w.endsWith('ss') ? w : w.length > 4 && /(ches|shes|xes|zes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w;
 const words = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9+ ]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w)).map(stem);
-const HEADING = { prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
+const HEADING = { pills: spec.headline, split: spec.headline, dark: spec.headline, number: spec.headline, versus: ['pills', 'connect'].includes(spec.variant) ? spec.headline : undefined, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
 const heading = HEADING[spec.mode || 'before-after'];
 if (heading !== undefined && !args.includes('--force')) {
   if (!spec.articleTitle) { console.error('HEADING CHECK FAILED: add "articleTitle" (the blog post\'s real title) to the spec. The image heading must reuse its words.'); process.exit(3); }
@@ -435,7 +582,7 @@ if (heading !== undefined && !args.includes('--force')) {
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
 // A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
-const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'logos'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'] };
+const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'logos', 'pills', 'connect', 'slash'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'], pills: ['default'], split: ['default'], dark: ['default'], number: ['default'] };
 const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
 const VARIANT = spec.variant || LAYOUTS[MODE][0];
@@ -455,6 +602,10 @@ const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default']
 //    never g5 or another blue-ish field (user: "too much blue... doesn't look visually appealing")
 //  - g5 lifts a single floating white card with light rising under it
 const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'cream'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
+// Chatbase-style layouts paint their own canvas (white in a grey frame, or black); 'dark' counts as vibrant
+const CB_LAYOUT = ['pills', 'split', 'dark', 'number'].includes(MODE) || ['versus/pills', 'versus/connect', 'versus/slash'].includes(LAYOUT);
+const VIVID = MODE === 'dark' || LAYOUT === 'versus/slash';   // black fields count as vibrant (1 in 3, never neighbours)
+Object.assign(BG_FIT, { pills: ['paper'], split: ['paper'], dark: ['paper'], number: ['paper'] });
 const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m, l[0]]));
 const BGS = ['sky', 'paper', 'cream', 'g5'];
 const BG_OK = [...BGS, 'blue'];
@@ -493,7 +644,7 @@ Pick one of: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "d
   process.exit(2);
 }
 // vibrant brand-blue images are mixed in among subtle ones: at most 1 in 3 per category, never two neighbours (user rule)
-if ((spec.bg === 'blue') && !force) {
+if ((spec.bg === 'blue' || VIVID) && !force) {
   const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
   if (lastTwo.some((e) => e.vibrant || e.bg === 'blue')) {
     console.error(`VIBRANT CHECK FAILED: a recent "${category}" image already uses the vibrant blue field (${lastTwo.filter((e) => e.vibrant || e.bg === 'blue').map((e) => e.slug).join(', ')}).
@@ -510,9 +661,9 @@ Use it on at most 1 in 3 images and never on neighbours. Remove "series" from th
     process.exit(2);
   }
 }
-let BG = spec.bg || DEFAULT_BG[MODE];
+let BG = spec.bg || (CB_LAYOUT ? 'paper' : DEFAULT_BG[MODE]);
 const prevBg = prior.length ? prior[prior.length - 1].bg : null; // history is sorted by time
-const FIT = BG_FIT[MODE] || ['sky', 'g5'];
+const FIT = CB_LAYOUT ? ['paper'] : BG_FIT[MODE] || ['sky', 'g5'];
 // VIBRANT FIT (user 2026-10-14: "this illustration doesn't look good with this background"): the deep-dunes blue flatters only
 // illustrations built on a big white card (Granola: white UI on a bold field). Floating logo tiles, white headlines and grey
 // skeleton cards on blue looked weak. Blue-heavy illustrations (hub tile, stat number, focus box) never go on blue.
@@ -530,7 +681,7 @@ if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force) {
 // texture (edge guide lines + a few margin accent dots) = the anti-bland structure layer. On by default for 'sky'/'paper'
 // backgrounds; opt in elsewhere with "texture": true. Off when the frame grid is on (never both).
 const FRAME_ON = spec.bg !== 'blue' && (spec.frame ?? FRAME_DEFAULT[MODE] ?? false);
-const TEX = !FRAME_ON && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
+const TEX = !FRAME_ON && !CB_LAYOUT && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
 const texRand = (() => { let h = 2166136261; for (const c of String(slug)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; })();
 const texDiag = texRand() < 0.5;   // which diagonal the two dot patches sit on
 const pt = (x, y) => [Math.round(x), Math.round(y)];
@@ -600,7 +751,7 @@ const BG_CSS = {
   sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}${LIGHT_GRAIN}`,
 };
 const html = `<!doctype html><html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 ${LOGO_JS}
 <style>
@@ -685,7 +836,7 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue', out: path.resolve(outDir), at: new Date().toISOString() };
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, out: path.resolve(outDir), at: new Date().toISOString() };
 // Parallel renders share these files: take a lock, re-read, then write, so no entry is lost.
 fs.mkdirSync(historyDir, { recursive: true });
 const lock = historyFile + '.lock';

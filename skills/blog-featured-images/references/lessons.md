@@ -42,6 +42,7 @@ Read this before every batch. Each lesson cost at least one extra round with the
 - **Grain on every background** (heavy on blue, fine on light). The user loves the noise.
 - **Minimal wins.** A plain window with whitespace was "really good minimal"; the same window with bars filling the space was "ugly". 30 words was still "text heavy"; 15 is the cap.
 - **Prefer a visual over a text card.** A plain text card (the old stack/split) got "I DONT LIKE IT"; icons + arrow + 2 checked items won.
+- **Headline layouts (Chatbase) were loved;** the Gumloop-style tile/band/orbit layouts were all rejected, and so was a royal-blue field with diamonds ("doesn't look premium"). Chatbase's blue is subtle and near-solid: cloudy watercolour looked "too much and too bad". White designs need the grey frame.
 - **Show options side by side, once.** For any "I don't like it" or a placement/style change, render 2–3 options together. One-at-a-time changes took 3 rounds where one sheet took 1.
 - When the user asks "does it reflect the article?", answer with a table mapping every element on the image to the sentence it came from.
 - Approved rules win over QA suggestions that break them; say so in the fix message.

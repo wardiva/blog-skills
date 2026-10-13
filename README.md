@@ -1,10 +1,10 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in a calm card style with grainy light backgrounds and a vibrant deep-blue field. It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in two families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), and Chatbase-style headline layouts with giant type and bold blue shapes. It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
-*The finalized reference set: six light images and two vibrant. The same 8 images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
+*The finalized reference set: card layouts (top) and headline layouts (bottom). The same images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
 
 Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
@@ -86,7 +86,9 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 - **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons become the tile, and "best of" hubs show logos only.
 
-## Layouts (11 modes, 14 layouts)
+## Layouts (15 modes, 21 layouts)
+
+**Card layouts:**
 
 | Mode | Variants | Best for | On the vibrant blue |
 |---|---|---|---|
@@ -102,6 +104,17 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `stack` | default | One key rule | no |
 | `window` | default | Vendor lists, pricing tables | yes |
 
+**Headline layouts** (after Chatbase: a giant headline, subtle vivid blue shapes, white designs in a grey frame, some on black):
+
+| Layout | Best for |
+|---|---|
+| `pills` | How-to, guides |
+| `versus/pills`, `versus/connect` | X vs Y |
+| `versus/slash` | X vs Y, on black |
+| `split` | X vs Y with prices (fluted-glass panel) |
+| `dark` | One vivid brand, its colour as the panel |
+| `number` | "7 best" lists |
+
 ## Add your own site
 
 Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours, and optionally `markUrl` (the site's own square icon) and `markName` for the site mark. Then set `"brand": "<site>"` in specs. Variety history is kept separately per brand.
@@ -111,7 +124,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | Path | Contents |
 |---|---|
 | `SKILL.md` | Hard rules, layouts and workflow (Claude reads this first) |
-| `references/approved/` | The 8 finalized reference images: the target look |
+| `references/approved/` | The finalized reference images: the target look |
 | `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, never-do list |
 | `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
 | `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |

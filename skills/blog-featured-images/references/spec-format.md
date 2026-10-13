@@ -9,8 +9,8 @@ One JSON file per article. Top-level fields shared by all layouts:
 | `category` | yes | The site's blog category; layouts rotate within it |
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They never share a mode |
 | `slug` | yes | Output folder name and history key (unique per article) |
-| `mode` | no | `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window` |
-| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, `logos`. Mode + variant = one layout |
+| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `pills`, `split`, `dark`, `number` |
+| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, `logos`, and the headline variants `pills`, `connect`, `slash`. Mode + variant = one layout |
 | `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on about 1 in 3 images, only for `checklist`, `versus/table`, `window`, `before-after/flow` |
 | `grain` | no | Field grain, on everywhere by default. `false` turns it off on a light field (never on blue) |
 | `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself |
@@ -123,3 +123,54 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
   "bleed": true, "cursor": [1400, 470] }
 ```
 - `rows`: 3–4 (max 5); `detail.points`: 2–3 short ones, or none. A row without a product takes `"icon"` instead of `"logo"`. `"highlight": <row index>` in `list` makes that row the blue anchor. Works on the vibrant blue (the grid is removed there).
+
+---
+
+# Headline layouts (after Chatbase)
+They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
+
+## Pills (`"mode": "pills"`)
+```json
+{ "mode": "pills", "headline": "How Long ERP\n{{Implementation\nTakes}}" }
+```
+- Optional `"color": "#hex"` swaps the blue for a brand colour.
+
+## Versus pills (`"mode": "versus", "variant": "pills"`)
+```json
+{ "mode": "versus", "variant": "pills", "headline": "NetSuite or\n{{SAP Business One?}}",
+  "left": { "label": "NetSuite", "logo": "netsuite.com" }, "right": { "label": "SAP Business One", "logo": "sap.com" } }
+```
+
+## Versus connect (`"mode": "versus", "variant": "connect"`)
+```json
+{ "mode": "versus", "variant": "connect", "headline": "{{NetSuite vs}}\nSAP Business One",
+  "left": { "label": "NetSuite", "logo": "netsuite.com" }, "right": { "label": "SAP Business One", "logo": "sap.com" } }
+```
+
+## Versus slash (`"mode": "versus", "variant": "slash"`; black, counts as vibrant)
+```json
+{ "mode": "versus", "variant": "slash",
+  "left": { "label": "Dynamics\n{{365}}", "color": "#3D7BFF" }, "right": { "label": "Acumatica", "color": "#36C5F0" } }
+```
+- Names in caps; the `{{ }}` part takes that side's `color` (without markup: the last word, or the whole single word). Short names read best (≤ 10 letters per line).
+
+## Split (`"mode": "split"`)
+```json
+{ "mode": "split", "headline": "Dynamics 365\nvs {{Acumatica}}",
+  "card": { "label": "50 users, yearly", "rows": [ { "name": "Per user", "logo": "microsoft.com", "value": "$48,000" },
+                                                 { "name": "Unlimited users", "logo": "acumatica.com", "value": "$6,396" } ] },
+  "tiles": ["microsoft.com", "acumatica.com"] }
+```
+- `card.rows`: 2–3; `card.highlight` picks the blue value (default: the last row). `tiles`: 0–2 logo tiles on the glass.
+
+## Dark (`"mode": "dark"`; black, counts as vibrant)
+```json
+{ "mode": "dark", "tag": "ERP comparison", "headline": "Odoo vs\nSage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
+```
+- `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). The panel logo is shown in white (Simple Icons); set `panelLogoUrl` for a brand Simple Icons lacks.
+
+## Number (`"mode": "number"`)
+```json
+{ "mode": "number", "number": "7", "headline": "Best ERP\n{{for Small\nBusinesses}}" }
+```
+- `number`: 1–3 characters, from the title.
