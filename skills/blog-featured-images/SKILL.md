@@ -45,6 +45,7 @@ Their specs are in `examples/`, and the renderer's per-layout defaults already m
 5. **Logos where products are named.** Set `"logo": "<domain>"` on every named product (hub cards, versus sides, window rows, ranked rows). The renderer fetches it through a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon as an app tile → lettermark) in style A (original colours, small white tile). Logos stay secondary.
 6. **Never bland.** One bold blue anchor, structure tied to the frame (soft dot texture or an edge-to-edge band), and a hero at least ~60% of the width. Background `sky` (crisp, texture on) or `wash` + `"texture": true` (warm), whichever balances better.
 7. **Site mark only sometimes (hard-enforced).** The site mark + series tag (`"series"`, needs `"craft": true`) goes only in a natural empty slot, on at most 1 in 3 images per category and never on neighbours ("SERIES CHECK FAILED").
+8. **Vibrant + subtle mix (hard-enforced).** About 1 in 3 images per category uses the vibrant brand-blue field (`"bg": "blue"`, Granola-style glow); never two neighbours ("VIBRANT CHECK FAILED"). The rest stay light and subtle.
 
 ## Layouts: 11 modes, 15 layouts
 | mode | variants | Shows | Best for |

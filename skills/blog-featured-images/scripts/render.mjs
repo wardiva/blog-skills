@@ -477,6 +477,15 @@ A layout may not repeat in a category until every layout has been used there (si
 Pick one of: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "default")`);
   process.exit(2);
 }
+// vibrant brand-blue images are mixed in among subtle ones: at most 1 in 3 per category, never two neighbours (user rule)
+if ((spec.bg === 'blue') && !force) {
+  const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
+  if (lastTwo.some((e) => e.vibrant || e.bg === 'blue')) {
+    console.error(`VIBRANT CHECK FAILED: a recent "${category}" image already uses the vibrant blue field (${lastTwo.filter((e) => e.vibrant || e.bg === 'blue').map((e) => e.slug).join(', ')}).
+Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. Use a light background (sky, wash, cool, flat, white) for this one.`);
+    process.exit(2);
+  }
+}
 // site mark + series tag: some images, never all. At most 1 in 3 per category, never on two neighbours (user rule).
 if (spec.craft === true && spec.series && !force) {
   const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
@@ -510,7 +519,21 @@ const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:l
 .tex .acc{background:${acc}}`;
 // anchor (the one high-contrast element): approved blue gradient by default, or navy
 const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
+// Vibrant brand-blue field with a Granola-style glow: one colour family, deep edges, a brighter cyan-leaning glow behind the hero.
+const BLUE_PRESETS = [
+  'radial-gradient(62% 70% at 50% 54%,#63B4FA 0%,#3F86F0 42%,#2459D8 78%,#1C49C2 100%)',                                          // 0: centre glow
+  'radial-gradient(80% 70% at 50% 100%,#6CC0FB 0%,#3E89F1 40%,#2558D6 75%,#1D47BF 100%)',                                         // 1: glow rising from the bottom
+  'radial-gradient(70% 80% at 72% 60%,#66B9FA 0%,#3C83EF 40%,#2356D5 74%,#1B45BE 100%)',                                           // 2: glow offset behind a right-side hero
+];
+const BLUE_GLOW = BLUE_PRESETS[Number.isInteger(spec.bluePreset) && BLUE_PRESETS[spec.bluePreset] ? spec.bluePreset : 0];
 const CRAFT = spec.craft === true;
+// text and structure that sit directly on a saturated field turn white
+const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}
+body.fd .lgs b,body.fd .l1 b,body.fd .l2 b{color:#fff}body.fd .lgs span{background:rgba(255,255,255,.16);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
+body.fd .lgv{box-shadow:0 0 0 6px rgba(255,255,255,.9)}body.fd .lgband{border-color:rgba(255,255,255,.3);background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 2px,transparent 2px 16px)}
+body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
+body.fd svg.fl g{stroke:#fff}body.fd .fb{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}body.fd .fb b{color:#fff}body.fd .fb span{color:rgba(255,255,255,.8)}body.fd .fb .fi{background:rgba(255,255,255,.2);color:#fff}
+body.fd .grain{opacity:.06}`;
 const MONO = "'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
 const SERIES_POS = spec.seriesPos || { focus: 'top', versus: 'bottom', 'before-after': 'tl' }[MODE] || 'bottom';
 const seriesMark = CRAFT && spec.series ? `<!--smark--><div class="smark sm-${SERIES_POS}">${brand.markUrl ? `<img src="${brand.markUrl}" alt="">` : ''}<b>${esc(brand.markName || brand.name || '')}</b><span>${esc(spec.series)}</span></div><!--/smark-->` : '';
@@ -556,6 +579,9 @@ const BG_CSS = {
   wash: `body{background:linear-gradient(${WV.ang}deg,${WV.from} 0%,${WV.to} 100%)}body:before{display:block;inset:0;filter:blur(40px);background:radial-gradient(${WV.gs}% ${WV.gs}% at ${WV.gx}% ${WV.gy}%,${WV.glow},transparent 72%)${WV.warm ? `,radial-gradient(60% 40% at 50% 0%,${WV.warm},transparent 70%)` : ''}}`,
   cool: `body{background:linear-gradient(180deg,#EEF6FE 0%,#D9EBFB 100%)}body:before{display:block;inset:0;filter:blur(40px);background:radial-gradient(52% 52% at 50% 55%,rgba(255,255,255,.7),transparent 72%)}`,
   flat: `body{background:#F1F0EC}body:before{display:none}`,
+  blue: `body{background:${BLUE_GLOW}}body:before{display:none}`,
+  skyfield: `body{background:linear-gradient(180deg,#5BB4F4 0%,#3FA0EE 100%)}body:before{display:none}`,
+  cream: `body{background:#F6F2EA}body:before{display:none}`,
   paper: `body{background:#F1F3F6}body:before{display:none}`,
   sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}`,
   white: `body{background:#FBFBFC}body:before{display:block;background:radial-gradient(45% 60% at 0% 100%,rgba(39,172,242,.22),transparent 70%),radial-gradient(40% 50% at 100% 0%,rgba(255,180,150,.2),transparent 70%)}`,
@@ -566,6 +592,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
 ${LOGO_JS}
 <style>
 ${LOGO_CSS}
+${FIELD_CSS}
 ${TEX ? TEX_CSS : ''}
 .sr b .lg{margin-right:10px;vertical-align:middle;position:relative;top:-2px}.th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}
 *{box-sizing:border-box}html,body{margin:0;width:1600px;height:900px;overflow:hidden}
@@ -586,7 +613,7 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 .legend span{display:flex;align-items:center;gap:14px}.legend i{width:16px;height:16px;border-radius:50%}
 .lg1{color:#141A26}.lg1 i{background:#141A26}.lg2{color:#2C7BD8}.lg2 i{background:#27ACF2}
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-</style></head><body>
+</style></head><body class="${['blue', 'skyfield'].includes(BG) ? 'fd' : ''}">
 ${PATTERN}${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
 ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1" style="top:${baTop}px">${esc(before.label)}</div><div class="lbl l2" style="top:${baTop}px">${esc(after.label)}</div>
 <div class="c c1" style="top:${baTop + 90}px"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
@@ -630,7 +657,7 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), out: path.resolve(outDir), at: new Date().toISOString() };
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue', out: path.resolve(outDir), at: new Date().toISOString() };
 // Parallel renders share these files: take a lock, re-read, then write, so no entry is lost.
 fs.mkdirSync(historyDir, { recursive: true });
 const lock = historyFile + '.lock';

@@ -199,6 +199,11 @@ They rotate per article (seeded by slug); `"washPreset": 0–3` forces one. Corn
 
 ---
 
+### Vibrant + subtle mix (user, 2026-10-13: "I like brand blue field; it's good adding vibrant images with other subtle images")
+- **`"bg": "blue"`** = the vibrant brand-blue field: white cards, white text on the field, and a **Granola-style glow** (one blue family, deep edges, a brighter cyan-leaning glow behind the hero). `"bluePreset"`: 0 = centre glow, 1 = rising from the bottom, 2 = behind a right-side hero.
+- **Mix it in, don't overuse it:** at most **1 in 3** images in a category is vibrant, never two neighbours. The renderer refuses with **"VIBRANT CHECK FAILED"**. The rest use the subtle light backgrounds (sky, wash, cool, flat, white).
+- Rejected along the way: corner-pool pastel gradients and the 4 "one-family pastel" presets ("NONE. ITS SHIT AF"). Flat bold fields like the references were the breakthrough.
+
 ## FINAL approved look (user: "I have finalized these images. Set in skill to follow the same vibe", 2026-10-13)
 
 **These 6 images are the target.** They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
