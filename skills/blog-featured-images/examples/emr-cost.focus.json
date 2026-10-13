@@ -8,9 +8,22 @@
  "headline": "EMR cost by {{practice size}}",
  "label": "Year one",
  "rows": [
-  { "name": "Solo", "value": "$15K–$30K", "pct": 30 },
-  { "name": "2–5", "value": "$40K–$150K", "pct": 150 },
-  { "name": "26+", "value": "$100K–$500K+", "pct": 500 }
+  {
+   "name": "Solo",
+   "value": "$15K–$30K",
+   "pct": 30
+  },
+  {
+   "name": "2–5",
+   "value": "$40K–$150K",
+   "pct": 150
+  },
+  {
+   "name": "26+",
+   "value": "$100K–$500K+",
+   "pct": 500
+  }
  ],
- "highlight": 1
+ "highlight": 1,
+ "bg": "sky"
 }

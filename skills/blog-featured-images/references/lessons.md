@@ -57,6 +57,9 @@ QA failures in the test traced back to things the Orchestrator could have checke
 - **Bleed needs content to the edge.** A card that runs off the bottom with empty white below its rows looks unfinished. Push the card down so it's cut just after the skeleton rows.
 - QA may suggest changes that break an approved rule (e.g. "make both versus names navy"). Approved rules win; say so in the fix message.
 
+- **Texture layers go under the content** and accent dots stay in the outer margins; seed the pattern per slug so a category never repeats one dot layout.
+- **"Colors look off" = the palette drifted.** Keep the new structure but bring back the approved colours, and show A/B/C at once. (The flat cool grey and the heavy navy were rejected; the sky background was approved.)
+
 ## 4. Variety must be structural
 
 - Two images were "exact same" because the old check only knew one output folder. Now one site-wide history per brand counts every render (`~/.blog-featured-images/history-<brand>.json`).

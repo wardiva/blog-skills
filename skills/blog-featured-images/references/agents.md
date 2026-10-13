@@ -98,6 +98,9 @@ Return, per image: PASS or FAIL, and for each FAIL the rule broken and the exact
 - Every named product has a logo, and every logo loaded (no broken image, no stray letter tile where a real logo exists).
 - Logos read as one set (style A: original colours in small white tiles; app-style tiles are fine). They stay small and never compete with the hero.
 
+**5c. Not bland**
+- Exactly one bold blue anchor; structure tied to the frame (texture or an edge-to-edge band); hero at least ~60% of the width. FAIL a pale, small, floating composition even if every other rule passes.
+
 **6. In the design language**
 - Approved backgrounds, white cards, blue accent, warm-grey/blue labels, grain.
 - No dark backgrounds, no AI-looking art, and no rejected patterns (see the "Rejected" notes).

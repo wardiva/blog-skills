@@ -173,6 +173,23 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ---
 
+## Anti-bland rule (user's manager: "our blog images look bland"; approved 2026-10-13)
+
+Calm is good; **bland is not**. Every image needs these, learned from Mintlify's thumbnails:
+
+1. **One bold anchor.** Exactly one high-contrast element: a solid **blue-gradient** box with white text (the focus selection box), the VS badge, a blue icon tile or a big blue number. Never two, never none.
+2. **Structure tied to the frame.** Use the **texture layer**: soft-blue dot patches in two opposite corners, thin full-height guide lines on the crop-safe edges (x 210 / 1390) and a few blue accent dots. Or edge-to-edge elements: a hatched band running across the whole width behind the hero, a UI card bleeding off an edge. Nothing just floats in a blur.
+3. **Big hero.** The main element spans about **60% or more of the width** (cards around 900px, logo tiles 280px, rows at least 32px). The old soft look used cards around 45% wide, and that read as small and empty.
+4. **Hard alignment.** Connectors hit row centres; selection handles sit exactly on the corners; equal gaps.
+5. **Colours stay ours:**
+   - **B, `"bg": "sky"`** (flat light sky, the blue end of the wash): crisp and calm. User-approved for EMR cost (focus) and NetSuite vs SAP B1 (versus/logos). Texture is on automatically.
+   - **A, `"bg": "wash"` + `"texture": true`** (approved peach-to-blue wash + texture): use it when the warm corner balances the composition better.
+   - Pick per image: whichever balances better at 350×250.
+   - **Rejected:** flat cool grey (`paper`) and the heavy navy anchor ("the colors look off"). The navy anchor is still available as `"anchor": "navy"` but isn't the default.
+6. Texture is **off** when the frame grid is on (stat, ranked, timeline, window by default); never use both.
+
+---
+
 ## Inspiration: Mintlify blog (studied 2026-10-13, about 40 thumbnails)
 
 Mintlify's thumbnails match our vibe: a calm light field, real product UI, one accent colour, lots of air. They're a **reference for ideas, not a new style**. Keep our palette (pastel wash, white cards, blue accent).

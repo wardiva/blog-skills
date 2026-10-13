@@ -77,17 +77,18 @@ function versus() {
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'logos') {
     // "logos" (Mintlify "A x B" lockup): two large logo tiles, the VS badge between them, the names, one fact chip each.
-    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 168, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
+    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 200, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
     return `<style>
-.lgw{position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);display:flex;align-items:flex-start;gap:120px}
+.lgband{position:absolute;left:0;right:0;top:196px;height:300px;border-top:1px solid rgba(59,134,240,.45);border-bottom:1px solid rgba(59,134,240,.45);background:repeating-linear-gradient(135deg,rgba(59,134,240,.16) 0 2px,transparent 2px 16px)}
+.lgw{position:absolute;left:50%;top:206px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:150px}
 .lgs{width:380px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.lgt{width:236px;height:236px;border-radius:56px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
+.lgt{width:280px;height:280px;border-radius:64px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
 .lgt .lg{box-shadow:none;background:transparent}.lgt .lg.full{transform:scale(.66)}
 .lgs b{margin-top:34px;font-size:46px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}.l1 b{color:#7C7468}.l2 b{color:#2C5FAE}
 .lgs span{margin-top:16px;padding:10px 22px;border-radius:999px;background:rgba(255,255,255,.75);box-shadow:0 0 0 1px rgba(20,26,38,.06);font-size:32px;color:#5D6675;white-space:nowrap}
-.lgv{position:absolute;left:50%;top:118px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
+.lgv{position:absolute;left:50%;top:140px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
 </style>
-<div class="lgw">${side(L, 'l1')}${side(R, 'l2')}<div class="lgv">VS</div></div>`;
+<div class="lgband"></div><div class="lgw">${side(L, 'l1')}${side(R, 'l2')}<div class="lgv">VS</div></div>`;
   }
   if (spec.variant === 'table') {
     const n = Math.max(L.items.length, R.items.length);
@@ -376,15 +377,15 @@ function focus() {
   const real = rows.slice(0, 3).map((r, i) => `<div class="fr${i === hi ? ' on' : ''}"><b>${esc(r.name)}</b><i><i style="width:${Math.max(8, Math.round(((r.pct || 1) / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
   const ghosts = [62, 44, 30].map((w) => `<div class="fr gh"><b><s style="width:70px"></s></b><i><i style="width:${w}%"></i></i><em><s style="width:80px"></s></em></div>`).join('');
   return `<style>
-.fh{position:absolute;left:50%;top:172px;transform:translateX(-50%);width:1120px;text-align:center;font-size:64px;font-weight:300;line-height:1.12;letter-spacing:-.035em;color:#0E2A5C}
-.sel{position:relative;display:inline-block;padding:0 14px;margin:0 0 0 12px;font-weight:400;color:#0A5FD8;background:rgba(39,172,242,.08);outline:2px solid #3B86F0;outline-offset:0}
-.sel i{position:absolute;width:12px;height:12px;background:#fff;border:2px solid #0A5FD8;box-sizing:border-box}
-.sel .h1{left:-6px;top:-6px}.sel .h2{right:-6px;top:-6px}.sel .h3{left:-6px;bottom:-6px}.sel .h4{right:-6px;bottom:-6px}
-.fc{position:absolute;left:50%;top:388px;transform:translateX(-50%);width:760px;height:620px;padding:38px 44px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
+.fh{position:absolute;left:50%;top:172px;transform:translateX(-50%);width:1120px;text-align:center;font-size:64px;font-weight:300;line-height:1.12;letter-spacing:-.035em;color:#3D4A5C}
+.sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 14px;font-weight:400;${ANCHOR}}
+.sel i{position:absolute;width:16px;height:16px;background:#3B86F0}
+.sel .h1{left:-20px;top:-20px}.sel .h2{right:-20px;top:-20px}.sel .h3{left:-20px;bottom:-20px}.sel .h4{right:-20px;bottom:-20px}
+.fc{position:absolute;left:50%;top:372px;transform:translateX(-50%);width:900px;height:620px;padding:42px 52px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
 .fct{display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:22px;font-weight:500;color:#7F8794}.fct s{display:block;height:10px;width:90px;border-radius:5px;background:#EEF0F4;margin-left:auto}
-.fr{display:grid;grid-template-columns:130px 1fr 200px;align-items:center;gap:16px;padding:14px 0}
-.fr b{font-size:26px;font-weight:500;color:#141A26;white-space:nowrap}.fr em{font-style:normal;font-size:24px;color:#5D6675;text-align:right;white-space:nowrap}
-.fr>i{height:14px;border-radius:7px;background:#EEF0F4;overflow:hidden}.fr>i>i{display:block;height:100%;border-radius:7px;background:#C9D3E0}
+.fr{display:grid;grid-template-columns:150px 1fr 240px;align-items:center;gap:16px;padding:14px 0}
+.fr b{font-size:32px;font-weight:500;color:#141A26;white-space:nowrap}.fr em{font-style:normal;font-size:30px;color:#5D6675;text-align:right;white-space:nowrap}
+.fr>i{height:18px;border-radius:9px;background:#EEF0F4;overflow:hidden}.fr>i>i{display:block;height:100%;border-radius:7px;background:#C9D3E0}
 .fr.on b{color:#0A5FD8}.fr.on em{color:#0A5FD8;font-weight:600}.fr.on>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
 .fr.gh{opacity:.45}.fr.gh s{display:inline-block;height:12px;border-radius:6px;background:#E3E7EE}.fr.gh em{display:flex;justify-content:flex-end}
 </style>
@@ -422,7 +423,7 @@ const LAYOUT = `${MODE}/${VARIANT}`;
 const ALL_LAYOUTS = ALL_MODES.flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
 const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
 const DEFAULT_BG = { focus: 'flat', 'before-after': 'wash', versus: 'wash', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'cool', stat: 'white', ranked: 'flat' };
-const BGS = ['wash', 'cool', 'white', 'flat'];
+const BGS = ['wash', 'sky', 'cool', 'white', 'flat'];
 const category = spec.category || spec.brand || 'default';
 const brandKey = (spec.brand || 'default').replace(/[^a-z0-9-]/gi, '');
 const ledgerFile = path.join(path.dirname(outDir), '.featured-ledger.json');
@@ -455,10 +456,32 @@ Pick one of: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "d
 let BG = spec.bg || DEFAULT_BG[MODE];
 const prevBg = prior.length ? prior[prior.length - 1].bg : null; // history is sorted by time
 if (!spec.bg && BG === prevBg) BG = BGS.find((b) => b !== prevBg && b !== DEFAULT_BG[MODE]) || BG;
+// texture (dot patches + edge guide lines + accent dots) = the anti-bland structure layer. On by default for the crisp 'sky'/'paper'
+// backgrounds; opt in on the wash with "texture": true (option A). Off when the frame grid is on (never both).
+const FRAME_ON = spec.frame ?? FRAME_DEFAULT[MODE] ?? false;
+const TEX = !FRAME_ON && (spec.texture ?? ['sky', 'paper'].includes(spec.bg));
+const texRand = (() => { let h = 2166136261; for (const c of String(slug)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; })();
+const texDiag = texRand() < 0.5;   // which diagonal the two dot patches sit on
+const pt = (x, y) => [Math.round(x), Math.round(y)];
+const accDots = [0, 1, 2, 3, 4].map((i) => {     // outer margins only: never near text or cards
+  const zone = i % 4, r = texRand();
+  return zone === 0 ? pt(60 + r * 130, 90 + texRand() * 720) : zone === 1 ? pt(1410 + r * 130, 90 + texRand() * 720)
+    : zone === 2 ? pt(240 + r * 1120, 26 + texRand() * 40) : pt(240 + r * 1120, 846 + texRand() * 34);
+});
+const acc = accDots.map(([x, y], i) => `radial-gradient(circle,${i % 2 ? '#27ACF2' : '#3B86F0'} 3px,transparent 3.6px) ${x}px ${y}px/12px 12px no-repeat`).join(',');
+const [p1x, p1y, p2x, p2y] = texDiag ? [18 + texRand() * 10, 14 + texRand() * 8, 80 + texRand() * 8, 86 + texRand() * 6] : [82 + texRand() * 8, 14 + texRand() * 8, 20 + texRand() * 8, 86 + texRand() * 6];
+const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 1389px 0/1px 100% no-repeat}
+.tex i{position:absolute;inset:0}
+.tex .dots{background-image:radial-gradient(circle,rgba(44,95,174,.30) 1.4px,transparent 1.9px);background-size:22px 22px;-webkit-mask-image:radial-gradient(38% 32% at ${p1x}% ${p1y}%,#000 25%,transparent 72%),radial-gradient(36% 32% at ${p2x}% ${p2y}%,#000 25%,transparent 72%)}
+.tex .acc{background:${acc}}`;
+// anchor (the one high-contrast element): approved blue gradient by default, or navy
+const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
 const BG_CSS = {
   wash: `body{background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}body:before{display:block;background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}`,
   cool: `body{background:linear-gradient(160deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}body:before{display:block;background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at 5% 10%,rgba(255,180,150,.18),transparent 70%)}`,
   flat: `body{background:#F1F0EC}body:before{display:none}`,
+  paper: `body{background:#F1F3F6}body:before{display:none}`,
+  sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}`,
   white: `body{background:#FBFBFC}body:before{display:block;background:radial-gradient(45% 60% at 0% 100%,rgba(39,172,242,.22),transparent 70%),radial-gradient(40% 50% at 100% 0%,rgba(255,180,150,.2),transparent 70%)}`,
 };
 const html = `<!doctype html><html><head><meta charset="utf-8">
@@ -467,6 +490,7 @@ const html = `<!doctype html><html><head><meta charset="utf-8">
 ${LOGO_JS}
 <style>
 ${LOGO_CSS}
+${TEX ? TEX_CSS : ''}
 .th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}
 *{box-sizing:border-box}html,body{margin:0;width:1600px;height:900px;overflow:hidden}
 body{position:relative;font-family:Inter,system-ui,sans-serif;color:#141A26;background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}
@@ -487,7 +511,7 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 .lg1{color:#141A26}.lg1 i{background:#141A26}.lg2{color:#2C7BD8}.lg2 i{background:#27ACF2}
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style></head><body>
-${frameLayer()}
+${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
 ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.label)}</div><div class="lbl l2">${esc(after.label)}</div>
 <div class="c c1"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
