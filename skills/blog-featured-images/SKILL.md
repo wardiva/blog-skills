@@ -65,9 +65,9 @@ Read these before your first image in a session:
 | `versus/pills` | two facing blue pills with the logos at the tips, the question below | X vs Y |
 | `versus/connect` | centred headline, two logo tiles linked to a VS circle, dot patches | X vs Y |
 | `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
-| `split` | site mark + headline, fluted-glass blue panel with a price card and logo tiles | X vs Y with prices |
+| `split` | title panel + wide fluted-glass panel with a big price card, logo tiles on its corners | X vs Y with prices |
 | `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand (vibrant) |
-| `number` | giant blue number beside the headline | "7 best" lists |
+| `number` | giant multi-tone number in its own panel + title panel | "7 best" lists |
 
 The same article type can use several layouts (cost: focus, stat, prompt, window, ranked). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 

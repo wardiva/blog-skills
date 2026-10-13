@@ -87,11 +87,11 @@ A second family next to the card layouts: a **giant, tight, bold headline** carr
 | `versus/pills` | two blue pills facing each other with the two logos at the tips; the question below ("A or {{B?}}") | X vs Y |
 | `versus/connect` | centred headline with a blue phrase and a sparkle divider; two big logo tiles linked by thin crossing strands to a white **VS** circle; small dot patches top-left and top-right | X vs Y |
 | `versus/slash` | black field with a fine dot grid; the two names in heavy caps (a coloured part each); a big italic **VS** with a glowing diagonal streak | X vs Y (counts as vibrant) |
-| `split` | site mark + headline on the left; a **fluted-glass** blue panel on the right with a small white card (2–3 rows with logos) and up to two logo tiles | X vs Y with prices, product pages |
+| `split` | title panel (site mark, calm **medium-weight** headline bottom-left) next to a wide **fluted-glass** blue panel (uneven soft vertical stripes, deep top-left to light bottom-right) holding a big white card (2–3 rows with logos); up to two logo tiles overlap the card's corners, never its content | X vs Y with prices, product pages |
 | `dark` | black field, site mark, a tag pill, white headline; a panel in the **product's own brand colour** with its white logo | comparisons and reviews of one vivid brand (counts as vibrant) |
-| `number` | a giant blue number beside the headline | "7 best", "10 tools" lists |
+| `number` | **two panels**: the giant number fills its own panel in a multi-tone watercolour (cyan → royal → indigo); the title sits in the other panel, medium weight, key words in blue | "7 best", "10 tools" lists |
 
-- **Colour: the subtle Chatbase blue.** Shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Cloudy, high-contrast watercolour was rejected ("too much and too bad"). Headline key phrases use `{{ }}` and render in the same blue.
+- **Colour: the subtle Chatbase blue.** Shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Headlines are **medium weight (500)** in `pills`, `split` and `number` (Chatbase's calm type); the versus layouts keep their bold headlines. Cloudy, high-contrast watercolour was rejected ("too much and too bad"). Headline key phrases use `{{ }}` and render in the same blue.
 - **White frame rule:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page. The renderer does this for `pills`, `split`, `number`, `versus/pills` and `versus/connect`.
 - **Black fields** (`dark`, `versus/slash`) count as vibrant: at most 1 in 3 images per category, never neighbours, shared with the deep-dunes blue.
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` can use it for its panel (`"color": "#00C247"`). Otherwise the panel is the subtle blue.

@@ -481,17 +481,20 @@ ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.
 <div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head)}</div></div>`;
 }
 
-// "split": white left (site mark + giant headline), right = fluted-glass panel with a small white card and up to two logo tiles
+// "split" (Chatbase "Instant meeting scheduling"): title panel (site mark, calm medium-weight headline) | a wide fluted-glass blue panel
+// with uneven soft stripes and a big white UI card; logo tiles overlap the card's edges.
 function cbSplit() {
-  const P = cbPal(spec.color), C = spec.card || {}, rows = (C.rows || []).slice(0, 3), fs = cbFs(spec.headline, 104, 760);
+  const P = cbPal(spec.color), C = spec.card || {}, rows = (C.rows || []).slice(0, 3), fs = cbFs(spec.headline, 104, 560);
   const hi = C.highlight === undefined ? rows.length - 1 : C.highlight, tiles = (spec.tiles || []).slice(0, 2);
-  const row = (r, i) => `<div style="display:flex;align-items:center;gap:16px;padding:18px 0;${i < rows.length - 1 ? 'border-bottom:1px solid #EEF0F3' : ''}">${logo(r.logo, 38, r.name)}<b style="font-size:28px;font-weight:600">${esc(r.name)}</b><span style="margin-left:auto;font-size:28px;${i === hi ? `color:${P.stops[3] || '#0B57E0'};font-weight:600` : ''}">${esc(r.value)}</span></div>`;
-  return `${CB_CSS}${cbFramed(`${cbMark()}<div class="cbh" style="left:96px;bottom:110px;width:740px;font-size:${fs}px">${cbHl(spec.headline)}</div>`, 728)}
-<div style="position:absolute;left:900px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden;background:linear-gradient(180deg,${P.stops[P.stops.length - 1]} 0%,${P.stops[P.stops.length - 2]} 60%,${P.stops[1]} 100%)">
-<div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.16) 22px,rgba(10,30,120,.12) 44px,rgba(255,255,255,0) 58px)"></div>
-<div style="position:absolute;inset:0;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.5"></div>
-${rows.length ? `<div style="position:absolute;left:100px;top:${Math.round(426 - (90 + rows.length * 80) / 2)}px;width:480px;padding:34px 36px;border-radius:26px;background:#fff">${C.label ? `<div style="font-size:22px;color:#6B7280;margin-bottom:22px">${esc(C.label)}</div>` : ''}${rows.map(row).join('')}</div>` : ''}
-${tiles[0] ? cbTile(tiles[0], 130, 40, 560) : ''}${tiles[1] ? cbTile(tiles[1], 130, 512, 110) : ''}</div>`;
+  const CW = 590, CH = (C.label ? 100 : 44) + rows.length * 112, PX = 800, PW = 772, cx = Math.round((PW - CW) / 2), cy = Math.round((844 - CH) / 2);
+  const deep = spec.color ? P.stops[3] : '#1F55E6', mid = spec.color ? P.stops[1] : '#3C7EF2', lite = spec.color ? hexMix(P.stops[1], '#ffffff', 0.45) : '#9CC3F8';
+  const row = (r, i) => `<div style="display:flex;align-items:center;gap:18px;height:112px;${i < rows.length - 1 ? 'border-bottom:1px solid #EEF0F3' : ''}">${logo(r.logo, 48, r.name)}<b style="font-size:34px;font-weight:500;color:#0A0A0B">${esc(r.name)}</b><span style="margin-left:auto;font-size:34px;${i === hi ? `color:${deep};font-weight:600` : 'color:#0A0A0B'}">${esc(r.value)}</span></div>`;
+  return `${CB_CSS}${cbFramed(`${cbMark()}<div class="cbh" style="left:96px;bottom:104px;width:620px;font-size:${fs}px;font-weight:500;letter-spacing:-.04em;line-height:1.04">${cbHl(spec.headline)}</div>`, 1600 - PX + 26)}
+<div style="position:absolute;left:${PX}px;top:28px;width:${PW}px;bottom:28px;border-radius:28px;overflow:hidden;background:linear-gradient(165deg,${deep} 0%,${mid} 50%,${lite} 100%)">
+<div style="position:absolute;inset:0;filter:blur(1.4px);background:repeating-linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.2) 9px,rgba(255,255,255,0) 20px,rgba(8,30,120,.1) 31px,rgba(255,255,255,0) 38px),repeating-linear-gradient(90deg,rgba(255,255,255,0) 0,rgba(255,255,255,.1) 33px,rgba(255,255,255,0) 71px)"></div>
+<div style="position:absolute;inset:0;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.55"></div>
+${rows.length ? `<div style="position:absolute;left:${cx}px;top:${cy}px;width:${CW}px;padding:20px 40px;border-radius:30px;background:#fff">${C.label ? `<div style="font-size:26px;color:#6B7280;padding:18px 0 16px">${esc(C.label)}</div>` : ''}${rows.map(row).join('')}</div>` : ''}
+${tiles[0] ? cbTile(tiles[0], 150, cx - 56, cy + CH - 40) : ''}${tiles[1] ? cbTile(tiles[1], 150, cx + CW - 94, cy - 110) : ''}</div>`;
 }
 
 // "dark": black field, site mark, tag pill, white headline; right = watercolour panel in the brand colour with the white logo
@@ -507,14 +510,19 @@ ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;paddin
 ${white ? `<img src="${white}" alt="" style="position:absolute;left:50%;top:50%;width:330px;max-height:260px;object-fit:contain;transform:translate(-50%,-50%)" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">${cbTile(d, 220, 248, 316, 0.22).replace('class="ct" style="', 'class="ct" style="display:none;')}` : ''}</div>`;
 }
 
-// "number": a giant watercolour number with the headline beside it
+// "number" (Chatbase "7 Service Desk Tasks" / "6 Smart Ways"): TWO panels - the giant number fills its own panel in a multi-tone
+// watercolour gradient (cyan -> royal -> indigo), the title sits in the other panel, medium weight, key words in blue.
 function cbNumber() {
-  const P = cbPal(spec.color), n = String(spec.number || '').slice(0, 3), nfs = n.length === 1 ? 760 : n.length === 2 ? 600 : 460;
-  const nw = Math.round(n.length * nfs * 0.6), hx = 120 + nw + 60, fs = cbFs(spec.headline, 110, 1480 - hx);
-  return `${CB_CSS}${cbFramed(`<svg width="1600" height="900" style="position:absolute;inset:0"><defs>${wcDefs('nb', { ...P, stops: [...P.stops].reverse() }, 8, [0, 0, 1, 1])}
-<mask id="nm"><rect width="1600" height="900" fill="#000"/><text x="120" y="${450 + nfs * 0.42}" font-family="Inter" font-weight="800" font-size="${nfs}" letter-spacing="-${Math.round(nfs * 0.05)}" fill="#fff">${esc(n)}</text></mask></defs>
-<rect width="1600" height="900" fill="url(#nbg)" filter="url(#nbf)" mask="url(#nm)"/></svg>
-<div class="cbh" style="left:${hx}px;top:50%;transform:translateY(-50%);width:${1480 - hx}px;font-size:${fs}px">${cbHl(spec.headline)}</div>`)}`;
+  const n = String(spec.number || '').slice(0, 3), NW = n.length === 1 ? 560 : n.length === 2 ? 760 : 900, nfs = n.length === 1 ? 800 : n.length === 2 ? 640 : 480;
+  const P = spec.color ? cbPal(spec.color) : { stops: ['#5CCBFA', '#2F7BF5', '#2448E0', '#3B32C8'], light: '#7DD3FB', dark: '#1F3BC4' };
+  const tx = 28 + NW + 26, fs = cbFs(spec.headline, 100, 1572 - tx - 160);
+  return `${CB_CSS}<div class="cbf" style="background:#F2F2F3"></div>
+<div style="position:absolute;left:28px;top:28px;width:${NW}px;bottom:28px;border-radius:28px;background:#fff;overflow:hidden">
+<svg width="${NW}" height="844" style="position:absolute;inset:0"><defs>${wcDefs('nb', P, 8, [0, 0, 1, 1])}
+<mask id="nm"><rect width="${NW}" height="844" fill="#000"/><text x="${NW / 2}" y="${422 + nfs * 0.36}" text-anchor="middle" font-family="Inter" font-weight="800" font-size="${nfs}" letter-spacing="-${Math.round(nfs * 0.05)}" fill="#fff">${esc(n)}</text></mask></defs>
+<rect width="${NW}" height="844" fill="url(#nbg)" filter="url(#nbf)" mask="url(#nm)"/></svg></div>
+<div style="position:absolute;left:${tx}px;top:28px;right:28px;bottom:28px;border-radius:28px;background:#fff"></div>
+<div class="cbh" style="left:${tx + 80}px;top:50%;transform:translateY(-50%);width:${1572 - tx - 160}px;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;line-height:1.06">${cbHl(spec.headline)}</div>`;
 }
 
 // "versus/connect" (user reference, Chatbase "Open Source Chatbot Platforms"): centred headline with a gradient phrase, a divider
