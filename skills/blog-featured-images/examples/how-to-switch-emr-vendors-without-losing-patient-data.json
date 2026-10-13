@@ -4,9 +4,25 @@
  "topic": "emr-switch",
  "slug": "how-to-switch-emr-vendors-without-losing-patient-data",
  "mode": "before-after",
- "before": { "label": "Old EMR", "lines": ["CCDA", "CSV export"] },
- "after": { "label": "New EMR", "heading": "Patient data",
-            "items": ["Allergies", "Medications", "Problem lists"] },
- "legend": ["Extracted", "Validated"],
+ "before": {
+  "label": "Old EMR",
+  "lines": [
+   "CCDA",
+   "CSV export"
+  ]
+ },
+ "after": {
+  "label": "New EMR",
+  "heading": "Patient data",
+  "items": [
+   "Allergies",
+   "Medications",
+   "Problem lists"
+  ]
+ },
+ "legend": [
+  "Extracted",
+  "Validated"
+ ],
  "articleTitle": "How to Switch EMR Vendors Without Losing Patient Data"
 }

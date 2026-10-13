@@ -1,145 +1,125 @@
 # Spec format
 
-One JSON file per article. Top-level fields shared by all modes:
+One JSON file per article. Top-level fields shared by all layouts:
 
 | Field | Required | Meaning |
 |---|---|---|
-| `articleTitle` | yes | The blog post's real title (H1). The image heading must reuse its words, shorter. See "Heading rule" in design-language.md |
-| `brand` | no | Brand file name in `brands/` (e.g. `"medsoftwarehub"`). Defaults to `default` |
-| `category` | yes | The site's blog category. The variety ledger never repeats a recent mode within it |
-| `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They can never share a mode |
-| `slug` | yes | Output folder name and ledger key (unique per article) |
-| `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
-| `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default), `table` and `logos`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
-| `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]` and stat `card.rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
-| `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
-| `bg` | no | Light: `sky`, `paper`, `cream`, `g5`. Vibrant: `blue` (deep dunes + grain; at most 1 in 3 per category, never neighbours; only checklist, versus/table, window, before-after/flow). Leave it out to use the layout default. Deleted names (`wash`, `cool`, `white`, `flat`, `skyfield`, `g4`) are refused |
-| `grain` | no | Field grain. Always on for `blue`; on by default for every light background (`false` turns it off) |
-| `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky` and `paper`; set `true` to add it elsewhere. Never with the frame grid |
-| `craft` | no | `true` = the craft kit: near-black ink, mono caps labels, grey off-states, line-icon tiles, clean connector |
-| `series` | no | With `craft`: the site mark + mono series tag (e.g. `"Pricing"`). Only on some images: at most 1 in 3 per category, never on neighbours ("SERIES CHECK FAILED") |
-| `dots` | no | Texture dot patches: `none` (default, user-approved), `subtle`, `full`. The guide lines and margin dots stay either way |
-| `anchor` | no | Colour of the one bold element (e.g. the focus selection box): `blue` (default, blue gradient + white text) or `navy` |
-| `frame` | no | Faint grid plus registration squares. On by default only for `stat`, `ranked`, `timeline` and `window`; off for the rest. `true` or `false` overrides. Use it only where it fits the vibe |
-| `cursor` | no | `[x, y]`: a pointer cue at that position. It must point at the key fact and never cover text |
-| `bleed` | no | `window` mode only: the window runs off the bottom and right edge, Base44 style |
+| `articleTitle` | yes | The blog post's real title (H1). The image heading must reuse its words, shorter ("HEADING CHECK FAILED" otherwise) |
+| `brand` | no | Brand file in `brands/` (e.g. `"medsoftwarehub"`). Defaults to `default` |
+| `category` | yes | The site's blog category; layouts rotate within it |
+| `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They never share a mode |
+| `slug` | yes | Output folder name and history key (unique per article) |
+| `mode` | no | `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window` |
+| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, `logos`. Mode + variant = one layout |
+| `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on about 1 in 3 images, only for `checklist`, `versus/table`, `window`, `before-after/flow` |
+| `grain` | no | Field grain, on everywhere by default. `false` turns it off on a light field (never on blue) |
+| `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself |
+| `logoStyle` | no | `color` (default), `mono` or `tint`. One style per image |
+| `frame` | no | Faint grid + registration squares. On by default for `stat`, `ranked`, `timeline`, `window` (never on blue). `true`/`false` overrides |
+| `texture` | no | Thin guide lines at x 210/1390 + a few margin dots. On by default for sky/paper fields and for checklist, ranked, focus, versus, before-after and stack; off where the frame grid is on (never both). `true`/`false` overrides |
+| `cursor` | no | `[x, y]`: one pointer cue aimed at the key fact; never covers text |
+| `bleed` | no | `window` only: the window runs off the bottom and right edge; words stay inside x 210–1390 |
+| `craft`, `series` | no | Opt-in site mark + mono series tag (`"craft": true, "series": "Pricing"`). At most 1 in 3 images per category, never neighbours |
 
-**Text budget: 15 visible words per image and max 7 words per element, enforced by the renderer ("TEXT CHECK FAILED").** **Text limits keep things readable at 350×250.** Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
+**Text budget: 15 visible words per image, max 7 per element, no sentences** (renderer-enforced). Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
+
+The specs in `examples/` are complete, approved examples of every layout. Start from the closest one.
 
 ---
 
-## Before → After (default; how-to, migration, transformation)
+## Before → After (default; how-to, migration)
 ```json
-{ "brand": "medsoftwarehub",
-  "before": { "label": "Old EMR export", "lines": ["ALVAREZ, M · 1968", "PCN · METF 500"] },
-  "after":  { "label": "New EMR", "heading": "Maria Alvarez · Patient overview",
-              "items": ["Allergy: Penicillin", "Medication: Metformin 500 mg", "Last A1C: 6.9%, verified"] },
-  "legend": ["From your old EMR", "Mapped and verified"] }
+{ "before": { "label": "Old EMR", "lines": ["Allergies", "Medications"] },
+  "after":  { "label": "New EMR", "heading": "Patient chart", "items": ["Mapped and verified", "CCDA imported"] } }
 ```
-- `before.lines`: 1–3 short, "raw" lines (the messy starting state).
-- `after.items`: 2–4 bullets. The first bullet is dark (the key point) and the rest are muted.
-- **Variant `"flow"`** (old way → new way, e.g. on-premise → cloud): a muted dashed "before" card with an icon → hand-drawn arrow → a lifted "after" card with a blue icon tile and checked items. Add `before.icon` and `after.icon` (Phosphor classes, e.g. `"ph ph-hard-drives"`, `"ph-fill ph-cloud"`). `before.lines`: 1–2 short caps; `after.items`: 2 short items. Icons carry the meaning, so keep text tiny. User-approved (cloud ERP, 2026-10-13).
+- `before.lines`: 1–3 short raw lines. `after.items`: 2–4 bullets; the first is dark (the key point). An optional `legend` (two short labels) counts toward the 15 words.
+- Use the article's own words; never invent sample patients or values.
+- **`"variant": "flow"`** (old way → new way, e.g. on-premise → cloud): muted dashed icon card → hand-drawn arrow → lifted card with a blue icon tile and checked items. Add `before.icon` and `after.icon` (Phosphor classes, e.g. `"ph ph-hard-drives"`, `"ph-fill ph-cloud"`). `before.lines`: 1–2 short caps; `after.items`: 2 items. Works on the vibrant blue. Example: `examples/what-is-cloud-erp.before-after-flow.json`.
 
 ## Versus (`"mode": "versus"`; X vs Y)
 ```json
-{ "brand": "medsoftwarehub", "mode": "versus",
-  "dimensions": ["Pricing", "Users", "Strength"],
-  "left":  { "label": "Dynamics 365", "heading": "Business Central",
-             "items": ["$80 per user / month", "Paid per seat", "Teams and Outlook"] },
-  "right": { "label": "Acumatica", "heading": "Cloud ERP",
-             "items": ["From $6,396 per year", "Unlimited users", "Low-code, open APIs"] },
-  "legend": ["Priced per seat", "Priced by transactions"] }
+{ "mode": "versus", "variant": "table", "dimensions": ["Per user/mo", "Pricing"],
+  "left":  { "label": "Odoo", "logo": "odoo.com", "items": ["$24.90", "Published"] },
+  "right": { "label": "Sage Intacct", "logo": "sage.com", "items": ["$150 to $400", "Quote only"] } }
 ```
-- Renders as **two tilted, overlapping cards** with a blue **VS** badge on the seam. `label` is the product name above each card, `heading` the plan line, and `items` 2–3 facts (up to ~22 characters each so nothing wraps). `items[0]` is the key fact (dark on the left, blue on the right). Use the same dimensions on both sides, in the same order.
-- `legend[0]` and `legend[1]` name the key difference.
-- `"variant": "logos"` (Mintlify-style "A × B" lockup): two large logo tiles, the VS badge, the names, and one fact chip each: `"left": {"label": "NetSuite", "logo": "netsuite.com", "fact": "$999/mo base fee"}`. One contrast only, about 11 words. Badge-style logos are scaled down so both tiles carry similar weight.
-- `"variant": "table"` renders one comparison table card instead: `dimensions` become its row labels (up to ~12 characters, e.g. "Per user/mo"), and `legend` is optional. Leave the legend out when it would repeat a row (minimal rule).
+- **`table`**: one comparison card; `dimensions` are row labels (up to ~12 characters). Works on the vibrant blue.
+- **`overlap`** (default): two tilted overlapping cards; `label` above each card, `heading` the plan line, `items` 2–3 facts (up to ~22 characters), `items[0]` the key fact. Optional `legend`.
+- **`logos`**: two large logo tiles, the VS badge, the names and one fact chip each: `"left": {"label": "NetSuite", "logo": "netsuite.com", "fact": "$999/mo base fee"}`. One contrast, about 11 words. Light backgrounds only.
 
-## Focus (`"mode": "focus"`; one key idea + a few values; Mintlify-inspired)
+## Hub (`"mode": "hub"`; "best X" lists, integrations)
+```json
+{ "mode": "hub", "hubLabel": { "big": "7", "small": "Best ERP" },
+  "cards": [ { "name": "NetSuite", "logo": "netsuite.com" }, { "name": "SAP Business One", "logo": "sap.com" },
+             { "name": "Dynamics 365", "logo": "microsoft.com" }, { "name": "Acumatica", "logo": "acumatica.com" },
+             { "name": "Odoo", "logo": "odoo.com" }, { "name": "Sage Intacct", "logo": "sage.com" },
+             { "name": "Epicor Kinetic", "logo": "epicor.com" } ] }
+```
+- **Logos only** (the default when every card has a `logo`): square logo tiles around the blue centre tile, no names. `"showNames": true` brings back name cards, only for products without recognisable logos.
+- 6 or 7 cards; use 7 for a "7 best" list so the image matches the title.
+- `hubLabel` puts the title's key words on the blue tile (the hub has no headline). Without it, `hubIcon` (any Phosphor class) is shown.
+- Background: `cream` or `paper` (the blue tile needs a neutral field).
+
+## Focus (`"mode": "focus"`; one key idea + a few values)
 ```json
 { "mode": "focus", "headline": "EMR cost by {{practice size}}", "label": "Year one", "highlight": 1,
   "rows": [ { "name": "Solo", "value": "$15K–$30K", "pct": 30 }, { "name": "2–5", "value": "$40K–$150K", "pct": 150 },
             { "name": "26+", "value": "$100K–$500K+", "pct": 500 } ] }
 ```
-- A centred, light-weight headline (the title's words). `{{ }}` puts the key phrase in a blue **selection box** with corner handles.
-- Below it, a UI card running off the bottom edge: up to 3 real rows (`name` ≤ ~6 characters, `value` ≤ ~12, `pct` = bar length) plus 3 faded **skeleton rows** that add zero words. `highlight` is the blue row.
-
-## Prompt (`"mode": "prompt"`; cost, pricing, "what is", FAQ)
-```json
-{ "brand": "medsoftwarehub", "mode": "prompt",
-  "panel": { "label": "Year-one EMR cost", "rows": [
-    { "title": "Solo provider", "sub": "$15,000 to $30,000" },
-    { "title": "2 to 5 providers", "sub": "$40,000 to $150,000" },
-    { "title": "26+ providers", "sub": "$100,000 to $500,000+" } ] },
-  "headline": "EMR Cost by Practice Size",
-  "placeholder": "Your practice size",
-  "chips": ["Solo", "2 to 5 providers"] }
-```
-- `panel.rows`: exactly 3 rows (they fade from top to bottom). `chips`: 1–2 short options.
-- `headline` is auto-sized (max 76px, about 760px wide). Keep it to about 24 characters so it stays large enough to read.
-
-## Hub (`"mode": "hub"`; "best X" lists, integrations, ecosystems)
-```json
-{ "brand": "medsoftwarehub", "mode": "hub", "hubIcon": "ph-fill ph-storefront",
-  "cards": [
-    { "name": "NetSuite", "sub": "$999/mo base" }, { "name": "SAP Business One", "sub": "From $95/user" },
-    { "name": "Dynamics 365", "sub": "$80/user/mo" }, { "name": "Acumatica", "sub": "From $6,396/yr" },
-    { "name": "Odoo", "sub": "$24.90/user/mo" }, { "name": "Sage Intacct", "sub": "From $15K/yr" } ] }
-```
-- 6 or 7 cards (use 7 for a "7 best" list, so the image matches the title): names up to ~17 characters. **Cards show names only.** `sub` is ignored unless `"showSubs": true`, which you set only when the second line is the article's point.
-- Optional `"hubLabel": { "big": "7", "small": "Best ERP" }` replaces the icon on the blue tile. Use it to carry the title's key words (the hub has no headline).
-- `hubIcon` is any Phosphor class (https://phosphoricons.com), e.g. `ph-fill ph-heartbeat`, `ph-fill ph-graduation-cap`, `ph-fill ph-shield-check`.
-
-- **Logos only by default** (user 2026-10-14, Granola style): when every card has a `logo`, the hub shows square logo tiles and no names. Set `"showNames": true` to bring back the name cards. Logos fill ~65% of the tile; full-bleed app icons become the tile.
-
-## Stack (`"mode": "stack"`; one key rule or warning)
-```json
-{ "mode": "stack", "icon": "ph ph-shield-check", "title": "Before you switch EMR vendors",
-  "lead": "Extract and **validate every record** before you cut off the old system.",
-  "items": ["Keep read-only legacy access for 6 to 12 months", "Scanned documents may not transfer cleanly"] }
-```
-- `lead` is up to ~80 characters. `**bold**` marks the key phrase (shown in blue). `items` holds 1–3 bullets.
-- **Deleted:** the `"split"` variant (user: "I DONT LIKE IT", removed 2026-10-14). The front card fits its text; the back cards peek from the top.
-
-## Window (`"mode": "window"`; vendor lists, pricing tables)
-```json
-{ "mode": "window", "window": { "search": "Search EMR vendors", "action": "Compare" },
-  "list": { "icon": "ph ph-currency-dollar", "heading": "EMR pricing", "sub": "Per provider, per month",
-            "rows": [ { "title": "DrChrono", "sub": "Base tier", "meta": "$30" } ] },
-  "detail": { "question": "What does a 2 to 5 provider practice pay?", "heading": "$40K to $150K in year one",
-              "points": ["Implementation: $5K to $20K", "Training: $1K to $5K"] } }
-```
-- `rows` holds up to 5 items. `points` holds 2–4 items.
-- A row without a product takes `"icon": "<Phosphor class>"` (e.g. `ph ph-hard-drives`) instead of the letter avatar; it adds no words. `"highlight": <row index>` inside `list` renders that row as the blue-gradient anchor (white text). Use one highlight when the window has no other blue element.
-- Keep it minimal: 3–4 `rows` and 2–3 short `points` (see "Minimal rule"). `bleed` is optional and keeps detail text inside x 1390.
-
-## Timeline (`"mode": "timeline"`; processes, implementation, durations)
-```json
-{ "mode": "timeline", "headline": "Six steps to a safe EMR switch", "sub": "No record leaves the old system until it is validated",
-  "steps": [ { "label": "Audit", "sub": "Count records" }, { "label": "Validate", "sub": "Spot-check charts" }, { "label": "Go live", "sub": "Decommission" } ],
-  "highlight": 1, "callout": { "title": "6 to 12 weeks", "text": "Typical migration, planning to completion" } }
-```
-- `steps` holds 3–6 items, each label up to ~14 characters. `highlight` is the index of the step to emphasise.
-
-## Checklist (`"mode": "checklist"`; how to choose, requirements)
-```json
-{ "mode": "checklist", "title": "Small business ERP check",
-  "items": [ { "text": "Cost per user vs volume", "done": true }, { "text": "Core modules you need today", "done": false } ] }
-```
-- `items` holds 3–7 entries, each up to ~32 characters. Set `"total": 8` when the article has more points than you show (the pill then reads "3 of 8" with only 4 rows). The first unchecked item is shown as "current".
+- `{{ }}` puts the key phrase in the blue selection box. Up to 3 real rows (`name` ≤ ~6 characters, `value` ≤ ~12, `pct` = bar length) plus faded skeleton rows that add no words. `highlight` is the blue row.
 
 ## Stat (`"mode": "stat"`; one headline number)
 ```json
-{ "mode": "stat", "value": "$48,000", "caption": "a year to license 50 users on Business Central",
-  "sub": "Before implementation, which adds $25,000 to $80,000",
-  "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "value": "$48,000/yr", "pct": 48000 },
-                                                 { "name": "Acumatica base", "value": "$6,396/yr", "pct": 6396 } ] } }
+{ "mode": "stat", "value": "$48,000", "caption": "a year for 50 Dynamics 365 users",
+  "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "logo": "microsoft.com", "value": "$48,000/yr", "pct": 48000 },
+                                                 { "name": "Acumatica", "logo": "acumatica.com", "value": "$6,396/yr", "pct": 6396 } ] } }
 ```
-- `value` is up to ~8 characters and is auto-sized. `card.highlight` picks the blue row (default 0); set it to `null` when no card row is the hero's subject, so the hero stays the only accent. Card `rows` holds 2–4 items; `pct` is the raw number used to size the bars.
+- `value` up to ~8 characters (auto-sized). Card `rows`: 2–4, all in the same unit. `card.highlight` picks the blue row; `null` when no row is the hero's subject.
 
 ## Ranked (`"mode": "ranked"`; rankings by a real metric)
 ```json
-{ "mode": "ranked", "headline": "Cheapest EMRs per provider", "sub": "Published monthly prices, 2026", "winner": 0,
-  "rows": [ { "name": "DrChrono", "value": "$30/mo", "pct": 30 }, { "name": "SimplePractice", "value": "$49+/mo", "pct": 49 } ] }
+{ "mode": "ranked", "headline": "How Long ERP Implementation Takes", "winner": 0,
+  "rows": [ { "name": "Small business", "value": "2-4 months", "pct": 4 }, { "name": "Mid-market", "value": "4-9 months", "pct": 9 },
+            { "name": "Enterprise", "value": "12-24+ months", "pct": 24 } ] }
 ```
-- `rows` holds 3–6 items, names up to ~16 characters. `pct` sets bar length. `winner` is the highlighted row.
+- `rows`: 3–6, names up to ~16 characters. `pct` sets bar length; `winner` is the blue row.
+
+## Timeline (`"mode": "timeline"`; processes, durations)
+```json
+{ "mode": "timeline", "headline": "Switch EMR Vendors Without Losing Data",
+  "steps": [ { "label": "Audit" }, { "label": "Extract" }, { "label": "Validate" }, { "label": "Go live" } ],
+  "highlight": 2, "callout": { "title": "6 to 12 weeks" } }
+```
+- `steps`: 3–6, labels up to ~14 characters. `highlight` is the current step.
+
+## Checklist (`"mode": "checklist"`; how to choose, requirements)
+```json
+{ "mode": "checklist", "title": "8-Point ERP Checklist", "total": 8,
+  "items": [ { "text": "Problems to solve", "done": true }, { "text": "Budget", "done": true },
+             { "text": "Deployment model", "done": false }, { "text": "Integrations", "done": false } ] }
+```
+- `items`: 3–7, each up to ~32 characters. `total` sets the pill ("2 of 8") when the article has more points than you show. Works on the vibrant blue.
+
+## Prompt (`"mode": "prompt"`; cost, "what is", FAQ)
+```json
+{ "mode": "prompt", "headline": "EMR Cost by Practice Size", "placeholder": "Practice size", "chips": [],
+  "panel": { "label": "Year one", "rows": [
+    { "title": "Solo", "sub": "$15K–$30K" }, { "title": "2–5", "sub": "$40K–$150K" }, { "title": "26+", "sub": "$100K–$500K+" } ] } }
+```
+- `panel.rows`: exactly 3 (they fade). `chips`: 0–2 (they count toward the 15 words). Headline about 24 characters.
+
+## Stack (`"mode": "stack"`; one key rule or warning)
+```json
+{ "mode": "stack", "icon": "ph ph-shield-check", "title": "Switch EMR without losing data",
+  "lead": "**Validate every record** before cutover", "items": ["Keep legacy access 6–12 months"] }
+```
+- The front card fits its text; two cards peek from the top. `**bold**` marks the key phrase. `items`: 1–3 bullets. Light backgrounds only (its blue icon tile is too much blue on the vibrant field).
+
+## Window (`"mode": "window"`; vendor lists, pricing tables)
+```json
+{ "mode": "window",
+  "list": { "icon": "ph ph-currency-dollar", "heading": "Dynamics 365 vs Acumatica",
+            "rows": [ { "title": "Per user", "logo": "microsoft.com" }, { "title": "Unlimited users", "logo": "acumatica.com" } ] },
+  "detail": { "question": "50 users, yearly?", "heading": "$48,000 vs $6,396" },
+  "bleed": true, "cursor": [1400, 470] }
+```
+- `rows`: 3–4 (max 5); `detail.points`: 2–3 short ones, or none. A row without a product takes `"icon"` instead of `"logo"`. `"highlight": <row index>` in `list` makes that row the blue anchor. Works on the vibrant blue (the grid is removed there).

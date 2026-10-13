@@ -1,563 +1,221 @@
-# Featured image design language (APPROVED, 2026-10-13)
+# Featured image design language
 
-This is the approved look for blog featured images, first set for medsoftwarehub.com. Follow it for every new featured image.
-This file is the rulebook.
-
----
-
-## The three non-negotiable rules
-
-1. **Relatable to the article. This is mandatory.**
-   - Read the *whole* article first.
-   - The image must show the article's core idea using its **own facts**: its numbers, names, steps and comparisons.
-   - Never use generic stock concepts. Never invent figures. Every number on the image must appear in the article.
-2. **Easy to understand at a glance.**
-   - A reader should get the topic in about 2 seconds at **350×250** (blog-card size).
-   - One idea per image, one focal point, and short real words in big type.
-   - If you have to explain the image, it has failed.
-3. **Every image looks different, especially within the same category.**
-   - Same ingredients, different **composition**.
-   - Never use the same composition archetype for two posts in the same category that sit next to each other or near each other.
-   - Before choosing, check which archetypes the category's latest posts used, and pick a different one.
+The approved look for blog featured images (first set for medsoftwarehub.com, finalized 2026-10-14). **This file is the rulebook.** Every rule here is current; nothing in it is history. The 8 images in `references/approved/` show the target, and their specs are in `examples/`.
 
 ---
 
-## Visual appeal is a hard gate (user rule, 2026-10-14: "visual appealing matters a lot")
-An image that follows every other rule but doesn't look good **fails**. Judge each one like a design director, with a taste skill (impeccable / ui-ux-pro-max) in mind, at full size and at 350×250:
+## 1. The non-negotiable rules
 
-1. **Blue dosage.** Count the blue already in the illustration. If it carries a big blue mass (the hub's blue tile, a giant blue number, a blue selection box), the background must be **neutral** (`cream`, `paper`), never `g5` or another blue-ish field. "Too much blue" reads as one flat blob. The reverse also holds: a grey-heavy illustration needs some chroma behind it (`sky`).
-2. **Logo balance.** A logo fills **about 60–70% of its tile**. Never a big tile around a tiny logo, and never a logo crammed edge to edge. A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**; it is never shrunk inside a white tile. Wide wordmarks (SAP, Sage) fill the tile's width at about 65–75%.
-3. **Logos speak for themselves.** When products have recognisable logos, show **logos only** (Granola's integrations images), not logo + name cards. The hub does this by default; names come back only with `"showNames": true`.
-4. **Figure/ground.** The hero separates cleanly from the field, with no grey-on-grey or white-on-near-white without a shadow to lift it.
-5. **Balance.** Tile sizes, gaps and arrow lengths look even; the group sits on the optical centre; nothing looks too small or too big next to its neighbours.
+1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article.
+2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. If it needs explaining, it has failed. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
+3. **Different every time.** No layout repeats in a category until every layout has been used, and articles on the same topic never share a mode (see 9).
+4. **Minimal.** At most 15 words, labels not sentences (see 7).
+5. **Visually appealing.** An image that follows every other rule but doesn't look good **fails** (see 2).
 
-## Backgrounds: FINAL (user decision, 2026-10-14; overrides every older background note below)
-| Kind | `bg` | Look | Default for |
-|---|---|---|---|
-| Light | `sky` | light sky, top to bottom, guide lines | ranked, focus, window, versus |
-| Light | `paper` | cool off-white `#F1F3F6` | stat, prompt |
-| Light | `cream` | warm off-white `#F6F2EA`, warm guide lines | hub, timeline |
-| Light | `g5` | Granola #5 in blue: near-white top glowing into bright sky under the hero, **with grain** | checklist, stack, before-after |
-| **Vibrant** | `blue` (only on the layouts in "Vibrant fit") | **"Deep dunes"**: bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands, **heavy grain on the field** (cards stay crisp), no margin dots. Inspired by grainient.supply. User: "this looks perfect" | set explicitly on about 1 in 3 images |
+---
 
-- **Grain on every background** (user 2026-10-14: "keep grain in all such backgrounds"): heavy overlay grain on the vibrant blue, fine grain on `sky`, `paper`, `cream` and `g5`. `"grain": false` turns it off on a light field.
-- **Light backgrounds rotate** within each layout's fit list; neighbours never share one unless it's set explicitly.
-- **Vibrant blue on about 1 in 3 images per category, never neighbours** ("VIBRANT CHECK FAILED").
-- **Dark/vibrant gradients always get grain plus the soft rolling bands.** Dunes is the only texture; ridge, sweep, silk, arc and bloom were tried and rejected ("all other looks bad").
-- **Deleted** (the renderer refuses them with "BACKGROUND CHECK FAILED"): `wash` and all pastel presets, `flat`, `cool`, `white`, `skyfield`, `g4`, and the arch outline pattern. Also rejected: centre-glow blue ("ew"), flat and diagonal blues ("none of the options look good").
+## 2. Visual appeal is a hard gate
 
-### Vibrant fit: what goes on the deep-dunes blue (user rule, 2026-10-14)
-User: "the logos look balanced, but this illustration doesn't look good with this background." The vibrant blue flatters **only illustrations built on a big white card**, as in Granola's white UI on a bold field:
+Judge every image like a design director, ideally with a taste skill (impeccable / ui-ux-pro-max) in mind, at full size and at 350×250:
 
-| On blue | Layouts |
-|---|---|
-| **Yes** (user-picked) | `checklist`, `versus/table`, `window` (its grid is removed on blue), `before-after/flow` (no shadows on blue) |
-| **No** | `stack` (its big blue icon tile = too much blue), `versus/logos` (floating tiles look weak), `versus/overlap`, `hub`, `stat`, `focus` (blue-heavy; grey headline text on blue fails contrast), `ranked`, `timeline`, `prompt`, `before-after/default` |
+1. **Blue dosage.** Count the blue already in the illustration. A big blue mass (the hub's blue tile, a giant blue number, a blue selection box) needs a **neutral** field (`cream`, `paper`), never `g5` or the vibrant blue. Too much blue reads as one flat blob. The reverse also holds: a grey-heavy illustration needs some colour behind it (`sky`).
+2. **Logo balance.** A logo fills **about 60–70% of its tile**: never a big tile around a tiny logo, never a logo crammed edge to edge. A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**; it is never shrunk inside a white tile. Wide wordmarks (SAP, Sage) fill about 65–75% of the tile's width.
+3. **Logos speak for themselves.** When products have recognisable logos, show **logos only** (like Granola's integration images), not logo + name cards. The hub does this by default.
+4. **Figure/ground.** The hero separates cleanly from the field: no grey on grey, no white on near-white without a soft shadow.
+5. **Balance.** Even tile sizes, gaps and arrow lengths; the group sits on the optical centre; nothing looks too small or too big next to its neighbours.
 
-The renderer refuses anything else with **"VIBRANT FIT FAILED"**. On blue the frame grid, the margin dots and all drop shadows are off; the white card carries the image.
+---
 
-### Shadows depend on the background (user rule, 2026-10-14)
-- **Vibrant blue: no drop shadows at all.** Cards, tiles, icon tiles and the cursor sit flat on the field; the white card carries the image on its own.
-- **Light backgrounds: minimal shadows, tinted to the field:** cool on `sky`/`g5`, warm on `cream`, neutral on `paper`. They're short and soft (about a third of the old offset and half the blur, opacity at most 8%), just enough to lift the card.
-- 1px edge lines (`0 0 0 1px`) are card edges, not shadows; they stay on light fields.
-- The renderer applies this to every layout automatically. Never hand-add heavy shadows in a spec or a new layout.
+## 3. Backgrounds
 
-### Background fit: the background must flatter the illustration (user rule, 2026-10-14)
-User: "when you decide what should be the bg make sure the illustration looks good visually with that bg." Judged with impeccable's colour principles: figure/ground contrast, temperature harmony, colour dosage.
-
-| Illustration trait | Flattering background | Avoid |
+| Kind | `bg` | Look |
 |---|---|---|
-| **Grey-heavy** (inactive bars, skeleton rows, unchecked boxes): ranked, focus, timeline | `sky` (chroma behind the greys) | `paper`: grey on grey is monotone and bland |
-| **A single floating white card**: checklist, stack, before-after | `g5` (light rising under the hero lifts it) | |
-| **A big blue mass** (the hub's blue tile, a giant number) | `cream` or `paper` (blue dosage: the blue needs a neutral field) | `g5`: "too much blue" |
-| **A big white app window**: window | `sky` | `paper`: the window disappears |
-| **A thin track with dots and a callout**: timeline | `cream` (warm field, calm grid) | |
-| **Already colourful** (a giant blue number, a pill bar, colour logos): stat, prompt | `paper` or `cream` (quiet neutral; the illustration brings the colour) | `g5`: too much blue competing with the number |
-| **Two logo tiles**: versus/logos | `sky` or `cream` | the vibrant `blue` (looked weak) |
+| Light | `sky` | light sky, top to bottom, thin guide lines |
+| Light | `paper` | cool off-white `#F1F3F6` |
+| Light | `cream` | warm off-white `#F6F2EA`, warm guide lines |
+| Light | `g5` | near-white at the top glowing into bright sky under the hero (after Granola) |
+| **Vibrant** | `blue` | **"Deep dunes":** bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands (after grainient.supply) |
 
-- **Cool greys never sit on cream.** On cream the guide lines turn warm and the blue margin dots are hidden (the renderer does this).
-- The renderer keeps a fit list per layout (`BG_FIT`, best first). Neighbours still differ, but only within that list. A `bg` outside the list is refused with **"BACKGROUND FIT FAILED"**; `blue` follows its own list ("Vibrant fit").
-- **Always check it at 350×250 next to its neighbours:** the hero must separate cleanly from the field, and the field must not fight the illustration's colours.
+- **Grain on every background:** heavy on the vibrant blue, fine on the light ones. It sits on the field only, so cards stay crisp. `"grain": false` turns it off on a light field.
+- **Vibrant blue on about 1 in 3 images per category, never on neighbours** ("VIBRANT CHECK FAILED"). The rest are light.
+- No other backgrounds exist. The renderer refuses any other name ("BACKGROUND CHECK FAILED").
 
-| Layout | Fits (best first) |
+### 3a. Background fit: the background must flatter the illustration
+Each layout lists only the backgrounds that suit its illustration, best first. Neighbours alternate within that list. A `bg` outside it is refused ("BACKGROUND FIT FAILED").
+
+| Layout | Fits (best first) | Why |
+|---|---|---|
+| checklist | g5, sky | a single floating white card; light rising under it lifts it |
+| stack | g5, cream | a single floating white card |
+| before-after | g5, sky | white cards with a lifted "after" card |
+| ranked | sky, g5 | grey bars need colour behind them (never grey on `paper`) |
+| focus | sky, g5 | skeleton rows need colour behind them |
+| window | sky, g5 | a big white app window |
+| versus | sky, cream | logo tiles, table or tilted cards |
+| hub | cream, paper | a big blue tile needs a neutral field (blue dosage) |
+| timeline | cream, sky | a thin track and callout on a calm warm field |
+| stat | paper, cream | the giant number brings the colour |
+| prompt | paper, cream | the pill bar and headline bring the colour |
+
+- Cool greys never sit on cream; on cream the guide lines turn warm and the blue margin dots are hidden (automatic).
+- Always check at 350×250 next to the neighbours: the hero separates cleanly, and the field never fights the illustration's colours.
+
+### 3b. Vibrant fit: only a big white card goes on the blue
+The deep-dunes blue flatters **only illustrations built on a big white card**, like Granola's white UI on a bold field.
+
+| On blue? | Layouts |
 |---|---|
-| checklist | g5, sky |
-| hub | cream, paper |
-| ranked | sky, g5 |
-| focus | sky, g5 |
-| timeline | cream, sky |
-| window | sky, g5 |
-| stat | paper, cream |
-| prompt | paper, cream |
-| stack | g5, cream |
-| before-after | g5, sky |
-| versus | sky, cream |
+| **Yes** | `checklist`, `versus/table`, `window`, `before-after/flow` |
+| **No** | everything else, including `stack` (its big blue icon tile is too much blue), `versus/logos` (floating tiles look weak), `hub`, `stat` and `focus` (blue-heavy), `ranked`, `timeline`, `prompt` |
 
-## Fixed ingredients (these never change; they make it one family)
+The renderer refuses the rest ("VIBRANT FIT FAILED"). On blue, text on the field turns white, and the frame grid, margin dots and all drop shadows are off.
+
+### 3c. Shadows follow the background
+- **Vibrant blue: no drop shadows at all.** Cards, tiles, icons and the cursor sit flat on the field.
+- **Light backgrounds: minimal shadows, tinted to the field:** cool on `sky`/`g5`, warm on `cream`, neutral on `paper`. They're short and soft (opacity at most 8%), just enough to lift the card.
+- 1px edge lines are card edges, not shadows; they stay on light fields.
+- The renderer applies this to every layout. Never hand-add heavy shadows.
+
+---
+
+## 4. Fixed ingredients (they make every image one family)
 
 | Ingredient | Spec |
 |---|---|
-| Background | See "Backgrounds: FINAL" above: light `sky`, `paper`, `cream`, `g5`; vibrant `blue` (deep dunes + grain) |
-| Type | **Inter** only. Labels 50px/500, card headings 32–34px/500, bullets 29–30px, headlines 56–76px/600 with tracking −0.03em (see "Typography balance") |
-| Ink colors | Primary text `#141A26`; muted `#7F8794` / `#5D6675`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
-| Accent | Blue gradient `#3B86F0 → #0A5FD8` (tiles, buttons); sky `#27ACF2` (carets, legend dots) |
-| Cards | White, radius 20–22px, shadow `0 24px 50px rgba(30,60,110,.12)` plus a 1px hairline. Contents are **real text** from the article, never grey placeholder bars |
-| Details | Dashed connectors `#9AA3B2`; dot legends (black = before/left, sky = after/right); text caret; Phosphor icons (free) |
-| Texture | Fine grain overlay, about 5% multiply |
-| Canvas | 1600×900 master. All key content inside **x 210–1390** so the theme's 7:5 crop (and 2:1, 16:9) keeps it |
-| Never | Text-free abstract shapes, fake AI 3D, glows or neon, gradient text, stock photos of laptops, vendor logos invented or warped, dark backgrounds |
+| Canvas | 1600×900 master. All key content inside **x 210–1390** so the 7:5, 2:1 and 16:9 crops keep it |
+| Type | **Inter** only (JetBrains Mono only in the opt-in craft kit). Headlines weight 600, tracking −0.03em |
+| Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines navy `#0E2A5C`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
+| Accent | Blue gradient `#3B86F0 → #0A5FD8` for the one anchor and active states; sky `#27ACF2` for carets and legend dots |
+| States | **Blue = active/anchor:** checked boxes, progress bar, winning bar, highlighted row, selection box, current timeline dot. **Grey = inactive:** unchecked boxes, other bars, skeletons, empty dots |
+| Cards | White, radius 20–30px, minimal tinted shadow (see 3c), real text from the article |
+| Icons | Phosphor (free), one family |
+| Logos | Real product logos via the logo chain (see 8) |
+| Structure | Thin guide lines at x 210 / 1390 with a few tiny margin dots, **or** the faint frame grid with registration squares (stat, ranked, timeline, window). Never both, never dot patches |
 
 ---
 
-## Composition archetypes (rotate these)
+## 5. Layouts and their skeletons
 
-Rendered by `scripts/render.mjs`, selected with `"mode"` in the article spec.
+Two layouts that share a skeleton (block arrangement) read as the same image at thumbnail size, so each owns a distinct one. **Layout = mode + variant**; background, colours, bleed and text don't make a new layout.
 
-| Archetype | `mode` | Best for | What it shows |
-|---|---|---|---|
-| **Before → After** | *(default)* | How-to, migration, "without losing…", transformations | A raw "before" card with a caret → dashed connector → a clean "after" card with heading and bullets, plus a 2-dot legend |
-| **Versus** | `versus` | "X vs Y" comparisons | Two **overlapping cards tilted toward each other** (−3° / +3°, right card on top), product name above each, a blue-gradient **VS badge** on the seam, plus a legend naming the key difference |
-| **Prompt** | `prompt` | Cost, pricing, "what is", FAQ-style articles | A faded app panel listing the article's figures, a big headline, and a pill input bar with chips and a blue send button |
-| **Hub** | `hub` | "Best X" listicles, integrations, ecosystems | A blue center tile (Phosphor icon), six tilted white cards (name + one fact), hand-drawn arrows, flat warm background |
-| **Stack** | `stack` | Guides with one key rule or warning | One front card holding the takeaway over 2 offset cards |
-| **Window** | `window` | Vendor lists, pricing tables, walkthroughs | A whole app window: list pane + detail pane, real text |
-| **Timeline** | `timeline` | Processes, implementation, "how long" | Steps on a track, one highlighted, plus a callout card |
-| **Checklist** | `checklist` | How to choose, requirements | A tilted checklist card with progress |
-| **Stat** | `stat` | One headline number | A giant number, caption, and breakdown card |
-| **Ranked** | `ranked` | Rankings by a real metric | Named bars, winner in the accent |
-
-### Picking an archetype
-1. Match the article type (table above).
-2. Check the same category's recent posts (the renderer's ledger blocks a mode used within the last 6 posts, and any mode already used by an article on the same `topic`). If the natural archetype was used by a neighbour, choose the next-best one and **vary the background** (wash, flat or cool).
-3. Vary scale and depth too: a tight crop of one element vs. a whole window; flat vs. stacked.
-
----
-
-## Workflow for every new article
-
-1. **Read the full article.** List its core idea, 3–6 hard facts (numbers, names, steps) and the one takeaway.
-2. **Pick the archetype** using the rules above, different from the category's neighbours.
-3. **Write the spec** a spec JSON (see `references/spec-format.md`) using only facts from the article. Keep bullets short so nothing wraps.
-4. **Render:** `node scripts/render.mjs <spec.json>`
-5. **Check** `card-350x250.png`. Is it understood in 2 seconds? Is there no wrapping or clipping? Is it different from its category neighbours? Fix and re-render.
-6. **Export** what the render produces: `master.png` (1600×900), `7x5.webp`, `16x9-1200.webp` (social), and the card preview.
-
----
-
-## Approved examples (Clinical Software, medsoftwarehub)
-
-| Article | Archetype | Built from the article |
+| Layout | Skeleton | Best for |
 |---|---|---|
-| How to Switch EMR Vendors Without Losing Patient Data | Before → After | Raw old-EMR export → verified patient chart, "Mapped and verified" |
-| Microsoft Dynamics 365 vs Acumatica (2026) | Versus | $80/user/mo per seat vs unlimited users, usage-based, from $6,396/yr |
-| EMR Software Cost 2026 | Prompt | Year-one cost: solo $15K–$30K, 2–5 providers $40K–$150K, 26+ $100K–$500K+ |
-| 7 Best ERP Software for Small Businesses (2026) | Hub | Six ERPs on tilted cards with each one's starting price |
+| before-after | small raw card → dashed connector → big clean card, legend below | how-to, migration |
+| before-after/flow | muted icon card → hand-drawn arrow → lifted blue-icon card, legend | "old way → new way" |
+| versus/overlap | two tilted, overlapping cards (−3° / +3°) with a VS badge on the seam | X vs Y |
+| versus/table | one comparison table card, VS badge where the header line crosses the column line | X vs Y with 2–3 dimensions |
+| versus/logos | two large logo tiles on an edge-to-edge hatched band, VS badge, one fact chip each | X vs Y, one contrast |
+| hub | blue centre tile with 6–7 **logo tiles (logos only)** and hand-drawn arrows | "best X" lists, integrations |
+| focus | centred headline with the key phrase in a blue selection box; UI card with skeleton rows bleeding off the bottom | one key idea with 2–3 values |
+| stat | giant number left, breakdown card right | one headline number |
+| ranked | headline top-left, bar list in a card | rankings by a real metric |
+| timeline | headline top-left, horizontal track with step dots, a callout | process, "how long" |
+| checklist | one tilted checklist card with a progress bar | how to choose, requirements |
+| prompt | faded panel bleeding off the top, centred headline, pill input bar | cost, FAQ, "what is" |
+| stack | a takeaway card sized to its text, two cards peeking from the top | one key rule or warning |
+| window | full app window: list pane + detail pane | vendor lists, pricing tables |
 
-Example specs for all four are in `examples/`.
+- The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; how-to: before-after, timeline, stack, checklist). Use that range to avoid repeats.
+- **When adding a layout:** squint at its 350×250 card next to every other layout. If two share a skeleton, redesign one. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
----
-
-## APPROVED: how the skill must work (user sign-off, 2026-10-13: "i really love it")
-
-This is the approved behaviour. Keep it. Any future change must keep all of the following true.
-
-### 1. Ten compositions, one family
-`before-after`, `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked`.
-All of them share the same ingredients:
-- the pastel backgrounds
-- Inter type
-- white rounded cards with real text
-- the blue accent gradient
-- grain
-- the crop-safe zone x 210–1390
-
-The **composition** is what makes each image different. The ingredients make the set one family.
-
-### 2. Variety is enforced, not hoped for
-- **Category rule:** a composition can't be reused within the **last 6 posts** of the same category.
-- **Topic rule:** articles on the same subject (including duplicate URLs such as `…-guide` and `…-guide-2`) share a `topic` and can **never** use the same composition. They must also show different facts or angles.
-- **Light backgrounds auto-rotate** (`sky`, `paper`, `cream`, `g5`), so neighbours never share a background unless one is set explicitly.
-- The renderer records every image in `featured-images/.featured-ledger.json` and refuses a repeat with **"VARIETY CHECK FAILED"**, listing the unused compositions. Never use `--force` unless the user explicitly asks.
-
-### 3. Batch planning before rendering
-For more than one article:
-1. Read **every** article in full.
-2. Write a plan table (article → composition → background → facts) and show it to the user when there are more than 3 articles.
-3. Then render.
-
-The same article type can map to several compositions:
-- cost → `prompt`, `stat`, `window` or `ranked`
-- how-to → `before-after`, `timeline`, `stack` or `checklist`
-
-Use this range to avoid repeats.
-
-### 4. Every image is about its article
-- Only facts that appear in the article: numbers, names, steps, comparisons.
-- Nothing invented and nothing generic.
-- It must be readable in 2 seconds at 350×250.
-
-### 5. Visual QA before delivering
-Check `master.png` and `card-350x250.png` for:
-- no wrapping, clipping or overlapping text
-- nothing outside the crop-safe zone
-- balanced vertical spacing (calm whitespace is fine; never fill it with extra content; see "Minimal rule")
-
-Then compare the batch side by side as a contact sheet, and confirm no two images look alike.
-
-### Approved reference: "What is Cloud ERP" (user: "I really like it", 2026-10-13)
-`examples/what-is-cloud-erp.before-after-flow.json` (layout `before-after/flow`). **Why it works:**
-- One idea told visually: server icon (muted, dashed card) → hand-drawn arrow → blue cloud tile (lifted white card).
-- 15 words, all labels, no sentences.
-- Every word traces to the article.
-
-Aim for this: **icon or visual first, text as short labels, one clear before → after or contrast.**
-
-### Approved reference
-The 10-composition sheet (rendered from the specs in `examples/`) is the quality bar. New images should look like they belong on that sheet.
+**VS badge:** a focal blue-gradient circle with a white "VS" and a white ring, never a small grey chip. On overlap cards it sits on the bottom of the seam; on the table it sits where the header line crosses the column line, with no glow. It never touches text.
 
 ---
 
-## Visual balance rules (learned from base44.com/blog, 2026-10-13)
+## 6. Balance and anti-bland
 
-These rules make every image easy to take in at a glance. They work inside our design language and don't change it.
+Calm is good; bland is not.
 
-1. **One hero at 55–70% of the frame width.** Everything else is secondary and smaller. If two things compete for attention, make one smaller.
-2. **A structure layer, used selectively.** A faint grid (lines at about 5.5% opacity) and six small dark **registration squares** at the safe-zone corners and midsides (x 210 / 1390, y 75 / 450 / 825) make empty space look intentional. **Use it only where it matches the vibe and doesn't overwhelm:**
-   - **On by default:** `stat`, `ranked`, `timeline`, `window`. These are open, data-led layouts with breathing room, where the grid reads as structure.
-   - **Off by default:** `before-after`, `versus`, `prompt`, `hub`, `stack`, `checklist`. These are card-heavy, tilted or busy layouts, where a grid adds noise.
-   - Override per image with `"frame": true` or `"frame": false`. If the grid competes with the hero or makes the image feel crowded at 350×250, turn it off. Never add it to more than about half the images in a batch.
-3. **Bleed for big UI.** Large windows or dashboards may run off the bottom or right edge (`"bleed": true` in window mode). The chrome bleeds, never the key text: all words stay inside x 210–1390.
-4. **Tactile texture.** Paper grain at about 9% over everything, including cards, so nothing looks flat or digital.
-5. **One interaction cue at most.** A cursor (`"cursor": [x, y]`) pointing at the key fact, a chip or a send button. It must point at something meaningful and never cover text.
-6. **Scale contrast.** One very large element (number, name, headline) against small labels. Big type carries the topic; small type supports it.
-7. **Calm field plus one pop.** One background field, one blue accent, nothing else saturated.
-8. **Optical centre.** The hero's visual mass sits at or slightly above the canvas centre, never sagging toward the bottom. Balance a left-heavy hero with a right-side element of similar weight.
-
-**Balance QA (add to every check):**
-- Squint at the 350×250 card: one clear focal point?
-- All four corners anchored by a card edge, bleed or (on grid layouts) a registration square?
-- If a grid is present: does it feel calm, not overwhelming? If not, set `"frame": false`.
-- Minimal? No element added just to fill space, and no fact shown twice (see "Minimal rule")
-- Does the cursor, if any, cover text?
+1. **One bold anchor:** exactly one high-contrast element (selection box, VS badge, blue tile, big blue number, highlighted row). Never two, never none.
+2. **One hero at 55–70% of the width**, everything else secondary. The hero's mass sits at or slightly above the canvas centre.
+3. **Structure tied to the frame:** the guide lines, the frame grid (stat, ranked, timeline, window by default; `"frame": false` turns it off), an edge-to-edge band, or a card bleeding off an edge. Nothing just floats.
+4. **Bleed for big UI:** windows and panels may run off the bottom or right edge (`"bleed": true`), but every word stays inside x 210–1390. A bleeding card is cut just after its content, never with empty white below.
+5. **Hard alignment:** connectors hit centres, selection handles sit on the corners, gaps are even.
+6. **At most one interaction cue:** a cursor (`"cursor": [x, y]`) pointing at the key fact, never covering text.
+7. **Scale contrast:** one very large element against small labels.
 
 ---
 
-## What every inspiration shares (Granola, Littlebird, Base44, Mintlify, Arcade; studied together 2026-10-13)
+## 7. Minimal rule and text budget
 
-| Reference | Background | Hero | Accent |
-|---|---|---|---|
-| Granola | One colour family (mint → lime); **glow directly behind the hero**, pale edges | Big product card or prompt bar, often cropped | Brand green on one control |
-| Littlebird | Flat cream, no gradient | Serif headline + quiet skeleton tiles | **One** green-outlined tile = the "selected" one |
-| Base44 | One flat saturated field (blue, orange, green) | Large UI panel, grid + corner squares | White/blue data on the field |
-| Mintlify | Flat neutral grey | UI with skeleton bars, mono labels | One green, in solid shapes |
-
-**Rules we take from all of them:**
-1. **Background = one colour family**, flat or a gentle top-to-bottom gradient, with the **glow behind the hero** to lift it. **Never colour pools in the corners, never two competing hues** (our old peach-corner + blue-corner wash looked "so bad").
-2. **The lightest, calmest area is where the content sits.** Edges carry the colour, the centre carries the hero.
-3. **One hero**, big (50–70% of the width), often touching or crossing an edge.
-4. **One accent on one element** (the selected tile, the active bar, the VS badge). Everything else is neutral.
-5. **Minimal text**, with greeked or skeleton UI for detail.
-
-**(Deleted 2026-10-14) The wash had 4 presets; the user deleted `wash` entirely:**
-- `sky-glow`: light sky with a soft blue glow behind the hero
-- `airy-white`: near-white, faint blue glow
-- `dawn`: near-white with a whisper of warm at the top, blue glow behind the hero
-- `deep-sky`: a deeper sky with a white glow behind the hero
-
-`washPreset` no longer exists.
+- **Hard cap: 15 visible words per image, max 7 per text element, no sentences.** The renderer refuses more ("TEXT CHECK FAILED") and prints `words=N/15`. Logos and the site mark don't count.
+- **One idea, carried by the fewest facts that prove it:** usually 3–4 rows or 2–3 bullets. Never show a fact twice.
+- **Whitespace is good.** Never add bars, rows, bullets, badges or text to fill a gap.
+- **Secondary lines only when they are the story:** a price belongs on a pricing image, not on a "best of" list.
+- **Write labels, not prose:** "ERP on the vendor's servers", not a sentence.
+- Cut in this order: secondary lines → sentence tails → extra bullets → subtitles.
+- UI mockups (window, prompt panel) keep UI-sized text so they look like a real app, not a slide.
 
 ---
 
-### Vibrant + subtle mix (user, 2026-10-13: "I like brand blue field; it's good adding vibrant images with other subtle images")
-- **`"bg": "blue"`** = the vibrant brand-blue field: white cards and white text on brand blue, now the **"deep dunes"** gradient with heavy grain (see "Backgrounds: FINAL"). The earlier diagonal blend was replaced. On blue the logo tiles grow to 280px. **Rejected: centre-glow / radial "spotlight" gradients** ("ew"). They read as generic.
-- **Mix it in, don't overuse it:** at most **1 in 3** images in a category is vibrant, never two neighbours. The renderer refuses with **"VIBRANT CHECK FAILED"**. The rest use the light backgrounds (sky, paper, cream, g5).
-- Rejected along the way: corner-pool pastel gradients and the 4 "one-family pastel" presets ("NONE. ITS SHIT AF"). Flat bold fields like the references were the breakthrough.
+## 8. Logos
 
-## FINAL approved look (user: "I have finalized these images. Set in skill to follow the same vibe", 2026-10-13)
-
-**These 8 images are the target** (6 light + 2 vibrant). They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
-
-| # | Layout | Background | Example spec |
-|---|---|---|---|
-| 1 | `checklist` | `g5` + texture | `erp-checklist.checklist.json` |
-| 2 | `hub` (logos only, 7 tiles) | `cream` | `7-best-erp-software-for-small-businesses-in-2026.json` |
-| 3 | `ranked` (no grid) | `sky` + texture | `erp-implementation.ranked.json` |
-| 4 | `focus` (blue selection box + skeleton card) | `sky` + texture | `emr-cost.focus.json` |
-| 5 | `timeline` | `cream` + grid and corner squares | `emr-switch-six-steps.timeline.json` |
-| 6 | `window` (bleed, logo rows, cursor) | `sky` + grid |
-| 7 | `checklist` on the vibrant blue | `blue` (deep dunes + grain) | `erp-checklist.blue.json` |
-| 8 | `before-after/flow` on the vibrant blue (no shadows) | `blue` | `what-is-cloud-erp.flow-blue.json` | `dynamics-vs-acumatica.window.json` |
-
-**The shared vibe:**
-- **Soft, light fields:** sky, paper, cream or g5 (re-rendered 2026-10-14 after the old backgrounds were deleted). Structure comes from **thin guide lines + a few tiny blue dots in the margins** (texture), or from the faint grid with corner squares (timeline, window, stat).
-- **No dot patches.** The user picked B ("too much dots in the bg"); `dots` defaults to `none`. Never use outline-shape backgrounds either (the arch pattern was deleted).
-- **One big white card or hero** with real UI: checkboxes, progress bar, bars, skeleton rows, timeline dots, an app window. It's centred or cleanly left-aligned and fills about 60%+ of the width.
-- **Blue gradient = the active state and the one anchor:** checked boxes, the progress bar, the winning bar, the highlighted row, the "2 of 8" chip, the selection box, the current timeline dot. **Grey = inactive:** unchecked boxes, the other bars, skeletons, empty dots.
-- **Headlines in navy** (`#0E2A5C`), weight 600, title words only; labels in sans. The craft kit (mono labels, near-black ink) is **not** part of the final look; it stays opt-in.
-- **Colour logos in small white tiles** wherever products are named (hub cards, window rows).
-- At most 15 words, labels not sentences.
-
-**Renderer defaults now match this set:**
-- focus and versus → `sky`
-- Defaults come from the background-fit table (see "Background fit")
-- timeline and window → grid
-- `dots: none`
+- **Where:** wherever a real product is named: hub tiles, versus sides and table headers, window rows, ranked rows, stat rows. Never decorative.
+- **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` → Simple Icons → Brandfetch icon (used as an app tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped.
+- **Brandfetch client ID:** free at brandfetch.com/developers. Keep it **local** (`~/.blog-featured-images/config.json` or `BRANDFETCH_CLIENT_ID`); never commit it.
+- **Style:** original colours (`"logoStyle": "color"`, the default) in white tiles; one style per image. `mono` and `tint` exist for when colour logos would compete with the anchor.
+- **Balance:** see 2 (logos fill ~65% of the tile; app icons become the tile).
 
 ---
 
-## Anti-bland rule (user's manager: "our blog images look bland"; approved 2026-10-13)
+## 9. Variety enforcement
 
-Calm is good; **bland is not**. Every image needs these, learned from Mintlify's thumbnails:
-
-1. **One bold anchor.** (Superseded in detail by "FINAL approved look" above.) Exactly one high-contrast element: a solid **blue-gradient** box with white text (the focus selection box), the VS badge, a blue icon tile or a big blue number. Never two, never none.
-2. **Structure tied to the frame.** Use the **texture layer**: thin full-height guide lines (dot patches are now off by default; the user said "too much dots") on the crop-safe edges (x 210 / 1390) and a few blue accent dots. Or edge-to-edge elements: a hatched band running across the whole width behind the hero, a UI card bleeding off an edge. Nothing just floats in a blur.
-3. **Big hero.** The main element spans about **60% or more of the width** (cards around 900px, logo tiles 280px, rows at least 32px). The old soft look used cards around 45% wide, and that read as small and empty.
-4. **Hard alignment.** Connectors hit row centres; selection handles sit exactly on the corners; equal gaps.
-5. **Colours stay ours:**
-   - **`"bg": "sky"`** (light sky): crisp and calm. User-approved for EMR cost (focus) and NetSuite vs SAP B1 (versus/logos). Texture is on automatically.
-   - **`paper`, `cream`, `g5`** are the other light options; `blue` (deep dunes) is the vibrant one.
-   - Pick per image: whichever balances better at 350×250.
-   - **Rejected:** the heavy navy anchor ("the colors look off"). The navy anchor is still available as `"anchor": "navy"` but isn't the default.
-6. Texture is **off** when the frame grid is on (stat, ranked, timeline, window by default); never use both.
+1. **One site-wide history per brand** at `~/.blog-featured-images/history-<brand>.json` records every render, wherever its output folder is.
+2. **Strict rotation:** in a category, only the least-used layouts are allowed ("VARIETY CHECK FAILED" lists them).
+3. **Same topic** (e.g. duplicate URLs `…-guide` and `…-guide-2`): never the same mode, and different facts or angles.
+4. Never `--force` unless the user explicitly asks, and never render into another folder to dodge a check.
+5. When the user finalizes images, record them in both the site history and the local ledger (`featured-images/.featured-ledger.json`).
 
 ---
 
-## Craft spec: the Mintlify level (studied 2026-10-13; reference images in `blog-feature-images/research/mintlify/refs/`)
+## 10. Heading rule: mirror the blog title
 
-Measured from their 2000×1125 thumbnails and converted to our 1600×900 canvas (×0.8). **Our colours replace theirs:** their green becomes our blue (`#3B86F0 → #0A5FD8`); their black stays near-black (`#141A26`).
+The heading uses **the blog title's own words and meaning, just shorter**. No creative rewording.
 
-### 1. Colour: neutral field, dark ink, ONE accent
-- **Field:** a near-neutral light background (their `#F0F0F0`). Ours: `sky`, `paper`, `cream` or `g5`, kept **light and quiet**. The field is never the interesting part.
-- **Ink:** icons, headlines and buttons in **near-black** (`#141A26`). That's where the contrast comes from: black line icons on white tiles, black text on a light field. *Our blandness came from blue-on-blue mid-tones.*
-- **One accent, used in solid shapes:** filled pill bars, ON toggles, arrows, a tag chip. Never as a tint over everything.
-- **Neutral grey for "off" and "secondary":** skeleton bars `#E3E7EE`, OFF toggles, third-party logos. Grey makes the accent pop.
-- **At most one second accent, rarely** (their orange cursor tag). Ours: a warm `#F2A27A`, only for a second "actor".
+1. Keep the subject (EMR, ERP, Dynamics 365) and the angle (cost, switch, best, vs, by practice size).
+2. Drop the year, filler, "How to", "Complete guide" and brackets.
+3. Keep at least 75% of the heading's key words from the title.
 
-### 2. Type: two families, strict roles
-- **Headline:** sans, weight 500, near-black, tight tracking (−0.02 to −0.03em), **56–72px**, 1–2 lines, left-aligned beside a visual or centred above it.
-- **Labels and tags:** **monospace UPPERCASE**, tracking +0.04em, 18–28px: `AGENT 130`, `WEB MCP TOOLS`, `789.6M TOTAL REQUESTS`, `CURSOR`. The mono labels make it feel technical and crafted. *We use only Inter; add a mono (JetBrains Mono / IBM Plex Mono).*
-- **Big numbers:** sans bold, 72–88px, accent or near-black, with a mono caps label underneath.
-- Nothing in between: no grey 22px sentences.
-
-### 3. Skeletons tell the story without words
-- **Pill bars**, fully rounded, 24–28px tall in big UI, 14–18px in small UI. Widths vary (40–100%) so they read as real content.
-- **State contrast:** the important rows are **accent-filled** (2 rows), the rest **grey** (2–3 rows). Toggles ON (accent) vs OFF (grey) say "enabled / active" with zero words.
-- Real words appear only where they carry meaning: one button ("Create workflow"), one path ("docs / files"), one command (`grep -r "OAuth"`).
-
-### 4. Icons and tiles
-- **Line icons in near-black**, stroke about 2–2.5px, drawn **large** (48–100px) inside **white rounded tiles** (radius about 22% of the tile; tiles 180–280px).
-- Icon tiles are white with a very soft shadow on the light field; no borders. *Ours used blue-filled icon tiles; reserve blue fill for the single anchor.*
-- One icon family (Phosphor regular/bold), never mixed.
-
-### 5. Logos
-- **Their own brand** appears once, small, with a **mono series tag** (`LAUNCH`, `UPDATE`, `SHIPPED`) in the accent: a consistent "series label" across the whole blog.
-- **Partner/third-party logos are often greyed** (React and Astro in `#BDBDBD`) when two or more sit together, so the one accent stays the only colour. A single hero logo (GitHub) is black.
-- *For us:* keep colour logos (style A, user-approved) for named products in comparisons and lists. Use grey (`"logoStyle": "mono"`) when 3+ logos would compete with the anchor.
-
-### 6. Connectors and motion cues
-- **Clean geometric connectors:** 2–3px lines, smooth S-curves or rounded right angles, **dot terminals** where they meet a node, landing exactly on row or tile centres.
-- **Open chevron arrowheads**, the same stroke as the line.
-- **Cursor tags:** a filled cursor arrow + a mono caps tag (`AGENT 007`) to show actors acting on the UI.
-- *Ours had only hand-drawn arrows (hub). Keep those for hub; use clean connectors for flows, trees and cycles.*
-
-### 7. Composition and balance
-- **Two templates cover most posts:**
-  - (a) **centred stack**: series tag → headline → hero visual
-  - (b) **left text column at about 35% + hero visual at about 65%**, often bleeding off the right or bottom edge
-- Hero visual: **50–75% of the width**, centred on the optical centre; equal outer margins of about 10%.
-- **Exact alignment:** connectors hit centres, rows share one left edge, gaps are equal (multiples of 8).
-- Depth is soft: card shadows with a large blur and about 6% opacity; stacked rows offset by a few px; occasional isometric layers for "platform" ideas.
-
-### 8. Background pattern (structure without noise)
-- **REJECTED by the user: "ew the shapes you added so bad".** The large arch outline pattern was tried and removed from the renderer. **Never use outline-shape backgrounds** (arches, waves, rounded-rectangle diagonals). The soft dot texture is the approved structure layer.
-- **Large-scale outline shapes** at about 4–6% contrast, full bleed: repeating arches, rounded-rectangle diagonals, soft waves. Shapes 500–700px, so they read as texture, never as content.
-- Or the dot-matrix patches (already built). Never both.
-
-### 9. Dark variant (rare, for big statements)
-- Near-black field (`#17181C`), dark cards (`#0F1013`), skeletons in dark grey, accent bars and arrows, one white tile as the focal contrast. **Our rule "no dark backgrounds" stands** unless the user approves a dark variant explicitly.
-
-### 10. Our gaps vs this level, in priority order
-1. Icons: blue-filled tiles → **near-black line icons in white tiles**; blue only for the one anchor.
-2. Add a **mono caps label** style for tags, labels and small numbers.
-3. **Skeleton rows with ON/OFF state** (accent vs grey pills and toggles) in every UI card.
-4. **Clean connectors with dot terminals** for flow, tree and cycle layouts.
-5. **Series tag + small site mark** (e.g. a medsoftwarehub mark + `GUIDE` / `PRICING` / `COMPARISON`) for consistency across the blog.
-6. ~~Large-scale outline pattern~~: **rejected** ("the shapes you added so bad"). Use the dot texture only.
-7. Headline weight 500 near-black (not light navy), 56–72px.
-
----
-
-### Site mark + series tag: some images, not all (user rule, 2026-10-13: "looks good but don't add it in every image")
-- `"series": "Pricing"` (with `"craft": true`) adds the Med Software Hub mark + a mono series tag (`PRICING`, `COMPARISON`, `GUIDE`). It's **optional and off by default**.
-- Use it only where there's a **natural empty slot**: centred above a centred headline (focus) or centred under a centred group (versus logos). **Skip it** on busy layouts, left-text layouts, or wherever it would crowd the hero.
-- **At most 1 in every 3 images in a category, never on two neighbours.** The renderer refuses with **"SERIES CHECK FAILED"**.
-- It's branding, so it doesn't count toward the 15-word budget.
-
-## Inspiration: Mintlify blog (studied 2026-10-13, about 40 thumbnails)
-
-Mintlify's thumbnails match our vibe: a calm light field, real product UI, one accent colour, lots of air. They're a **reference for ideas, not a new style**. Keep our palette (pastel wash, white cards, blue accent).
-
-**What they do well, and how we borrow it:**
-
-1. **Skeleton bars instead of secondary text.** UI cards show greeked rows: grey and accent bars of different lengths in place of real text. The card looks real with zero words. *Borrow:* in window, prompt, stack and other UI cards, draw blue/grey bars for supporting rows, so the few real words (title, key fact) carry the meaning. This is the best tool for our 15-word budget.
-2. **One hero, lots of air.** Many thumbnails are a single element on a flat field: one icon tile, one number, one short headline. *Borrow:* when an article has one idea, show one thing; whitespace is the design.
-3. **Selection-box highlight.** The key phrase sits in a thin accent frame with small square corner handles (like a design tool's selection), sometimes with hatched side bands. It fits our registration squares. *Borrow:* frame the one key word or number in a blue selection box.
-4. **Logo constellation.** "Mintlify Index": a centre wordmark with small brand logos scattered around it, no cards or arrows. *Borrow:* a lighter hub variant for "best X" and integrations articles (logos only, no names when the logos are recognisable).
-5. **Big number + tiny label.** "$67M / Raised to date", "66% [AGENTS]", "52.1% faster agents" on a thin progress line. *Borrow:* our stat layout, with even less text: number + 2–4 word label.
-6. **Thin connector diagrams.** Icon tiles joined by thin accent lines (a tree, a cycle, a workflow). *Borrow:* for process and "how it works" articles, as an alternative to the timeline.
-7. **UI cropped at the edge.** Windows and panels bleed off the side or bottom, which feels like a peek into the product. *Borrow:* the existing `bleed`, with the key text kept inside x 210–1390.
-8. **Light-weight display type.** Headlines in a large, light weight ("Analytics Agent", "Instant rollbacks"), not bold. *Borrow:* try Inter 300–400 for big headlines on minimal layouts.
-9. **Partnership lockup "A × B".** Two logos with a small "×". *Borrow:* a minimal versus for two-product posts (two logos + "vs", 3–5 words in total).
-
-**Family consistency:** they keep one background family (light sage paper, or near-black for big announcements), one accent and one UI style. Variety comes from **layout**, never from colour or type. That's the same as our rule.
-
-**Built so far:** `focus` (selection box + skeleton rows + bottom peek) and versus `logos` (A × B lockup), first used on EMR cost and NetSuite vs SAP B1.
-
-**Don't copy:** their green, their dark/black backgrounds (our rule: no dark), photography and painted illustrations, and the mono "terminal" look. None of these fit our approved look.
-
----
-
-## Lessons learned and speed
-What each session taught us (speed tools, pre-flight checks, taste, gotchas) lives in the skill's `references/lessons.md`. Read it before every batch. The top rule is to **work fast**: parallel reads, reserved layouts, parallel Makers, one QA contact sheet.
-
----
-
-## Three-agent rule (user rule, 2026-10-13)
-
-Featured images are always made by **three agents**: an **Orchestrator** (plans and assigns a distinct layout per article, runs the loop, delivers), a **Maker** (writes the spec and renders) and a separate **QA agent** (judges every image and never edits). QA checks:
-- no layout used twice (history plus a visual side-by-side)
-- easy to scan in 2 seconds at 350×250
-- less text
-- visually balanced
-- true to the article
-
-Failed images go back to the Maker, for up to 3 rounds. Only images that passed are delivered. Prompts and the checklist are in `references/agents.md` (skill folder).
-
----
-
-## Variety enforcement (user rule, 2026-10-13: "make this rule forceful")
-
-**What failed:** the Odoo vs Sage Intacct window and the EMR Software Cost window were the same thumbnail. The old check only read the ledger in its own output folder and only compared mode names, so it never saw the EMR window, which was rendered elsewhere.
-
-**How it is enforced now (in the renderer):**
-1. **One site-wide history per brand** at `~/.blog-featured-images/history-<brand>.json`. Every render is recorded there, wherever its output folder is (tests and alternates included), because anything the user has seen counts.
-2. **Layout = mode + variant.** Bleed, cursor, background, colours and text do **not** make a new layout.
-3. **Strict rotation:** in a category, only the **least-used** layouts are allowed. No layout repeats until every layout has been used there.
-4. **Same topic:** articles on the same topic never share a mode.
-5. A failure prints "VARIETY CHECK FAILED" with the allowed layouts. Use one of them. Never `--force` (unless the user asks), and never render into another folder to dodge the check.
-
-**Cycle length = number of layouts (14 today: before-after `flow` for cloud ERP; `focus` and versus `logos` from the Mintlify study).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
-
----
-
-## Minimal rule: never text-heavy (user rule, 2026-10-13)
-
-The user approved the plain Odoo vs Sage Intacct window (4 rows, a question, one heading, 3 short bullets, calm whitespace below) as **"really good, minimal"**. They called the version with extra comparison bars, bigger UI text and a bleeding window **"ugly"**.
-
-- **One idea per image, carried by the fewest facts that prove it.** Usually 3–4 rows or 2–3 bullets, never more. Pick the strongest facts; don't put every fact from the article on the image.
-- **Whitespace is good.** Empty space inside a card or window is calm and premium. **Never add bars, rows, bullets, badges or text just to fill a gap.**
-- **No stacked explanations.** Don't show the same fact twice in different forms (e.g. a heading *and* bars *and* bullets for the same numbers).
-- **UI mockups (window, prompt panel) keep UI-sized text:** rows about 24px, subs about 19px, bullets about 22px. They should look like a real app, not a slide. The "Body text must breathe" sizes apply to free-standing cards and lists, not to text inside a mock app window.
-- **The rule of thumb is subtraction.** Before rendering, remove one element and ask whether the image still tells the story. If it does, keep it removed.
-- **15 words maximum, no sentences** (renderer-enforced; see "Text budget" below).
-
----
-
-### Text budget: renderer-enforced (user rules, 2026-10-13: "need to show less text… force this rule"; "this is text heavy. MAKE RULE FORCE")
-- **Hard cap: 15 visible words** on the whole image, and **max 7 words per text element**. **No sentences:** labels and short phrases only. The renderer refuses either with **"TEXT CHECK FAILED"** and prints `words=N/15` on every render.
-- History: 30 words was still "text heavy". The cloud ERP card at 25 words, with a one-sentence definition, was rejected. The 7 Best ERP hub (15 words, names only) was accepted.
-- **Secondary lines only when they ARE the story.** A price belongs on a pricing image, but not on a "best of" list, where the names are the story. Hub cards are names only by default (`"showSubs": true` to override).
-- **Write labels, not prose:** "ERP on the vendor's servers", not "ERP that runs on the vendor's servers, delivered over the internet by subscription."
-- Cut in this order: secondary lines (subs, legends, extra rows) → sentence tails ("delivered over…", "which means…") → extra bullets → subtitles.
-
-### Logos (user rule, 2026-10-13: "use Brandfetch… logos should always match the vibe")
-- **Where:** product names in hub cards, versus labels and table headers, window list rows (replacing the letter avatar), and ranked rows. Only where a real product is named; never decorative.
-- **Source: a free logo chain, built into the renderer and fully automatic.** Each logo is hotlinked at render time (nothing downloaded or stored):
-  1. **Brandfetch symbol**: the clean mark without text (e.g. Microsoft, Acumatica, Odoo).
-  2. **Iconify `logos`**: full-colour SVG (`api.iconify.design/logos/<slug>-icon.svg`, then `<slug>.svg`).
-  3. **Simple Icons**: SVG in the official brand colour (`cdn.simpleicons.org/<slug>`), e.g. the transparent green Sage mark.
-  4. **Brandfetch icon**: shown **edge to edge as an app-style tile** (NetSuite, Epicor), so dark squares look intentional, not like blocks.
-  5. **Lettermark**: a grey tile with the first letter.
-  `<slug>` comes from the domain (`sage.com` → `sage`). Without a Brandfetch ID, steps 1 and 4 are skipped and Google favicons are the last image step.
-- **Why the chain:** Brandfetch alone gave unreadable square wordmarks for NetSuite, SAP and Sage. QA failed them as "dark blocks". The open SVG libraries are crisp and transparent, but don't cover niche B2B and healthcare vendors.
-- **Client ID:** free from brandfetch.com/developers. Keep it **local** in `~/.blog-featured-images/config.json` (`{"brandfetchClientId": "…"}`) or the `BRANDFETCH_CLIENT_ID` env var. Never commit it to the shared repo.
-- **Style (user picked A):** `logoStyle: "color"` (default): original brand colours in a small white rounded tile (46–52px) with a hairline border, beside the name. One style per image, so logos read as one set. `mono` (grey) and `tint` (soft blue) exist for images where colour logos would compete.
-- **Vibe check:** logos stay small and secondary. The hero (blue tile, VS badge, big number) remains the focal point. If a logo is an unreadable wordmark squeezed into a square, it's still acceptable as a brand-colour tile, but never enlarge it.
-- Logos add no words to the text budget.
-
-## Typography balance (user rule, 2026-10-13: "font should look visually balanced")
-
-Text supports the hero; it never shouts over it. Sizes are for the 1600×900 master.
-
-| Role | Size | Rule |
-|---|---|---|
-| Headline (prompt, timeline, ranked) | **56–66px** in prompt, up to 76px in others; weight 600, tracking −0.03em | **Never wider than about 48% of the canvas (about 760px).** Auto-size down for longer lines, never up |
-| Hero number (stat only) | up to 210px, auto-fit to 690px wide | The only place giant type is allowed, because the number *is* the hero |
-| Section labels ("Old EMR export", "Dynamics 365") | 50px / 500 | Muted colour so they label rather than dominate |
-| Card headings | 32–36px / 500–600 | |
-| Bullets, rows, body | 28–36px for primary rows, 22–28px for bullets | See "Body text must breathe" |
-| Small labels, subs, chips | 18–28px | Still readable at 350×250 (about 4px+), or cut them |
-
-**Body text must breathe (user rule: body text was "too short and congested"):**
-- Primary row or list text **≥ 32px** (ideally 36), secondary or price text **≥ 26px** (ideally 28), with line height ≥ 1.2.
-- Space between list rows **≥ 28px**; icon tiles ≥ 72px so rows have presence.
-- Faded rows never drop below about 45% opacity, so the third row is still readable.
-- Vertical rhythm: the gaps between stacked blocks (label → rows → headline → bar) are even and **≥ 40px**. No block touches the next.
-
-**Balance checks:**
-- **One dominant text element per image.** If the headline and a card both feel loud, shrink the headline.
-- **Headline to body ratio about 1.6–2.2:1** (e.g. 63 : 36). Above 3:1 (like the old 102px headline over 34px rows) feels oversized and makes the body look tiny.
-- Headlines sit with breathing room above and below (≥ 40px) and never crowd neighbouring elements.
-- Text width is under about 65% of its container. If a line runs edge to edge, the size is too big.
-- At 350×250, the headline should read clearly but not fill the card. If it is the first and only thing you notice, it is too big.
-
----
-
-## Heading rule: mirror the blog title (user rule, 2026-10-13)
-
-The heading on the image must use **the blog title's own words and meaning, just shorter**. No creative rewording, puns or new angles.
-
-**How to shorten a title:**
-1. Keep the **subject** (EMR, ERP, Dynamics 365) and the **angle** (cost, switch, best, vs, by practice size).
-2. Drop the year, filler words, "How to", "Complete guide", and brackets.
-3. Keep at least 75% of the heading's key words straight from the title.
-
-| Blog title | Good image heading | Bad (rewritten) |
+| Blog title | Good | Bad |
 |---|---|---|
 | EMR Software Cost 2026: Pricing by Practice Size | EMR Cost by Practice Size | What EMR really costs |
 | How to Switch EMR Vendors Without Losing Patient Data | Switch EMR Vendors Without Losing Data | Every chart makes the move |
-| 7 Best ERP Software for Small Businesses in 2026 | Best ERP for Small Business | Seven ERPs. One right fit. |
-| Microsoft Dynamics 365 vs Acumatica for Growing Businesses | Dynamics 365 vs Acumatica | Seat vs usage |
+| 7 Best ERP Software for Small Businesses in 2026 | 7 Best ERP | Seven ERPs. One right fit. |
 
-**Enforced:** every spec carries `"articleTitle"` (the real H1). The renderer fails with **"HEADING CHECK FAILED"** when the image heading (`headline` in prompt, timeline or ranked; `title` in stack or checklist; `list.heading` in window; `caption` in stat) uses too few of the title's words. Compositions without a heading (before-after, versus, hub) must use the title's key terms in their labels.
+Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HEADING CHECK FAILED"). Layouts without a headline (before-after, versus, hub) use the title's key terms in their labels (e.g. the hub tile "7 Best ERP").
 
 ---
 
-## Skeleton rule: compositions must differ in structure, not just content (user rule, 2026-10-13)
+## 11. Typography balance
 
-Two compositions that share the same **skeleton** (the arrangement of blocks) read as the same image at thumbnail size, even with different words. Example that failed: the old `versus` was before-after's skeleton again (two labels → two white cards side by side → connector → two-dot legend).
-
-**Each composition owns a distinct skeleton:**
-| mode | Skeleton (what you see at a glance) |
+| Role | Size (on the 1600×900 master) |
 |---|---|
-| before-after | small raw card → dashed connector → big clean card, legend below |
-| versus (overlap) | **two tilted, overlapping cards** (−3° / +3°, right on top) with a 96px blue-gradient **VS** badge (white text, white ring) on the bottom of the seam. Differs from before-after by tilt, overlap and the badge. Optional `"variant":"table"` = one comparison table card |
-| prompt | faded panel bleeding off the top, centred headline, pill input bar |
-| hub | centre tile with 6–7 product cards (logos + names) around it and hand-drawn arrows |
-| focus | centred headline with a blue selection box on the key phrase; UI card with skeleton rows bleeding off the bottom |
-| versus (logos) | two large logo tiles on an edge-to-edge hatched band, VS badge, one fact chip each |
-| before-after (flow) | muted icon card → arrow → lifted blue-icon card, legend |
-| stack | wide takeaway card with 2 cards peeking above it |
-| window | full app window, list pane plus detail pane |
-| timeline | headline top-left, horizontal track with step dots |
-| checklist | single tilted checklist card |
-| stat | giant number left, breakdown card right |
-| ranked | headline top-left, horizontal bar list |
+| Headline | 56–76px, weight 600, never wider than about 760px; auto-sizes down, never up |
+| Hero number (stat) | up to 210px, the only giant type |
+| Section labels | about 50px / 500, muted |
+| Card headings | 32–36px |
+| Primary rows / bullets | 32–36px outside app mockups |
+| Small labels, chips | 18–28px, still readable at 350×250 or cut |
 
-**When adding or changing a composition:** squint at its 350×250 card next to every other mode. If two share a skeleton, redesign one (different field split, scale, depth or orientation). Never ship two modes that differ only in their text.
+- One dominant text element per image; headline-to-body ratio about 1.6–2.2:1.
+- Even vertical gaps of at least 40px between blocks; faded rows never below about 45% opacity.
 
-### Versus badge rule (approved 2026-10-13)
-- The "vs" is a **focal badge, not a small grey chip**: 96px circle, blue gradient `#3B86F0 → #0A5FD8`, white "VS" at 30px/600, a 7px white ring and a soft blue shadow.
-- It sits on the **bottom of the seam** where the two cards overlap and stays upright (counter-rotated). It must never touch text or a bullet.
-- **Table variant:** the same blue badge at 84px, placed **where the header line crosses the column line** (user's pick, option B). **No glow:** a 6px white ring plus a barely visible neutral shadow (`0 2px 6px rgba(20,26,38,.08)`), because the blue drop shadow "seems too much". The right column's text is padded 72px from the seam so the badge never touches it. Rejected: the small grey chip, the badge straddling the card's top edge, and the heavy blue shadow.
-- Rejected: the split colour field version (did not match the design language) and the small 60px grey chip (too weak, covered a bullet).
+---
+
+## 12. Site mark (optional, some images only)
+
+`"craft": true` + `"series": "Pricing"` adds the site's mark and a mono series tag (`PRICING`, `COMPARISON`, `GUIDE`). Use it only in a natural empty slot (above a centred headline, under a centred group), on **at most 1 in 3 images per category, never on neighbours** ("SERIES CHECK FAILED"). It doesn't count toward the word budget. The craft kit also switches labels to mono caps and ink to near-black; it is opt-in, not part of the default look.
+
+---
+
+## 13. Never do (all tried and rejected)
+
+- **Backgrounds:** pastel washes, colour pools in the corners, two competing hues, centre-glow or spotlight gradients, flat or diagonal blues, other dune textures, dark backgrounds, dot patches, outline-shape patterns (arches, waves).
+- **Colour:** too much blue (a blue-heavy illustration on a blue-ish field), a navy anchor, more than one accent.
+- **Logos:** a tiny logo in a big tile, an app icon shrunk inside a white tile, logo + name cards where logos alone would do, invented or warped logos.
+- **Layouts:** a text-only card when a visual would do (the old stack/split), two layouts with the same skeleton, anything added to fill space.
+- **Details:** heavy shadows (any shadow on the vibrant blue), small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos, gradient text, neon.
+
+## 14. Where the look came from
+
+Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight, "A × B" lockup), Littlebird (one selected tile), grainient.supply (grainy deep gradients). Borrow their principles, never their ornaments or colours: variety comes from layout, never from palette or type.

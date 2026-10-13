@@ -1,90 +1,78 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in an approved light "card" design language with a vibrant deep-blue accent field with 11 modes / 14 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images and repeated layouts.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in an approved card design language - light grainy backgrounds plus a vibrant grainy deep-blue field, 11 modes / 14 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog featured images
 
-> **Approved behaviour** (user sign-off, 2026-10-13). The rules in this file and in `references/design-language.md` are the standard. Keep all of them when changing the skill.
-
-Make featured images that are **relatable to the article**, **understood in 2 seconds**, **minimal**, **never bland**, and **different from every other image in the same category**, while all of them look like one family.
+Make featured images that are **true to the article**, **understood in 2 seconds**, **minimal**, **visually appealing**, and **different from every other image in the same category**, while all of them look like one family.
 
 Read these before your first image in a session:
-- `references/design-language.md`: the rulebook (colours, type, balance, text budget, logos, anti-bland, craft spec, "rejected" lists)
-- `references/spec-format.md`: the JSON spec for every layout
-- `references/agents.md`: the three-agent fast-batch workflow, Maker and QA prompts, QA checklist
-- `references/lessons.md`: what past sessions learned (speed, pre-flight checks, taste)
+- `references/approved/`: the 8 finalized images. This is the target look.
+- `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, never-do list).
+- `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
+- `references/agents.md`: the three-agent fast-batch workflow, Maker and QA prompts, QA checklist.
+- `references/lessons.md`: speed tools, pre-flight checks and gotchas.
 
-## The target look (user-finalized)
-Open `references/approved/` before your first image: 8 finalized images (checklist, hub, ranked, focus, timeline, window, plus the vibrant checklist and flow on blue) define the vibe:
-- soft light fields (`sky`, `paper`, `cream`, `g5`, all with fine grain) with thin guide lines (no dot patches); about 1 in 3 on the vibrant deep-dunes blue, always with a big white card
-- one big white UI card or hero
-- blue gradient only for active and anchor elements; grey for inactive
-- navy headlines
-- colour logos in white tiles
-- ≤15 words
-
-Their specs are in `examples/`, and the renderer's per-layout defaults already match them. See "FINAL approved look" in `references/design-language.md`.
-
-## Work fast (user rule: "WORK FAST")
-- Read all URLs at once (`scripts/read-articles.mjs`, agent-browser).
-- Reserve all layouts in one command (`scripts/plan.mjs`).
-- Start every Maker in one message, in the background.
-- Run one QA agent on one contact sheet (`scripts/sheet.mjs`).
-- Fix by SendMessage to the same agent, never by new agents.
-- Run pre-flight checks before briefing (item count vs layout capacity, name lengths, title words).
-- Never sit idle; deliver each passed image at once; keep updates to one line.
-- For any style change or "I don't like it", show A/B/C side by side at once.
+## The target look
+- **Light fields** (`sky`, `paper`, `cream`, `g5`) with fine grain and thin guide lines, each chosen to flatter its illustration.
+- **About 1 in 3 images on the vibrant "deep dunes" blue** (heavy grain, soft rolling bands), and only when the illustration is a big white card.
+- One big white UI card or hero. Blue gradient only for the active/anchor element; grey for inactive.
+- Navy headlines; real colour logos, balanced in their tiles; logos alone where they're recognisable.
+- No drop shadows on the blue; minimal, field-tinted shadows on light fields.
+- At most 15 words.
 
 ## The hard rules
-0. **The heading mirrors the blog title.** Use the title's own words and meaning, just shorter (drop the year and filler). Never reword creatively. Set `"articleTitle"` in every spec; the renderer blocks headings that drift ("HEADING CHECK FAILED").
-1. **Relatable.** Use only the article's own facts (numbers, names, steps, comparisons), in the article's own wording. Never invent figures, abbreviations or generic concepts.
-2. **Easy to understand.** One idea, one focal point. Visual first (icon, logo, number, arrow, bars) over a text-only card. Check it at 350×250.
-3. **Minimal, never text-heavy (hard-enforced).** At most **15 visible words**, and no element over 7 words (no sentences). The renderer refuses more with "TEXT CHECK FAILED". Show a secondary line (price, sub) only when it IS the story; a "best of" list shows names only. Whitespace is good; never fill space.
-4. **Different every time (hard-enforced).** A **layout** (mode + variant) never repeats in a category until every layout has been used there, and same-topic articles never share a mode. The renderer checks a **site-wide history** (`~/.blog-featured-images/history-<brand>.json`) that records every image ever rendered for that brand. Layouts must also differ in **skeleton** (block arrangement), not just text.
-5. **Logos where products are named.** Set `"logo": "<domain>"` on every named product (hub cards, versus sides, window rows, ranked rows). The renderer fetches it through a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon as an app tile → lettermark) in style A (original colours, small white tile). Logos stay secondary.
-6. **Never bland.** One bold blue anchor, structure tied to the frame (soft dot texture or an edge-to-edge band), and a hero at least ~60% of the width. Light background `sky`, `paper`, `cream` or `g5`, **chosen to flatter the illustration** (each layout's fit list in `references/design-language.md`, "Background fit"; anything outside it is refused with "BACKGROUND FIT FAILED").
-7. **Site mark only sometimes (hard-enforced).** The site mark + series tag (`"series"`, needs `"craft": true`) goes only in a natural empty slot, on at most 1 in 3 images per category and never on neighbours ("SERIES CHECK FAILED").
-8. **Vibrant + subtle mix (hard-enforced).** About 1 in 3 images per category uses the vibrant brand-blue field (`"bg": "blue"`: the "deep dunes" gradient with heavy grain); never two neighbours ("VIBRANT CHECK FAILED"). **Only big-white-card illustrations go on blue:** checklist, versus/table, window, before-after/flow ("VIBRANT FIT FAILED" otherwise). The rest stay light and subtle.
-9. **Visual appeal is a hard gate.** Watch blue dosage (a blue-heavy illustration gets a neutral field), keep logos balanced (~65% of the tile; full app icons become the tile), and prefer logos alone over logo + name. See "Visual appeal is a hard gate" in `references/design-language.md`.
-10. **Shadows follow the background.** None on the vibrant blue; minimal and tinted to the field on light backgrounds (the renderer applies this).
+1. **The heading mirrors the blog title:** its own words, shorter (drop the year and filler). Set `"articleTitle"` in every spec ("HEADING CHECK FAILED" otherwise).
+2. **Only the article's own facts** (numbers, names, steps, comparisons) in its own wording. Never invent anything.
+3. **Easy to understand:** one idea, one focal point, visual first (icon, logo, number, arrow, bars). Check it at 350×250.
+4. **Minimal (enforced):** at most **15 visible words**, max 7 per element, no sentences ("TEXT CHECK FAILED"). Secondary lines only when they are the story. Never fill space.
+5. **Different every time (enforced):** a layout (mode + variant) never repeats in a category until all have been used; same-topic articles never share a mode ("VARIETY CHECK FAILED"). A site-wide history per brand records every render.
+6. **Logos where products are named:** `"logo": "<domain>"`; the renderer's free chain finds it. Logos fill ~65% of their tile; app icons become the tile.
+7. **Background fits the illustration (enforced):** leave `bg` out and the renderer picks the layout's best light background; anything outside the layout's fit list is refused ("BACKGROUND FIT FAILED"). Blue-heavy illustrations get a neutral field.
+8. **Vibrant + subtle mix (enforced):** `"bg": "blue"` on about 1 in 3 images per category, never neighbours ("VIBRANT CHECK FAILED"), and only for `checklist`, `versus/table`, `window`, `before-after/flow` ("VIBRANT FIT FAILED").
+9. **Visual appeal is a hard gate:** an image that passes every check but doesn't look good fails QA (blue dosage, logo balance, logos only, figure/ground, balance).
+10. **Shadows follow the background:** none on the blue; minimal and tinted on light fields (automatic).
+11. **Site mark only sometimes (enforced):** `"craft": true` + `"series"` adds the site mark + series tag, in a natural empty slot, on at most 1 in 3 images, never neighbours ("SERIES CHECK FAILED").
 
 ## Layouts: 11 modes, 14 layouts
-| mode | variants | Shows | Best for |
-|---|---|---|---|
-| `before-after` | `default`, `flow` | raw card → clean card + legend; `flow`: icon card → arrow → lifted icon card | how-to, migration; `flow` for "old way → new way" |
-| `versus` | `overlap`, `table`, `logos` | tilted overlapping cards + VS badge; one comparison table; two big logo tiles + one fact chip each | X vs Y |
-| `hub` | default | blue centre tile with 6–7 logo tiles (logos only, Granola style) and hand-drawn arrows | best-of lists, integrations |
-| `focus` | default | centred headline with the key phrase in a blue selection box; UI card with skeleton rows peeking from the bottom | one key idea with 2–3 values |
-| `stat` | default | one giant number, caption, breakdown card | one headline statistic |
-| `ranked` | default | named bars ranked by a real metric | rankings, cheapest/fastest |
-| `timeline` | default | steps on a track, one highlighted, a callout | process, "how long" |
-| `checklist` | default | tilted checklist card with progress | how to choose, requirements |
-| `prompt` | default | faded data panel, big headline, pill bar | cost, FAQ, "what is" |
-| `stack` | default | one takeaway card (sized to its text) with two offset cards peeking from the top | one key rule; definitions |
-| `window` | default | app window: list pane + detail pane | vendor lists, pricing tables |
+| Layout | Shows | Best for | Light bg (best first) | On blue? |
+|---|---|---|---|---|
+| `before-after` | raw card → clean card | how-to, migration | g5, sky | no |
+| `before-after/flow` | icon card → arrow → lifted icon card | "old way → new way" | g5, sky | **yes** |
+| `versus/overlap` | tilted overlapping cards + VS badge | X vs Y | sky, cream | no |
+| `versus/table` | one comparison table + VS badge | X vs Y, 2–3 dimensions | sky, cream | **yes** |
+| `versus/logos` | two big logo tiles + one fact chip each | X vs Y, one contrast | sky, cream | no |
+| `hub` | blue centre tile + 6–7 logo tiles (logos only) | "best X" lists | cream, paper | no |
+| `focus` | key phrase in a blue selection box + skeleton card | one idea, 2–3 values | sky, g5 | no |
+| `stat` | giant number + breakdown card | one headline number | paper, cream | no |
+| `ranked` | bars ranked by a real metric | rankings | sky, g5 | no |
+| `timeline` | steps on a track + callout | process, "how long" | cream, sky | no |
+| `checklist` | tilted checklist card with progress | how to choose, requirements | g5, sky | **yes** |
+| `prompt` | faded panel, headline, pill bar | cost, FAQ, "what is" | paper, cream | no |
+| `stack` | takeaway card, two cards peeking from the top | one key rule | g5, cream | no |
+| `window` | app window: list pane + detail pane | vendor lists, pricing | sky, g5 | **yes** |
 
-The same article type can use several layouts (a cost article: `focus`, `stat`, `prompt`, `window`, `ranked`). Use that freedom to avoid repeats. When a category's least-used tier already has one use each, **add a new variant before briefing Makers**.
+The same article type can use several layouts (cost: focus, stat, prompt, window, ranked). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
-**Opt-in craft kit (`"craft": true`, being trialled):** near-black ink, mono uppercase labels, grey "off" states, line-icon tiles, a clean connector with a dot terminal, and an optional site mark + series tag. See "Craft spec" in the design language.
-
-## Three agents, always (required)
+## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.
-- **Orchestrator (you):** read the articles and the site history, assign each article a distinct least-used layout, fix renderer issues, start the Makers and the QA agent, loop fixes, deliver. You don't approve images yourself.
-- **Makers (subagents, in parallel):** write each spec from the article file and render it. They use the assigned layout and never `--force`.
-- **QA (separate subagent):** judges every image from one contact sheet: no reused layout or skeleton, 2-second scan, ≤15 words with no fact twice, not bland, balanced, true to the article, logos clean. It returns PASS or FAIL with exact fixes.
-- Failed images go back to their Maker (SendMessage) and then to QA again, for up to 3 rounds. Only QA-passed images are delivered.
+- **Orchestrator (you):** read the articles, plan and reserve a distinct least-used layout per article (and which ones go on blue), fix renderer issues, start the Makers and the QA agent, loop fixes, deliver. You don't approve images yourself.
+- **Makers (subagents, in parallel):** write each spec from the article file and render it, with the assigned layout. Never `--force`.
+- **QA (separate subagent):** judges every image on one contact sheet and returns PASS or FAIL with exact fixes.
+- Failed images go back to their Maker, then to QA again, for up to 3 rounds. Only QA-passed images are delivered.
 
 ## Workflow (fast batch mode)
-1. **Read (Orchestrator):** `node <skill-dir>/scripts/read-articles.mjs <url> <url> ... --out featured-images/articles` reads every URL in parallel into `articles/<slug>.md`. Note each article's type, core idea, 3–6 hard facts, **category** and **topic**; duplicate URLs (`…-guide`, `…-guide-2`) share one `topic`.
-2. **Plan (Orchestrator):** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows layout usage. Pick the best fit from the least-used tier for each article, then reserve all of them at once with `--reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan to the user when doing more than 3 images.
-3. **Spec + render (Makers, in parallel):** one `specs/<slug>.json` each, following `references/spec-format.md` (always `articleTitle`, `brand`, `category`, `slug`, `topic` when shared, `logo` on named products). Then render:
+1. **Read:** `node <skill-dir>/scripts/read-articles.mjs <url> <url> ... --out featured-images/articles` reads every URL in parallel into `articles/<slug>.md`. Note each article's type, core idea, 3–6 hard facts, **category** and **topic** (duplicate URLs such as `…-guide` and `…-guide-2` share one topic).
+2. **Plan:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows layout usage. Pick the best fit from the least-used tier for each article, choose which ~1 in 3 go on blue (only blue-fit layouts, never neighbours), then reserve all at once: `--reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan when doing more than 3 images.
+3. **Spec + render (Makers, in parallel):** one `specs/<slug>.json` each (always `articleTitle`, `brand`, `category`, `slug`, `topic` when shared, `logo` on named products), then:
    ```bash
    node "<skill-dir>/scripts/render.mjs" "featured-images/specs/<slug>.json" --out "featured-images/<slug>"
    ```
-   Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… words=N/15`.
+   Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… bg=… words=N/15`.
 4. **QA:** `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out featured-images/qa-sheet.png --highlight <slugs>`, then one QA agent.
-5. **Fix** only the failures, in parallel. **Deliver** QA-passed images as a contact sheet with each layout and the facts used. Ask before uploading anything to a website.
+5. **Fix** only the failures, in parallel. **Deliver** the QA-passed images as a contact sheet with each layout and the facts used. Ask before uploading anything to a website.
+6. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick.
 
 **When the renderer refuses** (never work around it with `--force` or another folder):
 | Message | Fix |
@@ -92,15 +80,15 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `HEADING CHECK FAILED` | Rewrite the heading from the title's key words |
 | `TEXT CHECK FAILED` | Cut subs that aren't the point, then sentence tails, until ≤15 words and ≤7 per element |
 | `VARIETY CHECK FAILED` | Use one of the layouts it lists (set `mode`, plus `variant` when not `default`) |
-| `SERIES CHECK FAILED` | Remove `"series"` from this spec |
-| `VIBRANT CHECK FAILED` | Use a light background; blue was used on a neighbour |
-| `VIBRANT FIT FAILED` | This illustration doesn't suit the blue; use its light background, or put blue on a checklist, versus/table, window or before-after/flow image |
-| `BACKGROUND FIT FAILED` | Use one of the backgrounds it lists for this layout |
-| `BACKGROUND CHECK FAILED` | That background was deleted; use `sky`, `paper`, `cream`, `g5` or `blue` |
+| `BACKGROUND FIT FAILED` | Remove `bg` (or use one it lists) |
+| `BACKGROUND CHECK FAILED` | That background doesn't exist; use `sky`, `paper`, `cream`, `g5` or `blue` |
+| `VIBRANT CHECK FAILED` | Blue was used on a neighbour; remove `"bg": "blue"` |
+| `VIBRANT FIT FAILED` | This layout doesn't go on blue; remove `"bg": "blue"` |
+| `SERIES CHECK FAILED` | Remove `"series"` |
 
-## Setup and notes
-- **First-time setup:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast article reading. **Without agent-browser**, read the articles with WebFetch in parallel (all URLs in one message), save the text to `featured-images/articles/<slug>.md`, and continue.
-- **Brandfetch client ID** (optional, free at brandfetch.com/developers): put it in `~/.blog-featured-images/config.json` as `{"brandfetchClientId": "…"}` or the `BRANDFETCH_CLIENT_ID` env var. **Never commit it.** Without it, logos still work through Iconify and Simple Icons.
-- **New site:** copy `brands/_template.json` to `brands/<site>.json` and fill in the real brand colours, plus `markUrl` (the site's own icon) and `markName` for the optional site mark.
-- Fonts (Inter, JetBrains Mono), icons (Phosphor) and logos load from the internet at render time.
-- Variety history is per brand (`~/.blog-featured-images/history-<brand>.json`, or the `FEATURED_HISTORY_DIR` env var). Re-rendering the same `slug` replaces its entry. To drop a discarded test image, delete its entry.
+## Setup
+- **Needs:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast article reading. **Without agent-browser**, read the articles with WebFetch in parallel, save the text to `featured-images/articles/<slug>.md`, and continue.
+- **Brandfetch client ID** (optional, free at brandfetch.com/developers): `~/.blog-featured-images/config.json` as `{"brandfetchClientId": "…"}` or the `BRANDFETCH_CLIENT_ID` env var. **Never commit it.** Without it, logos still work through Iconify and Simple Icons.
+- **New site:** copy `brands/_template.json` to `brands/<site>.json` and fill in the brand colours, plus `markUrl` and `markName` for the optional site mark.
+- Fonts (Inter), icons (Phosphor) and logos load from the internet at render time.
+- History is per brand (`~/.blog-featured-images/history-<brand>.json`, or `FEATURED_HISTORY_DIR`). Re-rendering a `slug` replaces its entry; delete a discarded test image's entry by hand.

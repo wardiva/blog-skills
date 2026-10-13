@@ -22,7 +22,6 @@ if (!specFile || !fs.existsSync(specFile)) {
 const spec = JSON.parse(fs.readFileSync(specFile, 'utf8'));
 const brandFile = opt('--brand') || (spec.brand ? path.resolve(HERE, '..', 'brands', spec.brand + '.json') : path.resolve(HERE, '..', 'brands', 'default.json'));
 const brand = JSON.parse(fs.readFileSync(brandFile, 'utf8'));
-const w = brand.wash;
 const slug = spec.slug || path.basename(specFile, '.json');
 const outDir = path.resolve(opt('--out') || path.join('featured-images', slug));
 
@@ -37,7 +36,7 @@ function findChrome() {
   if (!hit) throw new Error('Chrome/Edge not found. Set the CHROME environment variable to your browser path.');
   return hit;
 }
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');   // a missing optional field renders as nothing, never "undefined"
 // ---- logos: Brandfetch Logo API, hotlinked at render time (Brandfetch's guidelines: hotlink, don't re-host) ----
 // Needs a free client ID (brandfetch.com/developers): env BRANDFETCH_CLIENT_ID or "brandfetchClientId" in the brand file.
 // Without one, previews fall back to Google's favicon service. One treatment per image ("logoStyle") keeps logos on-vibe.
@@ -313,9 +312,9 @@ function stat() {
 .sv{position:absolute;left:205px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
 .sc{position:absolute;left:212px;top:470px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
 .ss{position:absolute;left:212px;top:620px;width:600px;font-size:26px;line-height:1.4;color:#7F8794}
-.scard{position:absolute;left:930px;top:250px;width:430px;box-sizing:border-box;background:#fff;border-radius:24px;padding:42px 44px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
+.scard{position:absolute;right:210px;top:250px;width:max-content;min-width:430px;max-width:490px;box-sizing:border-box;background:#fff;border-radius:24px;padding:42px 44px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
 .scard h3{margin:0 0 26px;font-size:28px;font-weight:500;color:#5D6675}
-.sr{margin-bottom:24px}.sr div{display:flex;justify-content:space-between;align-items:baseline;font-size:25px;color:#7F8794}.sr b{font-weight:500}.sr em{font-style:normal;white-space:nowrap}
+.sr{margin-bottom:24px}.sr div{display:flex;justify-content:space-between;align-items:baseline;font-size:25px;color:#7F8794}.sr b{font-weight:500;white-space:nowrap;display:flex;align-items:center;margin-right:24px}.sr em{font-style:normal;white-space:nowrap}
 .sr>i{display:block;margin-top:10px;height:12px;border-radius:6px;background:#EEF2F7}.sr>i>i{display:block;height:100%;border-radius:6px;background:#CBD2DC}
 .sr.a div{color:#141A26}.sr.a>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
 </style>
@@ -368,15 +367,6 @@ function cursorLayer() {
 }
 // "before-after" variant "flow": a muted "before" card with an icon -> hand-drawn arrow -> a lifted "after" card with a blue icon tile
 // and checked items. Icons carry the meaning, so the text stays short.
-// Card-style options for flow (A/B/C trial, 2026-10-13: the dashed before card blended into the bg, the after shadow was too heavy).
-const FLOW_STYLES = {
-  a: `.fb{background:rgba(255,255,255,.72);border:1.5px solid #D5DAE2;box-shadow:0 10px 30px rgba(30,60,110,.08)}.fb .fi{background:#EEF1F5}
-.fa{box-shadow:0 16px 40px rgba(30,60,110,.10),0 0 0 1px rgba(20,26,38,.06)}.fa .fi{box-shadow:0 8px 18px rgba(10,95,216,.18)}`,
-  b: `.fb{background:#fff;border:none;box-shadow:0 12px 32px rgba(30,60,110,.09),0 0 0 1px rgba(20,26,38,.07)}.fb .fi{background:#F1F3F6;color:#8A93A5}.fb b{color:#7F8794}
-.fa{box-shadow:0 12px 32px rgba(30,60,110,.09),0 0 0 2px rgba(10,95,216,.35)}.fa .fi{box-shadow:none}`,
-  c: `.fb{background:#E9ECF1;border:none;box-shadow:inset 0 0 0 1px #DCE1E8}.fb .fi{background:#fff;color:#7F8794}.fb b{color:#5D6675}.fb span{color:#7F8794}
-.fa{box-shadow:0 18px 44px rgba(30,60,110,.10),0 0 0 1px rgba(20,26,38,.06)}.fa .fi{box-shadow:0 8px 18px rgba(10,95,216,.18)}`,
-};
 function baFlow() {
   const B = spec.before, A = spec.after;
   return `<style>
@@ -393,7 +383,6 @@ svg.fl{position:absolute;inset:0;overflow:visible}
 .fleg{position:absolute;left:50%;transform:translateX(-50%);top:745px;display:flex;gap:44px;font-size:28px;font-weight:500}
 .fleg span{display:flex;align-items:center;gap:12px;white-space:nowrap}.fleg i{width:12px;height:12px;border-radius:50%}
 .fleg .f1{color:#7C7468}.fleg .f1 i{background:#B7B1A6}.fleg .f2{color:#2C5FAE}.fleg .f2 i{background:#27ACF2}
-${FLOW_STYLES[spec.flowStyle] || ''}
 </style>
 <div class="fb"><div class="fi"><i class="${esc(B.icon || 'ph ph-hard-drives')}"></i></div><b>${esc(B.label)}</b>${(B.lines || []).map((l) => `<span>${esc(l)}</span>`).join('')}</div>
 ${CRAFT ? `<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><g fill="none" stroke="#3B86F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M632 440 C 712 440 760 440 842 440"/><path d="M824 426 L 844 440 L 824 454"/></g><circle cx="632" cy="440" r="7" fill="#3B86F0"/></svg>` : `<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rgh"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
@@ -538,7 +527,7 @@ if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force) {
   console.error(`BACKGROUND FIT FAILED: "${spec.bg}" doesn't flatter the ${MODE} illustration. Use ${FIT.map((b) => `"${b}"`).join(' or ')} (or the vibrant "blue").`);
   process.exit(2);
 }
-// texture (dot patches + edge guide lines + accent dots) = the anti-bland structure layer. On by default for the crisp 'sky'/'paper'
+// texture (edge guide lines + a few margin accent dots) = the anti-bland structure layer. On by default for 'sky'/'paper'
 // backgrounds; opt in elsewhere with "texture": true. Off when the frame grid is on (never both).
 const FRAME_ON = spec.bg !== 'blue' && (spec.frame ?? FRAME_DEFAULT[MODE] ?? false);
 const TEX = !FRAME_ON && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
@@ -552,13 +541,13 @@ const accDots = [0, 1, 2, 3, 4].map((i) => {     // outer margins only: never ne
 });
 const acc = accDots.map(([x, y], i) => `radial-gradient(circle,${i % 2 ? '#27ACF2' : '#3B86F0'} 3px,transparent 3.6px) ${x}px ${y}px/12px 12px no-repeat`).join(',');
 const [p1x, p1y, p2x, p2y] = texDiag ? [18 + texRand() * 10, 14 + texRand() * 8, 80 + texRand() * 8, 86 + texRand() * 6] : [82 + texRand() * 8, 14 + texRand() * 8, 20 + texRand() * 8, 86 + texRand() * 6];
-const DOTS = ['subtle', 'none', 'full'].includes(spec.dots) ? spec.dots : 'none';   // user picked B: no dot patches ("too much dots in the bg"); guide lines + margin dots only
+const DOTS = 'none';   // user picked B: no dot patches ("too much dots in the bg"); guide lines + margin dots only
 const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 1389px 0/1px 100% no-repeat}
 .tex i{position:absolute;inset:0}
 .tex .dots{display:${DOTS === 'none' ? 'none' : 'block'};background-image:radial-gradient(circle,rgba(44,95,174,${DOTS === 'subtle' ? '.16' : '.30'}) 1.3px,transparent 1.8px);background-size:${DOTS === 'subtle' ? '30px 30px' : '22px 22px'};-webkit-mask-image:radial-gradient(${DOTS === 'subtle' ? '24% 22%' : '38% 32%'} at ${p1x}% ${p1y}%,#000 20%,transparent 72%),radial-gradient(${DOTS === 'subtle' ? '22% 22%' : '36% 32%'} at ${p2x}% ${p2y}%,#000 20%,transparent 72%)}
 .tex .acc{background:${acc}}${BG === 'cream' ? `.tex{background:linear-gradient(rgba(150,120,80,.18),rgba(150,120,80,.18)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(150,120,80,.18),rgba(150,120,80,.18)) 1389px 0/1px 100% no-repeat}.tex .acc{display:none}` : ''}`;
-// anchor (the one high-contrast element): approved blue gradient by default, or navy
-const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
+// anchor (the one high-contrast element): the approved blue gradient
+const ANCHOR = 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
 const svgBg = (inner, blur = 0) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900' preserveAspectRatio='none'><defs><filter id='b' x='-30%' y='-30%' width='160%' height='160%'><feGaussianBlur stdDeviation='${blur}'/></filter></defs>${inner}</svg>`)}")`;
 // Vibrant blue = "deep dunes" (user-approved 2026-10-14: "this looks perfect"; inspired by grainient.supply): bright blue #3D80F2
 // at the top melting into deep royal #1638B0 / #0A1E70 in soft rolling bands, with heavy grain on the field (cards stay crisp).
@@ -618,10 +607,10 @@ ${LOGO_JS}
 ${LOGO_CSS}
 ${FIELD_CSS}
 ${TEX ? TEX_CSS : ''}
-.sr b .lg{margin-right:10px;vertical-align:middle;position:relative;top:-2px}.th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}
+.sr b .lg{margin-right:12px}.th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}
 *{box-sizing:border-box}html,body{margin:0;width:1600px;height:900px;overflow:hidden}
-body{position:relative;font-family:Inter,system-ui,sans-serif;color:#141A26;background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}
-body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}
+body{position:relative;font-family:Inter,system-ui,sans-serif;color:#141A26;background:#F3F8FE}
+body:before{content:"";position:absolute;inset:-100px;display:none}
 .lbl{position:absolute;top:160px;font-size:50px;font-weight:500;letter-spacing:-.02em}
 .l1{left:210px;color:#7C7468}.l2{left:710px;color:#2C5FAE}
 .c{position:absolute;top:250px;background:#fff;border-radius:22px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.04)}
@@ -643,14 +632,14 @@ ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mod
 <div class="c c1" style="top:${baTop + 90}px"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900" style="transform:translateY(${baTop + 90 - 250}px)"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
 <div class="c c2" style="top:${baTop + 90}px;height:${baH}px"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>
-<div class="legend" style="top:${baTop + 90 + baH + 64}px"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`}
+${spec.legend ? `<div class="legend" style="top:${baTop + 90 + baH + 64}px"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : ''}`}
 ${cursorLayer()}
 <style>${BG_CSS[BG] || ''}</style>
 ${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}<div class="grain"></div></body></html>`;
 
 
 // Brand colours: swap the default blue palette for the brand's.
-const swaps = { '#3B86F0': brand.accentLight, '#0A5FD8': brand.accent, '#27ACF2': brand.sky, '#2C5FAE': brand.labelAfter, '#2C7BD8': brand.legendAfter, '#0E2A5C': brand.headline, '#7C7468': brand.labelBefore, '#F1F0EC': brand.flat };
+const swaps = { '#3B86F0': brand.accentLight, '#0A5FD8': brand.accent, '#27ACF2': brand.sky, '#2C5FAE': brand.labelAfter, '#2C7BD8': brand.legendAfter, '#0E2A5C': brand.headline, '#7C7468': brand.labelBefore };
 let out = html;
 for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
 // SHADOWS (user 2026-10-14): none on the vibrant blue; minimal and tinted to the field on light backgrounds.

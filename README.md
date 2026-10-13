@@ -1,6 +1,6 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in a calm, crisp card style. It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in a calm card style with grainy light backgrounds and a vibrant deep-blue field. It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
@@ -9,10 +9,10 @@ Turn blog article URLs into **premium, article-specific featured images** (1600�
 Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
 - is **minimal**: at most 15 words, labels not sentences (enforced)
-- is **never bland**: one bold blue anchor, structure tied to the frame, a big hero
+- sits on a **background chosen to flatter its illustration** (enforced)
 - **looks different** from every other image in the same category (enforced)
-- shows **real product logos** where products are named
-- is **checked by an independent QA agent** before you see it
+- shows **real, balanced product logos** where products are named
+- is **checked by an independent QA agent**, with visual appeal as a hard gate
 
 ---
 
@@ -62,12 +62,9 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 
 **Three agents, in one fast batch:**
 
-1. **Orchestrator** (Claude):
-   - reads every URL at once (`read-articles.mjs`)
-   - picks the least-used layout per article and reserves them all (`plan.mjs`)
-   - checks each layout fits the article (item count, name length, title words)
+1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), picks the least-used layout per article and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
 2. **Makers** (parallel subagents): write each spec from the article's facts and render it.
-3. **QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): no reused layout, 2-second scan, minimal text, not bland, balanced, true to the article, clean logos. Failures go back to their Maker; only images that pass are delivered.
+3. **QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no reused layout, 2-second scan, minimal text, balanced, true to the article, clean logos. Failures go back to their Maker; only images that pass are delivered.
 
 **Built-in checks** (the renderer refuses to finish):
 
@@ -76,33 +73,34 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `HEADING CHECK FAILED` | The image heading must reuse the blog title's own words |
 | `TEXT CHECK FAILED` | At most 15 words per image and 7 per element (no sentences) |
 | `VARIETY CHECK FAILED` | A layout can't repeat in a category until every layout has been used (history per site in `~/.blog-featured-images/history-<brand>.json`) |
-| `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
-| `VIBRANT CHECK FAILED` | The vibrant blue appears on at most 1 in 3 images per category, never on neighbours |
+| `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
+| `VIBRANT CHECK FAILED` | The vibrant blue appears on at most 1 in 3 images per category, never on neighbours |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
-| `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration (e.g. no grey bars on grey `paper`) |
+| `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 
-**Look:**
-- **Never bland:** one bold blue anchor (a selection box, VS badge, checked box or active bar), thin guide lines on the safe edges (no busy dot patterns), and a hero at least about 60% of the width.
-- **Backgrounds:** light `sky`, `paper`, `cream` or `g5` (rotating), plus the vibrant **deep-dunes blue** on about 1 in 3 images (only checklist, versus/table, window and before-after/flow). Every background has grain. Shadows follow the background: none on the vibrant blue, minimal and tinted on light fields.
-- **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time with nothing stored. Add `"logo": "<domain>"` to any named product.
-- **Optional craft kit** (`"craft": true`): near-black ink, monospace uppercase labels, grey "off" states, line-icon tiles, clean connectors, and an occasional site mark + series tag (`PRICING`, `COMPARISON`, `GUIDE`).
+**The look:**
+- **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue** on about 1 in 3 images, only behind a big white card.
+- **Grain on every background:** heavy on the blue, fine on the light fields.
+- **Shadows follow the background:** none on the blue, minimal and tinted on light fields.
+- **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
+- **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons become the tile, and "best of" hubs show logos only.
 
 ## Layouts (11 modes, 14 layouts)
 
-| Mode | Variants | Best for |
-|---|---|---|
-| `before-after` | `default`, `flow` | How-to, migration, "old way → new way" |
-| `versus` | `overlap`, `table`, `logos` | X vs Y |
-| `hub` | default | "Best X" lists (6–7 product logos, logos only) |
-| `focus` | default | One key idea with 2–3 values (costs by tier) |
-| `stat` | default | One headline number |
-| `ranked` | default | Rankings by a real metric |
-| `timeline` | default | Processes, implementation |
-| `checklist` | default | How to choose, requirements |
-| `prompt` | default | Cost, pricing, FAQ |
-| `stack` | default | One key rule; definitions |
-| `window` | default | Vendor lists, pricing tables |
+| Mode | Variants | Best for | On the vibrant blue |
+|---|---|---|---|
+| `before-after` | `default`, `flow` | How-to, migration, "old way → new way" | `flow` only |
+| `versus` | `overlap`, `table`, `logos` | X vs Y | `table` only |
+| `hub` | default | "Best X" lists (6–7 product logos, logos only) | no |
+| `focus` | default | One key idea with 2–3 values | no |
+| `stat` | default | One headline number | no |
+| `ranked` | default | Rankings by a real metric | no |
+| `timeline` | default | Processes, implementation | no |
+| `checklist` | default | How to choose, requirements | yes |
+| `prompt` | default | Cost, pricing, FAQ | no |
+| `stack` | default | One key rule | no |
+| `window` | default | Vendor lists, pricing tables | yes |
 
 ## Add your own site
 
@@ -112,14 +110,14 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 
 | Path | Contents |
 |---|---|
-| `SKILL.md` | Hard rules and workflow (Claude reads this first) |
+| `SKILL.md` | Hard rules, layouts and workflow (Claude reads this first) |
 | `references/approved/` | The 8 finalized reference images: the target look |
-| `references/design-language.md` | The approved visual rulebook: final look, colours, type, balance, text budget, logos, anti-bland, craft spec, rejected looks |
+| `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, never-do list |
+| `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
 | `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |
-| `references/lessons.md` | What past sessions learned: speed, pre-flight checks, taste |
-| `references/spec-format.md` | The JSON spec for every layout |
+| `references/lessons.md` | Speed tools, gotchas, pre-flight checks, taste |
 | `scripts/` | `render.mjs` (renderer + checks), `read-articles.mjs`, `plan.mjs`, `sheet.mjs` |
-| `examples/` | Approved specs, all within the 15-word budget |
+| `examples/` | Approved specs for every layout |
 
 ## Troubleshooting
 
@@ -128,7 +126,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | Chrome not found | Set `CHROME` to your Chrome or Edge executable |
 | `TEXT CHECK FAILED` | Cut secondary lines first, then shorten phrases to labels |
 | `VARIETY CHECK FAILED` | Use one of the listed layouts. Run `plan.mjs` to see usage; if every layout is used, add a variant |
-| `SERIES CHECK FAILED` | Remove `"series"`; the mark was used on a neighbouring image |
+| `BACKGROUND FIT FAILED` / `VIBRANT FIT FAILED` | Remove `bg` from the spec; the renderer picks the best background |
 | Logos are broken or low-res | Add a Brandfetch client ID and check your connection (logos load at render time) |
 | An article URL fails to load | The reader retries once; run it again or paste the article text |
 
