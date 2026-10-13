@@ -16,7 +16,7 @@ Read these before your first image in a session:
 
 ## The target look
 - **Two families:** card layouts on light fields, and four headline layouts after Chatbase (three of them for X vs Y; subtle vivid blue shapes, white designs in a grey frame, two on black).
-- **Light fields** (`sky`, `paper`, `cream`, `g5`) with fine grain and thin guide lines, each chosen to flatter its illustration.
+- **Light fields** (`sky`, `paper`, `cream`, `g5`) with thin guide lines and fine grain (no grain on `cream`), each chosen to flatter its illustration.
 - **About 1 in 3 images on the vibrant "deep dunes" blue** (heavy grain, soft rolling bands), and only when the illustration is a big white card.
 - One big white UI card or hero. Blue gradient only for the active/anchor element; grey for inactive.
 - Navy headlines; real colour logos, balanced in their tiles; logos alone where they're recognisable.

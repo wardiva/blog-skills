@@ -12,7 +12,7 @@ One JSON file per article. Top-level fields shared by all layouts:
 | `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layout: `dark` |
 | `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, `logos`, and the headline variants `pills`, `connect`, `slash`. Mode + variant = one layout |
 | `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on about 1 in 3 images, only for `checklist`, `versus/table`, `window`, `before-after/flow` |
-| `grain` | no | Field grain, on everywhere by default. `false` turns it off on a light field (never on blue) |
+| `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns it off on a light field |
 | `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself |
 | `logoStyle` | no | `color` (default), `mono` or `tint`. One style per image |
 | `frame` | no | Faint grid + registration squares. On by default for `stat`, `ranked`, `timeline`, `window` (never on blue). `true`/`false` overrides |

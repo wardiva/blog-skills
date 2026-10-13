@@ -36,7 +36,7 @@ Judge every image like a design director, ideally with a taste skill (impeccable
 | Light | `g5` | near-white at the top glowing into bright sky under the hero (after Granola) |
 | **Vibrant** | `blue` | **"Deep dunes":** bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands (after grainient.supply) |
 
-- **Grain on every background:** heavy on the vibrant blue, fine on the light ones. It sits on the field only, so cards stay crisp. `"grain": false` turns it off on a light field.
+- **Grain:** heavy on the vibrant blue, fine on `sky`, `paper` and `g5`. It sits on the field only, so cards stay crisp. **`cream` has no grain at all** (user 2026-10-14: "delete grain from cream bg"), a clean warm field. `"grain": false` turns it off on a light field.
 - **Vibrant blue on about 1 in 3 images per category, never on neighbours** ("VIBRANT CHECK FAILED"). The rest are light.
 - No other backgrounds exist. The renderer refuses any other name ("BACKGROUND CHECK FAILED").
 

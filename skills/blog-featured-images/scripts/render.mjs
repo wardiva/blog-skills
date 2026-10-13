@@ -700,11 +700,12 @@ const CRAFT_CSS = `
 `;
 // field grain (Grainient-style), on EVERY background (user 2026-10-14: "keep grain in all such backgrounds"); always on blue,
 // "grain": false turns it off on a light field. Light fields use multiply (overlay barely shows on near-white).
-const GRAIN = BG === 'blue' || spec.grain !== false;
+// no grain at all on cream (user 2026-10-14: "delete grain from cream bg"): neither the field grain nor the paper-grain overlay
+const GRAIN = BG === 'blue' || (spec.grain !== false && BG !== 'cream');
 const LIGHT_GRAIN = `.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:multiply;opacity:.2}`;
 const BG_CSS = {
   blue: `body{background:${BLUE_GLOW};background-size:cover}body:before{display:none}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85}`,
-  cream: `body{background:#F6F2EA}body:before{display:none}${LIGHT_GRAIN}`,
+  cream: `body{background:#F6F2EA}body:before{display:none}`,
   // Granola #5 in blue: near-white top, a bright clear sky glowing up from under the hero card
   g5: `body{background:linear-gradient(180deg,#F7FBFF 0%,#EAF5FE 38%,#A9DCFB 78%,#7CC8F8 100%)}body:before{display:block;inset:0;filter:blur(30px);background:radial-gradient(60% 45% at 62% 100%,rgba(70,175,245,.55),transparent 70%)}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.6}`,
   paper: `body{background:#F1F3F6}body:before{display:none}${LIGHT_GRAIN}`,
@@ -746,7 +747,7 @@ ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mod
 ${spec.legend ? `<div class="legend" style="top:${baTop + 90 + baH + 64}px"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : ''}`}
 ${cursorLayer()}
 <style>${BG_CSS[BG] || ''}</style>
-${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}<div class="grain"></div></body></html>`;
+${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}${BG === 'cream' ? '' : '<div class="grain"></div>'}</body></html>`;
 
 
 // Brand colours: swap the default blue palette for the brand's.

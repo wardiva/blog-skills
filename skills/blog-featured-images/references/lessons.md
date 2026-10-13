@@ -39,7 +39,7 @@ Read this before every batch. Each lesson cost at least one extra round with the
 - **Vibrant blue only carries a big white card** (checklist, versus/table, window, before-after/flow). Stack failed (big blue icon = too much blue); versus/logos "doesn't look good" on blue even with balanced logos.
 - **No drop shadows on the blue;** minimal, field-tinted shadows on light fields.
 - **Logos:** an app icon shrunk inside a white tile looked "so weird". A logo fills ~65% of its tile and an app icon becomes the tile. Best-of hubs show **logos only** ("really really good").
-- **Grain on every background** (heavy on blue, fine on light). The user loves the noise.
+- **Grain** heavy on blue, fine on `sky`, `paper`, `g5`; **none on `cream`** (the user wants it clean).
 - **Minimal wins.** A plain window with whitespace was "really good minimal"; the same window with bars filling the space was "ugly". 30 words was still "text heavy"; 15 is the cap.
 - **Prefer a visual over a text card.** A plain text card (the old stack/split) got "I DONT LIKE IT"; icons + arrow + 2 checked items won.
 - **Copy a reference's structure only when it carries the article's real content.** From Chatbase, the user kept the four comparison layouts (facing pills, connected logos, black slash, black + brand colour) and deleted the decorative ones (pills beside a title, fluted panel with a card, giant number), even after two rounds of refinement. Comparisons have a natural visual (two logos, one VS); generic titles don't.
