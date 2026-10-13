@@ -42,7 +42,7 @@ const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
 // Without one, previews fall back to Google's favicon service. One treatment per image ("logoStyle") keeps logos on-vibe.
 const LOCAL_CFG = (() => { try { return JSON.parse(fs.readFileSync(path.join(os.homedir(), '.blog-featured-images', 'config.json'), 'utf8')); } catch { return {}; } })();
 const BF_CLIENT = process.env.BRANDFETCH_CLIENT_ID || LOCAL_CFG.brandfetchClientId || brand.brandfetchClientId || '';
-const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.logoStyle : 'color';   // user picked A (original colours)
+const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.logoStyle : 'color';   // original colours by default
 // Logo chain (all free): Brandfetch symbol -> Iconify "logos" colour icon -> Simple Icons in brand colour -> Brandfetch square icon
 // (shown edge to edge, like an app icon, so dark tiles look intentional) -> lettermark. Without a Brandfetch ID, the Brandfetch steps are skipped.
 const bf = (d, type, fb) => `https://cdn.brandfetch.io/${encodeURIComponent(d)}/w/256/h/256/fallback/${fb}/type/${type}?c=${encodeURIComponent(BF_CLIENT)}`;
@@ -134,7 +134,7 @@ function hub() {
   const n = Math.min(spec.cards.length, 7), T = n === 7 ? 390 : 450;
   const LOGOS_ONLY = spec.cards.slice(0, n).every((c) => c.logo) && !spec.showNames;
   if (LOGOS_ONLY) {
-    // Logos only (user 2026-10-14, Granola integrations style): square white logo tiles orbit the blue centre tile, no names.
+    // Logos only: square white logo tiles orbit the blue centre tile, no names.
     // Balance rule: the logo fills ~65% of its tile; full-bleed app icons become the tile themselves.
     const S = 156, L = 102, HX = 800, HY = T;
     const pos = [[420, 190, -5], [360, 420, 4], [430, 650, -3], [1180, 190, 4], [1240, 420, -4], [1170, 650, 3], [800, 735, 2]].slice(0, n);
@@ -216,7 +216,7 @@ h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-si
 }
 
 // "stack" (Granola "Brief prepared overnight"): one front card holding the takeaway, two offset cards peeking from the top.
-// The front card fits its content (user-approved 2026-10-14: "keep the 2nd one"); the whole stack is centred.
+// The front card fits its content; the whole stack is centred.
 function stack() {
   const lead = esc(spec.lead).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
   return `<style>
@@ -352,7 +352,7 @@ function ranked() {
 
 // ---- balance layer (learned from Base44): grid lines + registration squares framing the hero, an optional cursor cue ----
 // Grid only where it matches the vibe: open, data-led layouts on calm fields. Card-heavy or busy layouts stay clean.
-const FRAME_DEFAULT = { stat: true, timeline: true, window: true };   // ranked: texture instead (user-finalized look)
+const FRAME_DEFAULT = { stat: true, timeline: true, window: true };   // ranked uses the texture instead
 function frameLayer() {
   const on = spec.bg !== 'blue' && (spec.frame ?? FRAME_DEFAULT[spec.mode || 'before-after'] ?? false);   // no grid on the vibrant blue (the dark squares looked off)
   if (!on) return '';
@@ -416,16 +416,14 @@ function focus() {
 <div class="fh">${head}</div>
 <div class="fc"><div class="fct">${esc(spec.label || '')}<s></s></div>${real}${ghosts}</div>`;
 }
-// ---- Chatbase-inspired headline layouts (studied chatbase.co/blog 2026-10-14): versus/pills, versus/connect, versus/slash, dark ----
-// (pills, split and number were built and deleted: "they still don't look good")
-// A giant tight headline (key phrase in blue gradient text via {{ }}), colour carried by watercolour shapes or a fluted-glass panel.
-// Colours sampled from Chatbase: watercolour blue #EAF4FE -> #AEDAFB -> #6AB2FF -> #2A74FB -> #0B5BF0. "color" swaps in a brand hex.
-// user 2026-10-14: the SUBTLE Chatbase blue (near-solid vivid blue, faint tonal drift); the cloudy watercolour was "too much and too bad"
+// ---- Headline layouts (after Chatbase): versus/pills, versus/connect, versus/slash, dark ----
+// Bold names or a big tight headline (key phrase in blue via {{ }}); colour in a few clean shapes.
+// Shapes use a near-solid vivid blue with a faint tonal drift and fine grain; "color" swaps in a brand hex.
 const CB_BLUE = { stops: ['#0A6EF5', '#0F7DFF', '#1D8BFF', '#0B74FA'], light: '#45A2FF', dark: '#065FE0' };
 const hexMix = (h, t, w) => '#' + [1, 3, 5].map((i) => Math.round(parseInt(h.slice(i, i + 2), 16) * (1 - w) + parseInt(t.slice(i, i + 2), 16) * w).toString(16).padStart(2, '0')).join('');
 const cbPal = (hex) => /^#[0-9a-f]{6}$/i.test(hex || '') ? { stops: [hexMix(hex, '#000000', 0.06), hex, hexMix(hex, '#ffffff', 0.1), hexMix(hex, '#000000', 0.04)], light: hexMix(hex, '#ffffff', 0.28), dark: hexMix(hex, '#000000', 0.14) } : CB_BLUE;
 const cbRgb = (h) => [1, 3, 5].map((i) => (parseInt(h.slice(i, i + 2), 16) / 255).toFixed(3));
-// watercolour: smooth gradient + soft light washes + darker ink veins + fine grain, clipped to the shape
+// shape fill: smooth gradient + very soft light patches + faint ink veins + fine grain, clipped to the shape
 const wcDefs = (id, P, seed = 3, ang = [0, 1, 1, 0]) => {
   const [lr, lg, lb] = cbRgb(P.light), [dr, dg, db] = cbRgb(P.dark);
   return `<linearGradient id="${id}g" x1="${ang[0]}" y1="${ang[1]}" x2="${ang[2]}" y2="${ang[3]}">${P.stops.map((c, i) => `<stop offset="${i / (P.stops.length - 1)}" stop-color="${c}"/>`).join('')}</linearGradient>
@@ -445,12 +443,12 @@ const CB_CSS = `<style>.cbf{position:absolute;inset:0}.cbh{position:absolute;fon
 .ct:has(.lg.full) .lg{width:100%!important;height:100%!important;border-radius:0}
 .cbm{position:absolute;left:96px;top:90px;width:96px;height:96px;border-radius:24px}</style>`;
 const cbTile = (d, S, x, y, round = 0.22, label = '') => `<div class="ct" style="left:${x}px;top:${y}px;width:${S}px;height:${S}px;border-radius:${Math.round(S * round)}px;box-shadow:0 10px 26px rgba(10,40,120,.12)">${logo(d, Math.round(S * 0.62), label)}</div>`;
-// WHITE FRAME RULE (user 2026-10-14): a white design always sits in a white rounded panel inset 28px on a light-grey frame,
+// White frame: a white design always sits in a white rounded panel inset 28px on a light-grey frame,
 // so the featured image reads as its own block on a white blog page. Inner content keeps canvas coordinates.
 const cbFramed = (inner, right = 28) => `<div class="cbf" style="background:#F2F2F3"></div><div style="position:absolute;left:28px;top:28px;right:${right}px;bottom:28px;border-radius:28px;background:#fff;overflow:hidden"><div style="position:absolute;left:-28px;top:-28px;width:1600px;height:900px">${inner}</div></div>`;
 const cbMark = () => brand.markUrl ? `<img class="cbm" src="${brand.markUrl}" alt="">` : '';
 
-// "versus/pills": grey canvas, two white panels; two watercolour pills face each other with the logos at the tips; the question below
+// "versus/pills": grey canvas, two white panels; two blue pills face each other with the logos at the tips; the question below
 function cbVersusPills() {
   const L = spec.left, R = spec.right, P = cbPal(spec.color), Pr = { ...P, stops: [...P.stops].reverse() };
   const head = spec.headline || `${L.label} or\n{{${R.label}?}}`, fs = cbFs(head, 108, 1300);
@@ -463,7 +461,7 @@ ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.
 <div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head)}</div></div>`;
 }
 
-// "dark": black field, site mark, tag pill, white headline; right = watercolour panel in the brand colour with the white logo
+// "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
 function cbDark() {
   const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 740), d = spec.panelLogo;
   const white = spec.panelLogoUrl || (d ? `https://cdn.simpleicons.org/${slugOfDomain(d)}/ffffff` : '');
@@ -477,7 +475,7 @@ ${white ? `<img src="${white}" alt="" style="position:absolute;left:50%;top:50%;
 }
 
 
-// "versus/connect" (user reference, Chatbase "Open Source Chatbot Platforms"): centred headline with a gradient phrase, a divider
+// "versus/connect": centred headline with a gradient phrase, a divider
 // with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 function cbVersusConnect() {
   const L = spec.left, R = spec.right, head = spec.headline || `{{${L.label} vs}}\n${R.label}`, fs = cbFs(head, 104, 1200);
@@ -500,7 +498,7 @@ ${cbTile(L.logo, S, lx - S / 2, cy - S / 2, 0.24, L.label)}${cbTile(R.logo, S, r
 <div style="position:absolute;left:${800 - cr}px;top:${cy - cr}px;width:${cr * 2}px;height:${cr * 2}px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 12px 30px rgba(47,90,200,.16),0 0 0 1px rgba(47,90,200,.08)"><b class="bt2" style="font-size:46px;font-weight:800;letter-spacing:-.03em">VS</b></div>`)}`;
 }
 
-// "versus/slash" (user reference, Chatbase "AI Chatbot vs ChatGPT"): black field with a fine dot grid, the two names in heavy caps
+// "versus/slash": black field with a fine dot grid, the two names in heavy caps
 // (a coloured part each), a big italic VS with a glowing diagonal streak. The {{ }} part of each label takes that side's colour.
 function cbVersusSlash() {
   const L = spec.left, R = spec.right;
@@ -550,16 +548,14 @@ if (!LAYOUTS[MODE].includes(VARIANT)) { console.error(`Unknown variant "${VARIAN
 const LAYOUT = `${MODE}/${VARIANT}`;
 const ALL_LAYOUTS = ALL_MODES.flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
 const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
-// defaults match the user-finalized reference set (references/approved/)
-// Backgrounds (user-finalized 2026-10-14): light = sky, paper, cream, g5 (rotate); vibrant = blue (about 1 in 3).
-// Deleted by the user: wash (pastel presets), cool, flat, white, skyfield, g4. Don't reintroduce them.
-// BACKGROUND FIT (user 2026-10-14: "make sure the illustration looks good with that bg"). Each layout lists only the backgrounds
-// that flatter its illustration, best first. Judged on figure/ground contrast, temperature harmony and colour dosage:
-//  - grey-heavy illustrations (bars, skeletons, unchecked boxes) need chroma behind them: sky or g5, never paper (monotone, bland)
-//  - illustrations that already carry colour (giant blue number, blue tile, colour logos) sit well on a quiet neutral: paper or cream
-//  - big white app windows look best framed by warm cream (Granola app shots); cool greys never go on cream
-//  - BLUE DOSAGE: an illustration that already carries a big blue mass (hub tile, giant number) gets a neutral field (cream/paper),
-//    never g5 or another blue-ish field (user: "too much blue... doesn't look visually appealing")
+// defaults match the reference set (references/approved/)
+// Backgrounds: light = sky, paper, cream, g5; vibrant = blue (about 1 in 3, shared with the black headline layouts).
+// Background fit: each layout lists only the backgrounds that flatter its illustration, best first.
+// Judged on figure/ground contrast, temperature harmony and colour dosage:
+//  - grey-heavy illustrations (bars, skeletons, unchecked boxes) need colour behind them: sky or g5
+//  - illustrations that already carry colour (giant number, pill bar) sit well on a quiet neutral: paper or cream
+//  - big white app windows sit on sky; cool greys never go on cream
+//  - blue dosage: a big blue mass (hub tile) gets a neutral field (cream/paper), never g5
 //  - g5 lifts a single floating white card with light rising under it
 const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'cream'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
 // Chatbase-style layouts paint their own canvas (white in a grey frame, or black); 'dark' counts as vibrant
@@ -570,7 +566,7 @@ const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m,
 const BGS = ['sky', 'paper', 'cream', 'g5'];
 const BG_OK = [...BGS, 'blue'];
 if (spec.bg && !BG_OK.includes(spec.bg)) {
-  console.error(`BACKGROUND CHECK FAILED: "${spec.bg}" was deleted. Use a light background (${BGS.join(', ')}) or the vibrant "blue".`);
+  console.error(`BACKGROUND CHECK FAILED: "${spec.bg}" is not a background. Use a light background (${BGS.join(', ')}) or the vibrant "blue".`);
   process.exit(2);
 }
 const category = spec.category || spec.brand || 'default';
@@ -603,7 +599,7 @@ A layout may not repeat in a category until every layout has been used there (si
 Pick one of: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "default")`);
   process.exit(2);
 }
-// vibrant brand-blue images are mixed in among subtle ones: at most 1 in 3 per category, never two neighbours (user rule)
+// vibrant images (deep-dunes blue, black headline layouts): at most 1 in 3 per category, never two neighbours
 if ((spec.bg === 'blue' || VIVID) && !force) {
   const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
   if (lastTwo.some((e) => e.vibrant || e.bg === 'blue')) {
@@ -612,7 +608,7 @@ Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. Use a light
     process.exit(2);
   }
 }
-// site mark + series tag: some images, never all. At most 1 in 3 per category, never on two neighbours (user rule).
+// site mark + series tag: some images, never all. At most 1 in 3 per category, never on two neighbours.
 if (spec.craft === true && spec.series && !force) {
   const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
   if (lastTwo.some((e) => e.series)) {
@@ -624,10 +620,8 @@ Use it on at most 1 in 3 images and never on neighbours. Remove "series" from th
 let BG = spec.bg || (CB_LAYOUT ? 'paper' : DEFAULT_BG[MODE]);
 const prevBg = prior.length ? prior[prior.length - 1].bg : null; // history is sorted by time
 const FIT = CB_LAYOUT ? ['paper'] : BG_FIT[MODE] || ['sky', 'g5'];
-// VIBRANT FIT (user 2026-10-14: "this illustration doesn't look good with this background"): the deep-dunes blue flatters only
-// illustrations built on a big white card (Granola: white UI on a bold field). Floating logo tiles, white headlines and grey
-// skeleton cards on blue looked weak. Blue-heavy illustrations (hub tile, stat number, focus box) never go on blue.
-// user-picked 2026-10-14: checklist, versus/table, window, before-after/flow. Stack was dropped (its big blue icon tile = too much blue).
+// Vibrant fit: the deep-dunes blue flatters only illustrations built on a big white card.
+// Blue-heavy illustrations and floating logo tiles never go on blue.
 const BLUE_FIT = ['checklist', 'versus/table', 'window', 'before-after/flow'];
 if (spec.bg === 'blue' && !BLUE_FIT.includes(MODE) && !BLUE_FIT.includes(LAYOUT) && !force) {
   console.error(`VIBRANT FIT FAILED: the ${LAYOUT} illustration doesn't look good on the vibrant blue. Use blue only with: ${BLUE_FIT.join(', ')}.`);
@@ -652,7 +646,7 @@ const accDots = [0, 1, 2, 3, 4].map((i) => {     // outer margins only: never ne
 });
 const acc = accDots.map(([x, y], i) => `radial-gradient(circle,${i % 2 ? '#27ACF2' : '#3B86F0'} 3px,transparent 3.6px) ${x}px ${y}px/12px 12px no-repeat`).join(',');
 const [p1x, p1y, p2x, p2y] = texDiag ? [18 + texRand() * 10, 14 + texRand() * 8, 80 + texRand() * 8, 86 + texRand() * 6] : [82 + texRand() * 8, 14 + texRand() * 8, 20 + texRand() * 8, 86 + texRand() * 6];
-const DOTS = 'none';   // user picked B: no dot patches ("too much dots in the bg"); guide lines + margin dots only
+const DOTS = 'none';   // guide lines + margin dots only
 const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 1389px 0/1px 100% no-repeat}
 .tex i{position:absolute;inset:0}
 .tex .dots{display:${DOTS === 'none' ? 'none' : 'block'};background-image:radial-gradient(circle,rgba(44,95,174,${DOTS === 'subtle' ? '.16' : '.30'}) 1.3px,transparent 1.8px);background-size:${DOTS === 'subtle' ? '30px 30px' : '22px 22px'};-webkit-mask-image:radial-gradient(${DOTS === 'subtle' ? '24% 22%' : '38% 32%'} at ${p1x}% ${p1y}%,#000 20%,transparent 72%),radial-gradient(${DOTS === 'subtle' ? '22% 22%' : '36% 32%'} at ${p2x}% ${p2y}%,#000 20%,transparent 72%)}
@@ -660,9 +654,8 @@ const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:l
 // anchor (the one high-contrast element): the approved blue gradient
 const ANCHOR = 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
 const svgBg = (inner, blur = 0) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900' preserveAspectRatio='none'><defs><filter id='b' x='-30%' y='-30%' width='160%' height='160%'><feGaussianBlur stdDeviation='${blur}'/></filter></defs>${inner}</svg>`)}")`;
-// Vibrant blue = "deep dunes" (user-approved 2026-10-14: "this looks perfect"; inspired by grainient.supply): bright blue #3D80F2
-// at the top melting into deep royal #1638B0 / #0A1E70 in soft rolling bands, with heavy grain on the field (cards stay crisp).
-// The ONLY vibrant background: the other textures (ridge, sweep, silk, arc, bloom) and all flat/diagonal/centre-glow blues were rejected.
+// Vibrant blue = "deep dunes": bright blue #3D80F2 at the top melting into deep royal #1638B0 / #0A1E70
+// in soft rolling bands, with heavy grain on the field (cards stay crisp).
 const BLUE_GLOW = svgBg(`<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#3D80F2'/><stop offset='1' stop-color='#2C68E6'/></linearGradient></defs><rect width='1600' height='900' fill='url(#g)'/><g filter='url(#b)'><path d='M-200 560 C 350 450 800 690 1200 540 S 1650 450 1850 490 L1850 1100 L-200 1100Z' fill='#1638B0'/><path d='M-200 820 C 450 690 950 940 1850 730 L1850 1100 L-200 1100Z' fill='#0A1E70'/></g>`, 40);
 const NOISE = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='1.6' intercept='-.3'/><feFuncG type='linear' slope='1.6' intercept='-.3'/><feFuncB type='linear' slope='1.6' intercept='-.3'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`)}")`;
 const CRAFT = spec.craft === true;
@@ -676,7 +669,6 @@ body.fd .grain{opacity:.06;mix-blend-mode:soft-light}`;
 const MONO = "'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
 const SERIES_POS = spec.seriesPos || { focus: 'top', versus: 'bottom', 'before-after': 'tl' }[MODE] || 'bottom';
 const seriesMark = CRAFT && spec.series ? `<!--smark--><div class="smark sm-${SERIES_POS}">${brand.markUrl ? `<img src="${brand.markUrl}" alt="">` : ''}<b>${esc(brand.markName || brand.name || '')}</b><span>${esc(spec.series)}</span></div><!--/smark-->` : '';
-// The arch outline pattern and the wash backgrounds were deleted by the user (2026-10-14). Don't reintroduce outline-shape patterns.
 const CRAFT_CSS = `
 .smark{position:absolute;z-index:3;display:flex;align-items:center;gap:12px;white-space:nowrap}
 .smark img{width:40px;height:40px;border-radius:10px}.smark b{font-size:26px;font-weight:600;color:#141A26;letter-spacing:-.01em}
@@ -698,9 +690,8 @@ const CRAFT_CSS = `
 .fa b{color:#141A26;font-weight:600}.fa li{color:#141A26}
 .fleg{font-family:${MONO};text-transform:uppercase;font-size:22px;letter-spacing:.06em}.fleg .f1{color:#7F8794}.fleg .f2{color:#0A5FD8}
 `;
-// field grain (Grainient-style), on EVERY background (user 2026-10-14: "keep grain in all such backgrounds"); always on blue,
-// "grain": false turns it off on a light field. Light fields use multiply (overlay barely shows on near-white).
-// no grain at all on cream (user 2026-10-14: "delete grain from cream bg"): neither the field grain nor the paper-grain overlay
+// field grain: heavy on blue, fine on sky/paper/g5 (multiply, since overlay barely shows on near-white); none on cream.
+// "grain": false turns it off on a light field.
 const GRAIN = BG === 'blue' || (spec.grain !== false && BG !== 'cream');
 const LIGHT_GRAIN = `.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:multiply;opacity:.2}`;
 const BG_CSS = {
@@ -754,7 +745,7 @@ ${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}${BG === 'cream' ? '' 
 const swaps = { '#3B86F0': brand.accentLight, '#0A5FD8': brand.accent, '#27ACF2': brand.sky, '#2C5FAE': brand.labelAfter, '#2C7BD8': brand.legendAfter, '#0E2A5C': brand.headline, '#7C7468': brand.labelBefore };
 let out = html;
 for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
-// SHADOWS (user 2026-10-14): none on the vibrant blue; minimal and tinted to the field on light backgrounds.
+// Shadows: none on the vibrant blue; minimal and tinted to the field on light backgrounds.
 // 1px "ring" shadows (0 0 0 Npx) are card edges, not drop shadows, and are kept on light fields.
 const SHADOW_TINT = { sky: '30,60,110', g5: '30,80,140', paper: '20,26,38', cream: '90,70,40' }[BG] || '30,60,110';
 const softShadow = (decl) => decl.split(/,(?![^(]*\))/).map((sh) => {
@@ -771,7 +762,7 @@ out = out.replace(/box-shadow:\s*([^;}"!]+)(!important)?/g, (all, v, imp) => v.t
 if (BG === 'blue') out = out.replace(/filter:\s*drop-shadow\([^;"]*\)/g, 'filter:none');
 
 fs.mkdirSync(outDir, { recursive: true });
-// ---- text budget (forced, user rule: "need to show less text"): count every visible word and refuse text-heavy images ----
+// ---- text budget: count every visible word and refuse text-heavy images ----
 const MAX_WORDS = 15, MAX_RUN = 7;   // whole image / any single text element (no sentences)
 const bodyHtml = html.slice(html.indexOf('<body')).replace(/<(style|script|svg)[\s\S]*?<\/\1>/g, ' ').replace(/<!--smark-->[\s\S]*?<!--\/smark-->/g, ' ').replace(/<\/?b>/g, '');   // <b> is inline emphasis; the series mark is branding, not copy
 const runs = bodyHtml.split(/<[^>]+>/).map((t) => t.replace(/&[a-z#0-9]+;/gi, ' ').trim()).filter(Boolean);

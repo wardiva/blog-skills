@@ -63,9 +63,9 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 - weak figure/ground (grey bars on `paper`, a hero that melts into the field)
 - uneven sizes, gaps or arrows; a small, pale, floating composition
 
-**2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows, and grain present.
+**2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
-**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `dark`). Blue shapes are the subtle near-solid Chatbase blue (no cloudy watercolour); a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390.
+**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `dark`). Blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390.
 
 **3. Layout never used twice.** No other image in the category has this layout unless every layout has been used (then it's one of the least-used). Next to every other 350×250 card in the category, no two read as the same skeleton. Same-topic articles use different modes.
 
@@ -79,4 +79,4 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 
 **8. Logos.** Every named product has a real logo that loaded (no broken image, no letter tile where a real logo exists), in one style.
 
-**9. Nothing from the never-do list** (design language, section 13).
+**9. Guardrails respected** (design language, section 13).

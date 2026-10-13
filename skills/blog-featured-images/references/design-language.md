@@ -1,13 +1,13 @@
 # Featured image design language
 
-The approved look for blog featured images (first set for medsoftwarehub.com, finalized 2026-10-14). **This file is the rulebook.** Every rule here is current; nothing in it is history. Two families share it: the **card layouts** (sections 3–5) and the **headline layouts** after Chatbase (section 3d). The images in `references/approved/` show the target, and their specs are in `examples/`.
+The approved look for blog featured images. **This file is the rulebook.** Two families share it: the **card layouts** (sections 3–5) and the **headline layouts** (section 3d). The images in `references/approved/` show the target, and their specs are in `examples/`.
 
 ---
 
 ## 1. The non-negotiable rules
 
 1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article.
-2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. If it needs explaining, it has failed. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
+2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
 3. **Different every time.** No layout repeats in a category until every layout has been used, and articles on the same topic never share a mode (see 9).
 4. **Minimal.** At most 15 words, labels not sentences (see 7).
 5. **Visually appealing.** An image that follows every other rule but doesn't look good **fails** (see 2).
@@ -18,9 +18,9 @@ The approved look for blog featured images (first set for medsoftwarehub.com, fi
 
 Judge every image like a design director, ideally with a taste skill (impeccable / ui-ux-pro-max) in mind, at full size and at 350×250:
 
-1. **Blue dosage.** Count the blue already in the illustration. A big blue mass (the hub's blue tile, a giant blue number, a blue selection box) needs a **neutral** field (`cream`, `paper`), never `g5` or the vibrant blue. Too much blue reads as one flat blob. The reverse also holds: a grey-heavy illustration needs some colour behind it (`sky`).
-2. **Logo balance.** A logo fills **about 60–70% of its tile**: never a big tile around a tiny logo, never a logo crammed edge to edge. A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**; it is never shrunk inside a white tile. Wide wordmarks (SAP, Sage) fill about 65–75% of the tile's width.
-3. **Logos speak for themselves.** When products have recognisable logos, show **logos only** (like Granola's integration images), not logo + name cards. The hub does this by default.
+1. **Blue dosage.** A big blue mass in the illustration (the hub's blue tile, a giant blue number, a blue selection box) needs a **neutral** field (`cream`, `paper`), never `g5` or the vibrant blue. A grey-heavy illustration needs some colour behind it (`sky`).
+2. **Logo balance.** A logo fills **about 60–70% of its tile**. A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**. Wide wordmarks (SAP, Sage) fill about 65–75% of the tile's width.
+3. **Logos speak for themselves.** When products have recognisable logos, show **logos only**, not logo + name cards. The hub does this by default.
 4. **Figure/ground.** The hero separates cleanly from the field: no grey on grey, no white on near-white without a soft shadow.
 5. **Balance.** Even tile sizes, gaps and arrow lengths; the group sits on the optical centre; nothing looks too small or too big next to its neighbours.
 
@@ -32,13 +32,13 @@ Judge every image like a design director, ideally with a taste skill (impeccable
 |---|---|---|
 | Light | `sky` | light sky, top to bottom, thin guide lines |
 | Light | `paper` | cool off-white `#F1F3F6` |
-| Light | `cream` | warm off-white `#F6F2EA`, warm guide lines |
-| Light | `g5` | near-white at the top glowing into bright sky under the hero (after Granola) |
-| **Vibrant** | `blue` | **"Deep dunes":** bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands (after grainient.supply) |
+| Light | `cream` | warm off-white `#F6F2EA`, warm guide lines, no grain |
+| Light | `g5` | near-white at the top glowing into bright sky under the hero |
+| **Vibrant** | `blue` | **"Deep dunes":** bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands |
 
-- **Grain:** heavy on the vibrant blue, fine on `sky`, `paper` and `g5`. It sits on the field only, so cards stay crisp. **`cream` has no grain at all** (user 2026-10-14: "delete grain from cream bg"), a clean warm field. `"grain": false` turns it off on a light field.
-- **Vibrant blue on about 1 in 3 images per category, never on neighbours** ("VIBRANT CHECK FAILED"). The rest are light.
-- No other backgrounds exist. The renderer refuses any other name ("BACKGROUND CHECK FAILED").
+- **Grain:** heavy on the vibrant blue, fine on `sky`, `paper` and `g5`, none on `cream`. It sits on the field only, so cards stay crisp. `"grain": false` turns it off on a light field.
+- **Vibrant images** (the deep-dunes blue and the black headline layouts) appear on about 1 in 3 images per category, never on neighbours ("VIBRANT CHECK FAILED").
+- Only these five backgrounds exist ("BACKGROUND CHECK FAILED" for any other name).
 
 ### 3a. Background fit: the background must flatter the illustration
 Each layout lists only the backgrounds that suit its illustration, best first. Neighbours alternate within that list. A `bg` outside it is refused ("BACKGROUND FIT FAILED").
@@ -48,11 +48,11 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 | checklist | g5, sky | a single floating white card; light rising under it lifts it |
 | stack | g5, cream | a single floating white card |
 | before-after | g5, sky | white cards with a lifted "after" card |
-| ranked | sky, g5 | grey bars need colour behind them (never grey on `paper`) |
+| ranked | sky, g5 | grey bars need colour behind them |
 | focus | sky, g5 | skeleton rows need colour behind them |
 | window | sky, g5 | a big white app window |
 | versus | sky, cream | logo tiles, table or tilted cards |
-| hub | cream, paper | a big blue tile needs a neutral field (blue dosage) |
+| hub | cream, paper | a big blue tile needs a neutral field |
 | timeline | cream, sky | a thin track and callout on a calm warm field |
 | stat | paper, cream | the giant number brings the colour |
 | prompt | paper, cream | the pill bar and headline bring the colour |
@@ -61,39 +61,38 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 - Always check at 350×250 next to the neighbours: the hero separates cleanly, and the field never fights the illustration's colours.
 
 ### 3b. Vibrant fit: only a big white card goes on the blue
-The deep-dunes blue flatters **only illustrations built on a big white card**, like Granola's white UI on a bold field.
 
 | On blue? | Layouts |
 |---|---|
 | **Yes** | `checklist`, `versus/table`, `window`, `before-after/flow` |
-| **No** | everything else, including `stack` (its big blue icon tile is too much blue), `versus/logos` (floating tiles look weak), `hub`, `stat` and `focus` (blue-heavy), `ranked`, `timeline`, `prompt` |
+| **No** | everything else (blue-heavy illustrations become one flat blob; floating tiles look weak) |
 
 The renderer refuses the rest ("VIBRANT FIT FAILED"). On blue, text on the field turns white, and the frame grid, margin dots and all drop shadows are off.
 
 ### 3c. Shadows follow the background
-- **Vibrant blue: no drop shadows at all.** Cards, tiles, icons and the cursor sit flat on the field.
-- **Light backgrounds: minimal shadows, tinted to the field:** cool on `sky`/`g5`, warm on `cream`, neutral on `paper`. They're short and soft (opacity at most 8%), just enough to lift the card.
+- **Vibrant blue and black fields: no drop shadows.** Cards, tiles, icons and the cursor sit flat on the field.
+- **Light backgrounds: minimal shadows, tinted to the field:** cool on `sky`/`g5`, warm on `cream`, neutral on `paper`. Short and soft (opacity at most 8%), just enough to lift the card.
 - 1px edge lines are card edges, not shadows; they stay on light fields.
 - The renderer applies this to every layout. Never hand-add heavy shadows.
 
 ---
 
-## 3d. Headline layouts (after Chatbase)
-A second family next to the card layouts: a **big, tight headline or bold names** carry the image, with colour in a few clean shapes. Four layouts, three of them for X vs Y:
+## 3d. Headline layouts
+Bold names or a big, tight headline carry the image, with colour in a few clean shapes. Three are for X vs Y:
 
 | Layout | What you see | Best for |
 |---|---|---|
 | `versus/pills` | grey frame, two white panels: on top, two blue pills face each other with the two logos at the tips; below, the question ("A or {{B?}}") | X vs Y |
 | `versus/connect` | grey frame, one white panel: a centred headline with a blue phrase and a small sparkle divider; two big logo tiles linked by thin crossing strands to a white **VS** circle; small dot patches in the top corners | X vs Y |
-| `versus/slash` | black field with a fine dot grid; the two names in heavy caps (a coloured part each); a big italic **VS** with a glowing diagonal streak | X vs Y (counts as vibrant) |
-| `dark` | black field, site mark, a tag pill, a white headline; a panel in the **product's own brand colour** with its white logo | comparisons and reviews of one vivid brand (counts as vibrant) |
+| `versus/slash` | black field with a fine dot grid; the two names in heavy caps (a coloured part each); a big italic **VS** with a glowing diagonal streak | X vs Y (vibrant) |
+| `dark` | black field, site mark, a tag pill, a white headline; a panel in the **product's own brand colour** with its white logo | one vivid brand: reviews, comparisons (vibrant) |
 
-- **Colour: the subtle Chatbase blue.** Shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain, never cloudy watercolour. Headline key phrases use `{{ }}` and render in the same blue.
-- **White frame rule:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic in `versus/pills` and `versus/connect`).
-- **Black fields** (`dark`, `versus/slash`) count as vibrant: together with the deep-dunes blue, at most 1 in 3 images per category, never neighbours.
+- **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Headline key phrases use `{{ }}` and render in the same blue.
+- **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
+- **Black fields** (`dark`, `versus/slash`) count as vibrant (see 3).
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` uses it for its panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
-- **Seven ways to show X vs Y** now exist (`versus/overlap`, `table`, `logos`, `pills`, `connect`, `slash`, and `dark` when one brand leads), so comparison-heavy categories rotate for a long time without repeats.
-- These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (the title's own words). Every word stays inside x 210–1390.
+- **Seven ways to show X vs Y:** `versus/overlap`, `table`, `logos`, `pills`, `connect`, `slash`, and `dark` when one brand leads. Comparison-heavy categories rotate a long time without repeats.
+- These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390.
 
 ---
 
@@ -102,18 +101,18 @@ A second family next to the card layouts: a **big, tight headline or bold names*
 | Ingredient | Spec |
 |---|---|
 | Canvas | 1600×900 master. All key content inside **x 210–1390** so the 7:5, 2:1 and 16:9 crops keep it |
-| Type | **Inter** only (JetBrains Mono only in the opt-in craft kit). Headlines weight 600, tracking −0.03em |
+| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Headlines weight 600–700, tracking −0.03em |
 | Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines navy `#0E2A5C`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` for the one anchor and active states; sky `#27ACF2` for carets and legend dots |
 | States | **Blue = active/anchor:** checked boxes, progress bar, winning bar, highlighted row, selection box, current timeline dot. **Grey = inactive:** unchecked boxes, other bars, skeletons, empty dots |
 | Cards | White, radius 20–30px, minimal tinted shadow (see 3c), real text from the article |
 | Icons | Phosphor (free), one family |
 | Logos | Real product logos via the logo chain (see 8) |
-| Structure | Thin guide lines at x 210 / 1390 with a few tiny margin dots, **or** the faint frame grid with registration squares (stat, ranked, timeline, window). Never both, never dot patches |
+| Structure | Thin guide lines at x 210 / 1390 with a few tiny margin dots, **or** the faint frame grid with registration squares (stat, ranked, timeline, window). Never both |
 
 ---
 
-## 5. Layouts and their skeletons
+## 5. Card layouts and their skeletons
 
 Two layouts that share a skeleton (block arrangement) read as the same image at thumbnail size, so each owns a distinct one. **Layout = mode + variant**; background, colours, bleed and text don't make a new layout.
 
@@ -137,7 +136,7 @@ Two layouts that share a skeleton (block arrangement) read as the same image at 
 - The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; how-to: before-after, timeline, stack, checklist). Use that range to avoid repeats.
 - **When adding a layout:** squint at its 350×250 card next to every other layout. If two share a skeleton, redesign one. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
-**VS badge:** a focal blue-gradient circle with a white "VS" and a white ring, never a small grey chip. On overlap cards it sits on the bottom of the seam; on the table it sits where the header line crosses the column line, with no glow. It never touches text.
+**VS badge:** a focal blue-gradient circle with a white "VS" and a white ring. On overlap cards it sits on the bottom of the seam; on the table it sits where the header line crosses the column line, with no glow. It never touches text.
 
 ---
 
@@ -173,7 +172,7 @@ Calm is good; bland is not.
 - **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` → Simple Icons → Brandfetch icon (used as an app tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped.
 - **Brandfetch client ID:** free at brandfetch.com/developers. Keep it **local** (`~/.blog-featured-images/config.json` or `BRANDFETCH_CLIENT_ID`); never commit it.
 - **Style:** original colours (`"logoStyle": "color"`, the default) in white tiles; one style per image. `mono` and `tint` exist for when colour logos would compete with the anchor.
-- **Balance:** see 2 (logos fill ~65% of the tile; app icons become the tile).
+- **Balance:** see 2.
 
 ---
 
@@ -201,7 +200,7 @@ The heading uses **the blog title's own words and meaning, just shorter**. No cr
 | How to Switch EMR Vendors Without Losing Patient Data | Switch EMR Vendors Without Losing Data | Every chart makes the move |
 | 7 Best ERP Software for Small Businesses in 2026 | 7 Best ERP | Seven ERPs. One right fit. |
 
-Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HEADING CHECK FAILED"). Layouts without a headline (before-after, versus, hub) use the title's key terms in their labels (e.g. the hub tile "7 Best ERP").
+Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HEADING CHECK FAILED"). Layouts without a headline (before-after, most versus variants, hub) use the title's key terms in their labels (e.g. the hub tile "7 Best ERP").
 
 ---
 
@@ -209,8 +208,8 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 | Role | Size (on the 1600×900 master) |
 |---|---|
-| Headline | 56–76px, weight 600, never wider than about 760px; auto-sizes down, never up |
-| Hero number (stat) | up to 210px, the only giant type |
+| Headline | 56–76px in card layouts (up to ~110px in headline layouts), never wider than its panel; auto-sizes down, never up |
+| Hero number (stat) | up to 210px |
 | Section labels | about 50px / 500, muted |
 | Card headings | 32–36px |
 | Primary rows / bullets | 32–36px outside app mockups |
@@ -223,21 +222,17 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ## 12. Site mark (optional, some images only)
 
-`"craft": true` + `"series": "Pricing"` adds the site's mark and a mono series tag (`PRICING`, `COMPARISON`, `GUIDE`). Use it only in a natural empty slot (above a centred headline, under a centred group), on **at most 1 in 3 images per category, never on neighbours** ("SERIES CHECK FAILED"). It doesn't count toward the word budget. The craft kit also switches labels to mono caps and ink to near-black; it is opt-in, not part of the default look.
+`"craft": true` + `"series": "Pricing"` adds the site's mark and a mono series tag (`PRICING`, `COMPARISON`, `GUIDE`). Use it only in a natural empty slot (above a centred headline, under a centred group), on **at most 1 in 3 images per category, never on neighbours** ("SERIES CHECK FAILED"). It doesn't count toward the word budget. The craft kit also switches labels to mono caps and ink to near-black; it is opt-in.
 
 ---
 
-## 13. Never do (all tried and rejected)
+## 13. Guardrails
 
-- **Backgrounds:** pastel washes, colour pools in the corners, two competing hues, centre-glow or spotlight gradients, flat or diagonal blues, other dune textures, dot patches, outline-shape patterns (arches, waves), a royal-blue field with floating diamonds ("doesn't look premium"), cloudy high-contrast watercolour. Black only in `dark` and `versus/slash`.
-- **Gumloop-style layouts** (white logo tiles with ×, two-colour split fields, colour bands, orbit hubs, logo rows): tried, all rejected.
-- **A white design without the grey frame.**
-- **Headline layouts tried and deleted** ("they still don't look good", even after two rounds): diagonal watercolour pills beside a title (`pills`), a title next to a fluted-glass panel with a UI card (`split`), a giant watercolour number beside a title (`number`).
-- **Colour:** too much blue (a blue-heavy illustration on a blue-ish field), a navy anchor, more than one accent.
-- **Logos:** a tiny logo in a big tile, an app icon shrunk inside a white tile, logo + name cards where logos alone would do, invented or warped logos.
-- **Layouts:** a text-only card when a visual would do (the old stack/split), two layouts with the same skeleton, anything added to fill space.
-- **Details:** heavy shadows (any shadow on the vibrant blue), small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos, gradient text, neon.
+- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black only in `dark` and `versus/slash`.
+- **Logos:** never a tiny logo in a big tile, an app icon shrunk inside a white tile, or invented or warped logos.
+- **Layouts:** never two layouts with the same skeleton; never anything added to fill space; a white design always has the grey frame.
+- **Details:** no heavy shadows, small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos or neon.
 
-## 14. Where the look came from
+## 14. Inspiration
 
-Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight, "A × B" lockup), Littlebird (one selected tile), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments or colours: variety comes from layout, never from palette or type.
+Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments: variety comes from layout, never from palette or type.

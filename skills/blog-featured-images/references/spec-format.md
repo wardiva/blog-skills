@@ -126,9 +126,8 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
 
 ---
 
-# Headline layouts (after Chatbase)
+# Headline layouts
 Four layouts: `versus/pills`, `versus/connect`, `versus/slash` and `dark`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
-
 
 ## Versus pills (`"mode": "versus", "variant": "pills"`)
 ```json
@@ -148,7 +147,6 @@ Four layouts: `versus/pills`, `versus/connect`, `versus/slash` and `dark`. They 
   "left": { "label": "Dynamics\n{{365}}", "color": "#3D7BFF" }, "right": { "label": "Acumatica", "color": "#36C5F0" } }
 ```
 - Names in caps; the `{{ }}` part takes that side's `color` (without markup: the last word, or the whole single word). Short names read best (≤ 10 letters per line).
-
 
 ## Dark (`"mode": "dark"`; black, counts as vibrant)
 ```json

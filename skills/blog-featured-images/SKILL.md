@@ -9,7 +9,7 @@ Make featured images that are **true to the article**, **understood in 2 seconds
 
 Read these before your first image in a session:
 - `references/approved/`: the finalized images (card layouts and headline layouts). This is the target look.
-- `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, never-do list).
+- `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails).
 - `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
 - `references/agents.md`: the three-agent fast-batch workflow, Maker and QA prompts, QA checklist.
 - `references/lessons.md`: speed tools, pre-flight checks and gotchas.
@@ -66,7 +66,7 @@ Read these before your first image in a session:
 | `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
 | `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand (vibrant) |
 
-The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: seven versus options plus `dark`). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants plus `dark`). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
 ## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.
@@ -95,13 +95,13 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `VARIETY CHECK FAILED` | Use one of the layouts it lists (set `mode`, plus `variant` when not `default`) |
 | `BACKGROUND FIT FAILED` | Remove `bg` (or use one it lists) |
 | `BACKGROUND CHECK FAILED` | That background doesn't exist; use `sky`, `paper`, `cream`, `g5` or `blue` |
-| `VIBRANT CHECK FAILED` | Blue was used on a neighbour; remove `"bg": "blue"` |
-| `VIBRANT FIT FAILED` | This layout doesn't go on blue; remove `"bg": "blue"` |
+| `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black); use a light background or a light layout |
+| `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` |
 | `SERIES CHECK FAILED` | Remove `"series"` |
 
 ## Setup
 - **Needs:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast article reading. **Without agent-browser**, read the articles with WebFetch in parallel, save the text to `featured-images/articles/<slug>.md`, and continue.
 - **Brandfetch client ID** (optional, free at brandfetch.com/developers): `~/.blog-featured-images/config.json` as `{"brandfetchClientId": "…"}` or the `BRANDFETCH_CLIENT_ID` env var. **Never commit it.** Without it, logos still work through Iconify and Simple Icons.
 - **New site:** copy `brands/_template.json` to `brands/<site>.json` and fill in the brand colours, plus `markUrl` and `markName` for the optional site mark.
-- Fonts (Inter), icons (Phosphor) and logos load from the internet at render time.
-- History is per brand (`~/.blog-featured-images/history-<brand>.json`, or `FEATURED_HISTORY_DIR`). Re-rendering a `slug` replaces its entry; delete a discarded test image's entry by hand.
+- Fonts (Inter, Poppins), icons (Phosphor) and logos load from the internet at render time.
+- History is per brand (`~/.blog-featured-images/history-<brand>.json`, or `FEATURED_HISTORY_DIR`). Re-rendering a `slug` replaces its entry; remove a test image's entry by hand.
