@@ -36,6 +36,7 @@ Read these before your first image in a session:
 10. **Shadows follow the background:** none on the blue; minimal and tinted on light fields (automatic).
 11. **Site mark only sometimes (enforced):** `"craft": true` + `"series"` adds the site mark + series tag, in a natural empty slot, on at most 1 in 3 images, never neighbours ("SERIES CHECK FAILED").
 12. **White designs sit in a grey frame:** a white rounded panel inset 28px on `#F2F2F3` (automatic in `versus/pills` and `versus/connect`).
+13. **Delivered images are permanent (enforced):** once QA passes and the user has the images, finalize them (`scripts/finalize.mjs`). A finalized image keeps its files in `featured-images/<slug>/`, stays in the site history and the folder ledger forever (it keeps counting for layout rotation), and is never re-created or overwritten ("FINAL IMAGE LOCKED"). Redo one only when the user explicitly asks.
 
 ## Layouts: 12 modes, 18 layouts
 
@@ -85,7 +86,12 @@ Full prompts and the QA checklist are in `references/agents.md`.
    Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… bg=… words=N/15`.
 4. **QA:** `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out featured-images/qa-sheet.png --highlight <slugs>`, then one QA agent.
 5. **Fix** only the failures, in parallel. **Deliver** the QA-passed images as a contact sheet with each layout and the facts used. Ask before uploading anything to a website.
-6. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick.
+6. **Finalize** the delivered images so they are stored permanently and can never be re-created:
+   ```bash
+   node "<skill-dir>/scripts/finalize.mjs" --brand <b> <slug> <slug> ...
+   ```
+   `--list` shows every delivered image.
+7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick.
 
 **When the renderer refuses** (never work around it with `--force` or another folder):
 | Message | Fix |
@@ -98,10 +104,11 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black); use a light background or a light layout |
 | `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` |
 | `SERIES CHECK FAILED` | Remove `"series"` |
+| `FINAL IMAGE LOCKED` | That article's image was already delivered and is permanent. Don't re-create it; a new article needs its own slug and folder. Redo it only if the user explicitly asks (`--force`) |
 
 ## Setup
 - **Needs:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast article reading. **Without agent-browser**, read the articles with WebFetch in parallel, save the text to `featured-images/articles/<slug>.md`, and continue.
 - **Brandfetch client ID** (optional, free at brandfetch.com/developers): `~/.blog-featured-images/config.json` as `{"brandfetchClientId": "…"}` or the `BRANDFETCH_CLIENT_ID` env var. **Never commit it.** Without it, logos still work through Iconify and Simple Icons.
 - **New site:** copy `brands/_template.json` to `brands/<site>.json` and fill in the brand colours, plus `markUrl` and `markName` for the optional site mark.
 - Fonts (Inter, Poppins), icons (Phosphor) and logos load from the internet at render time.
-- History is per brand (`~/.blog-featured-images/history-<brand>.json`, or `FEATURED_HISTORY_DIR`). Re-rendering a `slug` replaces its entry; remove a test image's entry by hand.
+- History is per brand (`~/.blog-featured-images/history-<brand>.json`, or `FEATURED_HISTORY_DIR`). It holds every delivered image, so never delete it. Re-rendering a slug that isn't delivered yet replaces its entry.

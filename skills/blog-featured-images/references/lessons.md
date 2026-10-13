@@ -51,8 +51,8 @@ Read this before every batch.
 - One site-wide history per brand counts every render, wherever its folder is.
 - Layout identity (mode + variant) is the rule, and QA does the visual side-by-side (pixel similarity can't tell layouts apart).
 - With 18 layouts, a category repeats after 18 images. When the least-used tier already has one use each, add a variant **before** briefing Makers.
-- When the user finalizes images, record them in both the site history and the local ledger (`featured-images/.featured-ledger.json`).
-- Re-running a batch on already-imaged articles: back up the old folders to `featured-images/_previous/<label>/` first, then give each article a **different** layout than last time.
+- **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting for rotation, and can't be re-created. Never delete the history file.
+- An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
 
 ## 6. Facts
 

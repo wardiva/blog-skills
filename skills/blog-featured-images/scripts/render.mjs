@@ -581,6 +581,13 @@ for (const e of [...siteHistory, ...ledger].sort((x, y) => String(x.at).localeCo
 const history = [...bySlug.values()].sort((x, y) => String(x.at).localeCompare(String(y.at)));
 const prior = history.filter((e) => e.category === category && e.slug !== slug);
 const force = args.includes('--force');
+// Delivered images are permanent: a finalized image is never re-created or overwritten (only if the user explicitly asks: --force).
+const deliveredHere = history.find((e) => e.final && (e.slug === slug || path.resolve(e.out || '') === path.resolve(outDir)));
+if (deliveredHere && !force) {
+  console.error(`FINAL IMAGE LOCKED: "${deliveredHere.slug}" was delivered on ${String(deliveredHere.finalizedAt).slice(0, 10)} (${deliveredHere.out}).
+Delivered images are permanent and can't be re-created or overwritten. Use a new slug and output folder for a new article.`);
+  process.exit(2);
+}
 const topic = spec.topic || null;
 const sameTopic = topic ? history.filter((e) => e.topic === topic && e.slug !== slug) : [];
 if (sameTopic.some((e) => e.mode === MODE) && !force) {

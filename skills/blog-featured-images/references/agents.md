@@ -21,6 +21,7 @@ Every featured-image request runs with three roles. One agent never both makes a
 5. **One QA pass:** `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out <featured-images>/qa-sheet.png --highlight <slug1,slug2,...>`, then **one** QA agent with the sheet, the master.png paths, specs and article files.
 6. **Fix only the failures, in parallel:** send each FAIL's fixes to its Maker (SendMessage). QA re-checks only those. Up to 3 rounds; never ship a FAIL silently.
 7. **Deliver** the QA-passed images as one contact sheet, with layouts and the facts used.
+8. **Finalize** them right after delivery: `node <skill-dir>/scripts/finalize.mjs --brand <b> <slug> ...`. They become permanent: stored, counted for rotation forever, and never re-created ("FINAL IMAGE LOCKED").
 
 **Speed rules:** never fetch an article twice, never run Makers one after another, never open images one by one when the sheet shows them, give agents only the files they need, and report progress in one line per step.
 
@@ -36,7 +37,7 @@ For each article below:
    - "logo": "<official domain>" on every named product. Hub: logos only.
    - bg: leave it out (the renderer picks the best light field), unless the plan says "blue".
 3. Render: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>". Never use --force.
-   If a check fails, fix the spec within the assigned layout; if the layout itself is refused, stop and report it.
+   If a check fails, fix the spec within the assigned layout; if the layout itself is refused, or you see FINAL IMAGE LOCKED, stop and report it.
 4. Open master.png and card-350x250.png; fix wraps, clipping or anything that doesn't look good.
 Articles: <list: article file, layout, bg decision, category, topic, slug, brand>
 Return per article: slug, layout, bg, spec path, master.png path, card path, and the facts used (each with the sentence it came from).

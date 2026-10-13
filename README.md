@@ -65,6 +65,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), picks the least-used layout per article and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
 2. **Makers** (parallel subagents): write each spec from the article's facts and render it.
 3. **QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no reused layout, 2-second scan, minimal text, balanced, true to the article, clean logos. Failures go back to their Maker; only images that pass are delivered.
+4. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored, keep counting for layout rotation, and can never be re-created or overwritten.
 
 **Built-in checks** (the renderer refuses to finish):
 
@@ -78,6 +79,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
+| `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
 
 **The look:**
 - **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue** on about 1 in 3 images, only behind a big white card.
@@ -127,7 +129,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
 | `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |
 | `references/lessons.md` | Speed tools, gotchas, pre-flight checks, taste |
-| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `sheet.mjs` |
+| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `sheet.mjs`, `finalize.mjs` (locks delivered images) |
 | `examples/` | Approved specs for every layout |
 
 ## Troubleshooting
