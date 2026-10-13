@@ -1,6 +1,6 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in two families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), and Chatbase-style headline layouts with giant type and bold blue shapes. It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in two families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), and Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black + brand colour). It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
@@ -86,7 +86,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 - **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons become the tile, and "best of" hubs show logos only.
 
-## Layouts (15 modes, 21 layouts)
+## Layouts (12 modes, 18 layouts)
 
 **Card layouts:**
 
@@ -104,16 +104,14 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `stack` | default | One key rule | no |
 | `window` | default | Vendor lists, pricing tables | yes |
 
-**Headline layouts** (after Chatbase: a giant headline, subtle vivid blue shapes, white designs in a grey frame, some on black):
+**Headline layouts** (after Chatbase: subtle vivid blue shapes, white designs in a grey frame, two on black):
 
 | Layout | Best for |
 |---|---|
-| `pills` | How-to, guides |
-| `versus/pills`, `versus/connect` | X vs Y |
-| `versus/slash` | X vs Y, on black |
-| `split` | X vs Y with prices (fluted-glass panel) |
+| `versus/pills` | X vs Y: two facing pills with the logos, the question below |
+| `versus/connect` | X vs Y: two logo tiles linked to a VS circle |
+| `versus/slash` | X vs Y on black: bold names, italic VS |
 | `dark` | One vivid brand, its colour as the panel |
-| `number` | "7 best" lists |
 
 ## Add your own site
 

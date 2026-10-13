@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (giant headline, subtle vivid blue shapes, black versions) - 15 modes / 21 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (mostly X vs Y - facing pills, connected logos, black slash, black + brand colour) - 12 modes / 18 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog featured images
@@ -15,7 +15,7 @@ Read these before your first image in a session:
 - `references/lessons.md`: speed tools, pre-flight checks and gotchas.
 
 ## The target look
-- **Two families:** card layouts on light fields, and headline layouts after Chatbase (giant headline, subtle vivid blue shapes, white designs in a grey frame, some on black).
+- **Two families:** card layouts on light fields, and four headline layouts after Chatbase (three of them for X vs Y; subtle vivid blue shapes, white designs in a grey frame, two on black).
 - **Light fields** (`sky`, `paper`, `cream`, `g5`) with fine grain and thin guide lines, each chosen to flatter its illustration.
 - **About 1 in 3 images on the vibrant "deep dunes" blue** (heavy grain, soft rolling bands), and only when the illustration is a big white card.
 - One big white UI card or hero. Blue gradient only for the active/anchor element; grey for inactive.
@@ -35,9 +35,9 @@ Read these before your first image in a session:
 9. **Visual appeal is a hard gate:** an image that passes every check but doesn't look good fails QA (blue dosage, logo balance, logos only, figure/ground, balance).
 10. **Shadows follow the background:** none on the blue; minimal and tinted on light fields (automatic).
 11. **Site mark only sometimes (enforced):** `"craft": true` + `"series"` adds the site mark + series tag, in a natural empty slot, on at most 1 in 3 images, never neighbours ("SERIES CHECK FAILED").
-12. **White designs sit in a grey frame:** a white rounded panel inset 28px on `#F2F2F3` (automatic in the headline layouts).
+12. **White designs sit in a grey frame:** a white rounded panel inset 28px on `#F2F2F3` (automatic in `versus/pills` and `versus/connect`).
 
-## Layouts: 15 modes, 21 layouts
+## Layouts: 12 modes, 18 layouts
 
 **Card layouts** (light fields, white UI cards):
 | Layout | Shows | Best for | Light bg (best first) | On blue? |
@@ -57,19 +57,16 @@ Read these before your first image in a session:
 | `stack` | takeaway card, two cards peeking from the top | one key rule | g5, cream | no |
 | `window` | app window: list pane + detail pane | vendor lists, pricing | sky, g5 | **yes** |
 
-**Headline layouts** (after Chatbase; giant headline, subtle vivid blue shapes; they paint their own canvas, `bg` is ignored). White ones always sit in a grey frame; black ones count as vibrant:
+**Headline layouts** (after Chatbase; they paint their own canvas, `bg` is ignored). White ones sit in a grey frame; black ones count as vibrant:
 
 | Layout | Shows | Best for |
 |---|---|---|
-| `pills` | title panel + shapes panel (three-tone pills), grey divider | how-to, guides |
 | `versus/pills` | two facing blue pills with the logos at the tips, the question below | X vs Y |
 | `versus/connect` | centred headline, two logo tiles linked to a VS circle, dot patches | X vs Y |
 | `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
-| `split` | title panel + wide fluted-glass panel with a big price card, logo tiles on its corners | X vs Y with prices |
 | `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand (vibrant) |
-| `number` | giant multi-tone number in its own panel + title panel | "7 best" lists |
 
-The same article type can use several layouts (cost: focus, stat, prompt, window, ranked). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: seven versus options plus `dark`). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
 ## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.

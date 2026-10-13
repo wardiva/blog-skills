@@ -78,24 +78,22 @@ The renderer refuses the rest ("VIBRANT FIT FAILED"). On blue, text on the field
 
 ---
 
-## 3d. Headline style (after Chatbase; user: "LOVE IT")
-A second family next to the card layouts: a **giant, tight, bold headline** carries the image, and colour lives in a few bold shapes.
+## 3d. Headline layouts (after Chatbase)
+A second family next to the card layouts: a **big, tight headline or bold names** carry the image, with colour in a few clean shapes. Four layouts, three of them for X vs Y:
 
 | Layout | What you see | Best for |
 |---|---|---|
-| `pills` | **two white panels** (the grey gutter is the divider): the title panel (medium-weight headline, key phrase in blue) and a shapes panel with three thick pills, each its own tone: aqua `#86E3F1→#12BDEE`, royal `#3A8AF6→#1D4ED8`, deep `#1C44D6→#2EA6F2` | how-to, "how long", guides, statistics |
-| `versus/pills` | two blue pills facing each other with the two logos at the tips; the question below ("A or {{B?}}") | X vs Y |
-| `versus/connect` | centred headline with a blue phrase and a sparkle divider; two big logo tiles linked by thin crossing strands to a white **VS** circle; small dot patches top-left and top-right | X vs Y |
+| `versus/pills` | grey frame, two white panels: on top, two blue pills face each other with the two logos at the tips; below, the question ("A or {{B?}}") | X vs Y |
+| `versus/connect` | grey frame, one white panel: a centred headline with a blue phrase and a small sparkle divider; two big logo tiles linked by thin crossing strands to a white **VS** circle; small dot patches in the top corners | X vs Y |
 | `versus/slash` | black field with a fine dot grid; the two names in heavy caps (a coloured part each); a big italic **VS** with a glowing diagonal streak | X vs Y (counts as vibrant) |
-| `split` | title panel (site mark, calm **medium-weight** headline bottom-left) next to a wide **fluted-glass** blue panel (uneven soft vertical stripes, deep top-left to light bottom-right) holding a big white card (2–3 rows with logos); up to two logo tiles overlap the card's corners, never its content | X vs Y with prices, product pages |
-| `dark` | black field, site mark, a tag pill, white headline; a panel in the **product's own brand colour** with its white logo | comparisons and reviews of one vivid brand (counts as vibrant) |
-| `number` | **two panels**: the giant number fills its own panel in a multi-tone watercolour (cyan → royal → indigo); the title sits in the other panel, medium weight, key words in blue | "7 best", "10 tools" lists |
+| `dark` | black field, site mark, a tag pill, a white headline; a panel in the **product's own brand colour** with its white logo | comparisons and reviews of one vivid brand (counts as vibrant) |
 
-- **Colour: the subtle Chatbase blue.** Shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Headlines are **medium weight (500)** in `pills`, `split` and `number` (Chatbase's calm type); the versus layouts keep their bold headlines. Cloudy, high-contrast watercolour was rejected ("too much and too bad"). Headline key phrases use `{{ }}` and render in the same blue.
-- **White frame rule:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page. The renderer does this for `pills`, `split`, `number`, `versus/pills` and `versus/connect`.
-- **Black fields** (`dark`, `versus/slash`) count as vibrant: at most 1 in 3 images per category, never neighbours, shared with the deep-dunes blue.
-- **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` can use it for its panel (`"color": "#00C247"`). Otherwise the panel is the subtle blue.
-- These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (title's own words).
+- **Colour: the subtle Chatbase blue.** Shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain, never cloudy watercolour. Headline key phrases use `{{ }}` and render in the same blue.
+- **White frame rule:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic in `versus/pills` and `versus/connect`).
+- **Black fields** (`dark`, `versus/slash`) count as vibrant: together with the deep-dunes blue, at most 1 in 3 images per category, never neighbours.
+- **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` uses it for its panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
+- **Seven ways to show X vs Y** now exist (`versus/overlap`, `table`, `logos`, `pills`, `connect`, `slash`, and `dark` when one brand leads), so comparison-heavy categories rotate for a long time without repeats.
+- These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (the title's own words). Every word stays inside x 210–1390.
 
 ---
 
@@ -234,6 +232,7 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 - **Backgrounds:** pastel washes, colour pools in the corners, two competing hues, centre-glow or spotlight gradients, flat or diagonal blues, other dune textures, dot patches, outline-shape patterns (arches, waves), a royal-blue field with floating diamonds ("doesn't look premium"), cloudy high-contrast watercolour. Black only in `dark` and `versus/slash`.
 - **Gumloop-style layouts** (white logo tiles with ×, two-colour split fields, colour bands, orbit hubs, logo rows): tried, all rejected.
 - **A white design without the grey frame.**
+- **Headline layouts tried and deleted** ("they still don't look good", even after two rounds): diagonal watercolour pills beside a title (`pills`), a title next to a fluted-glass panel with a UI card (`split`), a giant watercolour number beside a title (`number`).
 - **Colour:** too much blue (a blue-heavy illustration on a blue-ish field), a navy anchor, more than one accent.
 - **Logos:** a tiny logo in a big tile, an app icon shrunk inside a white tile, logo + name cards where logos alone would do, invented or warped logos.
 - **Layouts:** a text-only card when a visual would do (the old stack/split), two layouts with the same skeleton, anything added to fill space.
@@ -241,4 +240,4 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ## 14. Where the look came from
 
-Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight, "A × B" lockup), Littlebird (one selected tile), grainient.supply (grainy deep gradients), Chatbase (giant headlines, the subtle vivid blue, pills, fluted glass, black + brand colour, framed white panels). Borrow their principles, never their ornaments or colours: variety comes from layout, never from palette or type.
+Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight, "A × B" lockup), Littlebird (one selected tile), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments or colours: variety comes from layout, never from palette or type.
