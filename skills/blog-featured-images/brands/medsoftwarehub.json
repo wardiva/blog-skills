@@ -1,4 +1,21 @@
-{ "name": "medsoftwarehub.com",
-  "wash": { "warm": "#FDEFE8", "mid": "#F4F6FB", "cool": "#DCEEFC", "deep": "#CBE6FA", "pool": "rgba(39,172,242,.35)", "warmPool": "rgba(255,170,140,.25)" },
-  "accentLight": "#3B86F0", "accent": "#0A5FD8", "sky": "#27ACF2",
-  "labelBefore": "#7C7468", "labelAfter": "#2C5FAE", "legendAfter": "#2C7BD8", "headline": "#0E2A5C", "flat": "#F1F0EC" }
+{
+ "name": "medsoftwarehub.com",
+ "wash": {
+  "warm": "#FDEFE8",
+  "mid": "#F4F6FB",
+  "cool": "#DCEEFC",
+  "deep": "#CBE6FA",
+  "pool": "rgba(39,172,242,.35)",
+  "warmPool": "rgba(255,170,140,.25)"
+ },
+ "accentLight": "#3B86F0",
+ "accent": "#0A5FD8",
+ "sky": "#27ACF2",
+ "labelBefore": "#7C7468",
+ "labelAfter": "#2C5FAE",
+ "legendAfter": "#2C7BD8",
+ "headline": "#0E2A5C",
+ "flat": "#F1F0EC",
+ "markUrl": "https://medsoftwarehub.com/wp-content/uploads/2026/10/med-software-hub-icon-300x300.png",
+ "markName": "Med Software Hub"
+}

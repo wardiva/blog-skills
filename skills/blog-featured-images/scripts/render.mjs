@@ -364,8 +364,8 @@ svg.fl{position:absolute;inset:0;overflow:visible}
 .fleg .f1{color:#7C7468}.fleg .f1 i{background:#B7B1A6}.fleg .f2{color:#2C5FAE}.fleg .f2 i{background:#27ACF2}
 </style>
 <div class="fb"><div class="fi"><i class="${esc(B.icon || 'ph ph-hard-drives')}"></i></div><b>${esc(B.label)}</b>${(B.lines || []).map((l) => `<span>${esc(l)}</span>`).join('')}</div>
-<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rgh"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
-<g filter="url(#rgh)" fill="none" stroke="#141A26" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M640 470 Q 745 380 838 452"/><path d="M808 428 L 842 455 L 804 476"/></g></svg>
+${CRAFT ? `<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><g fill="none" stroke="#3B86F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M632 440 C 712 440 760 440 842 440"/><path d="M824 426 L 844 440 L 824 454"/></g><circle cx="632" cy="440" r="7" fill="#3B86F0"/></svg>` : `<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rgh"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
+<g filter="url(#rgh)" fill="none" stroke="#141A26" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M640 470 Q 745 380 838 452"/><path d="M808 428 L 842 455 L 804 476"/></g></svg>`}
 <div class="fa"><div class="fi"><i class="${esc(A.icon || 'ph-fill ph-cloud')}"></i></div><b>${esc(A.label)}</b><ul>${(A.items || []).map((t) => `<li><i class="ph-fill ph-check-circle"></i>${esc(t)}</li>`).join('')}</ul></div>
 ${spec.legend ? `<div class="fleg"><span class="f1"><i></i>${esc(spec.legend[0])}</span><span class="f2"><i></i>${esc(spec.legend[1])}</span></div>` : ''}`;
 }
@@ -476,6 +476,32 @@ const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:l
 .tex .acc{background:${acc}}`;
 // anchor (the one high-contrast element): approved blue gradient by default, or navy
 const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
+const CRAFT = spec.craft === true;
+const MONO = "'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
+const SERIES_POS = spec.seriesPos || { focus: 'top', versus: 'bottom', 'before-after': 'tl' }[MODE] || 'bottom';
+const seriesMark = CRAFT && spec.series ? `<!--smark--><div class="smark sm-${SERIES_POS}">${brand.markUrl ? `<img src="${brand.markUrl}" alt="">` : ''}<b>${esc(brand.markName || brand.name || '')}</b><span>${esc(spec.series)}</span></div><!--/smark-->` : '';
+const PATTERN = '';   // the arch outline pattern was rejected by the user ("the shapes you added so bad"); don't reintroduce outline-shape backgrounds
+const CRAFT_CSS = `
+.smark{position:absolute;z-index:3;display:flex;align-items:center;gap:12px;white-space:nowrap}
+.smark img{width:40px;height:40px;border-radius:10px}.smark b{font-size:26px;font-weight:600;color:#141A26;letter-spacing:-.01em}
+.smark span{font-family:${MONO};font-size:22px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#0A5FD8}
+.sm-top{left:50%;top:84px;transform:translateX(-50%)}.sm-bottom{left:50%;bottom:72px;transform:translateX(-50%)}.sm-tl{left:240px;top:96px}
+/* focus */
+.fh{color:#141A26;font-weight:500;letter-spacing:-.03em}
+.fct{font-family:${MONO};text-transform:uppercase;letter-spacing:.08em;font-size:20px;color:#7F8794}
+.fr b{font-family:${MONO};font-size:26px;font-weight:500;color:#141A26;text-transform:uppercase}.fr.on b{color:#0A5FD8}
+.fr em{color:#141A26}.fr.on em{color:#0A5FD8}
+.fr>i{height:22px;border-radius:11px;background:#EEF1F5}.fr>i>i{border-radius:11px;background:#D3D9E2}
+.fr.gh>i>i,.fr.gh s{background:#E3E7EE}
+/* versus logos */
+.lgs.l1 b,.lgs.l2 b{color:#141A26}
+.lgs span{font-family:${MONO};text-transform:uppercase;letter-spacing:.06em;font-size:24px;color:#5D6675;background:#fff}
+/* before-after flow */
+.fb{background:#fff;border:2px dashed #D3D9E2;box-shadow:none}
+.fb .fi{background:#fff;color:#141A26;box-shadow:0 0 0 2px #E3E7EE}.fb b{color:#141A26;font-weight:500}.fb span{font-family:${MONO};color:#8A93A5}
+.fa b{color:#141A26;font-weight:600}.fa li{color:#141A26}
+.fleg{font-family:${MONO};text-transform:uppercase;font-size:22px;letter-spacing:.06em}.fleg .f1{color:#7F8794}.fleg .f2{color:#0A5FD8}
+`;
 const BG_CSS = {
   wash: `body{background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}body:before{display:block;background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}`,
   cool: `body{background:linear-gradient(160deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}body:before{display:block;background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at 5% 10%,rgba(255,180,150,.18),transparent 70%)}`,
@@ -485,7 +511,7 @@ const BG_CSS = {
   white: `body{background:#FBFBFC}body:before{display:block;background:radial-gradient(45% 60% at 0% 100%,rgba(39,172,242,.22),transparent 70%),radial-gradient(40% 50% at 100% 0%,rgba(255,180,150,.2),transparent 70%)}`,
 };
 const html = `<!doctype html><html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
 ${LOGO_JS}
 <style>
@@ -511,7 +537,7 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 .lg1{color:#141A26}.lg1 i{background:#141A26}.lg2{color:#2C7BD8}.lg2 i{background:#27ACF2}
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style></head><body>
-${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
+${PATTERN}${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
 ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.label)}</div><div class="lbl l2">${esc(after.label)}</div>
 <div class="c c1"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
@@ -519,7 +545,7 @@ ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mod
 <div class="legend"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`}
 ${cursorLayer()}
 <style>${BG_CSS[BG] || ''}</style>
-<div class="grain"></div></body></html>`;
+${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}<div class="grain"></div></body></html>`;
 
 
 // Brand colours: swap the default blue palette for the brand's.
@@ -530,7 +556,7 @@ for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
 fs.mkdirSync(outDir, { recursive: true });
 // ---- text budget (forced, user rule: "need to show less text"): count every visible word and refuse text-heavy images ----
 const MAX_WORDS = 15, MAX_RUN = 7;   // whole image / any single text element (no sentences)
-const bodyHtml = html.slice(html.indexOf('<body')).replace(/<(style|script|svg)[\s\S]*?<\/\1>/g, ' ').replace(/<\/?b>/g, '');   // <b> is inline emphasis, not a new element
+const bodyHtml = html.slice(html.indexOf('<body')).replace(/<(style|script|svg)[\s\S]*?<\/\1>/g, ' ').replace(/<!--smark-->[\s\S]*?<!--\/smark-->/g, ' ').replace(/<\/?b>/g, '');   // <b> is inline emphasis; the series mark is branding, not copy
 const runs = bodyHtml.split(/<[^>]+>/).map((t) => t.replace(/&[a-z#0-9]+;/gi, ' ').trim()).filter(Boolean);
 const wc = (t) => (t.match(/[A-Za-z0-9$€£%][^\s]*/g) || []).filter((w) => !/^0\d$/.test(w)).length;   // rank numbers (01, 02…) are decoration
 const WORDS = runs.reduce((n, t) => n + wc(t), 0);

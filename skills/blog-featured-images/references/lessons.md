@@ -60,6 +60,8 @@ QA failures in the test traced back to things the Orchestrator could have checke
 - **Texture layers go under the content** and accent dots stay in the outer margins; seed the pattern per slug so a category never repeats one dot layout.
 - **"Colors look off" = the palette drifted.** Keep the new structure but bring back the approved colours, and show A/B/C at once. (The flat cool grey and the heavy navy were rejected; the sky background was approved.)
 
+- **Outline-shape backgrounds were rejected** ("ew the shapes you added so bad"): arches, waves, big outline patterns. Copying a reference's decorative layer literally failed. Borrow its principles (contrast, ink, mono labels), not its ornaments.
+
 ## 4. Variety must be structural
 
 - Two images were "exact same" because the old check only knew one output folder. Now one site-wide history per brand counts every render (`~/.blog-featured-images/history-<brand>.json`).

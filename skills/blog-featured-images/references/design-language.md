@@ -237,6 +237,7 @@ Measured from their 2000×1125 thumbnails and converted to our 1600×900 canvas 
 - Depth is soft: card shadows with a large blur and about 6% opacity; stacked rows offset by a few px; occasional isometric layers for "platform" ideas.
 
 ### 8. Background pattern (structure without noise)
+- **REJECTED by the user: "ew the shapes you added so bad".** The large arch outline pattern was tried and removed from the renderer. **Never use outline-shape backgrounds** (arches, waves, rounded-rectangle diagonals). The soft dot texture is the approved structure layer.
 - **Large-scale outline shapes** at about 4–6% contrast, full bleed: repeating arches, rounded-rectangle diagonals, soft waves. Shapes 500–700px, so they read as texture, never as content.
 - Or the dot-matrix patches (already built). Never both.
 
@@ -249,7 +250,7 @@ Measured from their 2000×1125 thumbnails and converted to our 1600×900 canvas 
 3. **Skeleton rows with ON/OFF state** (accent vs grey pills and toggles) in every UI card.
 4. **Clean connectors with dot terminals** for flow, tree and cycle layouts.
 5. **Series tag + small site mark** (e.g. a medsoftwarehub mark + `GUIDE` / `PRICING` / `COMPARISON`) for consistency across the blog.
-6. **Large-scale outline pattern** background as an alternative to dot patches.
+6. ~~Large-scale outline pattern~~: **rejected** ("the shapes you added so bad"). Use the dot texture only.
 7. Headline weight 500 near-black (not light navy), 56–72px.
 
 ---
