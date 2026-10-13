@@ -81,13 +81,13 @@ function versus() {
   if (spec.variant === 'logos') {
     const LG_TOP = Math.round((900 - (240 + 30 + 53 + 18 + 58)) / 2);   // optically centred group: tiles + names + chips
     // "logos" (Mintlify "A x B" lockup): two large logo tiles, the VS badge between them, the names, one fact chip each.
-    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 150, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
+    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 156, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
     return `<style>
 .lgband{position:absolute;left:0;right:0;top:${LG_TOP - 14}px;height:268px;border-top:1px solid rgba(59,134,240,.35);border-bottom:1px solid rgba(59,134,240,.35);background:repeating-linear-gradient(135deg,rgba(59,134,240,.12) 0 2px,transparent 2px 16px)}
 .lgw{position:absolute;left:50%;top:${LG_TOP}px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:120px}
 .lgs{width:440px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.lgt{width:${spec.bg === 'blue' ? 280 : 240}px;height:${spec.bg === 'blue' ? 280 : 240}px;border-radius:60px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
-.lgt .lg{box-shadow:none;background:transparent}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt .lg.full{transform:scale(.62);border-radius:40px}
+.lgt{width:240px;height:240px;border-radius:56px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
+.lgt .lg{box-shadow:none;background:transparent;padding:0}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt:has(.lg.full){background:transparent}.lgt .lg.full{width:240px!important;height:240px!important;border-radius:56px}
 .lgs b{margin-top:30px;font-size:44px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;color:#0E2A5C}.l1 b,.l2 b{color:#0E2A5C}
 .lgs span{margin-top:18px;width:340px;box-sizing:border-box;padding:12px 0;border-radius:999px;background:#fff;box-shadow:0 0 0 1px rgba(20,26,38,.07),0 8px 20px rgba(30,60,110,.06);font-size:28px;color:#5D6675;white-space:nowrap;text-align:center}
 .lgv{position:absolute;left:50%;top:120px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
@@ -129,7 +129,36 @@ ${card(L, 250, -3, 'o1')}${card(R, 790, 3, 'o2', '<div class="ovs">VS</div>')}${
 
 // "hub" mode (Granola integrations): a blue centre tile, tilted white cards around it, hand-drawn arrows. Flat warm background.
 function hub() {
-  const n = Math.min(spec.cards.length, 7), T = n === 7 ? 390 : 450;      // 7 cards: tile moves up, 7th card sits below it
+  const n = Math.min(spec.cards.length, 7), T = n === 7 ? 390 : 450;
+  const LOGOS_ONLY = spec.cards.slice(0, n).every((c) => c.logo) && !spec.showNames;
+  if (LOGOS_ONLY) {
+    // Logos only (user 2026-10-14, Granola integrations style): square white logo tiles orbit the blue centre tile, no names.
+    // Balance rule: the logo fills ~65% of its tile; full-bleed app icons become the tile themselves.
+    const S = 156, L = 102, HX = 800, HY = T;
+    const pos = [[420, 190, -5], [360, 420, 4], [430, 650, -3], [1180, 190, 4], [1240, 420, -4], [1170, 650, 3], [800, 735, 2]].slice(0, n);
+    let arrows = '', tiles = '';
+    spec.cards.slice(0, n).forEach((cd, i) => {
+      const [cx, cy, r] = pos[i];
+      const dx = cx - HX, dy = cy - HY, m = Math.max(Math.abs(dx), Math.abs(dy));
+      const sx = HX + dx / m * 180, sy = HY + dy / m * 180, ex = cx - dx / m * (S / 2 + 26), ey = cy - dy / m * (S / 2 + 26);
+      const len = Math.hypot(ex - sx, ey - sy), qx = (sx + ex) / 2 - (ey - sy) / len * 26, qy = (sy + ey) / 2 + (ex - sx) / len * 26;
+      const ang = Math.atan2(ey - qy, ex - qx), h = 24;
+      const p1 = [ex - h * Math.cos(ang - 0.5), ey - h * Math.sin(ang - 0.5)], p2 = [ex - h * Math.cos(ang + 0.5), ey - h * Math.sin(ang + 0.5)];
+      arrows += `<path d="M${sx.toFixed(1)} ${sy.toFixed(1)} Q ${qx.toFixed(1)} ${qy.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}"/><path d="M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} L ${ex.toFixed(1)} ${ey.toFixed(1)} L ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}"/>`;
+      tiles += `<div class="hq" style="left:${cx - S / 2}px;top:${cy - S / 2}px;transform:rotate(${r}deg)">${logo(cd.logo, L, cd.name)}</div>`;
+    });
+    return `<style>
+.tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
+.tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap}
+.hq{position:absolute;width:${S}px;height:${S}px;border-radius:38px;background:#fff;display:grid;place-items:center;box-shadow:0 18px 40px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
+.hq .lg{box-shadow:none;background:transparent;padding:0}.hq .lg:not(.full){border-radius:0;overflow:visible}
+.hq:has(.lg.full){background:transparent}.hq .lg.full{width:${S}px!important;height:${S}px!important;border-radius:38px}
+svg.arr{position:absolute;inset:0;overflow:visible}
+</style>
+<svg class="arr" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
+<g filter="url(#rough)" fill="none" stroke="#141A26" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${arrows}</g></svg>
+<div class="tile">${spec.hubLabel ? `<div class="tl"><b>${esc(spec.hubLabel.big)}</b><span>${esc(spec.hubLabel.small || '')}</span></div>` : `<i class="${esc(spec.hubIcon || 'ph-fill ph-buildings')}"></i>`}</div>${tiles}`;
+  }
   const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 705, 2]];
   const LOGOS = spec.cards.some((c) => c.logo), CW = LOGOS ? 345 : 320, CH = spec.showSubs ? 160 : 112;
   if (LOGOS) slots.forEach((sl, i) => { if (i >= 3 && i < 6) sl[0] -= 25; if (i === 6) sl[0] -= 12; });   // wider cards: keep the right column inside x 1390   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
@@ -147,7 +176,6 @@ function hub() {
     cards += `<div class="hc${cd.logo ? ' hl' : ''}" style="left:${x}px;top:${y}px;transform:rotate(${r}deg)">${logo(cd.logo, 46)}<div class="ht"><b>${esc(cd.name)}</b>${spec.showSubs && cd.sub ? `<span>${esc(cd.sub)}</span>` : ''}</div></div>`;
   });
   return `<style>
-body{background:#F1F0EC}body:before{display:none}
 .tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
 .tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap}
 .hc{position:absolute;width:${CW}px;height:${CH}px;background:#fff;border-radius:20px;border:2px solid #E3E1DC;display:flex;flex-direction:column;justify-content:center;padding:0 26px;gap:8px}
@@ -185,30 +213,10 @@ h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-si
 <div class="bar"><span class="ph-txt">${esc(spec.placeholder)}</span>${chips}<span class="go"><i class="ph-bold ph-arrow-up"></i></span></div>`;
 }
 
-// "stack" (Granola "Brief prepared overnight"): one front card holding the takeaway over two offset cards.
+// "stack" (Granola "Brief prepared overnight"): one front card holding the takeaway, two offset cards peeking from the top.
+// The front card fits its content (user-approved 2026-10-14: "keep the 2nd one"); the whole stack is centred.
 function stack() {
   const lead = esc(spec.lead).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
-  if (spec.variant === 'split') {
-    // "split": a short definition over a two-column contrast (e.g. You | Vendor). The card sizes to its text and is centred;
-    // the back cards fan to the lower right of whatever height the card ends up.
-    const cols = (spec.split || []).slice(0, 2).map((c, i) => `<div class="sp${i}"><em>${c.logo ? logo(c.logo, 44) : ''}${esc(c.label)}</em><span>${esc(c.text)}</span></div>`).join('');
-    return `<style>
-.skw{position:absolute;left:320px;top:50%;width:960px;transform:translateY(-54%)}
-.skb{position:absolute;inset:0;border-radius:28px;background:#fff}
-.skb1{transform:translate(80px,80px);opacity:.5;box-shadow:0 10px 30px rgba(30,60,110,.08)}
-.skb2{transform:translate(40px,40px);opacity:.78;box-shadow:0 10px 30px rgba(30,60,110,.10)}
-.skf{position:relative;border-radius:28px;background:#fff;overflow:hidden;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)}
-.skt{padding:52px 60px 48px}
-.skh{display:flex;align-items:center;gap:16px;font-size:32px;color:#7F8794}.skh i{font-size:40px;color:#0A5FD8}
-.skl{margin:22px 0 0;font-size:58px;font-weight:500;line-height:1.15;color:#141A26;letter-spacing:-.02em}.skl b{font-weight:600;color:#0A5FD8}
-.sks{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #EEF0F4}
-.sks>div{display:flex;flex-direction:column;gap:8px;padding:34px 60px 38px}.sks .sp1{background:#F2F8FE;border-left:1px solid #E3ECF7}
-.sks em{display:flex;align-items:center;gap:14px;font-style:normal;font-size:22px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#9AA3B2}.sks .sp1 em{color:#2C5FAE}
-.sks span{font-size:34px;color:#141A26}
-</style>
-<div class="skw"><div class="skb skb1"></div><div class="skb skb2"></div>
-<div class="skf"><div class="skt"><div class="skh"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i>${esc(spec.title)}</div><div class="skl">${lead}</div></div><div class="sks">${cols}</div></div></div>`;
-  }
   return `<style>
 .sk{position:absolute;border-radius:28px;background:#fff}
 .sk1{left:390px;top:170px;width:820px;height:140px;opacity:.5;box-shadow:0 10px 30px rgba(30,60,110,.08)}
@@ -219,9 +227,11 @@ function stack() {
 .sku{margin:0;padding:0 0 0 34px;display:grid;gap:14px;font-size:32px;line-height:1.35;color:#7F8794}.sku li:first-child{color:#141A26}
 .skf .skh{padding-right:200px;font-size:48px;font-weight:600;color:#141A26;letter-spacing:-.02em}.skf .skl,.skf .sku{max-width:740px}.skf .skl{font-size:40px;color:#5D6675}.skf .skl b{color:#141A26}
 .skit{position:absolute;right:64px;top:56px;width:156px;height:156px;border-radius:40px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;font-size:92px;color:#fff;box-shadow:0 14px 30px rgba(10,95,216,.22)}
+.skw{position:absolute;left:270px;top:50%;width:1060px;transform:translateY(-42%)}.skw .sk{position:absolute;left:0;right:0;top:auto;width:auto;height:auto}
+.skw .sk1{left:120px;right:120px;top:-90px;bottom:90px}.skw .sk2{left:60px;right:60px;top:-45px;bottom:45px}.skw .skf{position:relative;height:auto;padding-bottom:64px}
 </style>
-<div class="sk sk1"></div><div class="sk sk2"></div>
-<div class="sk skf"><div class="skit"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i></div><div class="skh">${esc(spec.title)}</div><div class="skl">${lead}</div><ul class="sku">${spec.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+<div class="skw"><div class="sk sk1"></div><div class="sk sk2"></div>
+<div class="sk skf"><div class="skit"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i></div><div class="skh">${esc(spec.title)}</div><div class="skl">${lead}</div><ul class="sku">${spec.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div></div>`;
 }
 
 // "window" (Granola app-window shots): a whole macOS-style window, list pane + detail pane, real text.
@@ -342,7 +352,7 @@ function ranked() {
 // Grid only where it matches the vibe: open, data-led layouts on calm fields. Card-heavy or busy layouts stay clean.
 const FRAME_DEFAULT = { stat: true, timeline: true, window: true };   // ranked: texture instead (user-finalized look)
 function frameLayer() {
-  const on = spec.frame ?? FRAME_DEFAULT[spec.mode || 'before-after'] ?? false;
+  const on = spec.bg !== 'blue' && (spec.frame ?? FRAME_DEFAULT[spec.mode || 'before-after'] ?? false);   // no grid on the vibrant blue (the dark squares looked off)
   if (!on) return '';
   let g = '';
   for (let k = 0; k <= 8; k++) { const x = 210 + k * 147.5; g += `<line x1="${x}" y1="0" x2="${x}" y2="900"/>`; }
@@ -436,7 +446,7 @@ if (heading !== undefined && !args.includes('--force')) {
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
 // A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
-const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'logos'], prompt: ['default'], hub: ['default'], stack: ['default', 'split'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'] };
+const LAYOUTS = { 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'logos'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'] };
 const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
 const VARIANT = spec.variant || LAYOUTS[MODE][0];
@@ -445,8 +455,24 @@ const LAYOUT = `${MODE}/${VARIANT}`;
 const ALL_LAYOUTS = ALL_MODES.flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
 const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
 // defaults match the user-finalized reference set (references/approved/)
-const DEFAULT_BG = { focus: 'sky', 'before-after': 'wash', versus: 'sky', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'wash', stat: 'white', ranked: 'wash' };
-const BGS = ['wash', 'sky', 'cool', 'white', 'flat'];
+// Backgrounds (user-finalized 2026-10-14): light = sky, paper, cream, g5 (rotate); vibrant = blue (about 1 in 3).
+// Deleted by the user: wash (pastel presets), cool, flat, white, skyfield, g4. Don't reintroduce them.
+// BACKGROUND FIT (user 2026-10-14: "make sure the illustration looks good with that bg"). Each layout lists only the backgrounds
+// that flatter its illustration, best first. Judged on figure/ground contrast, temperature harmony and colour dosage:
+//  - grey-heavy illustrations (bars, skeletons, unchecked boxes) need chroma behind them: sky or g5, never paper (monotone, bland)
+//  - illustrations that already carry colour (giant blue number, blue tile, colour logos) sit well on a quiet neutral: paper or cream
+//  - big white app windows look best framed by warm cream (Granola app shots); cool greys never go on cream
+//  - BLUE DOSAGE: an illustration that already carries a big blue mass (hub tile, giant number) gets a neutral field (cream/paper),
+//    never g5 or another blue-ish field (user: "too much blue... doesn't look visually appealing")
+//  - g5 lifts a single floating white card with light rising under it
+const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'cream'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
+const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m, l[0]]));
+const BGS = ['sky', 'paper', 'cream', 'g5'];
+const BG_OK = [...BGS, 'blue'];
+if (spec.bg && !BG_OK.includes(spec.bg)) {
+  console.error(`BACKGROUND CHECK FAILED: "${spec.bg}" was deleted. Use a light background (${BGS.join(', ')}) or the vibrant "blue".`);
+  process.exit(2);
+}
 const category = spec.category || spec.brand || 'default';
 const brandKey = (spec.brand || 'default').replace(/[^a-z0-9-]/gi, '');
 const ledgerFile = path.join(path.dirname(outDir), '.featured-ledger.json');
@@ -482,7 +508,7 @@ if ((spec.bg === 'blue') && !force) {
   const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
   if (lastTwo.some((e) => e.vibrant || e.bg === 'blue')) {
     console.error(`VIBRANT CHECK FAILED: a recent "${category}" image already uses the vibrant blue field (${lastTwo.filter((e) => e.vibrant || e.bg === 'blue').map((e) => e.slug).join(', ')}).
-Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. Use a light background (sky, wash, cool, flat, white) for this one.`);
+Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. Use a light background (sky, paper, cream, g5) for this one.`);
     process.exit(2);
   }
 }
@@ -497,10 +523,23 @@ Use it on at most 1 in 3 images and never on neighbours. Remove "series" from th
 }
 let BG = spec.bg || DEFAULT_BG[MODE];
 const prevBg = prior.length ? prior[prior.length - 1].bg : null; // history is sorted by time
-if (!spec.bg && BG === prevBg) BG = BGS.find((b) => b !== prevBg && b !== DEFAULT_BG[MODE]) || BG;
+const FIT = BG_FIT[MODE] || ['sky', 'g5'];
+// VIBRANT FIT (user 2026-10-14: "this illustration doesn't look good with this background"): the deep-dunes blue flatters only
+// illustrations built on a big white card (Granola: white UI on a bold field). Floating logo tiles, white headlines and grey
+// skeleton cards on blue looked weak. Blue-heavy illustrations (hub tile, stat number, focus box) never go on blue.
+const BLUE_FIT = ['checklist', 'stack', 'window', 'versus/table', 'versus/overlap'];
+if (spec.bg === 'blue' && !BLUE_FIT.includes(MODE) && !BLUE_FIT.includes(LAYOUT) && !force) {
+  console.error(`VIBRANT FIT FAILED: the ${LAYOUT} illustration doesn't look good on the vibrant blue. Use blue only with: ${BLUE_FIT.join(', ')}.`);
+  process.exit(2);
+}
+if (!spec.bg && BG === prevBg) BG = FIT.find((b) => b !== prevBg) || BG;   // neighbours differ, but only within the layout's fitting backgrounds
+if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force) {
+  console.error(`BACKGROUND FIT FAILED: "${spec.bg}" doesn't flatter the ${MODE} illustration. Use ${FIT.map((b) => `"${b}"`).join(' or ')} (or the vibrant "blue").`);
+  process.exit(2);
+}
 // texture (dot patches + edge guide lines + accent dots) = the anti-bland structure layer. On by default for the crisp 'sky'/'paper'
-// backgrounds; opt in on the wash with "texture": true (option A). Off when the frame grid is on (never both).
-const FRAME_ON = spec.frame ?? FRAME_DEFAULT[MODE] ?? false;
+// backgrounds; opt in elsewhere with "texture": true. Off when the frame grid is on (never both).
+const FRAME_ON = spec.bg !== 'blue' && (spec.frame ?? FRAME_DEFAULT[MODE] ?? false);
 const TEX = !FRAME_ON && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
 const texRand = (() => { let h = 2166136261; for (const c of String(slug)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; })();
 const texDiag = texRand() < 0.5;   // which diagonal the two dot patches sit on
@@ -516,24 +555,27 @@ const DOTS = ['subtle', 'none', 'full'].includes(spec.dots) ? spec.dots : 'none'
 const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 1389px 0/1px 100% no-repeat}
 .tex i{position:absolute;inset:0}
 .tex .dots{display:${DOTS === 'none' ? 'none' : 'block'};background-image:radial-gradient(circle,rgba(44,95,174,${DOTS === 'subtle' ? '.16' : '.30'}) 1.3px,transparent 1.8px);background-size:${DOTS === 'subtle' ? '30px 30px' : '22px 22px'};-webkit-mask-image:radial-gradient(${DOTS === 'subtle' ? '24% 22%' : '38% 32%'} at ${p1x}% ${p1y}%,#000 20%,transparent 72%),radial-gradient(${DOTS === 'subtle' ? '22% 22%' : '36% 32%'} at ${p2x}% ${p2y}%,#000 20%,transparent 72%)}
-.tex .acc{background:${acc}}`;
+.tex .acc{background:${acc}}${BG === 'cream' ? `.tex{background:linear-gradient(rgba(150,120,80,.18),rgba(150,120,80,.18)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(150,120,80,.18),rgba(150,120,80,.18)) 1389px 0/1px 100% no-repeat}.tex .acc{display:none}` : ''}`;
 // anchor (the one high-contrast element): approved blue gradient by default, or navy
 const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
-// Vibrant brand-blue field: the near-flat blue the user approved. Centre-glow gradients were rejected ("ew").
-// Granola technique: a soft DIAGONAL blend of two neighbouring shades + film grain (no spotlight)
-const BLUE_GLOW = 'linear-gradient(135deg,#3F86F1 0%,#2F6FEA 42%,#2259D9 100%)';
+const svgBg = (inner, blur = 0) => `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='1600' height='900' viewBox='0 0 1600 900' preserveAspectRatio='none'><defs><filter id='b' x='-30%' y='-30%' width='160%' height='160%'><feGaussianBlur stdDeviation='${blur}'/></filter></defs>${inner}</svg>`)}")`;
+// Vibrant blue = "deep dunes" (user-approved 2026-10-14: "this looks perfect"; inspired by grainient.supply): bright blue #3D80F2
+// at the top melting into deep royal #1638B0 / #0A1E70 in soft rolling bands, with heavy grain on the field (cards stay crisp).
+// The ONLY vibrant background: the other textures (ridge, sweep, silk, arc, bloom) and all flat/diagonal/centre-glow blues were rejected.
+const BLUE_GLOW = svgBg(`<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#3D80F2'/><stop offset='1' stop-color='#2C68E6'/></linearGradient></defs><rect width='1600' height='900' fill='url(#g)'/><g filter='url(#b)'><path d='M-200 560 C 350 450 800 690 1200 540 S 1650 450 1850 490 L1850 1100 L-200 1100Z' fill='#1638B0'/><path d='M-200 820 C 450 690 950 940 1850 730 L1850 1100 L-200 1100Z' fill='#0A1E70'/></g>`, 40);
+const NOISE = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='1.6' intercept='-.3'/><feFuncG type='linear' slope='1.6' intercept='-.3'/><feFuncB type='linear' slope='1.6' intercept='-.3'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`)}")`;
 const CRAFT = spec.craft === true;
 // text and structure that sit directly on a saturated field turn white
 const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}
 body.fd .lgs b,body.fd .l1 b,body.fd .l2 b{color:#fff}body.fd .lgs span{background:rgba(255,255,255,.16);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
 body.fd .lgv{box-shadow:0 0 0 6px rgba(255,255,255,.9)}body.fd .lgband{border-color:rgba(255,255,255,.3);background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 2px,transparent 2px 16px)}
-body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
+body.fd .tex .acc,body.fd .tex .dots{display:none}body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
 body.fd svg.fl g{stroke:#fff}body.fd .fb{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}body.fd .fb b{color:#fff}body.fd .fb span{color:rgba(255,255,255,.8)}body.fd .fb .fi{background:rgba(255,255,255,.2);color:#fff}
-body.fd .grain{opacity:.16;mix-blend-mode:soft-light}`;
+body.fd .grain{opacity:.06;mix-blend-mode:soft-light}`;
 const MONO = "'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
 const SERIES_POS = spec.seriesPos || { focus: 'top', versus: 'bottom', 'before-after': 'tl' }[MODE] || 'bottom';
 const seriesMark = CRAFT && spec.series ? `<!--smark--><div class="smark sm-${SERIES_POS}">${brand.markUrl ? `<img src="${brand.markUrl}" alt="">` : ''}<b>${esc(brand.markName || brand.name || '')}</b><span>${esc(spec.series)}</span></div><!--/smark-->` : '';
-const PATTERN = '';   // the arch outline pattern was rejected by the user ("the shapes you added so bad"); don't reintroduce outline-shape backgrounds
+// The arch outline pattern and the wash backgrounds were deleted by the user (2026-10-14). Don't reintroduce outline-shape patterns.
 const CRAFT_CSS = `
 .smark{position:absolute;z-index:3;display:flex;align-items:center;gap:12px;white-space:nowrap}
 .smark img{width:40px;height:40px;border-radius:10px}.smark b{font-size:26px;font-weight:600;color:#141A26;letter-spacing:-.01em}
@@ -555,32 +597,15 @@ const CRAFT_CSS = `
 .fa b{color:#141A26;font-weight:600}.fa li{color:#141A26}
 .fleg{font-family:${MONO};text-transform:uppercase;font-size:22px;letter-spacing:.06em}.fleg .f1{color:#7F8794}.fleg .f2{color:#0A5FD8}
 `;
-// wash / cool vary per article (user: "why every image has same exact this gradient"): seeded by slug, same palette
-// Designed gradient presets (the random seeding looked bad). Seeded choice among APPROVED presets; spec.washPreset overrides.
-// Gradients learned from the references (Granola, Littlebird, Base44, Mintlify): ONE colour family, glow BEHIND the hero
-// (centre), edges pale. Never colour pools in the corners, never two competing hues.
-const WASH_PRESETS = [
-  { name: 'sky-glow',   from: '#F3F8FE', to: '#E4EFFB', ang: 180, gx: 50, gy: 56, gs: 52, glow: 'rgba(39,172,242,.26)', warm: null },
-  { name: 'airy-white', from: '#FAFCFF', to: '#EDF4FC', ang: 180, gx: 50, gy: 62, gs: 46, glow: 'rgba(59,134,240,.16)', warm: null },
-  { name: 'dawn',       from: '#FBF6F2', to: '#E8F1FB', ang: 165, gx: 54, gy: 58, gs: 50, glow: 'rgba(39,172,242,.22)', warm: 'rgba(255,190,160,.14)' },
-  { name: 'deep-sky',   from: '#E9F3FD', to: '#D3E7FA', ang: 180, gx: 50, gy: 52, gs: 56, glow: 'rgba(255,255,255,.75)', warm: null },
-];
-const WASH_OK = [0, 1, 2, 3];
-const WV = (() => {
-  if (Number.isInteger(spec.washPreset) && WASH_PRESETS[spec.washPreset]) return WASH_PRESETS[spec.washPreset];
-  let h = 2166136261; for (const ch of String(slug) + '#wash') h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
-  return WASH_PRESETS[WASH_OK[(h >>> 0) % WASH_OK.length]];
-})();
+// field grain (Grainient-style): always on the vibrant blue, and on g5 (user 2026-10-14); "grain": false turns it off for g5
+const GRAIN = BG === 'blue' || (BG === 'g5' && spec.grain !== false);
 const BG_CSS = {
-  wash: `body{background:linear-gradient(${WV.ang}deg,${WV.from} 0%,${WV.to} 100%)}body:before{display:block;inset:0;filter:blur(40px);background:radial-gradient(${WV.gs}% ${WV.gs}% at ${WV.gx}% ${WV.gy}%,${WV.glow},transparent 72%)${WV.warm ? `,radial-gradient(60% 40% at 50% 0%,${WV.warm},transparent 70%)` : ''}}`,
-  cool: `body{background:linear-gradient(180deg,#EEF6FE 0%,#D9EBFB 100%)}body:before{display:block;inset:0;filter:blur(40px);background:radial-gradient(52% 52% at 50% 55%,rgba(255,255,255,.7),transparent 72%)}`,
-  flat: `body{background:#F1F0EC}body:before{display:none}`,
-  blue: `body{background:${BLUE_GLOW}}body:before{display:none}`,
-  skyfield: `body{background:linear-gradient(180deg,#5BB4F4 0%,#3FA0EE 100%)}body:before{display:none}`,
+  blue: `body{background:${BLUE_GLOW};background-size:cover}body:before{display:none}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85}`,
   cream: `body{background:#F6F2EA}body:before{display:none}`,
+  // Granola #5 in blue: near-white top, a bright clear sky glowing up from under the hero card
+  g5: `body{background:linear-gradient(180deg,#F7FBFF 0%,#EAF5FE 38%,#A9DCFB 78%,#7CC8F8 100%)}body:before{display:block;inset:0;filter:blur(30px);background:radial-gradient(60% 45% at 62% 100%,rgba(70,175,245,.55),transparent 70%)}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.6}`,
   paper: `body{background:#F1F3F6}body:before{display:none}`,
   sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}`,
-  white: `body{background:#FBFBFC}body:before{display:block;background:radial-gradient(45% 60% at 0% 100%,rgba(39,172,242,.22),transparent 70%),radial-gradient(40% 50% at 100% 0%,rgba(255,180,150,.2),transparent 70%)}`,
 };
 const html = `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -609,8 +634,8 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 .legend span{display:flex;align-items:center;gap:14px}.legend i{width:16px;height:16px;border-radius:50%}
 .lg1{color:#141A26}.lg1 i{background:#141A26}.lg2{color:#2C7BD8}.lg2 i{background:#27ACF2}
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-</style></head><body class="${['blue', 'skyfield'].includes(BG) ? 'fd' : ''}">
-${PATTERN}${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
+</style></head><body class="${BG === 'blue' ? 'fd' : ''}">${GRAIN ? '<div class="bgn"></div>' : ''}
+${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
 ${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1" style="top:${baTop}px">${esc(before.label)}</div><div class="lbl l2" style="top:${baTop}px">${esc(after.label)}</div>
 <div class="c c1" style="top:${baTop + 90}px"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900" style="transform:translateY(${baTop + 90 - 250}px)"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>

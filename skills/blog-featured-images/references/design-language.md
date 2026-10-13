@@ -22,13 +22,75 @@ This file is the rulebook.
 
 ---
 
+## Visual appeal is a hard gate (user rule, 2026-10-14: "visual appealing matters a lot")
+An image that follows every other rule but doesn't look good **fails**. Judge each one like a design director, with a taste skill (impeccable / ui-ux-pro-max) in mind, at full size and at 350×250:
+
+1. **Blue dosage.** Count the blue already in the illustration. If it carries a big blue mass (the hub's blue tile, a giant blue number, a blue selection box), the background must be **neutral** (`cream`, `paper`), never `g5` or another blue-ish field. "Too much blue" reads as one flat blob. The reverse also holds: a grey-heavy illustration needs some chroma behind it (`sky`).
+2. **Logo balance.** A logo fills **about 60–70% of its tile**. Never a big tile around a tiny logo, and never a logo crammed edge to edge. A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**; it is never shrunk inside a white tile. Wide wordmarks (SAP, Sage) fill the tile's width at about 65–75%.
+3. **Logos speak for themselves.** When products have recognisable logos, show **logos only** (Granola's integrations images), not logo + name cards. The hub does this by default; names come back only with `"showNames": true`.
+4. **Figure/ground.** The hero separates cleanly from the field, with no grey-on-grey or white-on-near-white without a shadow to lift it.
+5. **Balance.** Tile sizes, gaps and arrow lengths look even; the group sits on the optical centre; nothing looks too small or too big next to its neighbours.
+
+## Backgrounds: FINAL (user decision, 2026-10-14; overrides every older background note below)
+| Kind | `bg` | Look | Default for |
+|---|---|---|---|
+| Light | `sky` | light sky, top to bottom, guide lines | ranked, focus, window, versus |
+| Light | `paper` | cool off-white `#F1F3F6` | stat, prompt |
+| Light | `cream` | warm off-white `#F6F2EA`, warm guide lines | hub, timeline |
+| Light | `g5` | Granola #5 in blue: near-white top glowing into bright sky under the hero, **with fine grain** (user-approved 2026-10-14; `"grain": false` turns it off) | checklist, stack, before-after |
+| **Vibrant** | `blue` (only on the layouts in "Vibrant fit") | **"Deep dunes"**: bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands, **heavy grain on the field** (cards stay crisp), no margin dots. Inspired by grainient.supply. User: "this looks perfect" | set explicitly on about 1 in 3 images |
+
+- **Light backgrounds rotate**; neighbours never share one unless it's set explicitly.
+- **Vibrant blue on about 1 in 3 images per category, never neighbours** ("VIBRANT CHECK FAILED").
+- **Dark/vibrant gradients always get grain plus the soft rolling bands.** Dunes is the only texture; ridge, sweep, silk, arc and bloom were tried and rejected ("all other looks bad").
+- **Deleted** (the renderer refuses them with "BACKGROUND CHECK FAILED"): `wash` and all pastel presets, `flat`, `cool`, `white`, `skyfield`, `g4`, and the arch outline pattern. Also rejected: centre-glow blue ("ew"), flat and diagonal blues ("none of the options look good").
+
+### Vibrant fit: what goes on the deep-dunes blue (user rule, 2026-10-14)
+User: "the logos look balanced, but this illustration doesn't look good with this background." The vibrant blue flatters **only illustrations built on a big white card**, as in Granola's white UI on a bold field:
+
+| On blue | Layouts |
+|---|---|
+| **Yes** | `checklist` (best), `stack`, `versus/table`, `versus/overlap`, `window` (its grid is removed on blue) |
+| **No** | `versus/logos` (floating tiles, white names and translucent chips look weak), `hub`, `stat`, `focus` (blue-heavy: too much blue; grey headline text on blue fails contrast), `ranked`, `timeline`, `prompt`, `before-after` |
+
+The renderer refuses anything else with **"VIBRANT FIT FAILED"**. On blue the frame grid and the margin dots are off; the card carries the image.
+
+### Background fit: the background must flatter the illustration (user rule, 2026-10-14)
+User: "when you decide what should be the bg make sure the illustration looks good visually with that bg." Judged with impeccable's colour principles: figure/ground contrast, temperature harmony, colour dosage.
+
+| Illustration trait | Flattering background | Avoid |
+|---|---|---|
+| **Grey-heavy** (inactive bars, skeleton rows, unchecked boxes): ranked, focus, timeline | `sky` (chroma behind the greys) | `paper`: grey on grey is monotone and bland |
+| **A single floating white card**: checklist, stack, before-after | `g5` (light rising under the hero lifts it) | |
+| **A big blue mass** (the hub's blue tile, a giant number) | `cream` or `paper` (blue dosage: the blue needs a neutral field) | `g5`: "too much blue" |
+| **A big white app window**: window | `sky` | `paper`: the window disappears |
+| **A thin track with dots and a callout**: timeline | `cream` (warm field, calm grid) | |
+| **Already colourful** (a giant blue number, a pill bar, colour logos): stat, prompt | `paper` or `cream` (quiet neutral; the illustration brings the colour) | `g5`: too much blue competing with the number |
+| **Two logo tiles**: versus/logos | `sky` or `cream` | the vibrant `blue` (looked weak) |
+
+- **Cool greys never sit on cream.** On cream the guide lines turn warm and the blue margin dots are hidden (the renderer does this).
+- The renderer keeps a fit list per layout (`BG_FIT`, best first). Neighbours still differ, but only within that list. A `bg` outside the list is refused with **"BACKGROUND FIT FAILED"**; `blue` follows its own list ("Vibrant fit").
+- **Always check it at 350×250 next to its neighbours:** the hero must separate cleanly from the field, and the field must not fight the illustration's colours.
+
+| Layout | Fits (best first) |
+|---|---|
+| checklist | g5, sky |
+| hub | cream, paper |
+| ranked | sky, g5 |
+| focus | sky, g5 |
+| timeline | cream, sky |
+| window | sky, g5 |
+| stat | paper, cream |
+| prompt | paper, cream |
+| stack | g5, cream |
+| before-after | g5, sky |
+| versus | sky, cream |
+
 ## Fixed ingredients (these never change; they make it one family)
 
 | Ingredient | Spec |
 |---|---|
-| Background, wash variant | Soft pastel wash: peach `#FDEFE8` → `#F4F6FB` → sky `#DCEEFC` → `#CBE6FA` (135°), with a blurred sky pool `rgba(39,172,242,.35)` top-right and a warm pool bottom-left |
-| Background, flat variant | Warm off-white `#F1F0EC` (used for alternation, e.g. the hub) |
-| Background, cool variant | `#EEF6FE` → `#DCEEFC` → `#CDE6FB` with a sky pool at the bottom (prompt) |
+| Background | See "Backgrounds: FINAL" above: light `sky`, `paper`, `cream`, `g5`; vibrant `blue` (deep dunes + grain) |
 | Type | **Inter** only. Labels 50px/500, card headings 32–34px/500, bullets 29–30px, headlines 56–76px/600 with tracking −0.03em (see "Typography balance") |
 | Ink colors | Primary text `#141A26`; muted `#7F8794` / `#5D6675`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` (tiles, buttons); sky `#27ACF2` (carets, legend dots) |
@@ -107,7 +169,7 @@ The **composition** is what makes each image different. The ingredients make the
 ### 2. Variety is enforced, not hoped for
 - **Category rule:** a composition can't be reused within the **last 6 posts** of the same category.
 - **Topic rule:** articles on the same subject (including duplicate URLs such as `…-guide` and `…-guide-2`) share a `topic` and can **never** use the same composition. They must also show different facts or angles.
-- **Backgrounds auto-rotate** (`wash`, `cool`, `white`, `flat`), so neighbours never share a background unless one is set explicitly.
+- **Light backgrounds auto-rotate** (`sky`, `paper`, `cream`, `g5`), so neighbours never share a background unless one is set explicitly.
 - The renderer records every image in `featured-images/.featured-ledger.json` and refuses a repeat with **"VARIETY CHECK FAILED"**, listing the unused compositions. Never use `--force` unless the user explicitly asks.
 
 ### 3. Batch planning before rendering
@@ -189,38 +251,38 @@ These rules make every image easy to take in at a glance. They work inside our d
 4. **One accent on one element** (the selected tile, the active bar, the VS badge). Everything else is neutral.
 5. **Minimal text**, with greeked or skeleton UI for detail.
 
-**Our wash is now 4 designed presets in one colour family:**
+**(Deleted 2026-10-14) The wash had 4 presets; the user deleted `wash` entirely:**
 - `sky-glow`: light sky with a soft blue glow behind the hero
 - `airy-white`: near-white, faint blue glow
 - `dawn`: near-white with a whisper of warm at the top, blue glow behind the hero
 - `deep-sky`: a deeper sky with a white glow behind the hero
 
-They rotate per article (seeded by slug); `"washPreset": 0–3` forces one. Corner pools and random angles were removed.
+`washPreset` no longer exists.
 
 ---
 
 ### Vibrant + subtle mix (user, 2026-10-13: "I like brand blue field; it's good adding vibrant images with other subtle images")
-- **`"bg": "blue"`** = the vibrant brand-blue field: white cards and white text on brand blue, using **Granola's technique: a soft diagonal blend of two neighbouring blues** (`#3F86F1 → #2F6FEA → #2259D9`, 135°) **plus stronger film grain**, never a spotlight. On blue the logo tiles grow to 280px. **Rejected: centre-glow / radial "spotlight" gradients** ("ew"). They read as generic.
-- **Mix it in, don't overuse it:** at most **1 in 3** images in a category is vibrant, never two neighbours. The renderer refuses with **"VIBRANT CHECK FAILED"**. The rest use the subtle light backgrounds (sky, wash, cool, flat, white).
+- **`"bg": "blue"`** = the vibrant brand-blue field: white cards and white text on brand blue, now the **"deep dunes"** gradient with heavy grain (see "Backgrounds: FINAL"). The earlier diagonal blend was replaced. On blue the logo tiles grow to 280px. **Rejected: centre-glow / radial "spotlight" gradients** ("ew"). They read as generic.
+- **Mix it in, don't overuse it:** at most **1 in 3** images in a category is vibrant, never two neighbours. The renderer refuses with **"VIBRANT CHECK FAILED"**. The rest use the light backgrounds (sky, paper, cream, g5).
 - Rejected along the way: corner-pool pastel gradients and the 4 "one-family pastel" presets ("NONE. ITS SHIT AF"). Flat bold fields like the references were the breakthrough.
 
 ## FINAL approved look (user: "I have finalized these images. Set in skill to follow the same vibe", 2026-10-13)
 
-**These 6 images are the target.** They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
+**These 7 images are the target** (6 light + 1 vibrant). They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
 
 | # | Layout | Background | Example spec |
 |---|---|---|---|
-| 1 | `checklist` | `wash` + texture | `erp-checklist.checklist.json` |
-| 2 | `hub` (7 cards, colour logos) | `flat` warm grey | `7-best-erp-software-for-small-businesses-in-2026.json` |
-| 3 | `ranked` (no grid) | `wash` + texture | `erp-implementation.ranked.json` |
+| 1 | `checklist` | `g5` + texture | `erp-checklist.checklist.json` |
+| 2 | `hub` (logos only, 7 tiles) | `cream` | `7-best-erp-software-for-small-businesses-in-2026.json` |
+| 3 | `ranked` (no grid) | `sky` + texture | `erp-implementation.ranked.json` |
 | 4 | `focus` (blue selection box + skeleton card) | `sky` + texture | `emr-cost.focus.json` |
-| 5 | `timeline` | `flat` + grid and corner squares | `emr-switch-six-steps.timeline.json` |
-| 6 | `window` (bleed, logo rows, cursor) | `cool` + grid | `dynamics-vs-acumatica.window.json` |
+| 5 | `timeline` | `cream` + grid and corner squares | `emr-switch-six-steps.timeline.json` |
+| 6 | `window` (bleed, logo rows, cursor) | `sky` + grid |
+| + | `checklist` on the vibrant blue (the vibrant example) | `blue` (deep dunes + grain) | `erp-checklist.blue.json` | `dynamics-vs-acumatica.window.json` |
 
 **The shared vibe:**
-- **Soft, light fields:** pastel wash, light sky or warm flat grey. Structure comes from **thin guide lines + a few tiny blue dots in the margins** (texture), or from the faint grid with corner squares (timeline, window, stat).
-- **The wash varies per article, using 4 designed one-family presets with the glow behind the hero** (see "What every inspiration shares"). The old random corner pools were rejected ("the gradients look so bad").
-- **No dot patches.** The user picked B ("too much dots in the bg"); `dots` defaults to `none`. Never use outline-shape backgrounds either (rejected).
+- **Soft, light fields:** sky, paper, cream or g5 (re-rendered 2026-10-14 after the old backgrounds were deleted). Structure comes from **thin guide lines + a few tiny blue dots in the margins** (texture), or from the faint grid with corner squares (timeline, window, stat).
+- **No dot patches.** The user picked B ("too much dots in the bg"); `dots` defaults to `none`. Never use outline-shape backgrounds either (the arch pattern was deleted).
 - **One big white card or hero** with real UI: checkboxes, progress bar, bars, skeleton rows, timeline dots, an app window. It's centred or cleanly left-aligned and fills about 60%+ of the width.
 - **Blue gradient = the active state and the one anchor:** checked boxes, the progress bar, the winning bar, the highlighted row, the "2 of 8" chip, the selection box, the current timeline dot. **Grey = inactive:** unchecked boxes, the other bars, skeletons, empty dots.
 - **Headlines in navy** (`#0E2A5C`), weight 600, title words only; labels in sans. The craft kit (mono labels, near-black ink) is **not** part of the final look; it stays opt-in.
@@ -229,9 +291,8 @@ They rotate per article (seeded by slug); `"washPreset": 0–3` forces one. Corn
 
 **Renderer defaults now match this set:**
 - focus and versus → `sky`
-- checklist and ranked → `wash` + texture (ranked has no grid)
+- Defaults come from the background-fit table (see "Background fit")
 - timeline and window → grid
-- hub → `flat`
 - `dots: none`
 
 ---
@@ -245,10 +306,10 @@ Calm is good; **bland is not**. Every image needs these, learned from Mintlify's
 3. **Big hero.** The main element spans about **60% or more of the width** (cards around 900px, logo tiles 280px, rows at least 32px). The old soft look used cards around 45% wide, and that read as small and empty.
 4. **Hard alignment.** Connectors hit row centres; selection handles sit exactly on the corners; equal gaps.
 5. **Colours stay ours:**
-   - **B, `"bg": "sky"`** (flat light sky, the blue end of the wash): crisp and calm. User-approved for EMR cost (focus) and NetSuite vs SAP B1 (versus/logos). Texture is on automatically.
-   - **A, `"bg": "wash"` + `"texture": true`** (approved peach-to-blue wash + texture): use it when the warm corner balances the composition better.
+   - **`"bg": "sky"`** (light sky): crisp and calm. User-approved for EMR cost (focus) and NetSuite vs SAP B1 (versus/logos). Texture is on automatically.
+   - **`paper`, `cream`, `g5`** are the other light options; `blue` (deep dunes) is the vibrant one.
    - Pick per image: whichever balances better at 350×250.
-   - **Rejected:** flat cool grey (`paper`) and the heavy navy anchor ("the colors look off"). The navy anchor is still available as `"anchor": "navy"` but isn't the default.
+   - **Rejected:** the heavy navy anchor ("the colors look off"). The navy anchor is still available as `"anchor": "navy"` but isn't the default.
 6. Texture is **off** when the frame grid is on (stat, ranked, timeline, window by default); never use both.
 
 ---
@@ -258,11 +319,11 @@ Calm is good; **bland is not**. Every image needs these, learned from Mintlify's
 Measured from their 2000×1125 thumbnails and converted to our 1600×900 canvas (×0.8). **Our colours replace theirs:** their green becomes our blue (`#3B86F0 → #0A5FD8`); their black stays near-black (`#141A26`).
 
 ### 1. Colour: neutral field, dark ink, ONE accent
-- **Field:** a near-neutral light background (their `#F0F0F0`). Ours: the `sky` tint or the approved wash, kept **light and quiet**. The field is never the interesting part.
+- **Field:** a near-neutral light background (their `#F0F0F0`). Ours: `sky`, `paper`, `cream` or `g5`, kept **light and quiet**. The field is never the interesting part.
 - **Ink:** icons, headlines and buttons in **near-black** (`#141A26`). That's where the contrast comes from: black line icons on white tiles, black text on a light field. *Our blandness came from blue-on-blue mid-tones.*
 - **One accent, used in solid shapes:** filled pill bars, ON toggles, arrows, a tag chip. Never as a tint over everything.
 - **Neutral grey for "off" and "secondary":** skeleton bars `#E3E7EE`, OFF toggles, third-party logos. Grey makes the accent pop.
-- **At most one second accent, rarely** (their orange cursor tag). Ours: the warm `#F2A27A` from the wash, only for a second "actor".
+- **At most one second accent, rarely** (their orange cursor tag). Ours: a warm `#F2A27A`, only for a second "actor".
 
 ### 2. Type: two families, strict roles
 - **Headline:** sans, weight 500, near-black, tight tracking (−0.02 to −0.03em), **56–72px**, 1–2 lines, left-aligned beside a visual or centred above it.
@@ -377,7 +438,7 @@ Failed images go back to the Maker, for up to 3 rounds. Only images that passed 
 4. **Same topic:** articles on the same topic never share a mode.
 5. A failure prints "VARIETY CHECK FAILED" with the allowed layouts. Use one of them. Never `--force` (unless the user asks), and never render into another folder to dodge the check.
 
-**Cycle length = number of layouts (15 today: stack `split` and before-after `flow` for cloud ERP; `focus` and versus `logos` from the Mintlify study).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
+**Cycle length = number of layouts (14 today: before-after `flow` for cloud ERP; `focus` and versus `logos` from the Mintlify study).** A category with more posts will eventually repeat a layout, and then always the least-used one. To push repeats further apart, add **variants** (a new skeleton for an existing mode, like versus `table`). Each variant must pass the Skeleton rule against every other layout.
 
 ---
 
@@ -478,7 +539,6 @@ Two compositions that share the same **skeleton** (the arrangement of blocks) re
 | focus | centred headline with a blue selection box on the key phrase; UI card with skeleton rows bleeding off the bottom |
 | versus (logos) | two large logo tiles on an edge-to-edge hatched band, VS badge, one fact chip each |
 | before-after (flow) | muted icon card → arrow → lifted blue-icon card, legend |
-| stack (split) | definition card whose lower half is a two-column contrast |
 | stack | wide takeaway card with 2 cards peeking above it |
 | window | full app window, list pane plus detail pane |
 | timeline | headline top-left, horizontal track with step dots |

@@ -10,11 +10,12 @@ One JSON file per article. Top-level fields shared by all modes:
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They can never share a mode |
 | `slug` | yes | Output folder name and ledger key (unique per article) |
 | `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
-| `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default), `table` and `logos`; `stack` has `default` and `split`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
+| `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default), `table` and `logos`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
 | `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]` and stat `card.rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
-| `bg` | no | `blue` (vibrant near-flat brand blue; at most 1 in 3 per category), `sky` (B, crisp, texture on), `wash` (A, approved warm wash), `cool`, `white`, `flat`. Leave it out to auto-rotate |
-| `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky`; set `true` to add it to `wash` (option A). Never with the frame grid |
+| `bg` | no | Light: `sky`, `paper`, `cream`, `g5`. Vibrant: `blue` (deep dunes + grain; at most 1 in 3 per category, never neighbours; only checklist, stack, versus/table, versus/overlap, window). Leave it out to use the layout default. Deleted names (`wash`, `cool`, `white`, `flat`, `skyfield`, `g4`) are refused |
+| `grain` | no | Field grain. Always on for `blue`; on by default for `g5` (`false` turns it off) |
+| `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky` and `paper`; set `true` to add it elsewhere. Never with the frame grid |
 | `craft` | no | `true` = the craft kit: near-black ink, mono caps labels, grey off-states, line-icon tiles, clean connector |
 | `series` | no | With `craft`: the site mark + mono series tag (e.g. `"Pricing"`). Only on some images: at most 1 in 3 per category, never on neighbours ("SERIES CHECK FAILED") |
 | `dots` | no | Texture dot patches: `none` (default, user-approved), `subtle`, `full`. The guide lines and margin dots stay either way |
@@ -89,6 +90,8 @@ One JSON file per article. Top-level fields shared by all modes:
 - Optional `"hubLabel": { "big": "7", "small": "Best ERP" }` replaces the icon on the blue tile. Use it to carry the title's key words (the hub has no headline).
 - `hubIcon` is any Phosphor class (https://phosphoricons.com), e.g. `ph-fill ph-heartbeat`, `ph-fill ph-graduation-cap`, `ph-fill ph-shield-check`.
 
+- **Logos only by default** (user 2026-10-14, Granola style): when every card has a `logo`, the hub shows square logo tiles and no names. Set `"showNames": true` to bring back the name cards. Logos fill ~65% of the tile; full-bleed app icons become the tile.
+
 ## Stack (`"mode": "stack"`; one key rule or warning)
 ```json
 { "mode": "stack", "icon": "ph ph-shield-check", "title": "Before you switch EMR vendors",
@@ -96,7 +99,7 @@ One JSON file per article. Top-level fields shared by all modes:
   "items": ["Keep read-only legacy access for 6 to 12 months", "Scanned documents may not transfer cleanly"] }
 ```
 - `lead` is up to ~80 characters. `**bold**` marks the key phrase (shown in blue). `items` holds 1–3 bullets.
-- **Variant `"split"`** (definitions, "what is X", who-does-what): instead of `items`, set `"split": [{"label": "You", "text": "Log in through a browser"}, {"label": "Vendor", "text": "Patches and backups"}]`. The card's bottom half becomes two columns (the right one tinted blue), and the back cards fan to the lower right. Column text up to ~22 characters. Add `"logo": "<domain>"` to a column when it names a product (e.g. NetSuite | SAP Business One); prefer this over a text-only split.
+- **Deleted:** the `"split"` variant (user: "I DONT LIKE IT", removed 2026-10-14). The front card fits its text; the back cards peek from the top.
 
 ## Window (`"mode": "window"`; vendor lists, pricing tables)
 ```json

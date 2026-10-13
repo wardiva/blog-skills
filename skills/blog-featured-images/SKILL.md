@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in an approved soft-pastel "card" design language with 11 modes / 15 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images and repeated layouts.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in an approved light "card" design language with a vibrant deep-blue accent field with 11 modes / 14 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images and repeated layouts.
 ---
 
 # Blog featured images
@@ -16,8 +16,8 @@ Read these before your first image in a session:
 - `references/lessons.md`: what past sessions learned (speed, pre-flight checks, taste)
 
 ## The target look (user-finalized)
-Open `references/approved/` before your first image: 6 finalized images (checklist, hub, ranked, focus, timeline, window) define the vibe:
-- soft light fields with thin guide lines (no dot patches)
+Open `references/approved/` before your first image: 7 finalized images (checklist, hub, ranked, focus, timeline, window, plus the vibrant checklist on blue) define the vibe:
+- soft light fields (`sky`, `paper`, `cream`, `g5` with fine grain) with thin guide lines (no dot patches); about 1 in 3 on the vibrant deep-dunes blue, always with a big white card
 - one big white UI card or hero
 - blue gradient only for active and anchor elements; grey for inactive
 - navy headlines
@@ -43,23 +43,24 @@ Their specs are in `examples/`, and the renderer's per-layout defaults already m
 3. **Minimal, never text-heavy (hard-enforced).** At most **15 visible words**, and no element over 7 words (no sentences). The renderer refuses more with "TEXT CHECK FAILED". Show a secondary line (price, sub) only when it IS the story; a "best of" list shows names only. Whitespace is good; never fill space.
 4. **Different every time (hard-enforced).** A **layout** (mode + variant) never repeats in a category until every layout has been used there, and same-topic articles never share a mode. The renderer checks a **site-wide history** (`~/.blog-featured-images/history-<brand>.json`) that records every image ever rendered for that brand. Layouts must also differ in **skeleton** (block arrangement), not just text.
 5. **Logos where products are named.** Set `"logo": "<domain>"` on every named product (hub cards, versus sides, window rows, ranked rows). The renderer fetches it through a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon as an app tile → lettermark) in style A (original colours, small white tile). Logos stay secondary.
-6. **Never bland.** One bold blue anchor, structure tied to the frame (soft dot texture or an edge-to-edge band), and a hero at least ~60% of the width. Background `sky` (crisp, texture on) or `wash` + `"texture": true` (warm), whichever balances better.
+6. **Never bland.** One bold blue anchor, structure tied to the frame (soft dot texture or an edge-to-edge band), and a hero at least ~60% of the width. Light background `sky`, `paper`, `cream` or `g5`, **chosen to flatter the illustration** (each layout's fit list in `references/design-language.md`, "Background fit"; anything outside it is refused with "BACKGROUND FIT FAILED").
 7. **Site mark only sometimes (hard-enforced).** The site mark + series tag (`"series"`, needs `"craft": true`) goes only in a natural empty slot, on at most 1 in 3 images per category and never on neighbours ("SERIES CHECK FAILED").
-8. **Vibrant + subtle mix (hard-enforced).** About 1 in 3 images per category uses the vibrant brand-blue field (`"bg": "blue"`, Granola-style glow); never two neighbours ("VIBRANT CHECK FAILED"). The rest stay light and subtle.
+8. **Vibrant + subtle mix (hard-enforced).** About 1 in 3 images per category uses the vibrant brand-blue field (`"bg": "blue"`: the "deep dunes" gradient with heavy grain); never two neighbours ("VIBRANT CHECK FAILED"). **Only big-white-card illustrations go on blue:** checklist, stack, versus/table, versus/overlap, window ("VIBRANT FIT FAILED" otherwise). The rest stay light and subtle.
+9. **Visual appeal is a hard gate.** Watch blue dosage (a blue-heavy illustration gets a neutral field), keep logos balanced (~65% of the tile; full app icons become the tile), and prefer logos alone over logo + name. See "Visual appeal is a hard gate" in `references/design-language.md`.
 
-## Layouts: 11 modes, 15 layouts
+## Layouts: 11 modes, 14 layouts
 | mode | variants | Shows | Best for |
 |---|---|---|---|
 | `before-after` | `default`, `flow` | raw card → clean card + legend; `flow`: icon card → arrow → lifted icon card | how-to, migration; `flow` for "old way → new way" |
 | `versus` | `overlap`, `table`, `logos` | tilted overlapping cards + VS badge; one comparison table; two big logo tiles + one fact chip each | X vs Y |
-| `hub` | default | blue centre tile with 6–7 product cards (logos + names) and hand-drawn arrows | best-of lists, integrations |
+| `hub` | default | blue centre tile with 6–7 logo tiles (logos only, Granola style) and hand-drawn arrows | best-of lists, integrations |
 | `focus` | default | centred headline with the key phrase in a blue selection box; UI card with skeleton rows peeking from the bottom | one key idea with 2–3 values |
 | `stat` | default | one giant number, caption, breakdown card | one headline statistic |
 | `ranked` | default | named bars ranked by a real metric | rankings, cheapest/fastest |
 | `timeline` | default | steps on a track, one highlighted, a callout | process, "how long" |
 | `checklist` | default | tilted checklist card with progress | how to choose, requirements |
 | `prompt` | default | faded data panel, big headline, pill bar | cost, FAQ, "what is" |
-| `stack` | `default`, `split` | one takeaway card over offset cards; `split`: two-column contrast | one key rule; definitions |
+| `stack` | default | one takeaway card (sized to its text) with two offset cards peeking from the top | one key rule; definitions |
 | `window` | default | app window: list pane + detail pane | vendor lists, pricing tables |
 
 The same article type can use several layouts (a cost article: `focus`, `stat`, `prompt`, `window`, `ranked`). Use that freedom to avoid repeats. When a category's least-used tier already has one use each, **add a new variant before briefing Makers**.
@@ -91,6 +92,10 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `TEXT CHECK FAILED` | Cut subs that aren't the point, then sentence tails, until ≤15 words and ≤7 per element |
 | `VARIETY CHECK FAILED` | Use one of the layouts it lists (set `mode`, plus `variant` when not `default`) |
 | `SERIES CHECK FAILED` | Remove `"series"` from this spec |
+| `VIBRANT CHECK FAILED` | Use a light background; blue was used on a neighbour |
+| `VIBRANT FIT FAILED` | This illustration doesn't suit the blue; use its light background, or put blue on a checklist, stack, versus/table, versus/overlap or window image |
+| `BACKGROUND FIT FAILED` | Use one of the backgrounds it lists for this layout |
+| `BACKGROUND CHECK FAILED` | That background was deleted; use `sky`, `paper`, `cream`, `g5` or `blue` |
 
 ## Setup and notes
 - **First-time setup:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast article reading. **Without agent-browser**, read the articles with WebFetch in parallel (all URLs in one message), save the text to `featured-images/articles/<slug>.md`, and continue.

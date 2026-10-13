@@ -101,6 +101,13 @@ Return, per image: PASS or FAIL, and for each FAIL the rule broken and the exact
 **5c. Not bland**
 - Exactly one bold blue anchor; structure tied to the frame (texture or an edge-to-edge band); hero at least ~60% of the width. FAIL a pale, small, floating composition even if every other rule passes.
 
+**5e. Visually appealing (hard gate)**
+- Would a design director ship it? FAIL on too much blue (a blue-heavy illustration on a blue-ish field), unbalanced logos (a big tile around a tiny logo, or a full app icon shrunk inside a white tile), logo + name cards where logos alone would do, weak figure/ground, or uneven sizes and gaps. See "Visual appeal is a hard gate" in the design language.
+
+**5d. Background fits the illustration**
+- On the vibrant blue, only a big white card (checklist, stack, versus/table or overlap, window). FAIL floating logo tiles, a blue-heavy illustration or grey headline text on blue.
+- The hero separates cleanly from the field at 350×250, and the field flatters the illustration (see "Background fit" in the design language). FAIL grey bars or skeletons on `paper`, a blue tile on `cream`, or a field whose colour competes with the hero.
+
 **6. In the design language**
 - Approved backgrounds, white cards, blue accent, warm-grey/blue labels, grain.
 - No dark backgrounds, no AI-looking art, and no rejected patterns (see the "Rejected" notes).

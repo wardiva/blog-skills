@@ -78,7 +78,7 @@ QA failures in the test traced back to things the Orchestrator could have checke
 ## 6. Renderer gaps found in the 2026-10-13 batch (fixed)
 
 - **Checklist "N-point" titles:** the progress pill used to count only listed rows, so an 8-point article forced 8 rows (one hidden). Now set `"total": 8` and list 3–4 rows; the card height follows the rows actually drawn.
-- **stack/split columns take `logo`.** Use product logos when the two columns are products (e.g. NetSuite | SAP Business One); a text-only split was rejected before.
+- ~~**stack/split columns take `logo`.**~~ (split deleted 2026-10-14) Use product logos when the two columns are products (e.g. NetSuite | SAP Business One); a text-only split was rejected before.
 - **No invented sample values** (patient names, drugs) in before-after cards, even if an old example used them. Use the article's own words (e.g. "Allergies", "Medications", "CCDA").
 - **Window list heading auto-sizes** to one line (long "X vs Y" headings used to wrap at 42px).
 
@@ -87,3 +87,12 @@ QA failures in the test traced back to things the Orchestrator could have checke
 - Back up the old folders and specs to `featured-images/_previous/<label>/` before re-planning, then give each article a **different** layout than last time; re-rendering the same layout just reproduces the old image.
 - **Stale folder ledger:** `featured-images/.featured-ledger.json` used to override newer `plan.mjs` reservations for the same slug, so reserved layouts failed the VARIETY CHECK. Fixed: the renderer now merges per slug with the newest `at` winning.
 - **Ranked with 3 rows was top-heavy** (rows pinned to y285–470, the bottom half empty). Fixed: rows now sit in a white card, the headline + card block is centred vertically, and fewer rows get taller bars.
+
+## Taste lessons (2026-10-14): visual appeal decides
+- **Pair the background with the illustration, never by rotation alone.** Grey-heavy → `sky`; floating white card → `g5`; big blue mass (hub tile) → `cream`/`paper`; app window → `sky`; thin timeline → `cream`.
+- **Blue dosage:** the hub's blue tile on `g5` was "too much blue". A blue-heavy illustration needs a neutral field.
+- **Vibrant blue only carries a big white card** (checklist is the best). versus/logos on blue "doesn't look good" even with balanced logos.
+- **Logo balance:** a full app icon shrunk inside a white tile looked tiny and weird. The logo fills ~65% of its tile, and an app icon becomes the tile.
+- **Logos only** for best-of hubs (Granola integrations): the user called it "really really good".
+- **Grain:** heavy on the vibrant blue, fine on `g5`. Rejected along the way: pastel washes, centre glow, flat/diagonal blues, five other dune textures, arch outlines.
+- **Show options side by side before changing the look**, and judge them with a taste skill (impeccable) before sending.
