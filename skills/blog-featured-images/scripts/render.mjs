@@ -86,7 +86,7 @@ function versus() {
 .lgband{position:absolute;left:0;right:0;top:${LG_TOP - 14}px;height:268px;border-top:1px solid rgba(59,134,240,.35);border-bottom:1px solid rgba(59,134,240,.35);background:repeating-linear-gradient(135deg,rgba(59,134,240,.12) 0 2px,transparent 2px 16px)}
 .lgw{position:absolute;left:50%;top:${LG_TOP}px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:120px}
 .lgs{width:440px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.lgt{width:240px;height:240px;border-radius:56px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
+.lgt{width:${spec.bg === 'blue' ? 280 : 240}px;height:${spec.bg === 'blue' ? 280 : 240}px;border-radius:60px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
 .lgt .lg{box-shadow:none;background:transparent}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt .lg.full{transform:scale(.62);border-radius:40px}
 .lgs b{margin-top:30px;font-size:44px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;color:#0E2A5C}.l1 b,.l2 b{color:#0E2A5C}
 .lgs span{margin-top:18px;width:340px;box-sizing:border-box;padding:12px 0;border-radius:999px;background:#fff;box-shadow:0 0 0 1px rgba(20,26,38,.07),0 8px 20px rgba(30,60,110,.06);font-size:28px;color:#5D6675;white-space:nowrap;text-align:center}
@@ -520,7 +520,8 @@ const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:l
 // anchor (the one high-contrast element): approved blue gradient by default, or navy
 const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';
 // Vibrant brand-blue field: the near-flat blue the user approved. Centre-glow gradients were rejected ("ew").
-const BLUE_GLOW = 'linear-gradient(180deg,#2F6FEA 0%,#1F5BD8 100%)';
+// Granola technique: a soft DIAGONAL blend of two neighbouring shades + film grain (no spotlight)
+const BLUE_GLOW = 'linear-gradient(135deg,#3F86F1 0%,#2F6FEA 42%,#2259D9 100%)';
 const CRAFT = spec.craft === true;
 // text and structure that sit directly on a saturated field turn white
 const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}
@@ -528,7 +529,7 @@ body.fd .lgs b,body.fd .l1 b,body.fd .l2 b{color:#fff}body.fd .lgs span{backgrou
 body.fd .lgv{box-shadow:0 0 0 6px rgba(255,255,255,.9)}body.fd .lgband{border-color:rgba(255,255,255,.3);background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 2px,transparent 2px 16px)}
 body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
 body.fd svg.fl g{stroke:#fff}body.fd .fb{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}body.fd .fb b{color:#fff}body.fd .fb span{color:rgba(255,255,255,.8)}body.fd .fb .fi{background:rgba(255,255,255,.2);color:#fff}
-body.fd .grain{opacity:.06}`;
+body.fd .grain{opacity:.16;mix-blend-mode:soft-light}`;
 const MONO = "'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
 const SERIES_POS = spec.seriesPos || { focus: 'top', versus: 'bottom', 'before-after': 'tl' }[MODE] || 'bottom';
 const seriesMark = CRAFT && spec.series ? `<!--smark--><div class="smark sm-${SERIES_POS}">${brand.markUrl ? `<img src="${brand.markUrl}" alt="">` : ''}<b>${esc(brand.markName || brand.name || '')}</b><span>${esc(spec.series)}</span></div><!--/smark-->` : '';

@@ -200,7 +200,7 @@ They rotate per article (seeded by slug); `"washPreset": 0–3` forces one. Corn
 ---
 
 ### Vibrant + subtle mix (user, 2026-10-13: "I like brand blue field; it's good adding vibrant images with other subtle images")
-- **`"bg": "blue"`** = the vibrant brand-blue field: white cards and white text on a **near-flat brand blue** (`#2F6FEA → #1F5BD8`, top to bottom). **Rejected: centre-glow / radial "spotlight" gradients** ("ew"). They read as generic.
+- **`"bg": "blue"`** = the vibrant brand-blue field: white cards and white text on brand blue, using **Granola's technique: a soft diagonal blend of two neighbouring blues** (`#3F86F1 → #2F6FEA → #2259D9`, 135°) **plus stronger film grain**, never a spotlight. On blue the logo tiles grow to 280px. **Rejected: centre-glow / radial "spotlight" gradients** ("ew"). They read as generic.
 - **Mix it in, don't overuse it:** at most **1 in 3** images in a category is vibrant, never two neighbours. The renderer refuses with **"VIBRANT CHECK FAILED"**. The rest use the subtle light backgrounds (sky, wash, cool, flat, white).
 - Rejected along the way: corner-pool pastel gradients and the 4 "one-family pastel" presets ("NONE. ITS SHIT AF"). Flat bold fields like the references were the breakthrough.
 
