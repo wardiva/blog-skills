@@ -11,7 +11,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `slug` | yes | Output folder name and ledger key (unique per article) |
 | `mode` | no | `before-after` (default), `versus`, `prompt`, `hub`, `stack`, `window`, `timeline`, `checklist`, `stat`, `ranked` |
 | `variant` | no | Layout variant of the mode. Today `versus` has `overlap` (default), `table` and `logos`; `stack` has `default` and `split`; `before-after` has `default` and `flow`. The variety check counts mode + variant as one layout |
-| `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]` and ranked `rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
+| `logo` (per item) | no | The product's domain, e.g. `"odoo.com"`, on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]` and stat `card.rows[]`. Renders the logo beside the name via the free logo chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → lettermark) |
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
 | `bg` | no | `sky` (B, crisp, texture on), `wash` (A, approved warm wash), `cool`, `white`, `flat`. Leave it out to auto-rotate |
 | `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky`; set `true` to add it to `wash` (option A). Never with the frame grid |

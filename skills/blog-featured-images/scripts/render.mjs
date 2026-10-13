@@ -68,6 +68,9 @@ const LOGO_CSS = `.lg{display:inline-grid;place-items:center;flex:none;border-ra
 .lg-tint{background:#E3F0FD;padding:9px}.lg-tint img{filter:grayscale(1) contrast(1.2);mix-blend-mode:luminosity;opacity:.75}`;
 
 const before = spec.before, after = spec.after;
+// before-after default: the 'after' card fits its content and the whole group is centred vertically (no empty card areas)
+const baH = after ? Math.max(290, 160 + (after.items || []).length * 51) : 290;
+const baTop = Math.round((900 - (baH + 190)) / 2);
 
 // "versus": in the approved card language, structurally unlike before-after.
 //   variant "table" (default): ONE comparison card, products as column headers, matched rows, the right column tinted.
@@ -294,7 +297,7 @@ function checklist() {
 // "stat": one giant number from the article, a caption, and a breakdown card.
 function stat() {
   const max = Math.max(...spec.card.rows.map((r) => r.pct || 1));
-  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
+  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${logo(r.logo, 30)}${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
   return `<style>
 .sv{position:absolute;left:205px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
 .sc{position:absolute;left:212px;top:470px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
@@ -532,9 +535,17 @@ const CRAFT_CSS = `
 .fa b{color:#141A26;font-weight:600}.fa li{color:#141A26}
 .fleg{font-family:${MONO};text-transform:uppercase;font-size:22px;letter-spacing:.06em}.fleg .f1{color:#7F8794}.fleg .f2{color:#0A5FD8}
 `;
+// wash / cool vary per article (user: "why every image has same exact this gradient"): seeded by slug, same palette
+const WV = (() => {
+  let h = 2166136261; for (const ch of String(slug) + '#wash') h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  const r = () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296;
+  const spots = [[85, 18], [88, 84], [50, 6], [14, 86], [12, 14], [60, 92]];
+  const [px, py] = spots[Math.floor(r() * spots.length)];
+  return { ang: Math.round(105 + r() * 70), px, py, ps: Math.round(34 + r() * 16), wx: 100 - px + Math.round(r() * 10 - 5), wy: 100 - py + Math.round(r() * 10 - 5), ws: Math.round(28 + r() * 14), warmOn: r() > 0.3 };
+})();
 const BG_CSS = {
-  wash: `body{background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}body:before{display:block;background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}`,
-  cool: `body{background:linear-gradient(160deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}body:before{display:block;background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at 5% 10%,rgba(255,180,150,.18),transparent 70%)}`,
+  wash: `body{background:linear-gradient(${WV.ang}deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}body:before{display:block;background:radial-gradient(${WV.ps}% ${WV.ps + 10}% at ${WV.px}% ${WV.py}%,${w.pool},transparent 70%),radial-gradient(${WV.ws}% ${WV.ws + 10}% at ${WV.wx}% ${WV.wy}%,${WV.warmOn ? w.warmPool : 'transparent'},transparent 70%)}`,
+  cool: `body{background:linear-gradient(${WV.ang + 20}deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}body:before{display:block;background:radial-gradient(${WV.ps + 5}% ${WV.ps + 15}% at ${WV.px}% ${WV.py}%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at ${WV.wx}% ${WV.wy}%,rgba(255,180,150,${WV.warmOn ? '.18' : '0'}),transparent 70%)}`,
   flat: `body{background:#F1F0EC}body:before{display:none}`,
   paper: `body{background:#F1F3F6}body:before{display:none}`,
   sky: `body{background:linear-gradient(180deg,#F3F8FE 0%,#E6F1FC 100%)}body:before{display:none}`,
@@ -547,17 +558,17 @@ ${LOGO_JS}
 <style>
 ${LOGO_CSS}
 ${TEX ? TEX_CSS : ''}
-.th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}
+.sr b .lg{margin-right:10px;vertical-align:middle;position:relative;top:-2px}.th b .lg,.olb .lg,.rr b .lg{vertical-align:middle;margin-right:14px;position:relative;top:-3px}.olb{display:flex;align-items:center}
 *{box-sizing:border-box}html,body{margin:0;width:1600px;height:900px;overflow:hidden}
 body{position:relative;font-family:Inter,system-ui,sans-serif;color:#141A26;background:linear-gradient(135deg,${w.warm} 0%,${w.mid} 40%,${w.cool} 75%,${w.deep} 100%)}
 body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);background:radial-gradient(40% 50% at 85% 20%,${w.pool},transparent 70%),radial-gradient(35% 45% at 10% 90%,${w.warmPool},transparent 70%)}
 .lbl{position:absolute;top:160px;font-size:50px;font-weight:500;letter-spacing:-.02em}
 .l1{left:210px;color:#7C7468}.l2{left:710px;color:#2C5FAE}
 .c{position:absolute;top:250px;background:#fff;border-radius:22px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.04)}
-.c1{left:210px;width:420px;height:290px;padding:54px 40px}
+.c1{left:210px;width:420px;height:290px;padding:54px 40px;box-sizing:border-box}
 .c1 .raw{font-size:29px;line-height:1.45;color:#141A26}
 .caret{display:inline-block;width:3px;height:36px;background:#27ACF2;vertical-align:-6px;margin-left:4px}
-.c2{left:710px;width:680px;height:410px;padding:48px 50px}
+.c2{left:710px;width:680px;padding:48px 50px;box-sizing:border-box}
 .c2 h3{margin:0 0 24px;font-size:34px;font-weight:500;color:#5D6675;letter-spacing:-.01em}
 .c2 ul{margin:0;padding:0 0 0 30px;display:grid;gap:12px;font-size:30px;line-height:1.3}
 .c2 li{color:#7F8794}.c2 li.a{color:#141A26}
@@ -568,11 +579,11 @@ body:before{content:"";position:absolute;inset:-100px;filter:blur(80px);backgrou
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style></head><body>
 ${PATTERN}${TEX ? '<div class="tex"><i class="dots"></i><i class="acc"></i></div>' : ''}${frameLayer()}
-${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1">${esc(before.label)}</div><div class="lbl l2">${esc(after.label)}</div>
-<div class="c c1"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
-<svg class="conn" viewBox="0 0 80 900"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
-<div class="c c2"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>
-<div class="legend"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`}
+${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1" style="top:${baTop}px">${esc(before.label)}</div><div class="lbl l2" style="top:${baTop}px">${esc(after.label)}</div>
+<div class="c c1" style="top:${baTop + 90}px"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
+<svg class="conn" viewBox="0 0 80 900" style="transform:translateY(${baTop + 90 - 250}px)"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
+<div class="c c2" style="top:${baTop + 90}px;height:${baH}px"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>
+<div class="legend" style="top:${baTop + 90 + baH + 64}px"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>`}
 ${cursorLayer()}
 <style>${BG_CSS[BG] || ''}</style>
 ${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}<div class="grain"></div></body></html>`;

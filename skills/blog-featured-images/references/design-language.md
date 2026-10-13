@@ -188,6 +188,7 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 **The shared vibe:**
 - **Soft, light fields:** pastel wash, light sky or warm flat grey. Structure comes from **thin guide lines + a few tiny blue dots in the margins** (texture), or from the faint grid with corner squares (timeline, window, stat).
+- **The wash and cool backgrounds vary per article** (user: "why every image has same exact this gradient"). The gradient angle, the blue glow's position (top-right, bottom-right, top-centre, bottom-left…), the opposite warm tint (sometimes none) and the glow size are seeded from the slug. Same palette, different light in every image. Never hard-code one gradient for all images.
 - **No dot patches.** The user picked B ("too much dots in the bg"); `dots` defaults to `none`. Never use outline-shape backgrounds either (rejected).
 - **One big white card or hero** with real UI: checkboxes, progress bar, bars, skeleton rows, timeline dots, an app window. It's centred or cleanly left-aligned and fills about 60%+ of the width.
 - **Blue gradient = the active state and the one anchor:** checked boxes, the progress bar, the winning bar, the highlighted row, the "2 of 8" chip, the selection box, the current timeline dot. **Grey = inactive:** unchecked boxes, the other bars, skeletons, empty dots.

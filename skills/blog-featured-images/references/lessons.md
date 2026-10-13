@@ -62,6 +62,8 @@ QA failures in the test traced back to things the Orchestrator could have checke
 
 - **Outline-shape backgrounds were rejected** ("ew the shapes you added so bad"): arches, waves, big outline patterns. Copying a reference's decorative layer literally failed. Borrow its principles (contrast, ink, mono labels), not its ornaments.
 
+- **When the user finalizes images, record them in BOTH the site history and the local ledger** (`featured-images/.featured-ledger.json`; the ledger wins on conflicts). Otherwise another run can leave stale layouts behind, and the variety check counts the wrong images.
+
 ## 4. Variety must be structural
 
 - Two images were "exact same" because the old check only knew one output folder. Now one site-wide history per brand counts every render (`~/.blog-featured-images/history-<brand>.json`).
