@@ -15,6 +15,17 @@ Read these before your first image in a session:
 - `references/agents.md`: the three-agent fast-batch workflow, Maker and QA prompts, QA checklist
 - `references/lessons.md`: what past sessions learned (speed, pre-flight checks, taste)
 
+## The target look (user-finalized)
+Open `references/approved/` before your first image: 6 finalized images (checklist, hub, ranked, focus, timeline, window) define the vibe:
+- soft light fields with thin guide lines (no dot patches)
+- one big white UI card or hero
+- blue gradient only for active and anchor elements; grey for inactive
+- navy headlines
+- colour logos in white tiles
+- ≤15 words
+
+Their specs are in `examples/`, and the renderer's per-layout defaults already match them. See "FINAL approved look" in `references/design-language.md`.
+
 ## Work fast (user rule: "WORK FAST")
 - Read all URLs at once (`scripts/read-articles.mjs`, agent-browser).
 - Reserve all layouts in one command (`scripts/plan.mjs`).

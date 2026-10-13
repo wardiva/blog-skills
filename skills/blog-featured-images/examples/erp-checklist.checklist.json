@@ -1,0 +1,30 @@
+{
+ "articleTitle": "How to Choose ERP Software: 8-Point Checklist for Small Businesses",
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "topic": "choose-erp",
+ "slug": "how-to-choose-erp-software-8-point-checklist-for-small-businesses",
+ "mode": "checklist",
+ "title": "8-Point ERP Checklist",
+ "total": 8,
+ "items": [
+  {
+   "text": "Problems to solve",
+   "done": true
+  },
+  {
+   "text": "Budget",
+   "done": true
+  },
+  {
+   "text": "Deployment model",
+   "done": false
+  },
+  {
+   "text": "Integrations",
+   "done": false
+  }
+ ],
+ "texture": true,
+ "bg": "wash"
+}

@@ -83,7 +83,7 @@ function versus() {
 .lgw{position:absolute;left:50%;top:206px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:150px}
 .lgs{width:380px;display:flex;flex-direction:column;align-items:center;text-align:center}
 .lgt{width:280px;height:280px;border-radius:64px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
-.lgt .lg{box-shadow:none;background:transparent}.lgt .lg.full{transform:scale(.66)}
+.lgt .lg{box-shadow:none;background:transparent}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt .lg.full{transform:scale(.66)}
 .lgs b{margin-top:34px;font-size:46px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}.l1 b{color:#7C7468}.l2 b{color:#2C5FAE}
 .lgs span{margin-top:16px;padding:10px 22px;border-radius:999px;background:rgba(255,255,255,.75);box-shadow:0 0 0 1px rgba(20,26,38,.06);font-size:32px;color:#5D6675;white-space:nowrap}
 .lgv{position:absolute;left:50%;top:140px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
@@ -213,15 +213,17 @@ function stack() {
 .skh{display:flex;align-items:center;gap:16px;font-size:32px;color:#7F8794}.skh i{font-size:40px;color:#0A5FD8}
 .skl{margin:30px 0 28px;font-size:46px;line-height:1.28;color:#141A26;letter-spacing:-.015em}.skl b{font-weight:600;color:#0A5FD8}
 .sku{margin:0;padding:0 0 0 34px;display:grid;gap:14px;font-size:32px;line-height:1.35;color:#7F8794}.sku li:first-child{color:#141A26}
+.skf .skh{padding-right:200px;font-size:48px;font-weight:600;color:#141A26;letter-spacing:-.02em}.skf .skl,.skf .sku{max-width:740px}.skf .skl{font-size:40px;color:#5D6675}.skf .skl b{color:#141A26}
+.skit{position:absolute;right:64px;top:56px;width:156px;height:156px;border-radius:40px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;font-size:92px;color:#fff;box-shadow:0 14px 30px rgba(10,95,216,.22)}
 </style>
 <div class="sk sk1"></div><div class="sk sk2"></div>
-<div class="sk skf"><div class="skh"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i>${esc(spec.title)}</div><div class="skl">${lead}</div><ul class="sku">${spec.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
+<div class="sk skf"><div class="skit"><i class="${esc(spec.icon || 'ph ph-clipboard-text')}"></i></div><div class="skh">${esc(spec.title)}</div><div class="skl">${lead}</div><ul class="sku">${spec.items.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>`;
 }
 
 // "window" (Granola app-window shots): a whole macOS-style window, list pane + detail pane, real text.
 function appwin() {
   const W = spec.window || {}, L = spec.list, D = spec.detail;
-  const rows = L.rows.slice(0, 5).map((r) => `<div class="wr">${r.logo ? logo(r.logo, 46) : `<span class="wav">${esc((r.title || '?').trim()[0])}</span>`}<div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
+  const rows = L.rows.slice(0, 5).map((r, i) => `<div class="wr${i === L.highlight ? " wh" : ""}">${r.logo ? logo(r.logo, 46) : r.icon ? `<span class="wav"><i class="${esc(r.icon)}" aria-hidden="true"></i></span>` : `<span class="wav">${esc((r.title || '?').trim()[0])}</span>`}<div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
   return `<style>
 .win{position:absolute;left:${spec.bleed ? 230 : 210}px;top:${spec.bleed ? 150 : 95}px;width:${spec.bleed ? 1300 : 1180}px;height:${spec.bleed ? 820 : 720}px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
 .wt{height:66px;display:flex;align-items:center;gap:10px;padding:0 26px;border-bottom:1px solid #EEF0F4;background:#FAFBFC}
@@ -232,7 +234,7 @@ function appwin() {
 .wi{width:54px;height:54px;border-radius:14px;background:#E3F0FD;display:grid;place-items:center;font-size:30px;color:#0A5FD8}
 .wl h2{margin:16px 0 4px;white-space:nowrap;font-size:${Math.min(42, Math.floor(552 / (String(spec.list.heading || "").length * 0.56 || 1)))}px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
 .wr{display:flex;align-items:center;gap:16px;padding:13px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
-.wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
+.wr.wh{margin:0 -18px;padding:13px 18px;border-radius:16px;background:linear-gradient(90deg,#3B86F0,#0A5FD8);color:#fff}.wr.wh .wav{background:rgba(255,255,255,.2);color:#fff}.wr.wh span,.wr.wh em{color:rgba(255,255,255,.85)}.wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
 .wd{padding:40px ${spec.bleed ? 150 : 40}px 40px 40px}.wq{margin-left:${spec.bleed ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
 .wd h3{margin:30px 0 16px;font-size:32px;font-weight:600;line-height:1.2;letter-spacing:-.015em}
 .wd ul{margin:0;padding:0 0 0 24px;display:grid;gap:12px;font-size:22px;line-height:1.4;color:#5D6675}
@@ -276,12 +278,12 @@ function checklist() {
     return `<div class="ck${it.done ? ' ckd' : ''}${cur ? ' ckc' : ''}"><span class="bx">${it.done ? '<i class="ph-bold ph-check"></i>' : ''}</span><span>${esc(it.text)}</span></div>`;
   }).join('');
   return `<style>
-.cb{position:absolute;left:480px;top:${ct + 15}px;width:680px;height:${ch - 10}px;border-radius:30px;background:#E4EFFC;transform:rotate(4deg)}
-.cf{position:absolute;left:440px;top:${ct}px;width:720px;height:${ch}px;border-radius:30px;background:#fff;transform:rotate(-2deg);padding:50px 56px;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)}
-.ch{display:flex;align-items:center;justify-content:space-between}.ch b{font-size:36px;font-weight:600;letter-spacing:-.02em}
-.ch span{font-size:22px;font-weight:600;color:#0A5FD8;background:#E3F0FD;border-radius:99px;padding:8px 16px}
+.cb{position:absolute;left:360px;top:${ct + 15}px;width:920px;height:${ch - 10}px;border-radius:30px;background:#E4EFFC;transform:rotate(4deg)}
+.cf{position:absolute;left:320px;top:${ct}px;width:960px;height:${ch}px;border-radius:30px;background:#fff;transform:rotate(-2deg);padding:50px 56px;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)}
+.ch{display:flex;align-items:center;justify-content:space-between}.ch b{font-size:40px;font-weight:600;letter-spacing:-.02em}
+.ch span{font-size:24px;font-weight:600;color:#fff;background:linear-gradient(90deg,#3B86F0,#0A5FD8);border-radius:99px;padding:10px 22px;box-shadow:0 8px 20px rgba(10,95,216,.25)}
 .cp{margin:22px 0 30px;height:10px;border-radius:5px;background:#EEF2F7}.cp i{display:block;height:100%;width:${Math.round((done / total) * 100)}%;border-radius:5px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
-.ck{display:flex;align-items:center;gap:20px;font-size:29px;color:#7F8794;padding:11px 0}
+.ck{display:flex;align-items:center;gap:22px;font-size:32px;color:#7F8794;padding:11px 0}
 .ck .bx{width:40px;height:40px;border-radius:11px;border:3px solid #CBD2DC;display:grid;place-items:center;flex:none}
 .ck.ckd{color:#141A26}.ck.ckd .bx{background:#0A5FD8;border-color:#0A5FD8;color:#fff;font-size:22px}
 .ck.ckc{color:#141A26;font-weight:500}.ck.ckc .bx{border-color:#0A5FD8;box-shadow:0 0 0 6px rgba(10,95,216,.15)}
@@ -292,7 +294,7 @@ function checklist() {
 // "stat": one giant number from the article, a caption, and a breakdown card.
 function stat() {
   const max = Math.max(...spec.card.rows.map((r) => r.pct || 1));
-  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === 0 ? ' a' : ''}"><div><b>${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
+  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
   return `<style>
 .sv{position:absolute;left:205px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
 .sc{position:absolute;left:212px;top:470px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
@@ -311,15 +313,21 @@ function stat() {
 function ranked() {
   const max = Math.max(...spec.rows.map((r) => r.pct));
   const win = spec.winner ?? 0;
-  const rows = spec.rows.slice(0, 6).map((r, i) => `<div class="rr${i === win ? ' w' : ''}"><span class="rn">${String(i + 1).padStart(2, '0')}</span><b>${logo(r.logo, 40)}${esc(r.name)}</b><i><i style="width:${Math.max(4, Math.round((r.pct / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
+  const list = spec.rows.slice(0, 6);
+  const rows = list.map((r, i) => `<div class="rr${i === win ? ' w' : ''}"><span class="rn">${String(i + 1).padStart(2, '0')}</span><b>${logo(r.logo, 40)}${esc(r.name)}</b><i><i style="width:${Math.max(4, Math.round((r.pct / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
+  // Rows sit in a white card and the whole block (headline + card) is centred vertically, slightly above centre,
+  // so 3 rows don't leave the bottom half empty. Fewer rows get taller bars and more air.
+  const n = list.length, barH = n <= 3 ? 60 : n <= 4 ? 52 : 44, gap = n <= 3 ? 34 : n <= 4 ? 28 : 20;
+  const headH = spec.sub ? 130 : 76, cardH = 2 * 52 + n * barH + (n - 1) * gap;
+  const top = Math.max(70, Math.round((900 - (headH + 48 + cardH)) / 2) - 16);
   return `<style>
-.rh{position:absolute;left:210px;top:120px;font-size:56px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
-.rs{position:absolute;left:212px;top:196px;font-size:28px;color:#7F8794}
-.rl{position:absolute;left:210px;top:285px;width:1180px;display:grid;gap:22px}
-.rr{display:grid;grid-template-columns:56px 340px 1fr 190px;align-items:center;gap:18px}
+.rh{position:absolute;left:210px;top:${top}px;font-size:56px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C;line-height:1.2}
+.rs{position:absolute;left:212px;top:${top + 78}px;font-size:28px;color:#7F8794}
+.rl{position:absolute;left:210px;top:${top + headH + 48}px;width:1180px;box-sizing:border-box;padding:52px 56px;display:grid;gap:${gap}px;background:#fff;border-radius:28px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
+.rr{display:grid;grid-template-columns:48px 310px 1fr 220px;align-items:center;gap:18px}
 .rn{font-size:22px;font-weight:600;color:#9AA3B2}.rr b{font-size:30px;font-weight:500;color:#2B3245;white-space:nowrap}
-.rr>i{height:48px;border-radius:12px;background:#E6E4DF;overflow:hidden}.rr>i>i{display:block;height:100%;border-radius:12px;background:#CFCDC6}
-.rr em{font-style:normal;font-size:26px;color:#7F8794;white-space:nowrap}
+.rr>i{height:${barH}px;border-radius:12px;background:#EEF0F3;overflow:hidden}.rr>i>i{display:block;height:100%;border-radius:12px;background:#CBD2DC}
+.rr em{font-style:normal;font-size:28px;color:#7F8794;white-space:nowrap;text-align:right}
 .rr.w b{color:#141A26;font-weight:600}.rr.w .rn{color:#0A5FD8}.rr.w>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}.rr.w em{color:#0A5FD8;font-weight:600}
 </style>
 <div class="rh">${esc(spec.headline)}</div><div class="rs">${esc(spec.sub || '')}</div><div class="rl">${rows}</div>`;
@@ -328,7 +336,7 @@ function ranked() {
 
 // ---- balance layer (learned from Base44): grid lines + registration squares framing the hero, an optional cursor cue ----
 // Grid only where it matches the vibe: open, data-led layouts on calm fields. Card-heavy or busy layouts stay clean.
-const FRAME_DEFAULT = { stat: true, ranked: true, timeline: true, window: true };
+const FRAME_DEFAULT = { stat: true, timeline: true, window: true };   // ranked: texture instead (user-finalized look)
 function frameLayer() {
   const on = spec.frame ?? FRAME_DEFAULT[spec.mode || 'before-after'] ?? false;
   if (!on) return '';
@@ -346,6 +354,15 @@ function cursorLayer() {
 }
 // "before-after" variant "flow": a muted "before" card with an icon -> hand-drawn arrow -> a lifted "after" card with a blue icon tile
 // and checked items. Icons carry the meaning, so the text stays short.
+// Card-style options for flow (A/B/C trial, 2026-10-13: the dashed before card blended into the bg, the after shadow was too heavy).
+const FLOW_STYLES = {
+  a: `.fb{background:rgba(255,255,255,.72);border:1.5px solid #D5DAE2;box-shadow:0 10px 30px rgba(30,60,110,.08)}.fb .fi{background:#EEF1F5}
+.fa{box-shadow:0 16px 40px rgba(30,60,110,.10),0 0 0 1px rgba(20,26,38,.06)}.fa .fi{box-shadow:0 8px 18px rgba(10,95,216,.18)}`,
+  b: `.fb{background:#fff;border:none;box-shadow:0 12px 32px rgba(30,60,110,.09),0 0 0 1px rgba(20,26,38,.07)}.fb .fi{background:#F1F3F6;color:#8A93A5}.fb b{color:#7F8794}
+.fa{box-shadow:0 12px 32px rgba(30,60,110,.09),0 0 0 2px rgba(10,95,216,.35)}.fa .fi{box-shadow:none}`,
+  c: `.fb{background:#E9ECF1;border:none;box-shadow:inset 0 0 0 1px #DCE1E8}.fb .fi{background:#fff;color:#7F8794}.fb b{color:#5D6675}.fb span{color:#7F8794}
+.fa{box-shadow:0 18px 44px rgba(30,60,110,.10),0 0 0 1px rgba(20,26,38,.06)}.fa .fi{box-shadow:0 8px 18px rgba(10,95,216,.18)}`,
+};
 function baFlow() {
   const B = spec.before, A = spec.after;
   return `<style>
@@ -362,6 +379,7 @@ svg.fl{position:absolute;inset:0;overflow:visible}
 .fleg{position:absolute;left:50%;transform:translateX(-50%);top:745px;display:flex;gap:44px;font-size:28px;font-weight:500}
 .fleg span{display:flex;align-items:center;gap:12px;white-space:nowrap}.fleg i{width:12px;height:12px;border-radius:50%}
 .fleg .f1{color:#7C7468}.fleg .f1 i{background:#B7B1A6}.fleg .f2{color:#2C5FAE}.fleg .f2 i{background:#27ACF2}
+${FLOW_STYLES[spec.flowStyle] || ''}
 </style>
 <div class="fb"><div class="fi"><i class="${esc(B.icon || 'ph ph-hard-drives')}"></i></div><b>${esc(B.label)}</b>${(B.lines || []).map((l) => `<span>${esc(l)}</span>`).join('')}</div>
 ${CRAFT ? `<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><g fill="none" stroke="#3B86F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M632 440 C 712 440 760 440 842 440"/><path d="M824 426 L 844 440 L 824 454"/></g><circle cx="632" cy="440" r="7" fill="#3B86F0"/></svg>` : `<svg class="fl" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rgh"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
@@ -422,7 +440,8 @@ if (!LAYOUTS[MODE].includes(VARIANT)) { console.error(`Unknown variant "${VARIAN
 const LAYOUT = `${MODE}/${VARIANT}`;
 const ALL_LAYOUTS = ALL_MODES.flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
 const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
-const DEFAULT_BG = { focus: 'flat', 'before-after': 'wash', versus: 'wash', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'cool', stat: 'white', ranked: 'flat' };
+// defaults match the user-finalized reference set (references/approved/)
+const DEFAULT_BG = { focus: 'sky', 'before-after': 'wash', versus: 'sky', prompt: 'cool', hub: 'flat', stack: 'wash', window: 'cool', timeline: 'flat', checklist: 'wash', stat: 'white', ranked: 'wash' };
 const BGS = ['wash', 'sky', 'cool', 'white', 'flat'];
 const category = spec.category || spec.brand || 'default';
 const brandKey = (spec.brand || 'default').replace(/[^a-z0-9-]/gi, '');
@@ -432,7 +451,8 @@ const historyFile = path.join(historyDir, `history-${brandKey}.json`);
 const readJson = (f) => { try { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : []; } catch { return []; } };
 const ledger = readJson(ledgerFile), siteHistory = readJson(historyFile);
 const bySlug = new Map();
-for (const e of [...siteHistory, ...ledger]) bySlug.set(e.slug, { ...bySlug.get(e.slug), ...e });
+// Merge per slug, newest entry wins (a stale folder ledger must never override a newer site-history reservation).
+for (const e of [...siteHistory, ...ledger].sort((x, y) => String(x.at).localeCompare(String(y.at)))) bySlug.set(e.slug, { ...bySlug.get(e.slug), ...e });
 const history = [...bySlug.values()].sort((x, y) => String(x.at).localeCompare(String(y.at)));
 const prior = history.filter((e) => e.category === category && e.slug !== slug);
 const force = args.includes('--force');
@@ -468,7 +488,7 @@ if (!spec.bg && BG === prevBg) BG = BGS.find((b) => b !== prevBg && b !== DEFAUL
 // texture (dot patches + edge guide lines + accent dots) = the anti-bland structure layer. On by default for the crisp 'sky'/'paper'
 // backgrounds; opt in on the wash with "texture": true (option A). Off when the frame grid is on (never both).
 const FRAME_ON = spec.frame ?? FRAME_DEFAULT[MODE] ?? false;
-const TEX = !FRAME_ON && (spec.texture ?? ['sky', 'paper'].includes(spec.bg));
+const TEX = !FRAME_ON && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
 const texRand = (() => { let h = 2166136261; for (const c of String(slug)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; })();
 const texDiag = texRand() < 0.5;   // which diagonal the two dot patches sit on
 const pt = (x, y) => [Math.round(x), Math.round(y)];
@@ -479,9 +499,10 @@ const accDots = [0, 1, 2, 3, 4].map((i) => {     // outer margins only: never ne
 });
 const acc = accDots.map(([x, y], i) => `radial-gradient(circle,${i % 2 ? '#27ACF2' : '#3B86F0'} 3px,transparent 3.6px) ${x}px ${y}px/12px 12px no-repeat`).join(',');
 const [p1x, p1y, p2x, p2y] = texDiag ? [18 + texRand() * 10, 14 + texRand() * 8, 80 + texRand() * 8, 86 + texRand() * 6] : [82 + texRand() * 8, 14 + texRand() * 8, 20 + texRand() * 8, 86 + texRand() * 6];
+const DOTS = ['subtle', 'none', 'full'].includes(spec.dots) ? spec.dots : 'none';   // user picked B: no dot patches ("too much dots in the bg"); guide lines + margin dots only
 const TEX_CSS = `.tex{position:absolute;inset:0;pointer-events:none;background:linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(59,134,240,.22),rgba(59,134,240,.22)) 1389px 0/1px 100% no-repeat}
 .tex i{position:absolute;inset:0}
-.tex .dots{background-image:radial-gradient(circle,rgba(44,95,174,.30) 1.4px,transparent 1.9px);background-size:22px 22px;-webkit-mask-image:radial-gradient(38% 32% at ${p1x}% ${p1y}%,#000 25%,transparent 72%),radial-gradient(36% 32% at ${p2x}% ${p2y}%,#000 25%,transparent 72%)}
+.tex .dots{display:${DOTS === 'none' ? 'none' : 'block'};background-image:radial-gradient(circle,rgba(44,95,174,${DOTS === 'subtle' ? '.16' : '.30'}) 1.3px,transparent 1.8px);background-size:${DOTS === 'subtle' ? '30px 30px' : '22px 22px'};-webkit-mask-image:radial-gradient(${DOTS === 'subtle' ? '24% 22%' : '38% 32%'} at ${p1x}% ${p1y}%,#000 20%,transparent 72%),radial-gradient(${DOTS === 'subtle' ? '22% 22%' : '36% 32%'} at ${p2x}% ${p2y}%,#000 20%,transparent 72%)}
 .tex .acc{background:${acc}}`;
 // anchor (the one high-contrast element): approved blue gradient by default, or navy
 const ANCHOR = spec.anchor === 'navy' ? 'background:#0E2A5C;color:#CFE6FF' : 'background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff';

@@ -173,12 +173,43 @@ These rules make every image easy to take in at a glance. They work inside our d
 
 ---
 
+## FINAL approved look (user: "I have finalized these images. Set in skill to follow the same vibe", 2026-10-13)
+
+**These 6 images are the target.** They're in `references/approved/` and each has a spec in `examples/`. Every new image should feel like it belongs in this set.
+
+| # | Layout | Background | Example spec |
+|---|---|---|---|
+| 1 | `checklist` | `wash` + texture | `erp-checklist.checklist.json` |
+| 2 | `hub` (7 cards, colour logos) | `flat` warm grey | `7-best-erp-software-for-small-businesses-in-2026.json` |
+| 3 | `ranked` (no grid) | `wash` + texture | `erp-implementation.ranked.json` |
+| 4 | `focus` (blue selection box + skeleton card) | `sky` + texture | `emr-cost.focus.json` |
+| 5 | `timeline` | `flat` + grid and corner squares | `emr-switch-six-steps.timeline.json` |
+| 6 | `window` (bleed, logo rows, cursor) | `cool` + grid | `dynamics-vs-acumatica.window.json` |
+
+**The shared vibe:**
+- **Soft, light fields:** pastel wash, light sky or warm flat grey. Structure comes from **thin guide lines + a few tiny blue dots in the margins** (texture), or from the faint grid with corner squares (timeline, window, stat).
+- **No dot patches.** The user picked B ("too much dots in the bg"); `dots` defaults to `none`. Never use outline-shape backgrounds either (rejected).
+- **One big white card or hero** with real UI: checkboxes, progress bar, bars, skeleton rows, timeline dots, an app window. It's centred or cleanly left-aligned and fills about 60%+ of the width.
+- **Blue gradient = the active state and the one anchor:** checked boxes, the progress bar, the winning bar, the highlighted row, the "2 of 8" chip, the selection box, the current timeline dot. **Grey = inactive:** unchecked boxes, the other bars, skeletons, empty dots.
+- **Headlines in navy** (`#0E2A5C`), weight 600, title words only; labels in sans. The craft kit (mono labels, near-black ink) is **not** part of the final look; it stays opt-in.
+- **Colour logos in small white tiles** wherever products are named (hub cards, window rows).
+- At most 15 words, labels not sentences.
+
+**Renderer defaults now match this set:**
+- focus and versus → `sky`
+- checklist and ranked → `wash` + texture (ranked has no grid)
+- timeline and window → grid
+- hub → `flat`
+- `dots: none`
+
+---
+
 ## Anti-bland rule (user's manager: "our blog images look bland"; approved 2026-10-13)
 
 Calm is good; **bland is not**. Every image needs these, learned from Mintlify's thumbnails:
 
-1. **One bold anchor.** Exactly one high-contrast element: a solid **blue-gradient** box with white text (the focus selection box), the VS badge, a blue icon tile or a big blue number. Never two, never none.
-2. **Structure tied to the frame.** Use the **texture layer**: soft-blue dot patches in two opposite corners, thin full-height guide lines on the crop-safe edges (x 210 / 1390) and a few blue accent dots. Or edge-to-edge elements: a hatched band running across the whole width behind the hero, a UI card bleeding off an edge. Nothing just floats in a blur.
+1. **One bold anchor.** (Superseded in detail by "FINAL approved look" above.) Exactly one high-contrast element: a solid **blue-gradient** box with white text (the focus selection box), the VS badge, a blue icon tile or a big blue number. Never two, never none.
+2. **Structure tied to the frame.** Use the **texture layer**: thin full-height guide lines (dot patches are now off by default; the user said "too much dots") on the crop-safe edges (x 210 / 1390) and a few blue accent dots. Or edge-to-edge elements: a hatched band running across the whole width behind the hero, a UI card bleeding off an edge. Nothing just floats in a blur.
 3. **Big hero.** The main element spans about **60% or more of the width** (cards around 900px, logo tiles 280px, rows at least 32px). The old soft look used cards around 45% wide, and that read as small and empty.
 4. **Hard alignment.** Connectors hit row centres; selection handles sit exactly on the corners; equal gaps.
 5. **Colours stay ours:**

@@ -4,6 +4,8 @@ Turn blog article URLs into **premium, article-specific featured images** (1600�
 
 ![Example featured images](assets/examples.webp)
 
+*The finalized reference set. The same 6 images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
+
 Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
 - is **minimal**: at most 15 words, labels not sentences (enforced)
@@ -77,7 +79,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 
 **Look:**
-- **Never bland:** one bold blue anchor (a selection box, VS badge or icon tile), a soft dot texture with guide lines on the safe edges, and a hero at least about 60% of the width.
+- **Never bland:** one bold blue anchor (a selection box, VS badge, checked box or active bar), thin guide lines on the safe edges (no busy dot patterns), and a hero at least about 60% of the width.
 - **Backgrounds:** `sky` (crisp) or the warm pastel `wash`.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time with nothing stored. Add `"logo": "<domain>"` to any named product.
 - **Optional craft kit** (`"craft": true`): near-black ink, monospace uppercase labels, grey "off" states, line-icon tiles, clean connectors, and an occasional site mark + series tag (`PRICING`, `COMPARISON`, `GUIDE`).
@@ -107,7 +109,8 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | Path | Contents |
 |---|---|
 | `SKILL.md` | Hard rules and workflow (Claude reads this first) |
-| `references/design-language.md` | The approved visual rulebook: colours, type, balance, text budget, logos, anti-bland, craft spec, rejected looks |
+| `references/approved/` | The 6 finalized reference images: the target look |
+| `references/design-language.md` | The approved visual rulebook: final look, colours, type, balance, text budget, logos, anti-bland, craft spec, rejected looks |
 | `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |
 | `references/lessons.md` | What past sessions learned: speed, pre-flight checks, taste |
 | `references/spec-format.md` | The JSON spec for every layout |

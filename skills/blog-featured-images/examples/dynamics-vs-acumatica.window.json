@@ -1,0 +1,41 @@
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "topic": "dynamics-vs-acumatica",
+ "slug": "microsoft-dynamics-365-vs-acumatica-for-growing-businesses-2026",
+ "mode": "window",
+ "articleTitle": "Microsoft Dynamics 365 vs Acumatica for Growing Businesses (2026)",
+ "window": {
+  "search": "",
+  "action": ""
+ },
+ "list": {
+  "icon": "ph ph-currency-dollar",
+  "heading": "Dynamics 365 vs Acumatica",
+  "sub": "",
+  "rows": [
+   {
+    "title": "Per user",
+    "sub": "",
+    "meta": "",
+    "logo": "microsoft.com"
+   },
+   {
+    "title": "Unlimited users",
+    "sub": "",
+    "meta": "",
+    "logo": "acumatica.com"
+   }
+  ]
+ },
+ "detail": {
+  "question": "50 users, yearly?",
+  "heading": "$48,000 vs $6,396",
+  "points": []
+ },
+ "bleed": true,
+ "cursor": [
+  1215,
+  372
+ ]
+}

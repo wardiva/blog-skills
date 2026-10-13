@@ -17,6 +17,7 @@ One JSON file per article. Top-level fields shared by all modes:
 | `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky`; set `true` to add it to `wash` (option A). Never with the frame grid |
 | `craft` | no | `true` = the craft kit: near-black ink, mono caps labels, grey off-states, line-icon tiles, clean connector |
 | `series` | no | With `craft`: the site mark + mono series tag (e.g. `"Pricing"`). Only on some images: at most 1 in 3 per category, never on neighbours ("SERIES CHECK FAILED") |
+| `dots` | no | Texture dot patches: `none` (default, user-approved), `subtle`, `full`. The guide lines and margin dots stay either way |
 | `anchor` | no | Colour of the one bold element (e.g. the focus selection box): `blue` (default, blue gradient + white text) or `navy` |
 | `frame` | no | Faint grid plus registration squares. On by default only for `stat`, `ranked`, `timeline` and `window`; off for the rest. `true` or `false` overrides. Use it only where it fits the vibe |
 | `cursor` | no | `[x, y]`: a pointer cue at that position. It must point at the key fact and never cover text |
@@ -106,6 +107,7 @@ One JSON file per article. Top-level fields shared by all modes:
               "points": ["Implementation: $5K to $20K", "Training: $1K to $5K"] } }
 ```
 - `rows` holds up to 5 items. `points` holds 2–4 items.
+- A row without a product takes `"icon": "<Phosphor class>"` (e.g. `ph ph-hard-drives`) instead of the letter avatar; it adds no words. `"highlight": <row index>` inside `list` renders that row as the blue-gradient anchor (white text). Use one highlight when the window has no other blue element.
 - Keep it minimal: 3–4 `rows` and 2–3 short `points` (see "Minimal rule"). `bleed` is optional and keeps detail text inside x 1390.
 
 ## Timeline (`"mode": "timeline"`; processes, implementation, durations)
@@ -130,7 +132,7 @@ One JSON file per article. Top-level fields shared by all modes:
   "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "value": "$48,000/yr", "pct": 48000 },
                                                  { "name": "Acumatica base", "value": "$6,396/yr", "pct": 6396 } ] } }
 ```
-- `value` is up to ~8 characters and is auto-sized. Card `rows` holds 2–4 items; `pct` is the raw number used to size the bars.
+- `value` is up to ~8 characters and is auto-sized. `card.highlight` picks the blue row (default 0); set it to `null` when no card row is the hero's subject, so the hero stays the only accent. Card `rows` holds 2–4 items; `pct` is the raw number used to size the bars.
 
 ## Ranked (`"mode": "ranked"`; rankings by a real metric)
 ```json
