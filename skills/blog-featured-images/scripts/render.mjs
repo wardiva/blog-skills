@@ -453,6 +453,15 @@ A layout may not repeat in a category until every layout has been used there (si
 Pick one of: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "default")`);
   process.exit(2);
 }
+// site mark + series tag: some images, never all. At most 1 in 3 per category, never on two neighbours (user rule).
+if (spec.craft === true && spec.series && !force) {
+  const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
+  if (lastTwo.some((e) => e.series)) {
+    console.error(`SERIES CHECK FAILED: the site mark was used on a recent "${category}" image (${lastTwo.filter((e) => e.series).map((e) => e.slug).join(', ')}).
+Use it on at most 1 in 3 images and never on neighbours. Remove "series" from this spec.`);
+    process.exit(2);
+  }
+}
 let BG = spec.bg || DEFAULT_BG[MODE];
 const prevBg = prior.length ? prior[prior.length - 1].bg : null; // history is sorted by time
 if (!spec.bg && BG === prevBg) BG = BGS.find((b) => b !== prevBg && b !== DEFAULT_BG[MODE]) || BG;
@@ -580,7 +589,7 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, out: path.resolve(outDir), at: new Date().toISOString() };
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), out: path.resolve(outDir), at: new Date().toISOString() };
 // Parallel renders share these files: take a lock, re-read, then write, so no entry is lost.
 fs.mkdirSync(historyDir, { recursive: true });
 const lock = historyFile + '.lock';

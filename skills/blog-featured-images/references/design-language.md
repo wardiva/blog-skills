@@ -255,6 +255,12 @@ Measured from their 2000×1125 thumbnails and converted to our 1600×900 canvas 
 
 ---
 
+### Site mark + series tag: some images, not all (user rule, 2026-10-13: "looks good but don't add it in every image")
+- `"series": "Pricing"` (with `"craft": true`) adds the Med Software Hub mark + a mono series tag (`PRICING`, `COMPARISON`, `GUIDE`). It's **optional and off by default**.
+- Use it only where there's a **natural empty slot**: centred above a centred headline (focus) or centred under a centred group (versus logos). **Skip it** on busy layouts, left-text layouts, or wherever it would crowd the hero.
+- **At most 1 in every 3 images in a category, never on two neighbours.** The renderer refuses with **"SERIES CHECK FAILED"**.
+- It's branding, so it doesn't count toward the 15-word budget.
+
 ## Inspiration: Mintlify blog (studied 2026-10-13, about 40 thumbnails)
 
 Mintlify's thumbnails match our vibe: a calm light field, real product UI, one accent colour, lots of air. They're a **reference for ideas, not a new style**. Keep our palette (pastel wash, white cards, blue accent).

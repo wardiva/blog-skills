@@ -15,6 +15,8 @@ One JSON file per article. Top-level fields shared by all modes:
 | `logoStyle` | no | `color` (default, user-approved), `mono` or `tint`. One style for the whole image |
 | `bg` | no | `sky` (B, crisp, texture on), `wash` (A, approved warm wash), `cool`, `white`, `flat`. Leave it out to auto-rotate |
 | `texture` | no | Anti-bland structure layer (dot patches, guide lines at x 210/1390, accent dots). On by default for `sky`; set `true` to add it to `wash` (option A). Never with the frame grid |
+| `craft` | no | `true` = the craft kit: near-black ink, mono caps labels, grey off-states, line-icon tiles, clean connector |
+| `series` | no | With `craft`: the site mark + mono series tag (e.g. `"Pricing"`). Only on some images: at most 1 in 3 per category, never on neighbours ("SERIES CHECK FAILED") |
 | `anchor` | no | Colour of the one bold element (e.g. the focus selection box): `blue` (default, blue gradient + white text) or `navy` |
 | `frame` | no | Faint grid plus registration squares. On by default only for `stat`, `ranked`, `timeline` and `window`; off for the rest. `true` or `false` overrides. Use it only where it fits the vibe |
 | `cursor` | no | `[x, y]`: a pointer cue at that position. It must point at the key fact and never cover text |
