@@ -19,6 +19,7 @@ Read these before your first image in a session:
 - **Light fields** (`sky`, `paper`, `cream`, `g5`) with thin guide lines and fine grain (no grain on `cream`), each chosen to flatter its illustration.
 - **About 1 in 3 images on the vibrant "deep dunes" blue** (heavy grain, soft rolling bands), and only when the illustration is a big white card.
 - One big white UI card or hero. Blue gradient only for the active/anchor element; grey for inactive.
+- Headline layouts set every word in Inter 500 Medium (only `versus/slash` keeps its heavy Poppins caps).
 - Navy headlines; real colour logos, balanced in their tiles; logos alone where they're recognisable.
 - No drop shadows on blue or black; minimal, field-tinted shadows on light fields.
 - At most 15 words.

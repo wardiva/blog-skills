@@ -109,7 +109,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `stack` | default | One key rule | no |
 | `window` | default | Vendor lists, pricing tables | yes |
 
-**Headline layouts** (after Chatbase: subtle vivid blue shapes, white designs in a grey frame, three on black, one on cream; no site mark):
+**Headline layouts** (after Chatbase: Inter Medium type, subtle vivid blue shapes, white designs in a grey frame, three on black, one on cream; no site mark):
 
 | Layout | Best for |
 |---|---|
