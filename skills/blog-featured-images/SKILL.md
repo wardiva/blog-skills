@@ -17,10 +17,10 @@ Read these before your first image in a session:
 ## The target look
 - **Two families:** card layouts on light fields, and six headline layouts after Chatbase (four for X vs Y, two for single-product articles; subtle vivid blue shapes, white designs in a grey frame, three on black, one on cream). Headline layouts never show the site mark.
 - **Light fields** (`sky`, `paper`, `cream`, `g5`) with thin guide lines and fine grain (no grain on `cream`), each chosen to flatter its illustration.
-- **About 1 in 3 images on the vibrant "deep dunes" blue** (heavy grain, soft rolling bands), and only when the illustration is a big white card.
+- **At most 1 in 3 images vibrant** (the "deep dunes" blue or a black layout) (heavy grain, soft rolling bands), and only when the illustration is a big white card.
 - One big white UI card or hero. Blue gradient only for the active/anchor element; grey for inactive.
 - Headline layouts set every word in Inter 500 Medium (only `versus/slash` keeps its heavy Poppins caps).
-- Navy headlines; real colour logos, balanced in their tiles; logos alone where they're recognisable.
+- Navy headlines on card layouts (near-black on pills and connect, white on duo and dark); real colour logos, balanced in their tiles; logos alone where they're recognisable.
 - No drop shadows on blue or black; minimal, field-tinted shadows on light fields.
 - At most 15 words.
 
@@ -29,10 +29,10 @@ Read these before your first image in a session:
 2. **Only the article's own facts** (numbers, names, steps, comparisons) in its own wording. Never invent anything. **Keep qualifiers** ("per provider", "up to", "from", "minimum"): a figure without its qualifier is wrong. Figures shown together never contradict each other.
 3. **Easy to understand:** one idea, one focal point, visual first (icon, logo, number, arrow, bars). Check it at 350×250.
 4. **Minimal (enforced):** at most **15 visible words**, max 7 per element, no sentences ("TEXT CHECK FAILED"). Secondary lines only when they are the story. Never fill space.
-5. **Different every time (enforced):** a layout (mode + variant) never repeats in a category until all have been used; same-topic articles never share a mode ("VARIETY CHECK FAILED"). A site-wide history per brand records every render.
+5. **Different every time (enforced):** a layout (mode + variant) never repeats in a category until all have been used (except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2); same-topic articles never share a mode ("VARIETY CHECK FAILED"). A site-wide history per brand records every render.
 6. **Logos where products are named:** `"logo": "<domain>"`; the renderer's free chain finds it and darkens pale grey marks. **Check every logo is the brand's real current mark** (not a campaign or anniversary badge). If it isn't, save the official mark from the brand's own website to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`.
 7. **Background fits the illustration (enforced):** leave `bg` out and the renderer picks the layout's best light background; anything outside the layout's fit list is refused ("BACKGROUND FIT FAILED"). Blue-heavy illustrations get a neutral field.
-8. **Vibrant + subtle mix (enforced):** the deep-dunes blue (`"bg": "blue"`, only for `checklist`, `versus/table`, `window`, `before-after/flow`) and the black layouts (`dark`, `versus/slash`, `versus/duo`) together appear on about 1 in 3 images per category, never neighbours ("VIBRANT CHECK FAILED", "VIBRANT FIT FAILED").
+8. **Vibrant + subtle mix (enforced):** the deep-dunes blue (`"bg": "blue"`, only for `checklist`, `versus/table`, `window`, `before-after/flow`) and the black layouts (`dark`, `versus/slash`, `versus/duo`) together appear on at most 1 in 3 images per category, never neighbours ("VIBRANT CHECK FAILED", "VIBRANT FIT FAILED").
 9. **Visual appeal is a hard gate:** an image that passes every check but doesn't look good fails QA (blue dosage, logo balance, logos only, figure/ground, balance).
 10. **Shadows follow the background:** none on blue or black; minimal and tinted on light fields (automatic).
 11. **Site mark only sometimes (enforced):** `"craft": true` + `"series"` adds the site mark + series tag to a card layout, in a natural empty slot, on at most 1 in 3 images, never neighbours ("SERIES CHECK FAILED"). Headline layouts never show it (`dark` shows the product's own icon instead).
@@ -55,7 +55,7 @@ Read these before your first image in a session:
 | `ranked` | bars ranked by a real metric | rankings | sky, g5 | no |
 | `timeline` | steps on a track + callout | process, "how long" | cream, sky | no |
 | `checklist` | tilted checklist card with progress | how to choose, requirements | g5, sky | **yes** |
-| `prompt` | faded panel, headline, pill bar | cost, FAQ, "what is" | paper, sky | no |
+| `prompt` | faded panel, headline, pill bar | cost, FAQ, "what is" | its own light-blue gradient field | no |
 | `stack` | takeaway card, two cards peeking from the top | one key rule | g5, cream | no |
 | `window` | app window: list pane + detail pane | vendor lists, pricing | sky, g5 | **yes** |
 
@@ -81,7 +81,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
 
 ## Workflow (fast batch mode)
 1. **Read:** `node <skill-dir>/scripts/read-articles.mjs <url> <url> ... --out featured-images/articles` reads every URL in parallel into `articles/<slug>.md`. Note each article's type, core idea, 3–6 hard facts, **category** and **topic** (duplicate URLs such as `…-guide` and `…-guide-2` share one topic).
-2. **Plan:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows layout usage. Pick the best fit from the least-used tier for each article, choose which ~1 in 3 go on blue (only blue-fit layouts, never neighbours), then reserve all at once: `--reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan when doing more than 3 images.
+2. **Plan:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows layout usage. Pick the best fit from the least-used tier for each article, choose which go vibrant (at most 1 in 3, blue and black layouts together, only blue-fit layouts on the blue, never neighbours), then reserve all at once: `--reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan when doing more than 3 images.
 3. **Spec + render (Makers, in parallel):** one `specs/<slug>.json` each (always `articleTitle`, `brand`, `category`, `slug`, `topic` when shared, `logo` on named products), then:
    ```bash
    node "<skill-dir>/scripts/render.mjs" "featured-images/specs/<slug>.json" --out "featured-images/<slug>"
@@ -95,7 +95,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
    node "<skill-dir>/scripts/finalize.mjs" --brand <b> <slug> <slug> ...
    ```
    It also copies each image and its spec to `~/.blog-featured-images/delivered/<brand>/<slug>/`. `--list` shows every delivered image.
-7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick. Never bring back anything `references/lessons.md` lists as rejected.
+7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick. Never bring back anything listed as rejected in `references/agents.md` (QA checklist, item 10).
 
 **When the renderer refuses** (never work around it with `--force` or another folder):
 | Message | Fix |
@@ -111,7 +111,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `CONNECT LOGO CHECK FAILED` | A brand has no solid app icon with its own background colour: use `versus/pills`, `versus/slash` or `versus/duo` (or save the brand's square app icon to `featured-images/assets/`) |
 | `PILLS LOGO CHECK FAILED` | A product's only logo is a solid app tile, which can't sit on the white circle: use `versus/connect`, `versus/slash` or `versus/duo` (or save the brand's transparent logo to `featured-images/assets/`) |
 | `LOGOTYPE CHECK FAILED` | The product's logo isn't black, or has no separate icon for the black tile: use `dark` (or, if the brand has a black lockup, save it to `featured-images/assets/` and set `"logotype"` to it) |
-| `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 3+ window rows), or pick a layout that suits fewer facts |
+| `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 2+ window rows), or pick a layout that suits fewer facts |
 | `FAIRNESS CHECK FAILED` | An X vs Y article: use a versus layout that shows both products |
 | `LOGO FILE MISSING` | Put the logo file in `featured-images/assets/` and reference it relative to the spec |
 | `FINAL IMAGE LOCKED` | That article's image was already delivered and is permanent. Don't re-create it; a new article needs its own slug and folder. Redo it only if the user explicitly asks (`--force`) |

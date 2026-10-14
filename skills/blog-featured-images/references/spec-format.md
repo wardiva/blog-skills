@@ -11,7 +11,7 @@ One JSON file per article. Top-level fields shared by all layouts:
 | `slug` | yes | Output folder name and history key (unique per article) |
 | `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype` |
 | `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, and the headline variants `pills`, `connect`, `slash`, `duo`. Mode + variant = one layout |
-| `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on about 1 in 3 images, only for `checklist`, `versus/table`, `window`, `before-after/flow` |
+| `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on at most 1 in 3 images (counting the black layouts), only for `checklist`, `versus/table`, `window`, `before-after/flow` |
 | `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns it off on a light field |
 | `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself. When it finds the wrong mark, use a file instead: `"../assets/<file>.png"` (relative to the spec; the official mark saved from the brand's website) |
 | `logoStyle` | no | `color` (default), `mono` or `tint`. One style per image |
@@ -119,14 +119,14 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
   "list": { "icon": "ph ph-currency-dollar", "heading": "Dynamics 365 vs Acumatica",
             "rows": [ { "title": "Per user", "logo": "microsoft.com" }, { "title": "Unlimited users", "logo": "acumatica.com" } ] },
   "detail": { "question": "50 users, yearly?", "heading": "$48,000 vs $6,396" },
-  "bleed": true, "cursor": [1400, 470] }
+  "bleed": true, "cursor": [1215, 372] }
 ```
 - `rows`: 2–4 (max 5; fewer than 2 is refused with "CONTENT CHECK FAILED"); `detail.points`: 2–3 short ones, or none. A row without a product takes `"icon"` instead of `"logo"`. `"highlight": <row index>` in `list` makes that row the blue anchor. Works on the vibrant blue (the grid is removed there).
 
 ---
 
 # Headline layouts
-Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark` and `logotype`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically, and none shows the site mark. All their text is Inter 500 Medium (`versus/slash` names: Poppins caps); nothing to set. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
+Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark` and `logotype`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically, and none shows the site mark. All their text is Inter 500 Medium (`versus/slash` names: Poppins caps); nothing to set. In every `headline`, `\n` breaks the line; headlines carry no blue words (near-black on the white layouts, white on the black ones), so don't use `{{ }}` there (it only colours the `versus/slash` names). Keep headlines to the title's own words.
 
 ## Versus pills (`"mode": "versus", "variant": "pills"`)
 ```json
@@ -158,8 +158,7 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 
 ## Dark (`"mode": "dark"`; single-product articles; black, counts as vibrant)
 ```json
-{ "mode": "dark", "tag": "ERP review", "headline": "Sage Intacct
-Review", "product": "Sage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
+{ "mode": "dark", "tag": "ERP review", "headline": "Sage Intacct\nReview", "product": "Sage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
 ```
 - The layout for articles about **one product** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category. An X vs Y title is refused ("FAIRNESS CHECK FAILED").
 - `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). `panelLogo` is the product's domain (or `"../assets/<file>.png"`); it fills both spots automatically: white on the panel, and black `#0A0A0B` on the white tile top-left (the site mark is never shown). `product` is the name shown under the mark.

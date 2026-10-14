@@ -100,22 +100,6 @@ function versus() {
   if (spec.variant === 'duo') return cbVersusDuo();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
-  if (spec.variant === 'logos') {
-    const LG_TOP = Math.round((900 - (240 + 30 + 53 + 18 + 58)) / 2);   // optically centred group: tiles + names + chips
-    // "logos" (Mintlify "A x B" lockup): two large logo tiles, the VS badge between them, the names, one fact chip each.
-    const side = (d, cls) => `<div class="lgs ${cls}"><div class="lgt">${logo(d.logo, 156, d.label)}</div><b>${esc(d.label)}</b>${d.fact ? `<span>${esc(d.fact)}</span>` : ''}</div>`;
-    return `<style>
-.lgband{position:absolute;left:0;right:0;top:${LG_TOP - 14}px;height:268px;border-top:1px solid rgba(59,134,240,.35);border-bottom:1px solid rgba(59,134,240,.35);background:repeating-linear-gradient(135deg,rgba(59,134,240,.12) 0 2px,transparent 2px 16px)}
-.lgw{position:absolute;left:50%;top:${LG_TOP}px;transform:translateX(-50%);display:flex;align-items:flex-start;gap:120px}
-.lgs{width:440px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.lgt{width:240px;height:240px;border-radius:56px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
-.lgt .lg{box-shadow:none;background:transparent;padding:0}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt:has(.lg.full){background:transparent}.lgt .lg.full{width:240px!important;height:240px!important;border-radius:56px}
-.lgs b{margin-top:30px;font-size:44px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;color:#0E2A5C}.l1 b,.l2 b{color:#0E2A5C}
-.lgs > span{margin-top:18px;width:340px;box-sizing:border-box;padding:12px 0;border-radius:999px;background:#fff;box-shadow:0 0 0 1px rgba(20,26,38,.07),0 8px 20px rgba(30,60,110,.06);font-size:28px;color:#5D6675;white-space:nowrap;text-align:center}
-.lgv{position:absolute;left:50%;top:120px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
-</style>
-${spec.band === false ? '' : '<div class="lgband"></div>'}<div class="lgw">${side(L, 'l1')}${side(R, 'l2')}<div class="lgv">VS</div></div>`;
-  }
   if (spec.variant === 'table') {
     const n = Math.max(L.items.length, R.items.length);
     const RH = 104, top = Math.round((900 - (150 + n * RH + (spec.legend ? 86 : 0))) / 2);
@@ -483,21 +467,21 @@ ${cbTile(L.logo, 140, 548, 120, 0.5, L.label)}${cbTile(R.logo, 140, 856, 120, 0.
 <div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div></div>`;
 }
 
-// "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
+// "dark": black field; top-left the product's own icon recoloured to #0A0A0B on a white tile (never the site mark), tag pill, white headline; right = a panel in the brand colour with the white logo
 function cbDark() {
   // top-left: the product's own icon on a white tile (user reference), never the site mark; the icon is recoloured to the field's black #0A0A0B
   const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 620), d = spec.panelLogoUrl || spec.panelLogo;
   return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${d ? cbTile(d, 96, 120, 90, 0.24, spec.product || '').replace(/box-shadow:[^"]*/, 'box-shadow:none').replace('<img ', '<img data-white="#0A0A0B" ') : ''}
 <div style="position:absolute;left:120px;bottom:110px;width:620px">
 ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;font-weight:500;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
-<div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline)}</div></div>
+<div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div></div>
 <div style="position:absolute;left:860px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden">
 <svg width="712" height="844" style="position:absolute;inset:0"><defs>${wcDefs('dk', P, 5, [0, 0, 1, 1])}</defs><rect width="712" height="844" fill="url(#dkg)" filter="url(#dkf)"/></svg>
 <div style="position:absolute;inset:0;display:grid;place-items:center">${d ? whiteMark(d, spec.product || '', 190) : ''}</div></div>${WM_CSS}${WHITE_MARK_JS}`;
 }
 
 
-// "versus/connect": centred headline with a gradient phrase, a divider
+// "versus/connect": centred near-black headline, a divider with a sparkle, two tiles that are each brand's own app icon (original colours, edge to edge) linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 // with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 function cbVersusConnect() {
   const L = spec.left, R = spec.right, head = spec.headline || `${L.label} vs\n${R.label}`, fs = cbFs(head, 104, 900);   // 900 keeps a long first line clear of the corner dot patches
@@ -558,7 +542,7 @@ document.querySelectorAll('img[data-white]').forEach((im)=>{const go=()=>duoWhit
 </script>`;
 const WM_CSS = `<style>.wm .lg{background:transparent!important;box-shadow:none!important;padding:0!important;width:auto!important;height:110px!important;overflow:visible}.wm .lg img{width:auto;max-width:200px;height:110px;object-fit:contain}.wm .lg.full{border-radius:0}</style>`;
 const whiteMark = (d, label, size = 110) => `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px"><span class="wm" style="width:200px;height:${size + 10}px;display:grid;place-items:center">${logo(d, size, label).replace('<img ', '<img data-white="1" ')}</span><b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#fff">${esc(label)}</b></div>`;
-// "versus/duo" (user reference, Chatbase "Zendesk and Zendesk Sunshine"): black field, tag pill and a big light-weight white
+// "versus/duo" (user reference, Chatbase "Zendesk and Zendesk Sunshine"): black field, tag pill and a big Inter 500 Medium white
 // headline top-left (no site mark); two watercolour panels below, each in that brand's own colour (or the subtle blue),
 // carrying the brand's mark in white plus its name. The mark is turned white in the page: background removed, ink kept as alpha.
 function cbVersusDuo() {
@@ -871,11 +855,10 @@ const svgBg = (inner, blur = 0) => `url("data:image/svg+xml,${encodeURIComponent
 // in soft rolling bands, with heavy grain on the field (cards stay crisp).
 const BLUE_GLOW = svgBg(`<defs><linearGradient id='g' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#3D80F2'/><stop offset='1' stop-color='#2C68E6'/></linearGradient></defs><rect width='1600' height='900' fill='url(#g)'/><g filter='url(#b)'><path d='M-200 560 C 350 450 800 690 1200 540 S 1650 450 1850 490 L1850 1100 L-200 1100Z' fill='#1638B0'/><path d='M-200 820 C 450 690 950 940 1850 730 L1850 1100 L-200 1100Z' fill='#0A1E70'/></g>`, 40);
 const NOISE = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncR type='linear' slope='1.6' intercept='-.3'/><feFuncG type='linear' slope='1.6' intercept='-.3'/><feFuncB type='linear' slope='1.6' intercept='-.3'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(#n)'/></svg>`)}")`;
-const CRAFT = spec.craft === true;
+const CRAFT = spec.craft === true && !CB_LAYOUT && MODE !== 'logotype';   // the site mark is for card layouts only
 // text and structure that sit directly on a saturated field turn white
 const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}
-body.fd .lgs b,body.fd .l1 b,body.fd .l2 b{color:#fff}body.fd .lgs > span{background:rgba(255,255,255,.16);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
-body.fd .lgv{box-shadow:0 0 0 6px rgba(255,255,255,.9)}body.fd .lgband{border-color:rgba(255,255,255,.3);background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 2px,transparent 2px 16px)}
+body.fd .l1 b,body.fd .l2 b{color:#fff}
 body.fd .tex .acc{display:none}body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
 body.fd svg.fl g{stroke:#fff}body.fd .fb{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}body.fd .fb b{color:#fff}body.fd .fb span{color:rgba(255,255,255,.8)}body.fd .fb .fi{background:rgba(255,255,255,.2);color:#fff}
 body.fd .grain{opacity:.06;mix-blend-mode:soft-light}`;
@@ -894,9 +877,6 @@ const CRAFT_CSS = `
 .fr em{color:#141A26}.fr.on em{color:#0A5FD8}
 .fr>i{height:22px;border-radius:11px;background:#EEF1F5}.fr>i>i{border-radius:11px;background:#D3D9E2}
 .fr.gh>i>i,.fr.gh s{background:#E3E7EE}
-/* versus logos */
-.lgs.l1 b,.lgs.l2 b{color:#141A26}
-.lgs > span{font-family:${MONO};text-transform:uppercase;letter-spacing:.06em;font-size:24px;color:#5D6675;background:#fff}
 /* before-after flow */
 .fb{background:#fff;border:2px dashed #D3D9E2;box-shadow:none}
 .fb .fi{background:#fff;color:#141A26;box-shadow:0 0 0 2px #E3E7EE}.fb b{color:#141A26;font-weight:500}.fb span{font-family:${MONO};color:#8A93A5}

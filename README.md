@@ -73,7 +73,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 |---|---|
 | `HEADING CHECK FAILED` | The image heading must reuse the blog title's own words |
 | `TEXT CHECK FAILED` | At most 15 words per image and 7 per element (no sentences) |
-| `VARIETY CHECK FAILED` | A layout can't repeat in a category until every layout has been used (history per site in `~/.blog-featured-images/history-<brand>.json`) |
+| `VARIETY CHECK FAILED` | A layout can't repeat in a category until every layout has been used (the favourites may repeat up to their limits) (history per site in `~/.blog-featured-images/history-<brand>.json`) |
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
@@ -82,15 +82,16 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `LOGOTYPE CHECK FAILED` | `logotype` needs a black logo with a separate icon; coloured logos use `dark` |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
+| `LOGO FILE MISSING` | A logo file named in the spec isn't in `featured-images/assets/` |
 | `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
 | `CONTENT CHECK FAILED` | Each layout needs enough real facts to fill its frame |
 | `FAIRNESS CHECK FAILED` | An X vs Y article always shows both products |
 
 **The look:**
-- **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue** on about 1 in 3 images, only behind a big white card.
+- **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue**, only behind a big white card (blue and black images together on at most 1 in 3 per category).
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
 - **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
-- **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
+- **One bold blue anchor**, white UI cards, navy headlines on card layouts (near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
 ## Layouts (13 modes, 19 layouts)

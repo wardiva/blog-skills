@@ -14,7 +14,7 @@ Every featured-image request runs with three roles. One agent never both makes a
    `node <skill-dir>/scripts/read-articles.mjs <url1> <url2> ... --out <featured-images>/articles`
    It writes one `articles/<slug>.md` per URL (H1, headings, paragraphs, lists, tables) using agent-browser and your existing Chrome. Nobody fetches a page again; Makers and QA read these files.
 2. **Plan and reserve all layouts in one command** (Orchestrator):
-   `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` prints layout usage, least-used first. Pick the best-fitting layout per article from the lowest tier (all different; different modes per topic). Choose about 1 in 3 for the vibrant blue, only from `checklist`, `versus/table`, `window`, `before-after/flow`, never two neighbours. Then reserve them all:
+   `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` prints layout usage, least-used first. Pick the best-fitting layout per article from the lowest tier (all different; different modes per topic). Choose at most 1 in 3 vibrant (the blue field and the black layouts together); the blue only for `checklist`, `versus/table`, `window`, `before-after/flow`; never two neighbours. Then reserve them all:
    `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c> --reserve <slug>=<mode>[/<variant>][@<topic>] ...`
 3. **Pre-flight before briefing:** does the layout hold as many items as the article has? Will the article's product names fit? Does a headline-less layout (hub, before-after, versus) carry the title's key words? Fix the renderer first if not.
 4. **Makers in parallel:** one Maker per article (or per 2–3), all started in one message, in the background, each with its article file, layout, slug and `bg` decision.
@@ -71,7 +71,7 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 
 **2c. Logotype.** The article is about one product and its logo is black (icon and wordmark) with strong typography; the icon sits in white on a black rounded tile beside the wordmark (or keeps its own tile), sharp, large and centred on cream; no other text; at most 2 per category (coloured logos use `dark`).
 
-**3. Layout never used twice.** No other image in the category has this layout unless every layout has been used (then it's one of the least-used). Next to every other 350×250 card in the category, no two read as the same skeleton. Same-topic articles use different modes.
+**3. Layout never used twice.** No other image in the category has this layout unless every layout has been used (then it's one of the least-used), except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. Next to every other 350×250 card in the category, no two read as the same skeleton. Same-topic articles use different modes.
 
 **4. Easy to scan.** The topic is clear in 2 seconds at 350×250, with one focal point and one bold blue anchor.
 

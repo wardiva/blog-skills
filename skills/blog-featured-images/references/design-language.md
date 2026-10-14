@@ -8,7 +8,7 @@ The approved look for blog featured images. **This file is the rulebook.** Two f
 
 1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article, **with its qualifier** ("per provider", "up to", "from", "minimum"). Figures shown together never contradict each other (a breakdown sits inside the headline range).
 2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
-3. **Different every time.** No layout repeats in a category until every layout has been used, and articles on the same topic never share a mode (see 9).
+3. **Different every time.** No layout repeats in a category until every layout has been used (except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2), and articles on the same topic never share a mode (see 9).
 4. **Minimal.** At most 15 words, labels not sentences (see 7).
 5. **Visually appealing.** An image that follows every other rule but doesn't look good **fails** (see 2).
 
@@ -37,7 +37,7 @@ Judge every image like a design director, ideally with a taste skill (impeccable
 | **Vibrant** | `blue` | **"Deep dunes":** bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands |
 
 - **Grain:** heavy on the vibrant blue, fine on `sky`, `paper` and `g5`, none on `cream`. It sits on the field only, so cards stay crisp. `"grain": false` turns it off on a light field.
-- **Vibrant images** (the deep-dunes blue and the black headline layouts) appear on about 1 in 3 images per category, never on neighbours ("VIBRANT CHECK FAILED").
+- **Vibrant images** (the deep-dunes blue and the black headline layouts) appear on at most 1 in 3 images per category, never on neighbours ("VIBRANT CHECK FAILED").
 - Only these five backgrounds exist ("BACKGROUND CHECK FAILED" for any other name).
 
 ### 3a. Background fit: the background must flatter the illustration
@@ -90,7 +90,7 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 | `logotype` | the product's **black** logo, large and centred on the cream field with a faint square grid: its icon in white on a **black rounded tile** (slightly taller than the wordmark) beside the black wordmark; an icon that is already a filled tile keeps its own. No other text: the logo's typography is the image | single-product articles whose logo is black with strong typography; may repeat up to 2 times per category. The renderer checks the logo is black ("LOGOTYPE CHECK FAILED") |
 
 - **Type:** one weight, Inter **500 Medium**, for every text element (headline, VS, tag pill, panel names) in `versus/pills`, `versus/connect`, `versus/duo` and `dark`; headlines tracked −0.035em. Only `versus/slash` keeps its heavy Poppins caps.
-- **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Headline key phrases use `{{ }}` and render in the same blue.
+- **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. **Headlines carry no blue words:** near-black `#0A0A0B` on the white layouts (pills, connect), white on the black ones (duo, dark); `{{ }}` only colours part of each name in `versus/slash`.
 - **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
 - **Black fields** (`dark`, `versus/slash`, `versus/duo`) count as vibrant (see 3).
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` and `duo` use it for the panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
@@ -105,7 +105,7 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 | Ingredient | Spec |
 |---|---|
 | Canvas | 1600×900 master. All key content inside **x 210–1390** so the 7:5, 2:1 and 16:9 crops keep it |
-| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines weight 600–700, tracking −0.03em. **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
+| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines weight 600–700, tracking −0.03em (the `focus` headline is light 300 in slate `#3D4A5C`, its key phrase 400 in the selection box). **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
 | Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines navy `#0E2A5C`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` for the one anchor and active states; sky `#27ACF2` for carets and legend dots |
 | States | **Blue = active/anchor:** checked boxes, progress bar, winning bar, highlighted row, selection box, current timeline dot. **Grey = inactive:** unchecked boxes, other bars, skeletons, empty dots |
@@ -184,7 +184,7 @@ Calm is good; bland is not.
 ## 9. Variety enforcement
 
 1. **One site-wide history per brand** at `~/.blog-featured-images/history-<brand>.json` records every render, wherever its output folder is.
-2. **Strict rotation:** in a category, only the least-used layouts are allowed ("VARIETY CHECK FAILED" lists them).
+2. **Strict rotation:** in a category, only the least-used layouts are allowed ("VARIETY CHECK FAILED" lists them), except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2.
 3. **Same topic** (e.g. duplicate URLs `…-guide` and `…-guide-2`): never the same mode, and different facts or angles.
 4. Never `--force` unless the user explicitly asks, and never render into another folder to dodge a check.
 5. **Delivered images are permanent.** After delivery, `scripts/finalize.mjs` marks them final in the site history and the folder ledger (`featured-images/.featured-ledger.json`) and copies them to `~/.blog-featured-images/delivered/<brand>/<slug>/`. Their files stay in `featured-images/<slug>/` (in the project, never a scratch folder), they keep counting for rotation forever, and the renderer refuses to re-create or overwrite them ("FINAL IMAGE LOCKED"). A new article always gets its own slug and folder.
@@ -233,7 +233,7 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ## 13. Guardrails
 
-- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash` and `versus/duo`, and black ink only in `logotype` and `dark`'s top-left icon.
+- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash` and `versus/duo`, and black ink only for the pills and connect headlines (`#0A0A0B`), `logotype` and `dark`'s top-left icon.
 - **Logos:** never a tiny logo in a big tile, an app icon shrunk inside a white tile, or invented or warped logos.
 - **Layouts:** never two layouts with the same skeleton; never anything added to fill space; a white design always has the grey frame; never the site mark on a headline layout; never a one-brand image for an X vs Y article.
 - **Details:** no heavy shadows, small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos or neon.
