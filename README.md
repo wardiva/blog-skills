@@ -101,7 +101,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **One bold blue anchor**, white UI cards, semibold card headlines (black on focus and receipt, navy on the others; near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (19 modes, 29 layouts)
+## Layouts (19 modes, 30 layouts)
 
 **Card layouts:**
 
@@ -149,6 +149,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `shortlist` | "Best X" lists: a tilted notepad of the article's picks, numbered, with a blue icon sticker, and the headline on the right |
 | `lineup` | "Best X" lists: one row of logo tiles on a frosted glass bar over a soft blue glow |
 | `versus/frost` | X vs Y: two big frosted-glass logo tiles on a light mesh gradient, a glass "vs" disc, the names below |
+| `versus/bento` | X vs Y whose logos can't match: a light bento grid with each name, its owner tag, an icon and one fact from the article |
 
 ## Add your own site
 

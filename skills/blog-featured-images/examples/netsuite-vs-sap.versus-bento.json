@@ -1,0 +1,21 @@
+{
+  "articleTitle": "NetSuite vs SAP Business One 2026: Small Business Guide",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "netsuite-vs-sap-business-one-2026-small-business-guide-2",
+  "mode": "versus",
+  "variant": "bento",
+  "field": "light",
+  "left": {
+    "label": "NetSuite",
+    "tag": "Oracle",
+    "icon": "ph ph-cloud",
+    "fact": "Cloud-only"
+  },
+  "right": {
+    "label": "SAP Business One",
+    "tag": "SAP",
+    "icon": "ph ph-hard-drives",
+    "fact": "Cloud, on-premise or hybrid"
+  }
+}

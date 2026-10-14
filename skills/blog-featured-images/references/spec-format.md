@@ -250,6 +250,15 @@ The user rejected a background with only a headline. The mode is not in `layouts
 ```
 - Two 340px frosted-glass tiles on the light mesh, a glass "vs" disc between them, each `label` under its tile in black. No headline. Each mark must be transparent (a mark with its own white box shows as a white rectangle on glass: cut it from the official transparent lockup) and balanced against its partner by eye (the Practice Fusion cube needed ~60% of the tile width to match the athenahealth sprout). The blue mesh (`"field": "blue"`) was disapproved.
 
+## Versus bento (`"mode": "versus", "variant": "bento"`; field: light; approved batch 4)
+```json
+{ "mode": "versus", "variant": "bento", "field": "light",
+  "left": { "label": "NetSuite", "tag": "Oracle", "icon": "ph ph-cloud", "fact": "Cloud-only" },
+  "right": { "label": "SAP Business One", "tag": "SAP", "icon": "ph ph-hard-drives", "fact": "Cloud, on-premise or hybrid" } }
+```
+- A product-page bento grid: per brand a big name cell (`label`, with an optional mono `tag`, e.g. the owner, from the article), an icon cell (Phosphor `icon` standing for the fact) and a fact cell (`fact`, the article's own words; the same kind of fact for both sides). Both names share one size and both facts share one size. The blue "vs" disc on the seam is the one anchor. Light cells in the white frame with NO pattern ("delete pattern from bg, it looks overwhelming here"). The dark finishes (`"field": "black"` with `"finish": "flat" | "glass" | "lift"`) were all disapproved. Use it when the two brands' logos can't match.
+- `versus/chat` (a dark message thread: the title's question in a blue bubble, one reply per brand) was built alongside bento and not picked. It stays in render.mjs, out of layouts.mjs.
+
 ## Retired in batch 4
 - `folder` (an app folder of logo tiles): "I like the background, the glass effect and the logos, but not the layout". Its pieces live on in `lineup`.
 - `versus/scale` (a balance scale holding both logos): "looks like a law illustration, the concept is so bad". No clip-art metaphors.

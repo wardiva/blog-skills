@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in three approved families plus two originals - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge) plus originals (a receipt for cost articles, a dictionary entry for what-is articles, a notepad shortlist and a frosted logo lineup for best-of lists, frosted glass logo tiles for X vs Y) - 19 modes / 29 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no layout repeats anywhere on the site (a repeat only with a written reason), writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in three approved families plus two originals - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge) plus originals (a receipt for cost articles, a dictionary entry for what-is articles, a notepad shortlist and a frosted logo lineup for best-of lists, frosted glass logo tiles and a bento grid for X vs Y) - 19 modes / 30 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no layout repeats anywhere on the site (a repeat only with a written reason), writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog Featured Images
@@ -84,7 +84,7 @@ Before reserving any layout, answer these questions in order.
 
 | Article | Layouts |
 | --- | --- |
-| X vs Y | `versus/table`, `versus/overlap`, `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `versus/type`, `versus/tiles`, `versus/glass`, `versus/frost` |
+| X vs Y | `versus/table`, `versus/overlap`, `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `versus/type`, `versus/tiles`, `versus/glass`, `versus/frost`, `versus/bento` |
 | One product (review, pricing, features, "is X worth it") | `logotype` when its logo is black with strong typography, otherwise `dark` |
 | "Best X" list | `hub` (6–7 logos, logos only), `lineup` (3–6 logos in one row), `shortlist` (3–8 names on a notepad) |
 | Cost or pricing | `focus`, `stat`, `prompt`, `window`, `ranked`, `badge`, `receipt` |
@@ -137,7 +137,7 @@ When no unused layout fits an article and repeating wouldn't make sense either, 
 
 Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`, `paper`, `cream`, `g5`), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. Headline layouts paint their own canvas.
 
-## Layouts: 19 modes, 29 layouts
+## Layouts: 19 modes, 30 layouts
 
 **Card layouts** (light fields, white UI cards):
 
@@ -189,6 +189,7 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 | `shortlist` | a tilted white notepad on the left (punched top band, margin rule, numbered names on ruled lines, a blue icon sticker on the pad) and the black headline on the right | "best X" lists, the article's own picks in its order ("wow love it", batch 4) |
 | `lineup` | one centred row of square white logo tiles on a frosted glass bar over the glow field; no headline, no watermark (the user's own reference) | "best X" lists with 3–6 real logos |
 | `versus/frost` | two big frosted-glass logo tiles on the light mesh, a glass "vs" disc between them, each name under its tile; no headline | X vs Y, any pair with real marks (light mesh only; the blue mesh was disapproved) |
+| `versus/bento` | a light bento grid in the white frame, no pattern: per brand a name cell with a mono owner tag, an icon cell and a fact cell; a blue "vs" disc on the seam | X vs Y whose logos can't match (e.g. NetSuite's solid tile vs SAP's wordmark); one parallel fact per side |
 
 ## The Rules
 

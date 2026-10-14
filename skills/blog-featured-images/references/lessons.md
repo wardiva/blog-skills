@@ -116,4 +116,5 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 - The user likes logos on frosted glass tiles "with any other bg". `versus/frost` puts them on the approved mesh (round 3, pending a pick).
 - The user preferred the earlier HIPAA badge ("Most small practices $150–$750") over the Fact-QA fix ("Dedicated HIPAA platforms"), and it was restored at their request. Fact QA's note: $750 sits $1 above $749, and the two figures come from different scopes.
 - Receipt: "heading placement feels off" with a centred headline. The new options are `"place": "top" | "bottom"` (pending a pick).
+- NetSuite vs SAP B1 (-guide-2): asked for type on black, then "different layout". `versus/bento` was picked for its concept ("design is okay"). From 4 finishes, light won ("looks better in light") once the "+" grid was removed ("overwhelming here"). It replaced the approved type image. `versus/chat` was shown and not picked.
 - Batch 4, round 3: picked the receipt with `"place": "bottom"` (headline baseline on the total line) and `versus/frost` on the light mesh (the blue mesh was disapproved). All 10 are final.

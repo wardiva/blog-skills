@@ -106,6 +106,8 @@ function versus() {
   if (spec.variant === 'rows') return glRows();
   if (spec.variant === 'scale') return glScale();
   if (spec.variant === 'frost') return glFrost();
+  if (spec.variant === 'bento') return glBento();
+  if (spec.variant === 'chat') return glChat();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'table') {
@@ -612,8 +614,8 @@ function logotype() {
 // "field": "light" (white in the grey frame), "black" or "blue" (deep dunes); black and blue count as vibrant.
 // Logos are the brand's full wordmark (icon + typography) where it has one; a brand without one is typeset in Inter.
 // Fields the user approved per layout (review, Oct 2026), default first. Anything else is refused ("FIELD FIT FAILED").
-// Rejected: versus/type on black, badge on blue, brandline in any colour but the site blue.
-const GL_FIELD_FIT = { 'versus/frost': ['light', 'blue'], 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
+// Rejected: badge on blue, brandline in any colour but the site blue. versus/type on black was rejected in the first review, then requested by the user in batch 4.
+const GL_FIELD_FIT = { 'versus/bento': ['light', 'black'], 'versus/chat': ['black'], 'versus/frost': ['light', 'blue'], 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue', 'black'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
 const GL_FIT = GL_FIELD_FIT[spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode];
 const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
 if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--force')) {
@@ -660,7 +662,9 @@ function glType() {
   const name = (t, st) => `<span style="font-size:${fs}px;font-weight:700;letter-spacing:-.045em;line-height:1.08;white-space:nowrap;${st}">${esc(t)}</span>`;
   const vs = `<span style="font-size:${Math.round(fs * 0.48)}px;font-weight:400;letter-spacing:-.01em;color:${P.ink};opacity:.85">${esc(sep)}</span>`;
   const flow = stacked ? `flex-direction:column;align-items:center;gap:${Math.round(fs * 0.1)}px` : `align-items:center;gap:${Math.round(fs * 0.5)}px`;
-  return glCanvas(`<div style="position:absolute;left:210px;right:210px;top:0;bottom:0;display:flex;justify-content:center;${stacked ? 'flex-direction:column;align-items:center' : 'align-items:center'}"><div style="display:flex;${flow}">${name(L.label, `color:${P.ink}`)}${vs}${name(R.label, acc)}</div></div>`, 'plus');
+  // optional soft blue glow behind the names on black ("glow": true)
+  const glowBg = spec.glow && GL_FIELD === 'black' ? '<div style="position:absolute;left:50%;top:' + (stacked ? 60 : 50) + '%;width:1180px;height:560px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(47,123,255,.34),transparent);filter:blur(24px)"></div>' : '';
+  return glCanvas(`${glowBg}<div style="position:absolute;left:210px;right:210px;top:0;bottom:0;display:flex;justify-content:center;${stacked ? 'flex-direction:column;align-items:center' : 'align-items:center'}"><div style="display:flex;${flow}">${name(L.label, `color:${P.ink}`)}${vs}${name(R.label, acc)}</div></div>`, 'plus');
 }
 
 function glTiles() {
@@ -887,6 +891,49 @@ function glFrost() {
 <div style="position:absolute;left:735px;top:${top + T / 2 - 65}px;width:130px;height:130px;border-radius:50%;display:grid;place-items:center;${glass}"><b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.separator || 'vs')}</b></div></div>${WHITE_MARK_JS}`;
 }
 
+// versus/bento (Oct 2026): a dark bento grid like a product page: per brand a big name cell, an icon cell and a fact cell (the
+// article's own fact); a blue "vs" disc on the seam is the one blue anchor. Black field. For pairs whose logos can't match.
+function glBento() {
+  // "finish": "flat" (solid dark cells, the first version), "glass" (frosted cells on the black mesh glow), "lift" (dark cells with a
+  // soft top highlight, bigger names, icons in thin rings) or "light" (light cells in the grey frame; needs "field": "light")
+  const L = spec.left, R = spec.right, W = 560, G = 40, x0 = 800 - W - G / 2, top = 175, H1 = 290, H2 = 220, IC = 140;   // icon cells narrow, fact cells wide (QA: a 3-line fact cell looked crammed)
+  const fin = spec.finish || 'flat', light = GL_FIELD === 'light';
+  // both names share one size and both facts share one size (taste 2: parallel elements, one treatment)
+  const NF = Math.min(fin === 'lift' ? 104 : 88, Math.floor((W - 96) / (Math.max(String(L.label).length, String(R.label).length) * 0.56)));
+  // the longer fact fits in two lines (QA: three ragged lines looked crammed next to a one-line partner)
+  const FF = Math.min(38, Math.floor((W - IC - G - 76) * 2 / (Math.max(String(L.fact || '').length, String(R.fact || '').length) * 0.7)));
+  // a fact of 4+ words keeps its first two and its last two words together, so it sets as two even lines
+  const tie = (t) => { const w = t.split(' '); return w.length >= 4 ? [w.slice(0, 2).join('\u00a0'), ...w.slice(2, -2), w.slice(-2).join('\u00a0')].join(' ') : t.replace(/ (\S+)$/, '\u00a0$1'); };
+  const C = light ? { cell: 'background:#F3F4F6;box-shadow:inset 0 0 0 2px rgba(20,26,38,.05)', ink: '#0A0A0B', fact: '#3D4A5C', tag: '#5D6675', ring: '#0A0A0B' }
+    : fin === 'glass' ? { cell: 'background:rgba(255,255,255,.07);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.16)', ink: '#fff', fact: '#E3E6EC', tag: '#A9AEB8', ring: '#0A0A0B' }
+    : fin === 'lift' ? { cell: 'background:linear-gradient(180deg,#1D1D23,#121216);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.10),inset 0 0 0 1.5px rgba(255,255,255,.05)', ink: '#fff', fact: '#D7DAE0', tag: '#8A8F98', ring: '#0A0A0B' }
+    : { cell: 'background:#141418;box-shadow:inset 0 0 0 2px rgba(255,255,255,.06)', ink: '#fff', fact: '#D7DAE0', tag: '#8A8F98', ring: '#0A0A0B' };
+  const cell = (x, y, w, h, inner) => `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:34px;overflow:hidden;${C.cell}">${inner}</div>`;
+  const icon = (s) => fin === 'lift'
+    ? `<div style="position:absolute;left:50%;top:50%;width:118px;height:118px;transform:translate(-50%,-50%);border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.16);display:grid;place-items:center"><i class="${esc(s.icon || 'ph ph-cloud')}" style="font-size:72px;color:#fff"></i></div>`
+    : `<i class="${esc(s.icon || 'ph ph-cloud')}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:96px;color:${C.ink};opacity:.92"></i>`;
+  const side = (s, x) => cell(x, top, W, H1, `<b style="position:absolute;left:48px;bottom:40px;font-size:${NF}px;font-weight:600;letter-spacing:-.04em;line-height:1;color:${C.ink};white-space:nowrap">${esc(s.label)}</b>${s.tag ? `<span style="position:absolute;left:48px;top:40px;font-family:${MONO};font-size:26px;letter-spacing:.08em;text-transform:uppercase;color:${C.tag}">${esc(s.tag)}</span>` : ''}`)
+    + cell(x, top + H1 + G, IC, H2, icon(s))
+    + cell(x + IC + G, top + H1 + G, W - IC - G, H2, `<span style="position:absolute;left:40px;right:36px;top:50%;transform:translateY(-50%);font-size:${FF}px;font-weight:500;letter-spacing:-.02em;line-height:1.2;color:${C.fact}">${tie(esc(s.fact || '').replace(/-/g, '\u2011'))}</span>`);   // no hyphen breaks, no word left alone
+  const vs = `<div style="position:absolute;left:${800 - 58}px;top:${top + H1 / 2 - 58}px;width:116px;height:116px;border-radius:50%;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 0 0 12px ${light ? '#fff' : fin === 'glass' ? 'rgba(10,10,11,.0)' : '#0A0A0B'}${fin === 'glass' ? ',0 12px 40px rgba(47,123,255,.45)' : ''}"><b style="font-size:44px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(spec.separator || 'vs')}</b></div>`;
+  if (fin === 'glass' && !light) {
+    const mesh = `<rect width='1600' height='900' fill='#0A0A0B'/><g filter='url(#b)'><circle cx='240' cy='240' r='360' fill='#1D4ED8' fill-opacity='.75'/><circle cx='1380' cy='700' r='380' fill='#2F7BFF' fill-opacity='.55'/><circle cx='1180' cy='120' r='220' fill='#7CC8F8' fill-opacity='.35'/></g>`;
+    return `${CB_CSS}${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.7`)}${side(L, x0)}${side(R, x0 + W + G)}${vs}${WHITE_MARK_JS}`;
+  }
+  // light: no pattern (user, batch 4: "delete pattern from bg, it looks overwhelming here"): the grid of cells is texture enough
+  return glCanvas(`${side(L, x0)}${side(R, x0 + W + G)}${vs}`, light ? 'none' : 'plus');
+}
+// versus/chat (Oct 2026): a dark-mode message thread: the article's question in a blue bubble on the right, a typing indicator,
+// then one grey reply bubble per brand with its fact. A real interface, no metaphor. Black field.
+function glChat() {
+  const Q = spec.question || `${spec.left.label} or ${spec.right.label}?`, qfs = Math.min(58, Math.floor(820 / (String(Q).length * 0.52)));
+  const bubble = (txt, me, fs) => `<div style="align-self:${me ? 'flex-end' : 'flex-start'};max-width:880px;padding:26px 40px;border-radius:44px;${me ? 'border-bottom-right-radius:14px;background:linear-gradient(180deg,#3B86F0,#0A5FD8);color:#fff' : 'border-bottom-left-radius:14px;background:#26262B;color:#F2F3F5'};font-size:${fs}px;font-weight:500;letter-spacing:-.02em;line-height:1.2">${txt}</div>`;
+  const reply = (s) => bubble(`<b style="font-weight:700;color:#fff">${esc(s.label)}</b><span style="color:#A9AEB8">&nbsp;·&nbsp;</span>${esc(s.fact || '')}`, false, 44);
+  const dots = `<div style="align-self:flex-start;padding:24px 30px;border-radius:40px;border-bottom-left-radius:14px;background:#26262B;display:flex;gap:12px">${[0.9, 0.6, 0.35].map((o) => `<i style="width:16px;height:16px;border-radius:50%;background:#fff;opacity:${o}"></i>`).join('')}</div>`;
+  return glCanvas(`<div style="position:absolute;left:250px;right:250px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:26px">
+${bubble(esc(Q), true, qfs)}${spec.typing === false ? '' : dots}${reply(spec.left)}${reply(spec.right)}</div>`, 'plus');
+}
+
 const modes = { lineup, folder, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, brandline: glBrandline, receipt, definition };
 
 
@@ -1076,7 +1123,7 @@ if (LAYOUT === 'versus/slash' && !args.includes('--force')) {
   for (const side of [spec.left, spec.right]) if (side && !slashSplit(side.label))
     await refuse(`SLASH NAME CHECK FAILED: "${side.label}" can't be shown in two colours (white + the brand colour) without guessing. Mark the coloured part with {{ }} (e.g. "Acu{{matica}}"), or use the article's fuller product name (e.g. "SAP Business One"). Some of the name must stay white.`);
 }
-const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'swap/default', 'badge/default', 'brandline/default', 'versus/split', 'versus/duet', 'receipt/default', 'definition/default', 'versus/rows', 'folder/default', 'shortlist/default', 'lineup/default', 'versus/scale', 'lineup/default', 'versus/scale', 'versus/frost'];
+const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'swap/default', 'badge/default', 'brandline/default', 'versus/split', 'versus/duet', 'receipt/default', 'definition/default', 'versus/rows', 'folder/default', 'shortlist/default', 'lineup/default', 'versus/scale', 'lineup/default', 'versus/scale', 'versus/frost', 'versus/bento', 'versus/chat'];
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', ...GL_LAYOUTS].includes(LAYOUT);
 // black fields count as vibrant (1 in 3, never neighbours), and so do the Gumloop layouts on the black or blue field;
 // versus/split's two saturated brand-colour halves are vibrant too; duet, receipt and definition are light
