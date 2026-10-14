@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge, brand headline) - 16 modes / 25 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge, brand headline) plus two originals (a receipt for cost articles, a dictionary entry for what-is articles) - 18 modes / 27 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog Featured Images
@@ -79,25 +79,28 @@ Before reserving any layout, answer these questions in order.
 
 | Article | Layouts |
 | --- | --- |
-| X vs Y | `versus/table`, `versus/overlap`, `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo` |
+| X vs Y | `versus/table`, `versus/overlap`, `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `versus/type`, `versus/tiles`, `versus/glass` |
 | One product (review, pricing, features, "is X worth it") | `logotype` when its logo is black with strong typography, otherwise `dark` |
 | "Best X" list | `hub` (6–7 logos, logos only) |
-| Cost or pricing | `focus`, `stat`, `prompt`, `window`, `ranked` |
+| Cost or pricing | `focus`, `stat`, `prompt`, `window`, `ranked`, `badge`, `receipt` |
 | How-to or migration | `before-after`, `timeline`, `stack`, `checklist` |
-| "Old way → new way", "what is" | `before-after/flow`, `prompt` |
+| "Old way → new way", switch, migration | `before-after/flow`, `swap` |
+| "What is X" | `definition`, `prompt`, `brandline` |
 | Process or "how long" | `timeline`, `ranked` |
 
 **Never use `dark` for an X vs Y article.** A one-brand image for a comparison reads like an ad ("FAIRNESS CHECK FAILED").
 
 ### 2. What do the logos allow?
 
-Three layouts depend on what logos a brand has. Run `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article before reserving. It uses the renderer's own checks and prints, per brand, which of `pills`, `connect` and `logotype` it can use.
+Five layouts depend on what logos a brand has. Run `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article before reserving. It uses the renderer's own checks and prints, per brand, which of `pills`, `connect`, `logotype`, `tiles` and `glass` it can use.
 
 | Layout | Needs | Refused with |
 | --- | --- | --- |
 | `versus/pills` | a logo that sits on a white circle (not only a solid app tile) for **both** brands | `PILLS LOGO CHECK FAILED` |
 | `versus/connect` | a solid app icon with its own background colour for **both** brands | `CONNECT LOGO CHECK FAILED` |
 | `logotype` | a black logo with a separate icon | `LOGOTYPE CHECK FAILED` |
+| `versus/tiles` | an app icon filled with its own brand colour for **both** brands | `TILES LOGO CHECK FAILED` |
+| `versus/glass` | a wordmark compact enough to read on the glass bar for **both** brands | `GLASS LOGO CHECK FAILED` |
 
 Still look at every icon: a stale anniversary badge (Availity's "25") passes the check.
 
@@ -129,7 +132,7 @@ When a category's least-used tier already has one use each, add a new variant be
 
 Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`, `paper`, `cream`, `g5`), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. Headline layouts paint their own canvas.
 
-## Layouts: 16 modes, 25 layouts
+## Layouts: 18 modes, 27 layouts
 
 **Card layouts** (light fields, white UI cards):
 
@@ -172,6 +175,13 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 | `brandline` | a big two-line near-black headline centred vertically on the left, on a light blue gradient with a soft glow, faint dots and a crosshair rule; the product's own wordmark top-left only for a single-product article | single-product or general articles | glow only |
 
 `brandline` never shows the site mark or the site name (the user rejected it): with no single product, the headline stands alone.
+
+**Originals** (built after the user had seen every other layout; approved in batch 3; light only, white in the grey frame):
+
+| Layout | Shows | Best for |
+| --- | --- | --- |
+| `receipt` | a big near-black headline on the left, a tilted white receipt with a zigzag tear on the right: the article's rows and a bold blue total | cost and pricing articles; every row sits inside the total's range |
+| `definition` | a dictionary entry on ruled lines: the term, its full form, a blue rule and a numbered one-line definition in the article's own words | "what is X" articles |
 
 ## The Rules
 

@@ -52,7 +52,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 
 - One site-wide history per brand counts every render, wherever its folder is.
 - Layout identity (mode + variant) is the rule, and QA does the visual side-by-side (pixel similarity can't tell layouts apart).
-- With 19 layouts, a strict-rotation layout repeats only after all 19 are used; the favourites may repeat sooner, up to their limits. When the least-used tier already has one use each, add a variant **before** briefing Makers.
+- With 27 layouts, a strict-rotation layout repeats only after all 27 are used; the favourites may repeat sooner, up to their limits. When the least-used tier already has one use each, add a variant **before** briefing Makers.
 - **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting for rotation, and can't be re-created. Never delete the history file.
 - An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
 
@@ -94,4 +94,5 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 - Single-topic "what is X" articles may use `dark` with `panelIcon` (no product logo, no site mark).
 - Stack: keep it to the title plus one lead line when the lead already carries the figure ("too much text").
 - Batch-3 round 2: the user LOVES `dark` but only with a real product logo: never on a topic article with an icon ("icon is not looking good"). Save it for single-product articles.
-- Nearly every layout has now been seen by the user; when the least-used set runs dry, build new originals in the same family rather than repeat.
+- Nearly every layout has now been seen by the user; when the least-used set runs dry, build new originals in the same family rather than repeat (Oct 2026: `receipt` and `definition` approved in batch 3; `versus/split` and `versus/duet` built but the user passed on both, so they're out of the rotation (layouts.mjs); `versus/rows` rejected).
+- Batch-3 round 5: the user disapproved `versus/rows` (both fields), `versus/table` and `versus/overlap` for Clinisys vs CompuGroup Medical, then dropped the image ("forget about it"). Don't offer `versus/rows` again unless asked. Receipt headlines are black (#0A0A0B) by the user's request, not navy.

@@ -1,6 +1,6 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in three families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream), and Gumloop-style layouts (bold type vs, tilted app-icon tiles, a frosted wordmark bar, a switch arrow, a figure badge, a brand headline). It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in three families plus two originals: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream), Gumloop-style layouts (bold type vs, tilted app-icon tiles, a frosted wordmark bar, a switch arrow, a figure badge, a brand headline), and two originals (a receipt for costs, a dictionary entry for "what is"). It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
@@ -101,7 +101,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **One bold blue anchor**, white UI cards, navy headlines on card layouts (near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (16 modes, 25 layouts)
+## Layouts (18 modes, 27 layouts)
 
 **Card layouts:**
 
@@ -140,6 +140,13 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `swap` | Switch, migration, "old way → new way": old → dashed loop arrow → new | light, black |
 | `badge` | Cost and stat articles: the key figure in a tinted rounded box | light |
 | `brandline` | Single-product or general articles: a big near-black headline on a light blue glow | glow |
+
+**Originals** (light, white in the grey frame):
+
+| Layout | Best for |
+|---|---|
+| `receipt` | Cost and pricing articles: a big headline and a tilted receipt listing the article's prices with a bold total |
+| `definition` | "What is X" articles: a dictionary entry with the term, its full form and a one-line definition |
 
 ## Add your own site
 

@@ -103,6 +103,7 @@ function versus() {
   if (spec.variant === 'glass') return glGlass();
   if (spec.variant === 'split') return glSplit();
   if (spec.variant === 'duet') return glDuet();
+  if (spec.variant === 'rows') return glRows();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'table') {
@@ -610,7 +611,7 @@ function logotype() {
 // Logos are the brand's full wordmark (icon + typography) where it has one; a brand without one is typeset in Inter.
 // Fields the user approved per layout (review, Oct 2026), default first. Anything else is refused ("FIELD FIT FAILED").
 // Rejected: versus/type on black, badge on blue, brandline in any colour but the site blue.
-const GL_FIELD_FIT = { 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black', 'blue'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
+const GL_FIELD_FIT = { 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black', 'blue'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
 const GL_FIT = GL_FIELD_FIT[spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode];
 const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
 if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--force')) {
@@ -754,7 +755,7 @@ function receipt() {
   const rfs = Math.min(36, Math.floor(430 / (Math.max(1, ...rows.map((r) => String(r.name).length + String(r.value).length)) * 0.56)));
   const zig = Array.from({ length: 21 }, (_, i) => `${i * 24},${i % 2 ? 0 : 18}`).join(' ');
   return `${CB_CSS}${glBg('background:#F4F1EA')}${glDots('rgba(90,70,40,.09)', 30, 1.3)}
-<div class="cbh" style="left:210px;width:560px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:700;letter-spacing:-.04em;line-height:1.04;color:#0E2A5C">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
+<div class="cbh" style="left:210px;width:560px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:700;letter-spacing:-.04em;line-height:1.04;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
 <div style="position:absolute;left:800px;top:50%;width:590px;transform:translateY(-50%) rotate(3deg)">
 <div style="background:#fff;padding:56px 52px 40px;box-shadow:0 30px 60px rgba(90,70,40,.10)">
 ${spec.title ? `<div style="font-family:${MONO};font-size:26px;letter-spacing:.08em;text-transform:uppercase;color:#7F8794;text-align:center">${esc(spec.title)}</div><div style="border-top:2px dashed #D9D4CA;margin:26px 0"></div>` : ''}
@@ -776,6 +777,23 @@ function definition() {
 ${spec.label ? `<div style="height:${R}px;line-height:${R}px;font-family:${MONO};font-size:30px;color:#7F8794">${esc(spec.label)}</div>` : ''}
 <div style="height:${R}px;display:flex;align-items:center"><i style="display:block;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)"></i></div>
 <div style="display:flex;gap:26px;align-items:baseline;max-width:1080px;line-height:${R}px"><b style="font-family:${MONO};font-size:34px;font-weight:500;color:#0A5FD8">1.</b><span style="font-size:52px;font-weight:400;letter-spacing:-.015em;color:#3D4A5C">${esc(spec.definition)}</span></div></div>`)}`;
+}
+// versus/rows ("head-to-head"): two full-width rows stacked like a scoreboard. Each row: a brand-colour accent bar, the brand's logo
+// on a brand-tinted tile, its name in bold, and its key fact from the article in a brand-tinted pill; a "vs" disc between the rows.
+// Fits long names (e.g. CompuGroup Medical) and carries one fact per side. Fields: light (white in the grey frame) or black.
+function glRows() {
+  const dark = GL_FIELD === 'black', P = glPal(), W = 1180, H = 230, gap = 40, top = Math.round(450 - (2 * H + gap) / 2);
+  const longest = Math.max(String(spec.left.label).length, String(spec.right.label).length), nfs = Math.min(72, Math.floor(880 / (longest * 0.56)));   // the name has the row to itself (the fact sits under it)
+  const row = (s, y) => {
+    const c = s.color || '#0A5FD8';
+    return `<div style="position:absolute;left:210px;top:${y}px;width:${W}px;height:${H}px;border-radius:36px;overflow:hidden;background:${dark ? '#17171B' : '#fff'};box-shadow:${dark ? 'none' : '0 20px 44px rgba(20,40,90,.08),0 0 0 1px rgba(20,26,38,.06)'}">
+<i style="position:absolute;left:0;top:0;bottom:0;width:14px;background:${c}"></i>
+<div class="ct" style="left:54px;top:${(H - 150) / 2}px;width:150px;height:150px;border-radius:34px;background:${dark ? '#fff' : hexMix(c, '#ffffff', 0.86)}">${logo(s.logo, 104, s.label)}</div>
+<div style="position:absolute;left:240px;right:44px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:16px"><b style="font-size:${nfs}px;font-weight:700;letter-spacing:-.04em;line-height:1;color:${P.ink};white-space:nowrap">${esc(s.label)}</b>
+${s.fact ? `<span style="padding:10px 24px;border-radius:999px;font-size:30px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;background:${dark ? hexMix(c, '#000000', 0.45) : hexMix(c, '#ffffff', 0.86)};color:${dark ? '#fff' : hexMix(c, '#000000', 0.3)}">${esc(s.fact)}</span>` : ''}</div></div>`;
+  };
+  return glCanvas(`${row(spec.left, top)}${row(spec.right, top + H + gap)}
+<div style="position:absolute;left:752px;top:${top + H + gap / 2 - 48}px;width:96px;height:96px;border-radius:50%;background:${dark ? '#fff' : '#0A0A0B'};display:grid;place-items:center;box-shadow:0 0 0 8px ${dark ? '#0A0A0B' : '#fff'}"><b style="font-size:38px;font-weight:600;letter-spacing:-.02em;color:${dark ? '#0A0A0B' : '#fff'}">${esc(spec.separator || 'vs')}</b></div>`, 'none');
 }
 
 const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, brandline: glBrandline, receipt, definition };
@@ -957,9 +975,7 @@ if (LAYOUT === 'versus/slash' && !args.includes('--force')) {
   for (const side of [spec.left, spec.right]) if (side && !slashSplit(side.label))
     await refuse(`SLASH NAME CHECK FAILED: "${side.label}" can't be shown in two colours (white + the brand colour) without guessing. Mark the coloured part with {{ }} (e.g. "Acu{{matica}}"), or use the article's fuller product name (e.g. "SAP Business One"). Some of the name must stay white.`);
 }
-// --check-only: stop after the logo checks (used by logo-check.mjs while planning; nothing is rendered or recorded)
-if (args.includes('--check-only')) { console.log('CHECKS PASSED'); await settleExit(0); }
-const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'swap/default', 'badge/default', 'brandline/default', 'versus/split', 'versus/duet', 'receipt/default', 'definition/default'];
+const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'swap/default', 'badge/default', 'brandline/default', 'versus/split', 'versus/duet', 'receipt/default', 'definition/default', 'versus/rows'];
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', ...GL_LAYOUTS].includes(LAYOUT);
 // black fields count as vibrant (1 in 3, never neighbours), and so do the Gumloop layouts on the black or blue field;
 // versus/split's two saturated brand-colour halves are vibrant too; duet, receipt and definition are light
@@ -1026,6 +1042,8 @@ if (GL_LAYOUTS.includes(LAYOUT)) {
     if (W && W.aspect > 9) await refuse(`GLASS LOGO CHECK FAILED: ${side.label}'s wordmark is too wide (${W.aspect.toFixed(1)}:1) to read on the glass bar. Save a compact lockup (4:1 or narrower) to featured-images/assets/ and set "logo": "../assets/<file>.png", or use versus/tiles, versus/type or another versus layout.`);
   }
 }
+// --check-only: stop after the logo checks (used by logo-check.mjs while planning; nothing is rendered or recorded)
+if (args.includes('--check-only')) { console.log('CHECKS PASSED'); await settleExit(0); }
 Object.assign(BG_FIT, { dark: ['paper'], logotype: ['cream'] });
 const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m, l[0]]));
 const BGS = ['sky', 'paper', 'cream', 'g5'];

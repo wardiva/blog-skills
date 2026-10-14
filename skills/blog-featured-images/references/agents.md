@@ -146,6 +146,7 @@ Keep this context: you may get re-rendered images to re-check.
 - any text weight other than Inter 500 Medium in pills, connect, duo or dark
 - versus/type on the black field, badge on the blue field, or brandline with the site mark/name, blue headline ink, another colour or a low headline (Gumloop layouts)
 - busy patterns on the Gumloop layouts: dot grids and the tiles ring stay sparse and faint
+- `versus/rows` in any field (the user disapproved it); `versus/split` or `versus/duet` unless the user asks for them
 - a slash name in one colour (white is always part of it), or slash names made bigger than their auto-fit size
 
 FAIL any image that brings one back.

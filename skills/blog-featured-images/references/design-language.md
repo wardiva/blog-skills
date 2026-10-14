@@ -100,6 +100,14 @@ Each of these came from a reference the user shared; every detail below is measu
 - **Six ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`. **`slash`, `connect` and `duo` are favourites: each may repeat up to 5 times per category; `pills` up to 2 times** (the rotation lets them through). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
 - These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390, except `dark`: its text column starts at x 120 for balance with the panel, and its 7:5 crop shifts left to match.
 
+## 3e. Gumloop Layouts and the Originals
+
+Two more sets came from the user's references and reviews (Oct 2026). Their tables are in `SKILL.md`; the rules that keep them right:
+
+- **Gumloop** (`versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`, `brandline`): each takes only its approved `"field"` ("FIELD FIT FAILED" otherwise); the black and blue fields count as vibrant. Logos are each brand's full wordmark. The "vs" sits vertically centred between the names; dot grids and the tiles ring stay sparse and faint. Never `versus/type` on black or `badge` on blue. `versus/tiles` needs both brands' filled app icons ("TILES LOGO CHECK FAILED"), `versus/glass` wordmarks that fit the bar ("GLASS LOGO CHECK FAILED"). `brandline` is the glow field only, a black headline centred vertically, never the site mark or name.
+- **Originals** (`receipt`, `definition`; light only, white in the grey frame): `receipt` for cost articles, its headline near-black `#0A0A0B` (the user's request), every row inside the bold blue total's range; `definition` for "what is X" articles, a one-line definition (≤ 7 words) in the article's own words.
+- **Out of the rotation:** `versus/split` and `versus/duet` (the user passed on both twice); `versus/rows` (rejected).
+
 ---
 
 ## 4. Fixed Ingredients Make One Family

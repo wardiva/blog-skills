@@ -216,3 +216,29 @@ Six layouts after the user's Gumloop references. They paint their own canvas (`b
 { "mode": "brandline", "headline": "What Is\nEMR Software?" }
 ```
 - A big two-line `headline` (heading rule; ≤ 7 words, `\n` breaks the line) in near-black #0A0A0B, centred vertically on the left, on a light blue gradient with a soft glow bottom-right, faint dots and the crosshair rule. `logo` (a product's wordmark, original colours) sits top-left only for a single-product article. Never the site mark or site name. No `color`/`look`: the tint and deep navy looks, blue headline ink, other colours and the low headline position were rejected.
+
+# Originals (Oct 2026, built after the user had seen every other layout)
+
+## Receipt (`"mode": "receipt"`; approved) — cost and pricing articles
+```json
+{ "mode": "receipt", "headline": "Dermatology\nEMR Cost", "title": "Per provider / month",
+  "rows": [ { "name": "Nextech", "value": "$300–$399" }, { "name": "eClinicalWorks", "value": "$499–$599" } ],
+  "total": { "label": "Typical", "value": "$250–$900" } }
+```
+- Headline left (heading rule), a tilted white receipt with a zigzag tear on the right. The bold blue `total` reads as the receipt's summary, so every row must sit INSIDE the total's range (Fact QA F3). Row type auto-fits the longest row. `title` carries the unit.
+
+## Definition (`"mode": "definition"`; approved) — "what is X" articles
+```json
+{ "mode": "definition", "term": "EMR Software", "label": "electronic medical record", "definition": "Digital version of a patient's paper chart" }
+```
+- A dictionary entry on ruled lines (white in the grey frame): `term` (heading rule), `label` = the full form, a blue rule, a numbered one-line `definition` (≤ 7 words, the article's own words). The text is snapped onto the rules. No icon, no logo.
+
+## Versus split / duet (built, out of the rotation)
+The user passed on both twice, so they're not in `layouts.mjs` and the renderer refuses them. Re-enable only if the user asks:
+- split: the canvas split into the two brands' colours (`left.color`, `right.color`), white wordmarks or names, a white "vs" seal; counts as vibrant.
+- duet: two soft brand-tinted halves, each with a white card holding the full-colour wordmark (or the name); light.
+- The user passed on both for NetSuite vs SAP and for Clinisys vs CGM: offer them, don't default to them.
+
+## Overrides
+- `--user-pick` (render.mjs and plan.mjs): the user chose this layout for this article; skips ONLY the rotation rule. Every other check still runs.
+- Records of delivered designs the user rejected and had replaced carry `"superseded": true` and don't count toward rotation.
