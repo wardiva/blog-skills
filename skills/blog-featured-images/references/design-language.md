@@ -1,6 +1,6 @@
 # Featured Image Design Language
 
-You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Three families and the originals share it: the **card layouts** (sections 3–5), the **headline layouts** (section 3d), and the **Gumloop layouts** and **originals** (sections 3e and 15). The images in `references/approved/` show the target, and their specs are in `examples/`.
+You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Three families and the originals share it: the **card layouts** (sections 3–5), the **headline layouts** (section 3d), and the **Gumloop layouts** and **originals** (section 3e). The images in `references/approved/` show the target, and their specs are in `examples/`.
 
 ---
 
@@ -8,7 +8,7 @@ You are judging and making images that will sit side by side in a blog grid for 
 
 1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article, **with its qualifier** ("per provider", "up to", "from", "minimum"). Figures shown together never contradict each other (a breakdown sits inside the headline range).
 2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
-3. **Different every time.** The reader sees every image together. A layout not used yet anywhere is free for any article it suits and goes first in line; a used layout can't be used again in the same category, only in a different one (the user: "the ones that have used cant be used again unless the category is different"). Favourites also have a site-wide cap: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. Articles on the same topic never share a mode (see 9).
+3. **Different every time.** The reader sees every image together. A layout not used yet anywhere is free for any article it suits and goes first in line; a used layout can't be used again in the same category, only in a different one. The user: "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different", and again on Oct 15: "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used again because they aren't used right now, obviously". Favourites also have a site-wide cap: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. Articles on the same topic never share a mode (see 9).
 4. **Minimal.** At most 15 words, labels not sentences (see 7).
 5. **Visually appealing.** An image that follows every other rule but doesn't look good **fails** (see 2).
 
@@ -18,7 +18,7 @@ You are judging and making images that will sit side by side in a blog grid for 
 
 Passing every check is not enough. Judge every image like a design director, ideally with a taste skill (impeccable / ui-ux-pro-max) in mind, at full size and at 350×250:
 
-1. **Blue dosage.** A big blue mass in the illustration (the hub's blue tile, a giant blue number, a blue selection box) needs a **neutral** field (`cream`, `paper`), never `g5` or the vibrant blue. A grey-heavy illustration needs some colour behind it (`sky`).
+1. **Blue dosage.** A big blue mass in the illustration (the hub's blue tile, a giant blue number) needs a **neutral** field (`cream`, `paper`), never `g5` or the vibrant blue. A grey-heavy illustration needs some colour behind it (`sky`).
 2. **Logo balance.** A logo fills **about 60–70% of its tile** (the big frosted-glass tiles of `versus/frost`: 48%, since 60% looked too big there). A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**. Wide wordmarks (SAP, Sage) fill about 65–75% of the tile's width.
 3. **Logos speak for themselves.** When products have recognisable logos, show **logos only**, not logo + name cards. The hub does this by default.
 4. **Figure/ground.** The hero separates cleanly from the field: no grey on grey, no white on near-white without a soft shadow.
@@ -39,7 +39,7 @@ The field is never decoration: it exists to lift the hero off the page.
 | Light | `g5` | near-white at the top glowing into bright sky under the hero |
 | **Vibrant** | `blue` | **"Deep dunes":** bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands |
 
-- **Grain:** heavy on the vibrant blue, fine on `sky`, `paper` and `g5`, none on `cream`. It sits on the field only, so cards stay crisp. `"grain": false` turns it off on a light field.
+- **Grain:** heavy on the vibrant blue, fine on `sky`, `paper` and `g5`, none on `cream`. It sits on the field only, so cards stay crisp. `"grain": false` turns off both grain layers (the field grain and the fine overlay) on a light field; the vibrant blue always keeps its grain.
 - **Vibrant images** (the deep-dunes blue, the black headline layouts, and the Gumloop black and blue fields) appear on at most 1 in 3 images per category, never on neighbours ("VIBRANT CHECK FAILED").
 - Only these five backgrounds exist ("BACKGROUND CHECK FAILED" for any other name).
 
@@ -58,7 +58,7 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 | hub | cream, paper | a big blue tile needs a neutral field |
 | timeline | cream, sky | a thin track and callout on a calm warm field |
 | stat | paper, cream | the giant number brings the colour (a soft blue gradient by default; `"valueColor": "black"` or `"blue"` to change it) |
-| prompt | its own | paints its own light-blue field with a strong blue glow at the bottom (`"field": "soft"` for a softer gradient) |
+| prompt | its own (`bg` is refused: "BACKGROUND CHECK FAILED") | paints its own light-blue field with a strong blue glow at the bottom (`"field": "soft"` for a softer gradient) |
 
 - Cool greys never sit on cream; on cream the guide lines turn warm and the blue margin dots are hidden (automatic).
 - Always check at 350×250 next to the neighbours: the hero separates cleanly, and the field never fights the illustration's colours.
@@ -101,16 +101,16 @@ Each of these came from a reference the user shared; every detail below is measu
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` and `duo` use it for the panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
 - **Single-product articles:** `logotype` when the product's logo is black with strong typography (at most 2 across the site), otherwise `dark` (at most 3 across the site); each once per category. X vs Y articles use a versus layout.
 - **Eleven ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`, `type`, `tiles`, `glass`, `frost`, `bento`. **Each is used once per category; `slash`, `connect` and `duo` are favourites with a site-wide cap of 5, `pills` 2** (the user: "max 2 times"). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
-- These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390, except `dark`: its text column starts at x 120 for balance with the panel, and its 7:5 crop shifts left to match.
+- These layouts paint their own canvas: leave `bg` out (it is refused, "BACKGROUND CHECK FAILED"); `logotype` takes only `cream`, its default, and any other `bg` is refused with "BACKGROUND FIT FAILED". Headlines follow the heading rule (10). Every word stays inside x 210–1390, except `dark` (its text column starts at x 120 for balance with the panel, and its 7:5 crop shifts left to match) and `versus/duo` (its headline starts at x 96 and its panels run nearly edge to edge, so its 7:5 is the whole master padded top and bottom with its own black).
 
 ## 3e. Gumloop Layouts and the Originals
 
-Two more sets came from the user's references and reviews (Oct 2026). Their tables are in `SKILL.md`; the rules that keep them right:
+Two more sets came from the user's references and reviews (Oct 2026). Their tables are in `SKILL.md` and their specs in `spec-format.md`; the rules that keep them right:
 
-- **Gumloop** (`versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`): each takes only its approved `"field"` ("FIELD FIT FAILED" otherwise); the black and blue fields count as vibrant. Logos are each brand's full wordmark. The "vs" sits vertically centred between the names; dot grids and the tiles ring stay sparse and faint, and a "+" grid on a dark field is bright and crisp but only around the edges, clear behind the content. Fields: type light; tiles blue, light; glass light, black; swap light; badge light. Never `versus/type` on black or blue, `versus/tiles` on black, `swap` on black, `badge` on blue or `versus/glass` on blue (type on blue, tiles on black and swap on black were deleted in the approved review). `versus/tiles`: both tiles filled or both white, never one of each ("TILES LOGO CHECK FAILED"); `versus/glass` needs wordmarks that fit the bar ("GLASS LOGO CHECK FAILED"). `brandline` is retired (a background with only a headline); its glow field waits for a real illustration.
+- **Gumloop** (`versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`): each takes only its approved `"field"` ("FIELD FIT FAILED" otherwise); the black and blue fields count as vibrant. They keep the references' composition and type scale in our family: Inter 700 for names, our blue accent, the grey frame on white. `versus/glass`, `swap` and `badge` show each brand's full wordmark; `versus/tiles` shows its app icons (or marks on white); `versus/type` shows the names only. The "vs" sits vertically centred between the names. Patterns: the sparse, faint full-canvas "+" grid (`versus/type`, `swap`) and dot field (`versus/tiles`, `badge`) on the light Gumloop fields, and the dots on the `versus/tiles` blue field, are approved as they are (images 18, 20, 22, 25, 27; the review said the "+" grid is fine as is). A pattern is never dense or dark and never competes with the content (the user rejected busy dot grids: "pattern is too much"); the tiles ring stays faint. Edge-only patterns, masked clear behind the content (`GL_EDGE_MASK`), go on `shortlist` and `lineup`, and any pattern on a dark field is edge-only too (`versus/slash` masks its dot grid clear behind the names; a full-canvas "+" grid on black was rejected). `versus/bento` has no pattern ("delete pattern from bg"). Fields: type light; tiles blue, light; glass light, black; swap light; badge light. Never `versus/type` on black or blue, `versus/tiles` on black, `swap` on black, `badge` on blue or `versus/glass` on blue (type on blue, tiles on black and swap on black were deleted in the approved review). `versus/tiles`: both tiles filled or both white, never one of each ("TILES LOGO CHECK FAILED"); `versus/glass` needs wordmarks that fit the bar ("GLASS LOGO CHECK FAILED"). `brandline` is retired (a background with only a headline); its glow field now carries `lineup`.
 - **Originals** (`receipt`, `definition`; light only): `receipt` sits on its own warm cream dotted field (no frame) for cost articles, its headline black `#0A0A0B` (the user's request), every row inside the bold blue total's range; `definition` (white in the grey frame) for "what is X" articles, a one-line definition (≤ 7 words) in the article's own words.
 - **Originals from batch 4** (all approved): `shortlist` (a tilted notepad of the article's picks, black headline on the right; "wow love it"), `lineup` (one centred row of white logo tiles on a frosted glass bar over the glow field; no headline, no watermark), `versus/frost` (two frosted-glass logo tiles on the light mesh, each mark filling 48% of its tile, a glass "vs" disc; the blue mesh was disapproved), `versus/bento` (a light bento grid with a name, icon and fact cell per brand, no pattern; for pairs whose logos can't match).
-- **Out of the layout list:** `versus/split` and `versus/duet` (the user passed on both twice); `versus/rows` (rejected); `folder` ("not the layout"); `versus/scale` ("looks like a law illustration": no clip-art metaphors); `versus/chat` (not picked).
+- **Retired** (not in `layouts.mjs`, refused with "RETIRED LAYOUT", their code deleted from `render.mjs`): `brandline` (a background with only a headline), `folder` ("not the layout"), `versus/scale` ("looks like a law illustration": no clip-art metaphors), `versus/chat` (not picked), `versus/split` and `versus/duet` (the user passed on both twice), `versus/rows` (rejected), `versus/logos` (disliked). History: `lessons.md`.
 
 ---
 
@@ -119,8 +119,8 @@ Two more sets came from the user's references and reviews (Oct 2026). Their tabl
 | Ingredient | Spec |
 |---|---|
 | Canvas | 1600×900 master. All key content inside **x 210–1390** so the 7:5, 2:1 and 16:9 crops keep it |
-| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines are all semibold 600, tracking −0.03em; every card headline is black `#0A0A0B` (the user asked four times: "black, not blue"); the focus key phrase stays white on its blue box. **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
-| Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines black `#0A0A0B` (the brand's `headline` colour); left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
+| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only for small mono captions: the receipt title, the definition's full form and its "1.", the shortlist numbers and title, the bento tag, and in the opt-in craft kit). Card-layout headlines are all semibold 600, tracking −0.03em; every card headline is black `#0A0A0B` (the user asked four times: "black, not blue"); the focus key phrase stays white on its blue box. **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
+| Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines black `#0A0A0B`, hard-coded (a brand file's `headline` is ignored unless it is `#0A0A0B`); left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` for the one anchor and active states; sky `#27ACF2` for carets and legend dots |
 | States | **Blue = active/anchor:** checked boxes, progress bar, winning bar, highlighted row, selection box, current timeline dot. **Grey = inactive:** unchecked boxes, other bars, skeletons, empty dots |
 | Cards | White, radius 20–30px, minimal tinted shadow (see 3c), real text from the article |
@@ -168,7 +168,7 @@ A calm image still needs one thing that grabs the eye and a structure that holds
 5. **Hard alignment:** connectors hit centres, selection handles sit on the corners, gaps are even.
 6. **At most one interaction cue:** a cursor (`"cursor": [x, y]`) pointing at the key fact, never covering text.
 7. **Scale contrast:** one very large element against small labels.
-8. **Enough content:** each layout needs enough real facts to fill its frame (window 2+ rows, hub 6+ products, ranked/checklist/timeline 3+, stat card 2+). The renderer refuses thinner specs ("CONTENT CHECK FAILED").
+8. **Enough content:** each layout needs enough real facts to fill its frame (window 2+ rows, hub 6–7 products, ranked, checklist and timeline 3+, stat card 2+, focus 2+ rows, shortlist 3+ items, lineup 3–6 logos). The renderer refuses thinner specs ("CONTENT CHECK FAILED").
 
 ---
 
@@ -187,7 +187,7 @@ A calm image still needs one thing that grabs the eye and a structure that holds
 ## 8. Logos Are the Brand's Real, Current Mark
 
 - **Where:** wherever a real product is named: hub tiles, versus sides and table headers, window rows, ranked rows, stat rows. Never decorative.
-- **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` → Simple Icons → Brandfetch icon (used as an app tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped.
+- **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` (the `-icon` version, then the full logo) → Simple Icons → Brandfetch icon (edge to edge as an app tile only when it really is a solid tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped and Google's favicon stands in for the icon step. A local file (`"../assets/<file>.png"`) or a full URL is used as is.
 - **Brandfetch client ID:** free at brandfetch.com/developers. Keep it **local** (`~/.blog-featured-images/config.json` or `BRANDFETCH_CLIENT_ID`); never commit it.
 - **Style:** original colours (`"logoStyle": "color"`, the default) in white tiles; one style per image. `mono` and `tint` exist for when colour logos would compete with the anchor.
 - **Balance:** see 2. Pale grey marks are darkened automatically so they read.
@@ -198,7 +198,7 @@ A calm image still needs one thing that grabs the eye and a structure that holds
 ## 9. Variety Is Enforced, Not Hoped For
 
 1. **One site-wide history per brand** at `~/.blog-featured-images/history-<brand>.json` records every render, wherever its output folder is.
-2. **Once per category:** a layout not used yet anywhere is free for any article it suits and goes first in line; a used layout is free only in a different category ("VARIETY CHECK FAILED" lists the free ones, not-used-yet first). Usage comes from the user's own record, `references/used-layouts.json` (kept on the Template Usage page), and the site history: the user's record is the truth for every layout it lists, as of its `recordedAt` (a history image for a layout marked "Not used yet" never went live and doesn't count); images delivered or reserved after `recordedAt` are added on top, and a layout it doesn't list falls back to the history. `scripts/usage.mjs` applies it. Site-wide caps on top: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. There is no repeat with a reason; only `--user-pick` (the user chose the layout) skips the rule.
+2. **Once per category:** a layout not used yet anywhere is free for any article it suits and goes first in line; a used layout is free only in a different category ("VARIETY CHECK FAILED" lists the free ones, not-used-yet first). Usage comes from the user's own record, `references/used-layouts.json` (kept on the Template Usage page), and the site history: the user's record is the truth for every layout it lists, as of its `recordedAt` (a history image for a layout marked "Not used yet" never went live and doesn't count); every image rendered (drafts too), reserved or delivered after `recordedAt` that isn't superseded is added on top, and a layout it doesn't list falls back to the history. `scripts/usage.mjs` applies it. The record belongs to one brand (its `"brand"`: `medsoftwarehub`); category names are normalised ("Hospital & Lab Software" = `hospital-and-lab-software`), and a spec without `category` is refused ("CATEGORY MISSING"). Site-wide caps on top: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. There is no repeat with a reason; only the user's own pick skips the rule: `--user-pick`, or a `slug=layout!` reservation in `plan.mjs`, which the renderer honours for that slug.
 3. **Same topic** (e.g. duplicate URLs `…-guide` and `…-guide-2`): never the same mode, and different facts or angles.
 4. Never `--force` unless the user explicitly asks, and never render into another folder to dodge a check.
 5. **Delivered images are permanent.** After delivery, `scripts/finalize.mjs` marks them final in the site history and the folder ledger (`featured-images/.featured-ledger.json`) and copies them to `~/.blog-featured-images/delivered/<brand>/<slug>/`. Their files stay in `featured-images/<slug>/` (in the project, never a scratch folder), they keep counting as used in their category forever, and the renderer refuses to re-create or overwrite them ("FINAL IMAGE LOCKED"). A new article always gets its own slug and folder.
@@ -227,7 +227,9 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 | Role | Size (on the 1600×900 master) |
 |---|---|
-| Headline | 56–76px in card layouts (receipt: semibold, up to 84px), up to ~116px in headline layouts, never wider than its panel; auto-sizes down, never up |
+| Headline | 56–76px for the free-standing card headlines (`focus`, `ranked`, `timeline`, `prompt`); in-card titles keep their own sizes (`window` up to 42px, `checklist` 40px, `stack` 48px); `receipt` semibold, up to 84px; up to ~116px in headline layouts, never wider than its panel; auto-sizes down, never up |
+| Names and terms (Gumloop, originals) | up to ~140–150px, Inter 700 (`versus/type` names 140, the definition term 150) |
+| Badge figure | up to ~168px, in its tinted box |
 | Hero number (stat) | up to 150px (the card grew to match; never outweighs it) |
 | Section labels | about 50px / 500, muted |
 | Card headings | 32–36px |
@@ -247,7 +249,7 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ## 13. Never
 
-- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash`, `versus/duo` and the approved black field of `versus/glass`; every headline black `#0A0A0B` (white on dark fields), `logotype` and `dark`'s top-left icon; never blue words in a headline.
+- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash`, `versus/duo` and the approved black field of `versus/glass`; every headline black `#0A0A0B` (white on dark fields), with no blue words; black is also the ink of `logotype`'s logo and `dark`'s top-left icon.
 - **Logos:** never a tiny logo in a big tile, an app icon shrunk inside a white tile, or invented or warped logos.
 - **Layouts:** never two layouts with the same skeleton; never anything added to fill space; a white design always has the grey frame; never the site mark on a headline layout; never a one-brand image for an X vs Y article.
 - **Details:** no heavy shadows, small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos or neon.
@@ -257,7 +259,3 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 The full log of the user's references, and what was taken from each, is in `references/inspiration.md`.
 
 Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments: variety comes from layout, never from palette or type.
-
-## 15. Gumloop layouts (user references, Oct 2026)
-
-Five layouts after the user's Gumloop references: `versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge` (specs in `spec-format.md`). They keep the references' composition, patterns ("+" grid, sparse dot field) and type scale, in our family: Inter 700 for names, our blue accent, the grey frame on white, the deep-dunes blue and black (both vibrant). Each layout uses only its approved fields (type: light; tiles: blue, light; glass: light, black; swap: light; badge: light). Type on blue, tiles on black and swap on black were deleted in the approved review. Logos are full wordmarks in their own colours on light surfaces and white on dark fields. Keep patterns quiet: the user rejected busy dot grids and a full-canvas "+" grid on black (it now shows only around the edges, crisp). `brandline` was retired: a background with only a headline is not an image.

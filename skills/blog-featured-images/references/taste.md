@@ -12,10 +12,9 @@ Every image is a conversation between two masses: a number and its card, a headl
 - **Receipt:** "Love the illustration and bg, just the heading looks weird and makes the balance off." The headline came down to semibold 84px so the receipt stays the hero.
 - **Dark:** "Left padding is too much, so the visual balance is off." The text column moved from x 210 to x 120, picked from three options.
 - **Logotype:** "Without the tile, visual balance looks off." A bare icon next to a wordmark felt weightless; the black tile gives it mass.
-
 - **Versus frost** (approved review): "the icons are too big and this is why visual balance off, improve". The marks went from 60% to 48% of each glass tile; 44% was also tried and looked lost in the tile. A logo fills its tile only as much as the tile's size allows.
-
 - **Connect:** "Decrease the font size of the heading so it comes in one line, because 2 lines look visually off." A short pair like "Waystar vs Availity" reads as one phrase; split over two big lines it outweighed the tiles. It now sits on one line, centred above the divider.
+- **Receipt** (batch 4): "heading placement feels off" with the headline centred beside the receipt. From top and bottom options, bottom was picked: the headline now sits on the total line (`"place": "bottom"`).
 
 **Ask:** what is the heaviest thing in the image, and should it be? Squint: does one side of the canvas feel emptier or heavier than the other?
 
@@ -43,20 +42,23 @@ Every image in a family uses the same weights, colours and ink, so the blog grid
 
 ### 4. Patterns are seasoning, never the meal
 
-Dot grids, "+" grids and rings add texture. They are faint, and they frame the content instead of covering the canvas.
+Dot grids, "+" grids and rings add texture; they never compete with the content. They are always sparse and faint, never dense or dark. A sparse, faint grid or dot field may cover the whole canvas on the light Gumloop fields (`versus/type`, `versus/tiles`, `swap`, `badge`) and the `versus/tiles` blue field: approved images 18, 20, 22, 25 and 27 (the review said the "+" grid is fine as is). On `shortlist` and `lineup`, and on any dark field, the pattern is edge-only: masked clear behind the content (`GL_EDGE_MASK`; `versus/slash` masks its dot grid on black the same way). `versus/bento` has none.
 
 - **Dynamics 365 vs Acumatica (slash):** "The pattern should not be in all area": the dot grid is masked clear behind the names.
 - **Tiles:** "Pattern is too much": the ring and dots stay sparse and faint.
 - **Swap on black:** "Pattern is too dark, light it, and it shouldn't be in the whole image." On a black field "too dark" meant dim and murky, so the marks became **brighter and crisper**, and only around the edges. Fading them instead made them "literally not visible". (The black swap itself was later deleted in the approved review; swap is light only now. The lesson about patterns on dark fields stays.)
+- **Bento** (batch 4): "delete pattern from bg, it looks overwhelming here". The grid of cells is texture enough; it has no pattern.
+- **Lineup** (batch 4): the user asked to delete the faint watermark behind the row ("this rectangle shape") and didn't like the "+" shape. The row sits on the glow field with faint dots at the edges only.
 
-**Ask:** is the pattern crisp where it shows, and clear behind the content? If you notice it before the content, it's too strong; if you can't find it, it's gone, which is just as wrong.
+**Ask:** is the pattern sparse and faint, and does the content read first? On `shortlist`, `lineup` or a dark field, is it clear behind the content? If you notice it before the content, it's too strong; if you can't find it, it's gone, which is just as wrong.
 
 ### 5. A background is not an image
 
 A beautiful field still needs a real illustration on it: a card, a figure, logos, an arrow.
 
-- **Brandline:** "The bg looks good, can be used with some other illustration, but not like this with just a title heading." Retired as a layout; its glow field is kept for a future illustration.
-- **Glass on the blue mesh:** "The gradient is good but not with this illustration." The pairing failed, not the gradient; glass stays on light and black, and the blue mesh waits for a better partner.
+- **Brandline:** "The bg looks good, can be used with some other illustration, but not like this with just a title heading." Retired as a layout; its glow field now carries `lineup`, a real row of logos.
+- **Glass on the blue mesh:** "The gradient is good but not with this illustration." The pairing failed, not the gradient; glass stays on light and black, and the blue mesh is kept in `references/fields/` for a better partner (behind `versus/frost` it was disapproved too).
+- **Folder** (batch 4): "I like the background, the glass effect and the logos, but not the layout." A liked piece can live on in a new layout: the frosted glass and the logos became `lineup` and `versus/frost`.
 
 **Ask:** remove the headline. Is there still something to look at?
 
@@ -85,6 +87,7 @@ Calm is good; bland is not. A safe composition with no anchor, contrast or colou
 - Real, current logos in their original colours; a stale anniversary badge (Availity's "25") is wrong even when it passes a check.
 - Logos alone where they're recognisable; never logo + name cards.
 - Never the site's own mark on a headline layout ("delete the medhub logo"); `dark` shows the product's own icon.
+- `dark` needs a real product logo. On a topic article ("What is EMR software") an icon stood in, and the user said "icon is not looking good"; `dark` is for single-product articles only.
 - A one-brand image for an X vs Y article "looks like an ad".
 
 ### 9. Copy a reference exactly; measure it
@@ -94,6 +97,8 @@ When the user shares a reference, every detail is the rule: tiles behind icons, 
 ### 10. Restraint over "improvements"
 
 "Before is better" came back three times: auto-sizing the window, a pointer callout on the timeline, logo badges scaled up. A QA fix that changes the look is shown next to the original first, and the user's approved look wins over a checklist suggestion.
+
+- **HIPAA badge** (batch 4): Fact QA replaced the note "Most small practices $150–$750" with "Dedicated HIPAA platforms" ($750 sits $1 above the $749 figure, and the two come from different scopes). The user preferred the earlier badge and had it restored. Raise a fact concern with the user; don't let it silently undo an approved look.
 
 ### 11. Fix by the amount asked
 
@@ -114,9 +119,29 @@ The user sees every image together, across categories and batches, so a layout u
 - **Batch 3:** "This template is already used": a layout recognised from an earlier batch was rejected in a different category (history, from before the per-category rule).
 - "I don't want you to repeat any illustration, only repeat if it makes actual sense." (History: this made layouts rotate across the whole site, with a favourite allowed back only with a written reason. Replaced below.)
 - **Batch 4:** a second pills image came back with a written reason and was still rejected: "this template is already being used". A written reason didn't make a repeat welcome.
-- **Template Usage (Oct 2026), the current rule:** "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." A layout not used yet anywhere is free for any article it suits and goes first; a used layout never comes back in the same category, only in a different one. There is no repeat with a reason any more. The user marks what is used on the Template Usage page (`references/used-layouts.json`), and that record is the truth over the history, since the user knows what is live; pills stays at "max 2 times" across the site.
+- **Template Usage (Oct 2026):** "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." A layout not used yet anywhere is free for any article it suits and goes first; a used layout never comes back in the same category, only in a different one. There is no repeat with a reason any more. The user marks what is used on the Template Usage page (`references/used-layouts.json`), and that record is the truth over the history, since the user knows what is live; pills stays at "max 2 times" across the site.
+- **Restated on Oct 15, the current rule:** "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used again because they aren't used right now, obviously".
 
 **Ask:** is this layout already used in this category? Then pick another. Is there a layout not used yet anywhere that suits the article? Then it goes first.
+
+### 15. No clip-art metaphors
+
+Show the article's own things (logos, names, figures), never a symbol standing in for the idea.
+
+- **Versus scale** (batch 4): a balance scale holding both logos was rejected hard: "looks like a law illustration, the concept is so bad". Retired.
+
+**Ask:** could this image be read as a stock illustration of something else?
+
+### 16. Nothing stale
+
+The user asked twice for "no stale data" and to "delete unnecessary stale data": every file the skill reads must describe what the code does today.
+
+- A first-batch timeline sent again was called "stale": give the newest finalized version (check `finalizedAt` across archives).
+- Update every file the moment a rule changes (references, examples, approved images, the usage record), in the same change, never later.
+- Retired layouts leave no live trace: their code, options and examples go, and their story stays only as history in `lessons.md`.
+- Archive, never delete, user data: old examples, history backups and review rounds move to `~/.blog-featured-images/_archive/`.
+
+**Ask:** does any file still describe a layout, option or rule the code no longer has?
 
 ## Self-Critique (Required)
 
@@ -127,17 +152,22 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Balance | The heaviest element is the one that should be; its partner holds its own (1) |
 | Sameness | Parallel elements share one treatment (2) |
 | Family | Weights, colours and ink match the approved images beside it (3) |
-| Pattern | Crisp where it shows, around the edges, clear behind the content (4) |
+| Pattern | Sparse and faint, never dense, dark or competing with the content; edge-only, clear behind the content, on `shortlist`, `lineup` and dark fields; none on `versus/bento` (4) |
+| Logo fill | Each logo fills 60–70% of its tile (`versus/frost` 48%); a solid app icon is the tile, edge to edge (1, 8) |
 | Illustration | Removing the headline still leaves something to look at (5) |
 | Field | The hero separates cleanly from the background at 350×250 (6) |
 | Bold | Exactly one bold thing; it would stop a scroll (7) |
 | Brands | Real current logos, original colours, no site mark on headline layouts (8) |
 | Restraint | Nothing added that the approved template doesn't have (10) |
+| Words | 15 is a ceiling, not a target; nothing reads as filler (12) |
+| Optics | Centred by eye at full size and at 350×250, not by the numbers (13) |
 | New | Not used in this category; layouts not used yet anywhere come first (14) |
 | Headline ink | Headlines black `#0A0A0B` (white on dark fields), never blue or navy, no blue words (3) |
+| Real things | The article's own logos, names and figures; no clip-art stand-in (15) |
+| Fresh | The newest facts and version; nothing describes a retired layout or option (16) |
 
 Any "no" is a fix before the image moves on.
 
 ## How to Keep Learning
 
-Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named), a lesson, a renderer check where it can be measured, a generalisation when the same correction comes twice, the inspiration log for references, refreshed approved images, and a push.
+Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named), a lesson, a renderer check where it can be measured, a generalisation when the same correction comes twice, the decision recorded (a rejection in `agents.md` V9 and, for a layout, `RETIRED` in `layouts.mjs`; a newly approved image as an example spec and a `sources.json` line), every running Maker and QA told, the inspiration log for references, refreshed approved images, and a push.

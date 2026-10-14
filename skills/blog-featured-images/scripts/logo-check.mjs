@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Planning aid: which logo-dependent layouts each brand can use, using the renderer's own checks (render.mjs --check-only).
 //   node logo-check.mjs <domain> [<domain> ...]
-//   pills    = has a logo that sits on a white circle (not only a solid app tile)
+//   pills    = a logo was found and it sits on a white circle (not only a solid app tile)
 //   connect  = has a solid app icon with its own background colour (needs a Brandfetch client ID)
 //   logotype = has a black logo lockup with a separate icon (single-product articles)
-//   glass    = has a wordmark compact enough to read on the glass bar (versus/glass)
+//   glass    = has a wordmark, compact enough to read on the glass bar (versus/glass; no wordmark = typeset in Inter, so "-")
+// The renderer prints what it found under --check-only (ONWHITE / WORDMARK lines); "yes" needs the check passed AND that finding.
 // An X vs Y pair can use pills, connect or glass only when BOTH brands pass. versus/tiles: both pass connect (filled tiles) or both pass pills (white tiles). Check every icon by eye too: a stale badge still passes.
 import { execFile } from 'child_process';
 import fs from 'fs';
@@ -20,19 +21,22 @@ const run = (spec, name) => new Promise((resolve) => {
   const f = path.join(tmp, `${name}.json`);
   fs.writeFileSync(f, JSON.stringify({ brand: 'default', category: 'logo-check', slug: name, ...spec }));
   execFile(process.execPath, [path.join(here, 'render.mjs'), f, '--out', path.join(tmp, name), '--check-only'],
-    { env: { ...process.env, FEATURED_HISTORY_DIR: tmp } }, (err, out) => resolve(/CHECKS PASSED/.test(out || '')));
+    { env: { ...process.env, FEATURED_HISTORY_DIR: tmp } }, (err, out) => resolve({ ok: /CHECKS PASSED/.test(out || ''), out: out || '' }));
 });
 // a few domains at a time, so the logo services aren't flooded
 const pool = async (items, n, fn) => { const out = []; let k = 0; await Promise.all(Array.from({ length: n }, async () => { while (k < items.length) { const j = k++; out[j] = await fn(items[j], j); } })); return out; };
 const rows = await pool(domains, 3, async (d, i) => {
   const name = d.split('.')[0], side = { label: name, logo: d };
-  const [pills, connect, logotype, glass] = await Promise.all([
+  const [p, c, l, g] = await Promise.all([
     run({ articleTitle: `${name} vs ${name}`, mode: 'versus', variant: 'pills', left: side, right: side }, `p${i}`),
     run({ articleTitle: `${name} vs ${name}`, mode: 'versus', variant: 'connect', left: side, right: side }, `c${i}`),
     run({ articleTitle: `${name} review`, mode: 'logotype', product: name, logotype: d }, `l${i}`),
     run({ articleTitle: `${name} vs ${name}`, mode: 'versus', variant: 'glass', left: side, right: side }, `g${i}`),
   ]);
-  return { d, pills, connect, logotype, glass };
+  const found = (r, tag) => [...r.out.matchAll(new RegExp(`^${tag} \\S+ (\\S+)`, 'gm'))].map((m) => m[1]);
+  const pills = p.ok && found(p, 'ONWHITE').length > 0 && found(p, 'ONWHITE').every((v) => v === 'true');   // null = no logo found
+  const glass = g.ok && found(g, 'WORDMARK').length > 0 && found(g, 'WORDMARK').every((v) => v !== 'none');
+  return { d, pills, connect: c.ok, logotype: l.ok, glass };
 });
 fs.rmSync(tmp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
 const yn = (b) => (b ? 'yes' : ' - ');

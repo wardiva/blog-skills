@@ -1,20 +1,19 @@
 // Finalize delivered images: marks them permanent in the site-wide history and in their folder's ledger.
 // A finalized image is never re-created or overwritten (the renderer refuses with "FINAL IMAGE LOCKED"), its files stay where
-// they are, a copy goes to ~/.blog-featured-images/delivered/<brand>/<slug>/, and it keeps counting for layout rotation forever.
+// they are, a copy goes to ~/.blog-featured-images/delivered/<brand>/<slug>/, and it keeps counting as used in its category (unless
+// the user's record, references/used-layouts.json, says otherwise; see usage.mjs).
 // Usage:
 //   node finalize.mjs --brand <brand> <slug> [<slug> ...]      # after QA passes and the images are delivered
 //   node finalize.mjs --brand <brand> --list                    # show every delivered image
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
+import { brandKeyOf, historyDir as historyDirOf, historyFileOf, readJson, withLock } from './usage.mjs';
 
 const args = process.argv.slice(2);
 const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
-const brand = (opt('--brand') || 'default').replace(/[^a-z0-9-]/gi, '');
+const brand = brandKeyOf(opt('--brand'));
 const slugs = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--brand');
-const historyDir = process.env.FEATURED_HISTORY_DIR || path.join(os.homedir(), '.blog-featured-images');
-const historyFile = path.join(historyDir, `history-${brand}.json`);
-const readJson = (f) => { try { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : []; } catch { return []; } };
+const historyDir = historyDirOf(), historyFile = historyFileOf(brand);
 
 if (args.includes('--list')) {
   const done = readJson(historyFile).filter((e) => e.final);
@@ -24,27 +23,29 @@ if (args.includes('--list')) {
 }
 if (!slugs.length) { console.error('Usage: node finalize.mjs --brand <brand> <slug> [<slug> ...]   |   --list'); process.exit(1); }
 
-const lock = historyFile + '.lock';
-for (let i = 0; ; i++) {
-  try { fs.mkdirSync(lock); break; } catch { if (i > 300) fs.rmSync(lock, { recursive: true, force: true }); Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50); }
-}
-try {
-  const history = readJson(historyFile), at = new Date().toISOString(), missing = [];
+// the same lock as render.mjs and plan.mjs: re-read, then write, so a parallel render's entry is never lost
+const missing = withLock(historyFile, () => {
+  const history = readJson(historyFile), at = new Date().toISOString(), miss = [], ledgers = [];
   for (const slug of slugs) {
     const e = history.find((x) => x.slug === slug && !x.reserved);
-    if (!e) { missing.push(slug); continue; }
-    if (!fs.existsSync(path.join(e.out, 'master.png'))) { missing.push(`${slug} (no master.png in ${e.out})`); continue; }
+    if (!e) { miss.push(slug); continue; }
+    if (!fs.existsSync(path.join(e.out, 'master.png'))) { miss.push(`${slug} (no master.png in ${e.out})`); continue; }
+    ledgers.push(e);
+  }
+  if (miss.length) return miss;   // nothing written
+  for (const e of ledgers) {
     // durable copy: ~/.blog-featured-images/delivered/<brand>/<slug>/ (master, crops, spec), whatever folder the batch ran in
-    const store = path.join(historyDir, 'delivered', brand, slug);
+    const store = path.join(historyDir, 'delivered', brand, e.slug);
     fs.mkdirSync(store, { recursive: true });
     for (const name of fs.readdirSync(e.out)) if (/\.(png|webp|json)$/i.test(name)) fs.copyFileSync(path.join(e.out, name), path.join(store, name));
-    const specPath = path.join(path.dirname(e.out), 'specs', `${slug}.json`);
+    const specPath = path.join(path.dirname(e.out), 'specs', `${e.slug}.json`);
     if (fs.existsSync(specPath)) fs.copyFileSync(specPath, path.join(store, 'spec.json'));
     Object.assign(e, { final: true, finalizedAt: e.finalizedAt || at, stored: store });
     const ledgerFile = path.join(path.dirname(e.out), '.featured-ledger.json');
-    fs.writeFileSync(ledgerFile, JSON.stringify([...readJson(ledgerFile).filter((x) => x.slug !== slug), e], null, 1));
+    fs.writeFileSync(ledgerFile, JSON.stringify([...readJson(ledgerFile).filter((x) => x.slug !== e.slug), e], null, 1));
   }
-  if (missing.length) { console.error('FINALIZE REFUSED (nothing written): not rendered yet:\n  ' + missing.join('\n  ')); process.exit(2); }
   fs.writeFileSync(historyFile, JSON.stringify(history, null, 1));
-  console.log(`Finalized ${slugs.length} image(s). They are permanent and can't be re-created.`);
-} finally { fs.rmSync(lock, { recursive: true, force: true }); }
+  return [];
+});
+if (missing.length) { console.error('FINALIZE REFUSED (nothing written): not rendered yet:\n  ' + missing.join('\n  ')); process.exit(2); }
+console.log(`Finalized ${slugs.length} image(s). They are permanent and can't be re-created.`);

@@ -2,7 +2,9 @@
 // Regression test for the skill, and the way to keep the approved reference images current.
 //   node test-examples.mjs              render every examples/*.json with the current rules; report any that fail
 //   node test-examples.mjs --refresh    also re-render every approved reference image from references/approved/sources.json
-// Renders go to a temporary folder, each with its own scratch history (--force), so results are the same every run, so the real site history and delivered images are never touched.
+// Renders go to a temporary folder, each example with its own empty history, ledger and usage record, so results are the same every
+// run and the real site history, the user's record and delivered images are never touched. No --force: every real check runs (heading,
+// text, logo, field and background fit), so an example the rules refuse fails here.
 // Run it after every change to render.mjs, layouts.mjs, a brand file or an example; a failing example means the change broke a layout.
 import { execFile } from 'node:child_process';
 import fs from 'node:fs';
@@ -16,14 +18,17 @@ const skill = path.dirname(here);
 const examples = fs.readdirSync(path.join(skill, 'examples')).filter((f) => f.endsWith('.json')).sort();
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'bfi-test-'));
 const refresh = process.argv.includes('--refresh');
+const emptyRecord = path.join(tmp, 'used-layouts.json');
+fs.writeFileSync(emptyRecord, JSON.stringify({ layouts: {} }));
 
 const render = (file) => new Promise((resolve) => {
   // own parent folder too: the renderer reads a ledger from the output's parent folder
   const name = path.basename(file, '.json'), out = path.join(tmp, 'out', name, 'img');
-  execFile(process.execPath, [path.join(here, 'render.mjs'), path.join(skill, 'examples', file), '--out', out, '--force'],
+  execFile(process.execPath, [path.join(here, 'render.mjs'), path.join(skill, 'examples', file), '--out', out],
     // Each example gets its own empty history and ledger: the renderer avoids the previous image's background,
-    // so a shared one made the result depend on which parallel render finished first.
-    { env: { ...process.env, FEATURED_HISTORY_DIR: path.join(tmp, 'history', name) } },
+    // so a shared one made the result depend on which parallel render finished first. The empty usage record keeps the
+    // live site's used layouts (references/used-layouts.json) from refusing the fixtures.
+    { env: { ...process.env, FEATURED_HISTORY_DIR: path.join(tmp, 'history', name), FEATURED_USED_FILE: emptyRecord } },
     (err, stdout, stderr) => {
       const ok = /layout=/.test(stdout || '') && fs.existsSync(path.join(out, 'master.png'));
       resolve({ file, out, ok, msg: ok ? (stdout.match(/layout=\S+/) || [''])[0] : String(stderr || stdout || err).trim().split('\n')[0] });

@@ -31,7 +31,7 @@ Fifteen visible words, seven per element, no sentences. Whitespace is good. Neve
 
 ### Variety comes from layout, never from palette
 
-The reader sees the images together, so a layout not used anywhere yet goes first in line, and a used layout never comes back in the same category, only in a different one (the user: "the ones that have used cant be used again unless the category is different"). All of them share one palette, one type family and one finish, so the grid still reads as one brand.
+The reader sees the images together, so a layout not used anywhere yet goes first in line, and a used layout never comes back in the same category, only in a different one (the user's rule, §3 of the decision framework). All of them share one palette, one type family and one finish, so the grid still reads as one brand.
 
 ### Beauty is the gate
 
@@ -45,20 +45,18 @@ You are expected to make images the user would approve without asking. `referenc
 
 When the user shares a reference, every detail is the rule: the tile behind an icon, the padding, the gap between shapes, the weight of a word. Each missed detail cost a review round. Measure the reference's pixels; never eyeball them.
 
-### Delivered is forever
-
-Once the user has an image, it is finalized and can never be re-created or overwritten. Its layout keeps counting as used in its category.
+## Read First
 
 Read these before your first image in a session:
 - `references/approved/`: the finalized images, the target look. `references/approved/sources.json` names the example spec behind each one; `scripts/test-examples.mjs --refresh` rebuilds them all with the current rules.
 - `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, and the "Never" list).
 - `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
 - `references/agents.md`: the four roles (each one's job, steps, prompt and limits), the fast-batch flow, and the Visual and Fact checklists.
-- `references/taste.md`: the user's taste, distilled from every review note: fourteen principles, each with the image that taught it, and the Self-Critique every image must pass.
+- `references/taste.md`: the user's taste, distilled from every review note: sixteen principles, each with the image that taught it, and the Self-Critique every image must pass.
 - `references/lessons.md`: what each batch and review round taught, speed tools, pre-flight checks and gotchas.
 - `references/checks.md`: every check the renderer runs and the feedback behind it, plus the regression test.
 - `references/inspiration.md`: every reference the user shared, what was taken and what was rejected.
-- `references/used-layouts.json`: the user's own record of which layouts are used and in which categories, kept on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q). For every layout it lists it is the truth as of its `recordedAt`; `scripts/usage.mjs` adds images delivered after that from the site history.
+- `references/used-layouts.json`: the user's own record of which layouts are used and in which categories, kept on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q). It belongs to one brand (its `"brand"` key) and is the truth as of its `recordedAt`; `scripts/usage.mjs` adds every image after that from the site history (§3 below).
 
 ## Report Format (Required)
 
@@ -110,17 +108,22 @@ Five layouts depend on what logos a brand has. Run `node <skill-dir>/scripts/log
 | `versus/tiles` | both brands with a filled app icon (both tiles filled), or both with a logo that sits on white (both tiles white); never one of each | `TILES LOGO CHECK FAILED` |
 | `versus/glass` | a wordmark compact enough to read on the glass bar for **both** brands | `GLASS LOGO CHECK FAILED` |
 
-Still look at every icon: a stale anniversary badge (Availity's "25") passes the check.
+Still look at every icon: a stale anniversary badge (Availity's "25") passes the check. Without a Brandfetch client ID (Setup), `connect`, `logotype` and `glass` print "-" for every brand, because their logos come from Brandfetch or a local file: check those brands by eye and save the official file to `featured-images/assets/` if you want the layout.
 
 ### 3. Is the layout free in this category?
 
-The user's rule (Oct 2026): "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different."
+The user's rule (Oct 2026): "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different". Restated later: "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used".
 
 - **Not used yet anywhere:** free for any article it suits, and **first in line**.
 - **Used only in other categories:** free here.
 - **Already used in this category:** never again in this category ("VARIETY CHECK FAILED"). There is no repeat with a reason any more.
 
-Usage comes from **the user's own record**, `references/used-layouts.json`, and the site history (`~/.blog-featured-images/history-<brand>.json`, delivered and reserved images, not superseded). The user keeps the record on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q): one card per layout, "Used" with its categories, or "Not used yet". **For every layout it lists, the record is the truth as of its `recordedAt`**, because the user knows what is live on the site: a history image for a layout marked "Not used yet" never went live and doesn't count. Images delivered or reserved after `recordedAt` are added on top, and a layout the record doesn't list falls back to the history. `scripts/usage.mjs` applies this for the renderer and the planner.
+This is the one full statement of the rule; every other file points here.
+
+**Usage = the user's record + the site history after it.** `scripts/usage.mjs` applies it for the renderer and the planner:
+- **The record**, `references/used-layouts.json`, kept by the user on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q): one card per layout, "Used" with its categories, or "Not used yet". It belongs to one brand (its `"brand"` key, `medsoftwarehub`) and applies only to that brand; other brands go by their history alone. For every layout it lists, it is the truth for every history entry up to and including its `recordedAt` (and entries with no `at`), because the user knows what is live on the site: a history image for a layout marked "Not used yet" never went live and doesn't count. A layout marked "Used" with no categories still counts as used, but refuses no category until the user names one (the scripts warn).
+- **The history**, `~/.blog-featured-images/history-<brand>.json`: every image rendered (drafts too), reserved or delivered that isn't superseded. Entries after `recordedAt` are added on top of the record, and a layout the record doesn't list goes by the history alone. A re-render or re-reservation of the same slug replaces its entry, so redoing one article never uses a layout twice. A reservation you won't render still counts until you release it: `plan.mjs --brand <b> --release <slug> ...`.
+- Categories are compared normalised everywhere ("Hospital & Lab Software" = `hospital-and-lab-software`).
 
 `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` prints three lists: "Not used yet (first in line)", "Used only in other categories" and "Not again in <category>". Give each article the best fit, from the first list first. Same-topic articles (duplicate URLs such as `…-guide` and `…-guide-2`) never share a mode.
 
@@ -134,7 +137,13 @@ A few layouts also have a site-wide cap on top of the once-per-category rule:
 | `logotype` | 2 |
 | Everything else | no site-wide cap; once per category |
 
-The user still sees every image together, so the site-wide QA sheet still matters. Only `--user-pick` (the user chose this layout for this article) or `--force` skips the rule. When nothing free fits an article, design a new variant in the family (shown to the user first).
+A layout at its cap is left out of both free lists. The user still sees every image together, so the site-wide QA sheet still matters.
+
+**The user's own pick** skips the category rule and the cap (never the same-topic rule):
+- `plan.mjs ... --reserve <slug>=<layout>!` marks that one slug as the user's pick. The reservation stores it, and the renderer honours it for that slug and layout, so the Maker needs nothing extra.
+- `--user-pick` on a `plan.mjs` call covers every reservation in that call (on a render, that one render).
+
+Nothing else skips it (`--force` is only for a redo the user explicitly asks for). When nothing free fits an article, design a new variant in the family (shown to the user first).
 
 ### 4. Should it be vibrant?
 
@@ -147,7 +156,7 @@ The user still sees every image together, so the site-wide QA sheet still matter
 
 ### 5. Which background?
 
-Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`, `paper`, `cream`, `g5`; the checklist always gets the blue), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. Headline layouts paint their own canvas.
+Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`, `paper`, `cream`, `g5`; the checklist always gets the blue), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. `prompt`, the headline layouts (except `logotype`, which only takes `cream`), the Gumloop layouts and the originals paint their own canvas, so `bg` on them is refused ("BACKGROUND CHECK FAILED: … paints its own canvas"); the Gumloop layouts, `versus/frost` and `versus/bento` pick their canvas with `field` instead (leave it out for the default), prompt takes only `"field": "soft"` (its calmer glow), and every other layout takes no `field` (refused).
 
 ## Layouts: 19 modes, 30 layouts
 
@@ -165,11 +174,11 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 | `ranked` | bars ranked by a real metric | rankings | sky, g5 | no |
 | `timeline` | steps on a track + callout | process, "how long" | cream, sky | no |
 | `checklist` | tilted checklist card with progress | how to choose, requirements | none (the light field was deleted) | **blue only** (the renderer sets it) |
-| `prompt` | faded panel, headline, pill bar | cost, FAQ, "what is" | its own light-blue gradient field | no |
+| `prompt` | faded panel, headline, pill bar | cost, FAQ, "what is" | its own light-blue gradient field (`bg` is refused; `"field": "soft"` for a calmer one) | no |
 | `stack` | takeaway card, two cards peeking from the top | one key rule | g5, cream | no |
 | `window` | app window: list pane + detail pane | vendor lists, pricing | sky, g5 | **yes** |
 
-**Headline layouts** (after Chatbase; they paint their own canvas, `bg` is ignored). White ones sit in a grey frame, `logotype` sits on cream, black ones count as vibrant. None shows the site mark:
+**Headline layouts** (after Chatbase; they paint their own canvas, so leave `bg` out: it is refused; `logotype` only takes its own `cream`). White ones sit in a grey frame, `logotype` sits on cream, black ones count as vibrant. None shows the site mark:
 
 | Layout | Shows | Best for |
 | --- | --- | --- |
@@ -180,7 +189,7 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 | `dark` | black, the product's icon in black (#0A0A0B) on a white tile top-left, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | single-product articles; never X vs Y (vibrant); once per category, at most 3 across the site |
 | `logotype` | the product's black logo: its icon in white on a black rounded tile beside the black wordmark, large and centred on cream with a faint grid; no other text | single-product articles whose logo is **black** with strong typography; once per category, at most 2 across the site |
 
-**Gumloop layouts** (user references, approved Oct 2026; they paint their own canvas, `bg` is ignored). Set `"field"` to one of the layout's approved fields (first = default); anything else is refused ("FIELD FIT FAILED"). The black and blue fields count as vibrant. Logos are each brand's full **wordmark** (icon + typography), fetched automatically; a brand without one is typeset in Inter:
+**Gumloop layouts** (user references, approved Oct 2026; they paint their own canvas, so leave `bg` out: it is refused). Leave `"field"` out for the default, or set one of the layout's approved fields (first = default); anything else is refused ("FIELD FIT FAILED"). The black and blue fields count as vibrant. Logos: `versus/glass`, `swap` and `badge` show each brand's full **wordmark** (icon + typography), fetched automatically (a brand without one is typeset in Inter); `versus/tiles` shows the brands' app icons (filled tiles) or their marks on white; `versus/type` shows the names only:
 
 | Layout | Shows | Best for | Fields (default first) |
 | --- | --- | --- | --- |
@@ -190,7 +199,7 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 | `swap` | the old thing → a dashed loop arrow → the new thing with a soft glow, "+" grid | switch, migration, "is X worth it", "old way → new way" | light |
 | `badge` | a title (or logo), the key figure in a tinted rounded box, a muted + bold line under it, sparse dots | cost and stat articles | light |
 
-**Retired:** `brandline` (a background with only a headline: "the bg looks good, but not like this with just a title"). Its glow field and the blue mesh behind glass are approved backgrounds waiting for a layout with a real illustration (`references/fields/`).
+**Retired** (refused with "RETIRED LAYOUT" before any other check; they never come back): `brandline`, `folder`, `versus/scale`, `versus/chat`, `versus/split`, `versus/duet`, `versus/rows`, `versus/logos`. `brandline` was a background with only a headline ("the bg looks good, but not like this with just a title"); its glow field now carries `lineup`, and the blue mesh behind glass still has no layout with a real illustration (`references/fields/`).
 
 **Originals** (built after the user had seen every other layout; approved in batches 3 and 4; light only):
 
@@ -231,18 +240,18 @@ At most 15 visible words, 7 per element, no sentences ("TEXT CHECK FAILED"). Sec
 
 ### Every image has enough real content
 
-Each layout needs enough real facts to fill its frame ("CONTENT CHECK FAILED"): window 2+ rows, hub 6+ products, ranked/checklist/timeline 3+, stat card 2+. Pick a layout that suits fewer facts rather than padding one.
+Each layout needs enough real facts to fill its frame ("CONTENT CHECK FAILED"): window 2+ rows, hub 6–7 products, ranked, checklist, timeline and shortlist 3+, stat card and focus 2+ rows, lineup 3–6 logos. Pick a layout that suits fewer facts rather than padding one.
 
 ### Logos are the brand's real, current mark
 
-Set `"logo": "<domain>"` wherever a product is named; the renderer's free chain finds it and darkens pale grey marks. Check every logo by eye: an anniversary or campaign badge is wrong. If the chain finds the wrong mark, save the official one from the brand's own website to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`.
+Set `"logo": "<domain>"` wherever a product is named; the renderer's free chain finds it and darkens pale grey marks. The chain, in order: a local file (relative to the spec) or a URL is used as is; otherwise the Brandfetch symbol (with a client ID) → Iconify `logos` (icon, then full logo) → Simple Icons → the Brandfetch square icon (with an ID; edge to edge only when it is a solid app tile) or, without an ID, Google's favicon → a letter tile. The wordmarks on glass, swap and badge and the logotype lockup come from Brandfetch or a local file only. Check every logo by eye: an anniversary or campaign badge is wrong. If the chain finds the wrong mark, save the official one from the brand's own website to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`.
 
 ### One family, one finish
 
 - Light fields (`sky`, `paper`, `cream`, `g5`) carry thin guide lines and fine grain (no grain on `cream`); the vibrant blue carries heavy grain in soft rolling bands.
 - One big white UI card or hero. The blue gradient marks only the active/anchor element; inactive things are grey.
 - Real logos in their original colours, balanced in their tiles; logos alone (no name cards) where they're recognisable.
-- Card-layout headlines are semibold 600 and black `#0A0A0B` (the brand file's `headline` colour; medsoftwarehub and the default brand use black).
+- Every headline is black `#0A0A0B` (white on the black and blue fields), on every layout and every brand. The renderer hard-codes it: a brand file's `headline` other than `#0A0A0B` is ignored with a warning. Card-layout headlines are semibold 600.
 
 ### Shadows follow the background
 
@@ -250,11 +259,11 @@ None on blue or black. Minimal and tinted to the field on light backgrounds. The
 
 ### White designs sit in a grey frame
 
-A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so it reads as its own block on a white blog page (automatic in `versus/pills`, `versus/connect`, the light Gumloop layouts, `definition`, `shortlist` and `versus/bento`). `receipt` is the exception: it paints its own warm cream dotted field, no frame.
+A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so it reads as its own block on a white blog page (automatic in `versus/pills`, `versus/connect`, `versus/type`, `versus/tiles` on light, `swap`, `badge`, `definition`, `shortlist` and `versus/bento`). No frame on the rest: `receipt` paints its own warm cream dotted field, and `versus/glass`, `versus/frost` and `lineup` paint their own mesh or glow.
 
 ### Headline layouts speak in one voice
 
-Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words: black on pills and connect, white on duo and dark. Card-layout headlines are semibold 600 and black.
+Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words (black on pills and connect, white on duo and dark; see "One family, one finish").
 
 ### Never the site mark on a headline layout
 
@@ -277,9 +286,11 @@ The user's goal is images made without their guidance, and never having to repea
 3. **Lesson:** add what happened to `references/lessons.md`.
 4. **Check:** if it can be measured (a size, a colour, a count, a match), make the renderer enforce it and list it in `references/checks.md`, so it can't come back.
 5. **Generalise:** when the same correction comes twice, apply it to the whole family (black headlines went from one layout to all).
-6. **Reference:** a shared inspiration goes into `references/inspiration.md` (what was taken, what was rejected) before building.
-7. **Refresh and test:** `node <skill-dir>/scripts/test-examples.mjs --refresh` rebuilds every approved image with the new rule; compare old and new and fix any unintended change.
-8. **Publish:** update every file that mentions the rule, then push (see `references/checks.md` and the publishing notes in `references/lessons.md`).
+6. **Decide:** a rejection goes into `references/agents.md` V9 ("Decided, never re-opened") and, for a layout, into `RETIRED` in `scripts/layouts.mjs` (its code deleted from `render.mjs`, its specs archived to `~/.blog-featured-images/_archive/`). A newly approved image gets an example spec in `examples/` and a line in `references/approved/sources.json`.
+7. **Tell:** tell every running Maker and QA agent about the new rule before their next image.
+8. **Reference:** a shared inspiration goes into `references/inspiration.md` (what was taken, what was rejected) before building.
+9. **Refresh and test:** `node <skill-dir>/scripts/test-examples.mjs --refresh` rebuilds every approved image with the new rule; compare old and new and fix any unintended change.
+10. **Publish:** update every file that mentions the rule, run the regression (`references/checks.md`), then push approved work only (`references/lessons.md`, "Publishing").
 
 A lesson that lives only in a conversation is a lesson lost: the next session, and every agent, only knows what is written in these files.
 
@@ -299,14 +310,22 @@ An image ships only when **both** QA agents pass it. Failures go back to their o
 ## Workflow (Fast Batch Mode)
 
 1. **Read:** `node <skill-dir>/scripts/read-articles.mjs <url> <url> ... --out featured-images/articles` reads every URL in parallel into `articles/<slug>.md`. Note each article's type, core idea, 3–6 hard facts, **category** and **topic**.
-2. **Plan:** the used layouts come from `references/used-layouts.json` (the user's record, the truth as of its `recordedAt`) plus images delivered or reserved after it; `plan.mjs` reads both. Answer the decision framework above for every article (logo checks included), then reserve all at once: `plan.mjs --brand <b> --category <c> --reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan when doing more than 3 images.
-   - **When the user updates the Template Usage page**, sync it before planning: read the page's database with ArtifactData (collection `usage`, one doc per layout: `{code, status, cats}`), write it to `references/used-layouts.json` with `recordedAt` set to the `at` of the doc `usage-meta/done` (written when the user presses Save all & finish), then run `scripts/test-examples.mjs` and push.
+2. **Plan:** answer the decision framework above for every article (logo checks included; usage as in §3, which `plan.mjs` applies), then reserve once per category, every article of that category in one command (`--category` applies to every slug in it):
+   ```bash
+   node "<skill-dir>/scripts/plan.mjs" --brand <b> --category <c> --reserve <slug>=<mode>[/<variant>][!][@<topic>] ...
+   ```
+   `!` marks the user's own pick for that slug (§3). The list stops at the next `--flag`. Release a reservation you won't render: `plan.mjs --brand <b> --release <slug> ...` (only unrendered ones). Show the plan when doing more than 3 images.
+   - **When the user updates the Template Usage page** (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q), sync it before planning:
+     1. Read the page's database with ArtifactData: collection `usage` (one doc per layout, `{code, status: "used" | "unused", cats}`) and the doc `done` in collection `usage-meta` (written when the user presses Save all & finish).
+     2. Write `references/used-layouts.json` as `{_note, source, brand, recordedAt: <done.at>, updatedAt, layouts: {<code>: {status, cats}}}`, keeping `brand` (`medsoftwarehub`) and the `_note`'s wording (the record is the truth as of `recordedAt`; every image rendered (drafts too), reserved or delivered after `recordedAt` that isn't superseded is added on top).
+     3. Check it: `plan.mjs --brand <b> --category <c>` for each category the user named, and read any `USED-LAYOUTS WARNING`.
+     4. Push.
 3. **Spec + render (Makers, in parallel):** one `specs/<slug>.json` each (always `articleTitle`, `brand` (the site's file in `brands/`; without it the neutral `default` brand is used), `category`, `slug`, `topic` when shared, `logo` on named products), then:
    ```bash
    node "<skill-dir>/scripts/render.mjs" "featured-images/specs/<slug>.json" --out "featured-images/<slug>"
    ```
-   `featured-images/` lives in the user's project folder, never in a temporary or scratch folder. Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… bg=… words=N/15`.
-4. **QA, both at once:** the moment the last Maker returns, build the sheet of the whole site (`node <skill-dir>/scripts/sheet.mjs --brand <b> --out featured-images/qa-sheet.png --highlight <slugs>`), then start **Visual QA and Fact QA in one message**.
+   `featured-images/` lives in the user's project folder, never in a temporary or scratch folder. Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints its output folder, then `layout=<mode>/<variant> bg=<field> category=<category> words=N/15` (`field=<field>` in place of `bg=` on the Gumloop layouts and the originals).
+4. **QA, both at once:** the moment the last Maker returns, build the sheet of the whole site (`node <skill-dir>/scripts/sheet.mjs --brand <b> --out featured-images/qa-sheet.png --highlight <slug1>,<slug2>,...`), then start **Visual QA and Fact QA in one message**.
 5. **Fix** only the failures, in parallel. **Deliver** each image as soon as both QA agents pass it (Report Format above). Ask before uploading anything to a website. Fix renderer problems in the skill itself, and say so in the delivery note.
 6. **After any change to the skill**, run `node <skill-dir>/scripts/test-examples.mjs` (and `--refresh` when an approved look changed) before pushing.
 7. **Finalize** the delivered images:
@@ -319,14 +338,19 @@ An image ships only when **both** QA agents pass it. Failures go back to their o
 
 Never work around a refusal with `--force` or another folder.
 
+The renderer checks in this order: retired layout, unknown mode or variant, missing category, `field` (`FIELD FIT`), `bg` on a layout that paints its own canvas (`BACKGROUND CHECK`), the heading; then the logo checks (`LOGOTYPE`, `PILLS LOGO`, `CONNECT LOGO`, `TILES LOGO`, `SLASH NAME`, `GLASS LOGO`; `--check-only` stops here); then `CHECKLIST FIELD`, a `bg` that doesn't exist (`BACKGROUND CHECK`), `CONTENT`, `FAIRNESS`, `FINAL IMAGE LOCKED`, `VARIETY` (same topic, then the category and the site-wide cap), `VIBRANT CHECK`, `SERIES`, `VIBRANT FIT`, `BACKGROUND FIT`; and `TEXT` last, once the page is built. `LOGO FILE MISSING` fires wherever a local logo file is first read (in the logo checks, or when the page is built).
+
 | Message | Fix |
 | --- | --- |
+| `RETIRED LAYOUT` | That layout was retired by the user and never comes back: pick a live one (`plan.mjs` lists them) |
+| `Unknown mode` / `Unknown variant` | A typo or a layout that doesn't exist: use a mode and variant from `scripts/layouts.mjs` (the message lists them) |
+| `CATEGORY MISSING` | Add `"category"` (the article's blog category). There is no fallback: a layout is used once per category |
 | `HEADING CHECK FAILED` | Rewrite the heading from the title's key words |
 | `TEXT CHECK FAILED` | Cut subs that aren't the point, then sentence tails, until ≤15 words and ≤7 per element |
-| `VARIETY CHECK FAILED` | That layout is already used in this category (or has hit its site-wide cap): use one it lists, not-used-yet layouts first, then layouts used only in other categories (set `mode`, plus `variant` when not `default`). Only `--user-pick` (the user chose it for this article) skips it |
+| `VARIETY CHECK FAILED` | That layout is already used in this category (or has hit its site-wide cap): use one it lists, not-used-yet layouts first, then layouts used only in other categories (set `mode`, plus `variant` when not `default`). Only the user's own pick (`<slug>=<layout>!` or `--user-pick`, §3) skips it. It also fires when a same-topic article already uses this mode; nothing skips that one, the user's pick included: use another mode |
 | `BACKGROUND FIT FAILED` | Remove `bg` (or use one it lists) |
-| `BACKGROUND CHECK FAILED` | That background doesn't exist; use `sky`, `paper`, `cream`, `g5` or `blue` |
-| `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black); use a light background or a light layout |
+| `BACKGROUND CHECK FAILED` | That background doesn't exist (use `sky`, `paper`, `cream`, `g5` or `blue`), or "… paints its own canvas": the layout paints its own, so remove `bg` (use `field` where the layout has one) |
+| `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black). On a card layout, use a light background; on a layout that paints its own canvas (`bg` is refused there), pick a light layout, or `"field": "light"` for `versus/tiles` and `versus/glass`; a checklist is blue only, so pick another layout |
 | `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` |
 | `CHECKLIST FIELD FAILED` | The checklist goes on the blue only (its light field was deleted in review): remove `bg`. If a neighbour is already vibrant, pick another layout |
 | `SERIES CHECK FAILED` | Remove `"series"` |
@@ -334,10 +358,10 @@ Never work around a refusal with `--force` or another folder.
 | `SLASH NAME CHECK FAILED` | A one-word name with no capital break (e.g. Acumatica) can't be split into white + colour: mark the coloured part with `{{ }}` ("Acu{{matica}}") or use the article's fuller product name |
 | `PILLS LOGO CHECK FAILED` | A product's only logo is a solid app tile, which can't sit on the white circle: use `versus/connect`, `versus/slash` or `versus/duo` (or save the brand's transparent logo to `featured-images/assets/`) |
 | `LOGOTYPE CHECK FAILED` | The product's logo isn't black, or has no separate icon for the black tile: use `dark` (or, if the brand has a black lockup, save it to `featured-images/assets/` and set `"logotype"` to it) |
-| `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 2+ window rows), or pick a layout that suits fewer facts |
-| `FAIRNESS CHECK FAILED` | An X vs Y article: use a versus layout that shows both products |
-| `LOGO FILE MISSING` | Put the logo file in `featured-images/assets/` and reference it relative to the spec |
-| `FIELD FIT FAILED` | That Gumloop layout doesn't use this field: use one it lists, or leave `field` out for its default |
+| `CONTENT CHECK FAILED` | Add the article's own facts to fill the layout (e.g. 2+ window rows); if it has no more, pick a layout that suits fewer facts. Never pad |
+| `FAIRNESS CHECK FAILED` | `dark` on an article whose title says "vs" or "versus": use a versus layout that shows both products |
+| `LOGO FILE MISSING` | The local file named in the spec isn't at that path (relative to the spec): put it in `featured-images/assets/` and reference it as `../assets/<file>` |
+| `FIELD FIT FAILED` | That Gumloop layout doesn't use this field: use one it lists, or leave `field` out for its default. On a layout with no `field` option (everything but the Gumloop layouts, frost, bento and prompt's `"soft"`), remove it |
 | `GLASS LOGO CHECK FAILED` | A wordmark is too wide for the glass bar: save a compact lockup (4:1 or narrower) to `featured-images/assets/`, or use another versus layout |
 | `TILES LOGO CHECK FAILED` | The two tiles can't match: one brand only has a filled app tile and the other has no filled icon. Use `versus/type`, `versus/glass`, `versus/slash` or `versus/duo` |
 | `FINAL IMAGE LOCKED` | That article's image was already delivered and is permanent. Don't re-create it; a new article needs its own slug and folder. Redo it only if the user explicitly asks (`--force`) |
@@ -345,35 +369,19 @@ Never work around a refusal with `--force` or another folder.
 ## Setup
 
 - **Needs:** Node 18+, Chrome or Edge (or the `CHROME` env var), `npm install` in `scripts/`, and `npm i -g agent-browser` for fast article reading. **Without agent-browser**, read the articles with WebFetch in parallel, save the text to `featured-images/articles/<slug>.md`, and continue.
-- **Brandfetch client ID** (optional, free at brandfetch.com/developers): `~/.blog-featured-images/config.json` as `{"brandfetchClientId": "…"}` or the `BRANDFETCH_CLIENT_ID` env var. **Never commit it.** Without it, logos still work through Iconify and Simple Icons; `versus/connect` then needs each brand's square app icon saved to `featured-images/assets/`.
-- **New site:** copy `brands/_template.json` to `brands/<site>.json` and fill in the brand colours, plus `markUrl` and `markName` for the optional site mark.
-- Fonts (Inter, Poppins), icons (Phosphor) and logos load from the internet at render time.
-- History is per brand (`~/.blog-featured-images/history-<brand>.json`, or `FEATURED_HISTORY_DIR`). It holds every delivered image, so never delete it. Re-rendering a slug that isn't delivered yet replaces its entry.
+- **Brandfetch client ID** (optional, free at brandfetch.com/developers): `~/.blog-featured-images/config.json` as `{"brandfetchClientId": "…"}` or the `BRANDFETCH_CLIENT_ID` env var. **Never commit it, and never put it in a brand file.** Without it, logos still work through Iconify, Simple Icons and Google's favicon; then `versus/connect` needs each brand's square app icon and `logotype` its black lockup saved to `featured-images/assets/`, and glass, swap and badge typeset names in Inter unless a wordmark file is saved there.
+- **New site:** copy `brands/_template.json` to `brands/<site>.json` and fill in the brand colours, plus `markUrl` and `markName` for the optional site mark (the headline stays `#0A0A0B`). The user's record (`references/used-layouts.json`) belongs to `medsoftwarehub`, so a new site has no record until the user keeps one for it: its usage is its own history alone.
+- Fonts (Inter, Poppins, JetBrains Mono), icons (Phosphor) and logos load from the internet at render time.
+- History is per brand (`~/.blog-featured-images/history-<brand>.json`, or `FEATURED_HISTORY_DIR`). It holds every rendered, reserved and delivered image, so never delete it. A re-render or re-reservation of a slug that isn't delivered yet replaces its entry. Parallel renders, plans and finalizes share it under a lock.
 
 ## Review Checklist
 
-Before delivering, check for:
+The QA agents check every image against the Visual and Fact checklists in `references/agents.md`, and the renderer refuses what it can measure (the table above). Before delivering, also check what only taste catches:
 
 | Issue | Fix |
 | --- | --- |
-| Heading reworded creatively | Use the title's own words, shorter |
-| A figure without its qualifier | Copy "per provider", "up to", "from", "minimum" from the article |
-| Breakdown outside the hero's range | Rows must sit inside the headline figure |
-| More than 15 words or a sentence | Cut to labels |
-| A layout already used in this category | Pick one not used yet (first in line), or one used only in other categories (favourites within their site-wide caps) |
-| Two vibrant images side by side, or more than 1 in 3 | Move one to a light field or a light layout |
-| `dark` on an X vs Y article | Use a versus layout showing both products |
-| Pills with a solid app icon, or connect with a mark on white | Run `logo-check.mjs` and pick the layout both brands pass |
-| Blue words in a headline-layout headline | Near-black (pills, connect) or white (duo, dark) |
-| Any weight other than 500 in pills, connect, duo or dark | Inter 500 Medium in those four layouts (slash keeps Poppins caps) |
-| A slash name in one colour | White + the brand colour |
-| Site mark on a headline layout | Remove it; `dark` shows the product's icon |
-| Stale or campaign logo | Save the brand's current mark to `featured-images/assets/` |
-| Heavy shadow, or any shadow on blue or black | Let the renderer handle shadows |
-| A rejected idea coming back (V9) | Remove it; the user already said no |
 | One element outweighs its partner (a giant number, a heavy headline) | Rebalance until both read as one composition (taste 1) |
 | Two parallel elements styled differently (one filled tile, one white) | Give them one treatment, or pick a layout where they can match (taste 2) |
-| A pattern you notice before the content, one covering the whole canvas, or one you can't find | Crisp, only around the edges, clear behind the content (taste 4) |
-| A blue or navy headline | Black `#0A0A0B` (taste 3) |
+| A pattern you notice before the content (dense, dark or competing with it), or one you can't find | Sparse and faint; edge-only, clear behind the content, on `shortlist`, `lineup` and dark fields; none on `versus/bento` (taste 4) |
 | A background with only a headline | Add a real illustration or use another layout (taste 5) |
 | Self-Critique not run | Run it (`references/taste.md`) and fix every "no" |

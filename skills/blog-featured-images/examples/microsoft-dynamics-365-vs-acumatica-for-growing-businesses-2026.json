@@ -1,10 +1,10 @@
 {
  "brand": "medsoftwarehub",
  "category": "clinical-software",
+ "slug": "microsoft-dynamics-365-vs-acumatica-for-growing-businesses-2026",
  "mode": "versus",
  "left": {
   "label": "Dynamics 365",
-  "heading": "",
   "items": [
    "$80/user/mo",
    "Per seat"
@@ -13,7 +13,6 @@
  },
  "right": {
   "label": "Acumatica",
-  "heading": "",
   "items": [
    "From $6,396/yr",
    "Unlimited users"

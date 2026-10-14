@@ -4,8 +4,8 @@
 //   brand : colour overrides (default: brands/default.json). See brands/_template.json
 //   out   : output folder (default: ./featured-images/<slug>)
 // Writes master.png (1600x900), 7x5.webp (theme crop), 16x9-1200.webp (social), card-350x250.png (check size), page.html
-import { LAYOUTS } from './layouts.mjs';
-import { usage as usageOf, blocked, freeFor } from './usage.mjs';
+import { LAYOUTS, retiredOf, retiredMsg } from './layouts.mjs';
+import { usage as usageOf, blocked, freeFor, layoutOf, normCat, brandKeyOf, historyDir as historyDirOf, historyFileOf, readJson, loadHistory, countable, userRecord, warnRecord, withLock } from './usage.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -22,6 +22,19 @@ if (!specFile || !fs.existsSync(specFile)) {
   process.exit(1);
 }
 const spec = JSON.parse(fs.readFileSync(specFile, 'utf8'));
+const force = args.includes('--force');
+// ---- the layout first: a retired or unknown layout is refused before any other check ----
+const MODE = spec.mode || 'before-after';
+const RETIRED_HIT = retiredOf(MODE, spec.variant);
+if (RETIRED_HIT) { console.error(retiredMsg(RETIRED_HIT)); process.exit(2); }
+const ALL_MODES = Object.keys(LAYOUTS);
+if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
+const VARIANT = spec.variant || LAYOUTS[MODE][0];
+if (!LAYOUTS[MODE].includes(VARIANT)) { console.error(`Unknown variant "${VARIANT}" for ${MODE}. Variants: ${LAYOUTS[MODE].join(', ')}`); process.exit(1); }
+const LAYOUT = `${MODE}/${VARIANT}`;
+// the article's category: a layout is used once per category, so a spec without one is refused (the brand name is no stand-in)
+const category = normCat(spec.category);
+if (!category) { console.error('CATEGORY MISSING: add "category" (the article\'s blog category, e.g. "clinical-software") to the spec. A layout is used once per category, so the renderer needs it.'); process.exit(2); }
 const brandFile = opt('--brand') || (spec.brand ? path.resolve(HERE, '..', 'brands', spec.brand + '.json') : path.resolve(HERE, '..', 'brands', 'default.json'));
 const brand = JSON.parse(fs.readFileSync(brandFile, 'utf8'));
 const slug = spec.slug || path.basename(specFile, '.json');
@@ -40,10 +53,11 @@ function findChrome() {
 }
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;');   // a missing optional field renders as nothing, never "undefined"
 // ---- logos: Brandfetch Logo API, hotlinked at render time (Brandfetch's guidelines: hotlink, don't re-host) ----
-// Needs a free client ID (brandfetch.com/developers): env BRANDFETCH_CLIENT_ID or "brandfetchClientId" in the brand file.
+// Needs a free client ID (brandfetch.com/developers): env BRANDFETCH_CLIENT_ID or "brandfetchClientId" in
+// ~/.blog-featured-images/config.json; never in a brand file (brand files are shared and committed).
 // Without one, previews fall back to Google's favicon service. One treatment per image ("logoStyle") keeps logos on-vibe.
 const LOCAL_CFG = (() => { try { return JSON.parse(fs.readFileSync(path.join(os.homedir(), '.blog-featured-images', 'config.json'), 'utf8')); } catch { return {}; } })();
-const BF_CLIENT = process.env.BRANDFETCH_CLIENT_ID || LOCAL_CFG.brandfetchClientId || brand.brandfetchClientId || '';
+const BF_CLIENT = process.env.BRANDFETCH_CLIENT_ID || LOCAL_CFG.brandfetchClientId || '';
 const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.logoStyle : 'color';   // original colours by default
 // Logo chain (all free): Brandfetch symbol -> Iconify "logos" colour icon -> Simple Icons in brand colour -> Brandfetch square icon
 // (shown edge to edge, like an app icon, so dark tiles look intentional) -> lettermark. Without a Brandfetch ID, the Brandfetch steps are skipped.
@@ -92,8 +106,9 @@ const baH = after ? Math.max(290, 160 + (after.items || []).length * 51) : 290;
 const baTop = Math.round((900 - (baH + 190)) / 2);
 
 // "versus": in the approved card language, structurally unlike before-after.
-//   variant "table" (default): ONE comparison card, products as column headers, matched rows, the right column tinted.
-//   variant "overlap": two cards tilted toward each other, overlapping at the centre with the vs chip on the overlap.
+//   variant "overlap" (default): two cards tilted toward each other, overlapping at the centre with the vs chip on the overlap.
+//   variant "table": ONE comparison card, products as column headers, matched rows, the right column tinted.
+// The other variants are the headline layouts (pills, connect, slash, duo) and the Gumloop-style ones (type, tiles, glass, frost, bento).
 function versus() {
   if (spec.variant === 'pills') return cbVersusPills();
   if (spec.variant === 'connect') return cbVersusConnect();
@@ -102,13 +117,8 @@ function versus() {
   if (spec.variant === 'type') return glType();
   if (spec.variant === 'tiles') return glTiles();
   if (spec.variant === 'glass') return glGlass();
-  if (spec.variant === 'split') return glSplit();
-  if (spec.variant === 'duet') return glDuet();
-  if (spec.variant === 'rows') return glRows();
-  if (spec.variant === 'scale') return glScale();
   if (spec.variant === 'frost') return glFrost();
   if (spec.variant === 'bento') return glBento();
-  if (spec.variant === 'chat') return glChat();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'table') {
@@ -178,7 +188,7 @@ svg.arr{position:absolute;inset:0;overflow:visible}
   }
   const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 705, 2]];
   const LOGOS = spec.cards.some((c) => c.logo), CW = LOGOS ? 345 : 320, CH = spec.showSubs ? 160 : 112;
-  if (LOGOS) slots.forEach((sl, i) => { if (i >= 3 && i < 6) sl[0] -= 25; if (i === 6) sl[0] -= 12; });   // wider cards: keep the right column inside x 1390   // 320 wide so full product names (e.g. "SAP Business One") fit at 29px
+  if (LOGOS) slots.forEach((sl, i) => { if (i >= 3 && i < 6) sl[0] -= 25; if (i === 6) sl[0] -= 12; });   // logo cards are 345 wide, so the right column moves left to stay inside x 1390 (name-only cards are 320 wide: "SAP Business One" fits)
   let arrows = '', cards = '';
   spec.cards.slice(0, n).forEach((cd, i) => {
     const [x, y, r] = slots[i], left = i < 3;
@@ -209,15 +219,13 @@ svg.arr{position:absolute;inset:0;overflow:visible}
 function prompt() {
   const rows = spec.panel.rows.map((r, i) => `<div class="pr" style="opacity:${[1, 0.72, 0.48][i] ?? 0.35}"><i class="ph ph-file-text"></i><div><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></div></div>`).join('');
   const chips = spec.chips.map((t) => `<span class="chip"><i></i>${esc(t)}</span>`).join('');
-  return `<style>
-</style><div style="position:absolute;inset:0;background:${spec.field !== 'soft' ? 'linear-gradient(180deg,#F7FBFF 0%,#EAF5FE 38%,#A9DCFB 78%,#7CC8F8 100%)' : 'linear-gradient(160deg,#EEF6FE 0%,#D6EAFC 50%,#BFDDFA 100%)'}"></div><style>
-body:before{background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at 5% 10%,rgba(255,180,150,.18),transparent 70%)}
+  return `<div style="position:absolute;inset:0;background:${spec.field !== 'soft' ? 'linear-gradient(180deg,#F7FBFF 0%,#EAF5FE 38%,#A9DCFB 78%,#7CC8F8 100%)' : 'linear-gradient(160deg,#EEF6FE 0%,#D6EAFC 50%,#BFDDFA 100%)'}"></div><style>
 .panel{position:absolute;left:210px;top:-20px;width:1180px;height:810px;border-radius:0 0 48px 48px;background:linear-gradient(180deg,#FFFFFF 35%,#D9ECFC 100%);box-shadow:0 30px 60px rgba(30,60,110,.10)}
 .plbl{position:absolute;left:290px;top:66px;font-size:26px;font-weight:500;color:#8A93A5;letter-spacing:.01em}
 .prs{position:absolute;left:290px;top:122px;display:grid;gap:30px}
 .pr{display:flex;align-items:center;gap:28px}.pr i{width:80px;height:80px;border-radius:16px;background:#F1F4F8;display:grid;place-items:center;font-size:36px;color:#8A93A5}
 .pr b{display:block;font-size:36px;font-weight:500;line-height:1.2;color:#2B3245}.pr span{display:block;margin-top:4px;font-size:28px;line-height:1.25;color:#6B7487}
-h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-size:${Math.min(66, Math.floor(820 / (String(spec.headline).length * 0.52)))}px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
+h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-size:${Math.min(66, Math.floor(820 / (String(spec.headline).length * 0.52)))}px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B}
 .bar{position:absolute;left:250px;top:620px;width:1100px;height:124px;border-radius:62px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05);display:flex;align-items:center;padding:0 22px 0 46px;gap:16px}
 .bar .ph-txt{display:flex;align-items:center;gap:14px;font-size:36px;color:#8A93A5;margin-right:auto}
 .bar .ph-txt:before{content:"";width:4px;height:52px;background:#27ACF2;border-radius:2px}
@@ -242,7 +250,7 @@ function stack() {
 .skh{display:flex;align-items:center;gap:16px;font-size:32px;color:#7F8794}.skh i{font-size:40px;color:#0A5FD8}
 .skl{margin:30px 0 28px;font-size:46px;line-height:1.28;color:#141A26;letter-spacing:-.015em}.skl b{font-weight:600;color:#0A5FD8}
 .sku{margin:0;padding:0 0 0 34px;display:grid;gap:14px;font-size:32px;line-height:1.35;color:#7F8794}.sku li:first-child{color:#141A26}
-.skf .skh{padding-right:200px;font-size:48px;font-weight:600;color:#141A26;letter-spacing:-.02em}.skf .skl,.skf .sku{max-width:740px}.skf .skl{font-size:40px;color:#5D6675}.skf .skl b{color:#141A26}
+.skf .skh{padding-right:200px;font-size:48px;font-weight:600;color:#0A0A0B;letter-spacing:-.02em}.skf .skl,.skf .sku{max-width:740px}.skf .skl{font-size:40px;color:#5D6675}.skf .skl b{color:#141A26}
 .skit{position:absolute;right:64px;top:56px;width:156px;height:156px;border-radius:40px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;font-size:92px;color:#fff;box-shadow:0 14px 30px rgba(10,95,216,.22)}
 .skw{position:absolute;left:270px;top:50%;width:1060px;transform:translateY(-42%)}.skw .sk{position:absolute;left:0;right:0;top:auto;width:auto;height:auto}
 .skw .sk1{left:120px;right:120px;top:-90px;bottom:90px}.skw .sk2{left:60px;right:60px;top:-45px;bottom:45px}.skw .skf{position:relative;height:auto;padding-bottom:64px}
@@ -264,7 +272,7 @@ function appwin() {
 .wb{display:grid;grid-template-columns:640px 1fr;height:${(BLEED ? 820 : H) - 66}px}
 .wl{padding:40px 44px;border-right:1px solid #EEF0F4}
 .wi{width:54px;height:54px;border-radius:14px;background:#E3F0FD;display:grid;place-items:center;font-size:30px;color:#0A5FD8}
-.wl h2{margin:16px 0 4px;white-space:nowrap;font-size:${Math.min(42, Math.floor(552 / (String(spec.list.heading || "").length * 0.56 || 1)))}px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
+.wl h2{margin:16px 0 4px;color:#0A0A0B;white-space:nowrap;font-size:${Math.min(42, Math.floor(552 / (String(spec.list.heading || "").length * 0.56 || 1)))}px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
 .wr{display:flex;align-items:center;gap:16px;padding:13px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
 .wr.wh{margin:0 -18px;padding:13px 18px;border-radius:16px;background:linear-gradient(90deg,#3B86F0,#0A5FD8);color:#fff}.wr.wh .wav{background:rgba(255,255,255,.2);color:#fff}.wr.wh span,.wr.wh em{color:rgba(255,255,255,.85)}.wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
 .wd{padding:40px ${BLEED ? 150 : 40}px 40px 40px}.wq{margin-left:${BLEED ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
@@ -283,7 +291,7 @@ function timeline() {
   const cw = 440, cx = Math.min(Math.max(x(h) - cw / 2, 210), 1390 - cw);
   const steps = spec.steps.map((s, i) => `<div class="ts${i < h ? ' done' : ''}${i === h ? ' on' : ''}" style="left:${x(i)}px"><b>${esc(s.label)}</b><i></i><span>${esc(s.sub || '')}</span></div>`).join('');
   return `<style>
-.th{position:absolute;left:210px;top:150px;font-size:58px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
+.th{position:absolute;left:210px;top:150px;font-size:58px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B}
 .tsb{position:absolute;left:212px;top:228px;font-size:28px;color:#7F8794}
 .tt{position:absolute;left:270px;top:665px;width:1060px;height:8px;border-radius:4px;background:#DDE2EA}
 .tf{position:absolute;left:270px;top:665px;width:${x(h) - 270}px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
@@ -312,7 +320,7 @@ function checklist() {
   return `<style>
 .cb{position:absolute;left:360px;top:${ct + 15}px;width:920px;height:${ch - 10}px;border-radius:30px;background:#E4EFFC;transform:rotate(4deg)}
 .cf{position:absolute;left:320px;top:${ct}px;width:960px;height:${ch}px;border-radius:30px;background:#fff;transform:rotate(-2deg);padding:50px 56px;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)}
-.ch{display:flex;align-items:center;justify-content:space-between}.ch b{font-size:40px;font-weight:600;letter-spacing:-.02em}
+.ch{display:flex;align-items:center;justify-content:space-between}.ch b{font-size:40px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B}
 .ch span{font-size:24px;font-weight:600;color:#fff;background:linear-gradient(90deg,#3B86F0,#0A5FD8);border-radius:99px;padding:10px 22px;box-shadow:0 8px 20px rgba(10,95,216,.25)}
 .cp{margin:22px 0 30px;height:10px;border-radius:5px;background:#EEF2F7}.cp i{display:block;height:100%;width:${Math.round((done / total) * 100)}%;border-radius:5px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
 .ck{display:flex;align-items:center;gap:22px;font-size:32px;color:#7F8794;padding:11px 0}
@@ -330,10 +338,11 @@ function stat() {
   // a long value auto-shrinks; then the caption hangs right under it and the number+caption block centres on the card
   // (a full-size number keeps the approved positions: value at 230, caption at 470)
   const vfs = Math.min(150, spec.valueSize || 150, Math.floor(600 / (String(spec.value).length * 0.6)));   // 150 max: the number never outweighs the card (user)
+  // "valueColor": "black" (the headline ink), "blue" (solid), or the blue gradient by default
   const svTop = vfs < 180 ? Math.round(440 - (vfs + 44 + 50) / 2) : 230, scTop = vfs < 180 ? svTop + vfs + 44 : 470;
   return `<style>
-.sv{position:absolute;left:205px;top:${svTop}px;font-size:${vfs}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;${['navy', 'black'].includes(spec.valueColor) ? 'color:#0E2A5C;' : spec.valueColor !== 'blue' ? 'background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:12px;' : ''};white-space:nowrap}
-.sc{position:absolute;left:212px;top:${scTop}px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
+.sv{position:absolute;left:205px;top:${svTop}px;font-size:${vfs}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;${spec.valueColor === 'black' ? 'color:#0A0A0B;' : spec.valueColor !== 'blue' ? 'background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:12px;' : ''};white-space:nowrap}
+.sc{position:absolute;left:212px;top:${scTop}px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#0A0A0B;letter-spacing:-.015em}
 .ss{position:absolute;left:212px;top:620px;width:600px;font-size:26px;line-height:1.4;color:#7F8794}
 .scard{position:absolute;right:210px;top:450px;transform:translateY(-50%);width:max-content;min-width:560px;max-width:640px;box-sizing:border-box;background:#fff;border-radius:26px;padding:50px 52px 26px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
 .scard h3{margin:0 0 30px;font-size:32px;font-weight:500;color:#5D6675}
@@ -357,7 +366,7 @@ function ranked() {
   const headH = spec.sub ? 130 : 76, cardH = 2 * 52 + n * barH + (n - 1) * gap;
   const top = Math.max(70, Math.round((900 - (headH + 48 + cardH)) / 2) - 16);
   return `<style>
-.rh{position:absolute;left:210px;top:${top}px;font-size:56px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C;line-height:1.2}
+.rh{position:absolute;left:210px;top:${top}px;font-size:56px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B;line-height:1.2}
 .rs{position:absolute;left:212px;top:${top + 78}px;font-size:28px;color:#7F8794}
 .rl{position:absolute;left:210px;top:${top + headH + 48}px;width:1180px;box-sizing:border-box;padding:52px 56px;display:grid;gap:${gap}px;background:#fff;border-radius:28px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
 .rr{display:grid;grid-template-columns:48px 310px 1fr 220px;align-items:center;gap:18px}
@@ -436,9 +445,9 @@ function focus() {
 <div class="fh">${head}</div>
 <div class="fc"><div class="fct">${esc(spec.label || '')}<s></s></div>${real}${ghosts}</div>`;
 }
-// ---- Headline layouts (after Chatbase): versus/pills, versus/connect, versus/slash, dark ----
-// Bold names or a big tight headline (key phrase in blue via {{ }}); colour in a few clean shapes.
-// Shapes use a near-solid vivid blue with a faint tonal drift and fine grain; "color" swaps in a brand hex.
+// ---- Headline layouts (after Chatbase): versus/pills, versus/connect, versus/slash, versus/duo, dark ----
+// Bold names or a big tight headline, all black #0A0A0B (white on the black fields); colour in a few clean shapes.
+// Shapes use a near-solid vivid blue with a faint tonal drift and fine grain; dark's "color" (and duo's per-side "color") swaps in a brand hex.
 const CB_BLUE = { stops: ['#0A6EF5', '#0F7DFF', '#1D8BFF', '#0B74FA'], light: '#45A2FF', dark: '#065FE0' };
 const hexMix = (h, t, w) => '#' + [1, 3, 5].map((i) => Math.round(parseInt(h.slice(i, i + 2), 16) * (1 - w) + parseInt(t.slice(i, i + 2), 16) * w).toString(16).padStart(2, '0')).join('');
 const cbPal = (hex) => /^#[0-9a-f]{6}$/i.test(hex || '') ? { stops: [hexMix(hex, '#000000', 0.06), hex, hexMix(hex, '#ffffff', 0.1), hexMix(hex, '#000000', 0.04)], light: hexMix(hex, '#ffffff', 0.28), dark: hexMix(hex, '#000000', 0.14) } : CB_BLUE;
@@ -453,11 +462,10 @@ const wcDefs = (id, P, seed = 3, ang = [0, 1, 1, 0]) => {
 <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="9" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .14 0" result="ga"/><feComposite in="ga" in2="SourceGraphic" operator="in" result="gm"/>
 <feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="lm"/><feMergeNode in="dm"/><feMergeNode in="gm"/></feMerge></filter>`;
 };
-// headline markup: {{key phrase}} = blue gradient text, "\n" = line break
-const cbHl = (t) => esc(t).replace(/\{\{([\s\S]+?)\}\}/g, '<span class="bt">$1</span>').replace(/\n/g, '<br>');
+// headline markup: "\n" = line break. Headlines are all black (user), so old specs' {{key phrase}} marks are dropped, never styled
+const cbHl = (t) => esc(t).replace(/\{\{|\}\}/g, '').replace(/\n/g, '<br>');
 const cbFs = (t, max, width) => { const lines = String(t).replace(/\{\{|\}\}/g, '').split('\n'); const long = Math.max(...lines.map((l) => l.length)); return Math.min(max, Math.floor(width / (Math.max(long, lines.length > 1 ? 1 : long / 2.4) * 0.5))); };
 const CB_CSS = `<style>.cbf{position:absolute;inset:0}.cbh{position:absolute;font-weight:500;letter-spacing:-.035em;line-height:1.02;color:#0A0A0B}
-.bt{background:linear-gradient(180deg,#1E88F5,#0F6FE0);-webkit-background-clip:text;background-clip:text;color:transparent}
 .ct{position:absolute;background:#fff;display:grid;place-items:center;overflow:hidden}.ct .lg{background:transparent;box-shadow:none;padding:0}.ct .lg:not(.full){border-radius:0;overflow:visible}
 .ct:has(.lg.full) .lg{width:100%!important;height:100%!important;border-radius:0}</style>`;
 const cbTile = (d, S, x, y, round = 0.22, label = '') => `<div class="ct" style="left:${x}px;top:${y}px;width:${S}px;height:${S}px;border-radius:${Math.round(S * round)}px;box-shadow:0 10px 26px rgba(10,40,120,.12)">${logo(d, Math.round(S * 0.62), label)}</div>`;
@@ -465,21 +473,22 @@ const cbTile = (d, S, x, y, round = 0.22, label = '') => `<div class="ct" style=
 // so the featured image reads as its own block on a white blog page. Inner content keeps canvas coordinates.
 const cbFramed = (inner, right = 28) => `<div class="cbf" style="background:#F2F2F3"></div><div style="position:absolute;left:28px;top:28px;right:${right}px;bottom:28px;border-radius:28px;background:#fff;overflow:hidden"><div style="position:absolute;left:-28px;top:-28px;width:1600px;height:900px">${inner}</div></div>`;
 
-// "versus/pills": grey canvas, two white panels; two blue pills face each other with the logos at the tips; the question below
+// "versus/pills": grey canvas, two white panels; two blue pills face each other with the logos at the tips; the headline below
+// (a question by default). The pills are always the site blue (design rule), never a brand colour.
 // pills surface (user reference): a smooth tonal gradient toward the tip, one soft highlight and fine noise; no watercolour blotches
 const pillDefs = (id, P, flip) => `<linearGradient id="${id}g" x1="${flip ? 1 : 0}" y1="0" x2="${flip ? 0 : 1}" y2="0"><stop offset="0" stop-color="${P.dark}"/><stop offset=".6" stop-color="${P.stops[1]}"/><stop offset="1" stop-color="${P.stops[2]}"/></linearGradient>
 <radialGradient id="${id}h" cx="${flip ? 0.32 : 0.68}" cy=".18" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
 <filter id="${id}n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="4" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 -.17"/><feComposite in2="SourceGraphic" operator="in"/></filter>`;
 function cbVersusPills() {
-  const L = spec.left, R = spec.right, P = cbPal(spec.color);   // as measured on the user's reference: pills bleed off the outer edges (flat cuts), 196px tall, rounded tips 112px apart (57% of the height); logos centred in the tips
-  const head = spec.headline || `${L.label} or\n${R.label}?`, fs = cbFs(head, 108, 1300);   // the headline is all near-black, no blue phrase (user)
+  const L = spec.left, R = spec.right, P = CB_BLUE;   // as measured on the user's reference: pills bleed off the outer edges (flat cuts), 196px tall, rounded tips 112px apart (57% of the height); logos centred in the tips
+  const head = spec.headline || `${L.label} or\n${R.label}?`, fs = cbFs(head, 108, 1300);   // the headline is all black, no blue phrase (user)
   return `${CB_CSS}<div class="cbf" style="background:#F2F2F3"></div>
 <div style="position:absolute;left:28px;right:28px;top:28px;height:380px;border-radius:28px;background:#fff;overflow:hidden">
 <svg width="1544" height="380" style="position:absolute;inset:0"><defs>${pillDefs('va', P, false)}${pillDefs('vb', P, true)}</defs>
 ${[['va', -240], ['vb', 828]].map(([k, x]) => ['g', 'h'].map((f) => `<rect x="${x}" y="92" width="956" height="196" rx="98" fill="url(#${k}${f})"/>`).join('') + `<rect x="${x}" y="92" width="956" height="196" rx="98" fill="#fff" filter="url(#${k}n)"/>`).join('')}</svg>
 ${cbTile(L.logo, 140, 548, 120, 0.5, L.label)}${cbTile(R.logo, 140, 856, 120, 0.5, R.label)}</div>
 <div style="position:absolute;left:28px;right:28px;top:436px;bottom:28px;border-radius:28px;background:#fff;display:grid;place-items:center">
-<div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div></div>`;
+<div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head)}</div></div>`;
 }
 
 // "dark": black field; top-left the product's own icon recoloured to #0A0A0B on a white tile (never the site mark), tag pill, white headline; right = a panel in the brand colour with the white logo
@@ -488,22 +497,18 @@ function cbDark() {
   // Inter 500 runs ~0.56em per character: size so the longest line fits the 620px column (cbFs underestimated it and lines wrapped)
   const longest = Math.max(...String(spec.headline).replace(/\{\{|\}\}/g, '').split('\n').map((l) => l.length));
   const P = cbPal(spec.color || '#2A74FB'), fs = Math.min(112, Math.floor(620 / (longest * 0.56))), d = spec.panelLogoUrl || spec.panelLogo;
-  // a topic article with no single product ("what is EMR") uses a Phosphor icon instead of a logo: black on the white tile
-  // top-left, white and large on the panel (never the site mark)
-  const ic = !d && /^ph(-fill|-bold|-duotone)? ph-[a-z0-9-]+$/.test(spec.panelIcon || '') ? spec.panelIcon : '';
-  const icTile = ic ? `<div class="ct" style="left:120px;top:90px;width:96px;height:96px;border-radius:23px"><i class="${ic}" style="font-size:60px;color:#0A0A0B"></i></div>` : '';
-  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${icTile}${d ? cbTile(d, 96, 120, 90, 0.24, spec.product || '').replace(/box-shadow:[^"]*/, 'box-shadow:none').replace('<img ', '<img data-white="#0A0A0B" ') : ''}
+  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${d ? cbTile(d, 96, 120, 90, 0.24, spec.product || '').replace(/box-shadow:[^"]*/, 'box-shadow:none').replace('<img ', '<img data-white="#0A0A0B" ') : ''}
 <div style="position:absolute;left:120px;bottom:110px;width:620px">
 ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;font-weight:500;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
-<div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div></div>
+<div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline)}</div></div>
 <div style="position:absolute;left:860px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden">
 <svg width="712" height="844" style="position:absolute;inset:0"><defs>${wcDefs('dk', P, 5, [0, 0, 1, 1])}</defs><rect width="712" height="844" fill="url(#dkg)" filter="url(#dkf)"/></svg>
-<div style="position:absolute;inset:0;display:grid;place-items:center">${d ? whiteMark(d, spec.product || '', 190) : ic ? `<i class="${ic}" style="font-size:300px;color:#fff"></i>` : ''}</div></div>${WM_CSS}${WHITE_MARK_JS}`;
+<div style="position:absolute;inset:0;display:grid;place-items:center">${d ? whiteMark(d, spec.product || '', 190) : ''}</div></div>${WM_CSS}${WHITE_MARK_JS}`;
 }
 
 
-// "versus/connect": centred near-black headline, a divider with a sparkle, two tiles that are each brand's own app icon (original colours, edge to edge) linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
-// with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
+// "versus/connect": a centred black headline, a divider with a sparkle, two tiles that are each brand's own app icon (original colours,
+// edge to edge) linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 function cbVersusConnect() {
   // the headline sits on ONE line (user: "2 lines looks visually off"), centred above the divider; only a pair too long to read
   // on one line (under 72px) breaks onto two, which then sits at the top and stays clear of the corner dot patches (900 wide)
@@ -515,7 +520,7 @@ function cbVersusConnect() {
   const dots = (x0) => { let d = ''; for (let r = 0; r < 6; r++) for (let c = 0; c < 8; c++) d += `<circle cx="${x0 + c * 22}" cy="${70 + r * 22}" r="2.6"/>`; return d; };
   const wave = (x1, x2, a, ph) => { const k = (x2 - x1) * 0.42; return `M${x1} ${cy} C ${x1 + k} ${cy - a * ph}, ${x2 - k} ${cy + a * ph}, ${x2} ${cy}`; };   // one long gentle S per strand; the pair crosses mid-way
   const le = lx + S / 2 + 10, re = rx - S / 2 - 10;
-  // the headline is all near-black; each tile is the brand's own app icon, edge to edge (falls back to a white tile only under --force)
+  // the headline is all black; each tile is the brand's own app icon, edge to edge (falls back to a white tile only under --force)
   const iconTile = (k, d, x, y) => CONNECT_ICON[k] ? `<div class="ct" style="left:${x}px;top:${y}px;width:${S}px;height:${S}px;border-radius:${Math.round(S * 0.24)}px;box-shadow:0 10px 26px rgba(10,40,120,.12)"><img src="${CONNECT_ICON[k]}" alt="${esc(d.label)}" style="width:100%;height:100%;object-fit:cover;display:block"></div>` : cbTile(d.logo, S, x, y, 0.24, d.label);
   const strands = [wave(le, 800 - cr, 34, 1), wave(le, 800 - cr, 34, -1), wave(800 + cr, re, 34, 1), wave(800 + cr, re, 34, -1)].map((d) => `<path d="${d}"/>`).join('');
   return `${CB_CSS}<style>.bt2{background:linear-gradient(90deg,#1E88F5,#0F6FE0 60%,#2E6BFF);-webkit-background-clip:text;background-clip:text;color:transparent}</style>
@@ -527,7 +532,7 @@ ${cbFramed(`<div style="position:absolute;inset:0;background:radial-gradient(60%
 <g fill="#fff" stroke="#9DB8F2" stroke-width="2.5"><circle cx="${le}" cy="${cy}" r="8"/><circle cx="${re}" cy="${cy}" r="8"/></g>
 <g stroke="#9DB8F2" stroke-width="2"><line x1="590" y1="372" x2="770" y2="372"/><line x1="830" y1="372" x2="1010" y2="372"/></g>
 <path d="M800 356 C802 368 804 370 816 372 C804 374 802 376 800 388 C798 376 796 374 784 372 C796 370 798 368 800 356Z" fill="#2F6BFF"/></svg>
-<div class="cbh" style="left:0;right:0;top:${hTop}px;text-align:center;font-size:${fs}px${single ? ';white-space:nowrap' : ''}">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div>
+<div class="cbh" style="left:0;right:0;top:${hTop}px;text-align:center;font-size:${fs}px${single ? ';white-space:nowrap' : ''}">${cbHl(head)}</div>
 ${iconTile('left', L, lx - S / 2, cy - S / 2)}${iconTile('right', R, rx - S / 2, cy - S / 2)}
 <div style="position:absolute;left:${800 - cr}px;top:${cy - cr}px;width:${cr * 2}px;height:${cr * 2}px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 12px 30px rgba(47,90,200,.16),0 0 0 1px rgba(47,90,200,.08)"><b class="bt2" style="font-size:46px;font-weight:500;letter-spacing:-.03em">VS</b></div>`)}`;
 }
@@ -549,7 +554,7 @@ function cbVersusSlash() {
   const split = (t) => slashSplit(t) || `{{${t}}}`;   // null only under --force (refused before rendering otherwise)
   const name = (t, col) => esc(split(t)).replace(/\{\{([\s\S]+?)\}\}/g, `<span style="color:${col}">$1</span>`).replace(/\n/g, '<br>');
   const longest = Math.max(...[L.label, R.label].flatMap((t) => split(t).replace(/\{\{|\}\}/g, '').split('\n')).map((l) => l.length));
-  const fs = Math.min(104, Math.floor(500 / (longest * 0.88)));   // Poppins 800 caps ~0.88em per letter; names stay inside x 210-1390   // Poppins 800 caps run ~0.9em per letter
+  const fs = Math.min(104, Math.floor(500 / (longest * 0.88)));   // Poppins 800 caps run ~0.88em per letter; names stay inside x 210-1390
   const lc = L.color || '#3D5BFF', rc = R.color || '#2BB673';
   return `<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,800;1,800&display=swap" rel="stylesheet">
 <div style="position:absolute;inset:0;background:#050507"></div>
@@ -594,7 +599,7 @@ function cbVersusDuo() {
   return `${CB_CSS}<style>.wm .lg{background:transparent!important;box-shadow:none!important;padding:0!important;width:auto!important;height:110px!important;overflow:visible}.wm .lg img{width:auto;max-width:200px;height:110px;object-fit:contain}.wm .lg.full{border-radius:0}</style>
 <div class="cbf" style="background:#0A0A0B"></div>
 ${spec.tag ? `<div style="position:absolute;left:96px;top:90px;display:inline-flex;align-items:center;gap:14px;padding:14px 28px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;font-weight:500"><i style="width:14px;height:14px;border-radius:50%;background:#F472B6;display:block"></i>${esc(spec.tag)}</div>` : ''}
-<div class="cbh" style="left:96px;top:${spec.tag ? 190 : 110}px;width:1180px;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(head).replace(/class="bt"/g, 'style="color:#fff"')}</div>
+<div class="cbh" style="left:96px;top:${spec.tag ? 190 : 110}px;width:1180px;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(head)}</div>
 ${panel(L, 0, 28)}${panel(R, 1, 816)}
 ${WHITE_MARK_JS}`;
 }
@@ -612,52 +617,68 @@ function logotype() {
   return `${grid}<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:${Math.round(t * 0.32)}px">${tile}<img src="${L.word}" alt="${esc(spec.product || '')}" style="height:${Math.round(hw)}px;width:auto;display:block"></div>`;
 }
 
-// ---- Gumloop-style layouts (user references, Oct 2026; brandline is retired, its code kept for a future illustration) ----
+// ---- Gumloop-style layouts (user references, Oct 2026) ----
 // Comparison: versus/type (big bold names, small "vs", the second name in the accent), versus/tiles (two tilted app tiles over a big
-// "A vs B" headline), versus/glass (wordmark vs wordmark on a frosted bar over a mesh gradient).
-// Content: swap (A, dashed loop arrow, B with a soft glow), badge (logo or title, a big figure in a tinted box, a muted + bold line),
-// brandline (logo top-left, big two-line headline on a tinted dot field with a crosshair rule).
-// "field": "light" (white in the grey frame), "black" or "blue" (deep dunes); black and blue count as vibrant.
+// "A vs B" headline), versus/glass (wordmark vs wordmark on a frosted bar over a mesh gradient); versus/frost and versus/bento are below.
+// Content: swap (A, dashed loop arrow, B with a soft glow), badge (logo or title, a big figure in a tinted box, a muted + bold line).
+// "field": "light" (white in the grey frame), "black" or "blue" (deep dunes), only where the user approved it (GL_FIELD_FIT);
+// black and blue count as vibrant.
 // Logos are the brand's full wordmark (icon + typography) where it has one; a brand without one is typeset in Inter.
 // Fields the user approved per layout (review, Oct 2026), default first. Anything else is refused ("FIELD FIT FAILED").
 // Deleted in the approved review (Oct 2026): type on blue, tiles on black, swap on black.
-// Rejected: badge on blue, glass on blue, versus/type on black (asked for once in batch 4, then "different layout"), versus/frost on the blue mesh,
-// versus/bento on black (light won). brandline, chat and rows are retired (not in layouts.mjs).
-const GL_FIELD_FIT = { 'versus/bento': ['light'], 'versus/chat': ['black'], 'versus/frost': ['light'], 'versus/rows': ['light', 'black'], 'versus/type': ['light'], 'versus/tiles': ['blue', 'light'], 'versus/glass': ['light', 'black'], swap: ['light'], badge: ['light'], brandline: ['light'] };
-const GL_FIT = GL_FIELD_FIT[spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode];
+// Rejected: badge on blue, glass on blue, versus/type on black (asked for once in batch 4, then "different layout"), versus/frost on the
+// blue mesh, versus/bento on black (light won).
+const GL_FIELD_FIT = { 'versus/bento': ['light'], 'versus/frost': ['light'], 'versus/type': ['light'], 'versus/tiles': ['blue', 'light'], 'versus/glass': ['light', 'black'], 'swap/default': ['light'], 'badge/default': ['light'] };
+const GL_FIT = GL_FIELD_FIT[LAYOUT];
 const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
-if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--force')) {
-  console.error(`FIELD FIT FAILED: ${spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode} doesn't use the "${spec.field}" field. Use ${GL_FIT.map((f) => `"${f}"`).join(' or ')}, or leave "field" out.`);
+// The Gumloop layouts and the Originals (receipt, definition, shortlist, lineup) paint their own canvas, and so do the Chatbase
+// headline layouts (white in a grey frame, or black): CB_LAYOUT. 'dark' counts as vibrant.
+const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'versus/frost', 'versus/bento', 'swap/default', 'badge/default', 'receipt/default', 'definition/default', 'shortlist/default', 'lineup/default'];
+const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', ...GL_LAYOUTS].includes(LAYOUT);
+// "field" picks a Gumloop layout's canvas, and prompt takes "soft" (its calmer glow); anywhere else it would do nothing, so it is refused
+if (spec.field != null && !(GL_FIT ? GL_FIT.includes(spec.field) : LAYOUT === 'prompt/default' && spec.field === 'soft') && !force) {
+  console.error(GL_FIT ? `FIELD FIT FAILED: ${LAYOUT} doesn't use the "${spec.field}" field. Use ${GL_FIT.map((f) => `"${f}"`).join(' or ')}, or leave "field" out.`
+    : LAYOUT === 'prompt/default' ? `FIELD FIT FAILED: prompt takes only "field": "soft" (or no "field").`
+    : `FIELD FIT FAILED: ${LAYOUT} has no "field" option (only ${Object.keys(GL_FIELD_FIT).join(', ')} have one, and prompt's "soft"). Remove "field".`);
   process.exit(2);
 }
-// patterns stay faint (user: "pattern is too much"): the dot grid is sparse and light; the "+" grid is approved as is
+// "bg" sets the card layouts' field; a layout that paints its own canvas would ignore it, so it is refused there. prompt paints its
+// own full field too (its calmer glow is "field": "soft"), so it counts as a canvas here: CANVAS
+const CANVAS = CB_LAYOUT || LAYOUT === 'prompt/default';
+if (spec.bg != null && CANVAS && !force) {
+  console.error(`BACKGROUND CHECK FAILED: ${LAYOUT} paints its own canvas, so "bg" does nothing here. Remove "bg"${GL_FIT && GL_FIT.length > 1 ? ` (its canvas is picked with "field": ${GL_FIT.map((f) => `"${f}"`).join(' or ')})` : LAYOUT === 'prompt/default' ? ' (its calmer field is picked with "field": "soft")' : ''}.`);
+  process.exit(2);
+}
+// patterns stay faint (user: "pattern is too much"): the dot grid is sparse and light; the "+" grid is approved as is.
+// Palettes for the fields glCanvas paints: light, and blue (versus/tiles). versus/glass paints its own mesh, black included.
 const glPal = () => ({
   light: { bg: '#FFFFFF', ink: '#0A0A0B', mute: '#8A8F98', mark: 'rgba(20,26,38,.20)', dot: 'rgba(20,26,38,.10)', acc: 'linear-gradient(180deg,#3B86F0,#0A5FD8)', glow: 'rgba(47,123,255,.20)' },
-  black: { bg: '#0A0A0B', ink: '#FFFFFF', mute: '#8A8F98', mark: 'rgba(255,255,255,.38)', dot: 'rgba(255,255,255,.08)', acc: 'linear-gradient(180deg,#7DBBFF,#2F7BFF)', glow: 'rgba(47,123,255,.42)' },
   blue: { bg: `${BLUE_GLOW} center/cover`, ink: '#FFFFFF', mute: 'rgba(255,255,255,.72)', mark: 'rgba(255,255,255,.30)', dot: 'rgba(255,255,255,.13)', acc: 'linear-gradient(180deg,#FFFFFF,#BFE0FF)', glow: 'rgba(255,255,255,.26)' },
 })[GL_FIELD];
 const glPlus = (c, step = 180, ox = 70, oy = 45, mask = '') => { let p = ''; for (let y = oy; y < 900; y += step) for (let x = ox; x < 1600; x += step) p += `M${x - 8} ${y}h16M${x} ${y - 8}v16`; return `<svg width="1600" height="900" style="position:absolute;inset:0;${mask}"><path d="${p}" stroke="${c}" stroke-width="2"/></svg>`; };
-// on dark fields the grid is bright and crisp, but only around the edges, clear behind the content
-// (user: "too dark, light it, shouldn't be in the whole image"; then "literally not visible" when it was faded instead of brightened)
+// an edge-only pattern: visible around the edges, clear behind the content (shortlist's "+" grid, lineup's dots; first learned on the
+// dark fields: "too dark, light it, shouldn't be in the whole image", then "literally not visible" when it was faded instead of brightened)
 const GL_EDGE_MASK = '-webkit-mask-image:radial-gradient(70% 75% at 50% 50%,transparent 35%,#000 100%);mask-image:radial-gradient(70% 75% at 50% 50%,transparent 35%,#000 100%)';
 const glDots = (c, step = 26, r = 1.7) => `<div class="cbf" style="background-image:radial-gradient(circle,${c} ${r}px,transparent ${r + 0.6}px);background-size:${step}px ${step}px;background-position:${step / 2}px ${step / 2}px"></div>`;
 let glN = 0;
 const glBg = (css) => { const k = 'glb' + (++glN); return `<style>.${k}{${css}}</style><div class="cbf ${k}"></div>`; };
 const glCanvas = (inner, pattern = 'plus') => {
-  const P = glPal(), pat = pattern === 'plus' ? glPlus(P.mark, 180, 70, 45, GL_FIELD === 'light' ? '' : GL_EDGE_MASK) : pattern === 'dots' ? glDots(P.dot, 36, 1.4) : '';
-  if (GL_FIELD === 'light') return `${CB_CSS}${cbFramed(`${pat}${inner}`)}${WHITE_MARK_JS}`;
-  return `${CB_CSS}${glBg(`background:${P.bg}`)}${GL_FIELD === 'blue' ? glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85`) : ''}${pat}${inner}${WHITE_MARK_JS}`;
+  const P = glPal(), pat = pattern === 'plus' ? glPlus(P.mark) : pattern === 'dots' ? glDots(P.dot, 36, 1.4) : '';
+  if (GL_FIELD === 'light') return `${CB_CSS}${cbFramed(`${pat}${inner}`)}`;
+  // the vibrant blue field (versus/tiles), with heavy grain
+  return `${CB_CSS}${glBg(`background:${P.bg}`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85`)}${pat}${inner}`;
 };
-// a wordmark sized by visual area so two marks of different shapes balance; data-white recolours it (white on dark fields)
 // the type size a label gets on its own (glMark); swap passes the smaller of its two labels so both sides always match
 const glTextFs = (label, maxW, maxH) => { const t = glBreak(label); return Math.min(t.includes('\n') ? 112 : maxH * 0.86, Math.floor(maxW / (Math.max(...t.split('\n').map((l) => l.length)) * 0.56))); };
-const glMark = (side, area, maxW, maxH, recolour = '', fsShared = 0) => {
-  const W = WORDMARK[side.logo || ''], P = glPal();
-  if (!W) { const t = glBreak(side.label), fs = fsShared || glTextFs(side.label, maxW, maxH); return `<span style="font-size:${Math.round(fs)}px;font-weight:700;letter-spacing:-.045em;line-height:1.02;text-align:center;white-space:nowrap;color:${recolour && recolour !== '1' ? recolour : recolour ? '#fff' : P.ink}">${esc(t).replace(/\n/g, '<br>')}</span>`; }
+// a wordmark sized by visual area so two marks of different shapes balance, in its original colours; a brand without one is typeset
+// in Inter, in the field's ink (or "ink": versus/glass always sets it black on its white bar)
+const glMark = (side, area, maxW, maxH, fsShared = 0, ink = '') => {
+  const W = WORDMARK[side.logo || ''];
+  if (!W) { const t = glBreak(side.label), fs = fsShared || glTextFs(side.label, maxW, maxH); return `<span style="font-size:${Math.round(fs)}px;font-weight:700;letter-spacing:-.045em;line-height:1.02;text-align:center;white-space:nowrap;color:${ink || glPal().ink}">${esc(t).replace(/\n/g, '<br>')}</span>`; }
   let h = Math.sqrt(area / W.aspect), w = W.aspect * h;
   if (w > maxW) { w = maxW; h = w / W.aspect; }
   if (h > maxH) { h = maxH; w = h * W.aspect; }
-  return `<img src="${W.uri}" alt="" ${recolour ? `data-white="${recolour}"` : ''} style="width:${Math.round(w)}px;height:${Math.round(h)}px;display:block;flex:none">`;
+  return `<img src="${W.uri}" alt="" style="width:${Math.round(w)}px;height:${Math.round(h)}px;display:block;flex:none">`;
 };
 const glBreak = (t) => { t = String(t); if (t.length <= 11 || !/\s/.test(t)) return t; const sp = [...t.matchAll(/\s/g)].map((m) => m.index); const i = sp.reduce((b, k) => Math.abs(k - t.length / 2) < Math.abs(b - t.length / 2) ? k : b); return t.slice(0, i) + '\n' + t.slice(i + 1); };
 const glFs = (t, max, width, k = 0.56) => Math.min(max, Math.floor(width / (Math.max(...String(t).split('\n').map((l) => l.length)) * k)));
@@ -668,13 +689,11 @@ function glType() {
   let fs = Math.min(140, Math.floor(1020 / ((ll + rl) * 0.56)));
   const stacked = fs < 88;
   if (stacked) fs = Math.min(128, Math.floor(1080 / (Math.max(ll, rl) * 0.56)));
-  const acc = R.color && GL_FIELD !== 'blue' ? `color:${R.color}` : `background:${P.acc};-webkit-background-clip:text;background-clip:text;color:transparent`;
+  const acc = R.color ? `color:${R.color}` : `background:${P.acc};-webkit-background-clip:text;background-clip:text;color:transparent`;
   const name = (t, st) => `<span style="font-size:${fs}px;font-weight:700;letter-spacing:-.045em;line-height:1.08;white-space:nowrap;${st}">${esc(t)}</span>`;
   const vs = `<span style="font-size:${Math.round(fs * 0.48)}px;font-weight:400;letter-spacing:-.01em;color:${P.ink};opacity:.85">${esc(sep)}</span>`;
   const flow = stacked ? `flex-direction:column;align-items:center;gap:${Math.round(fs * 0.1)}px` : `align-items:center;gap:${Math.round(fs * 0.5)}px`;
-  // optional soft blue glow behind the names on black ("glow": true)
-  const glowBg = spec.glow && GL_FIELD === 'black' ? '<div style="position:absolute;left:50%;top:' + (stacked ? 60 : 50) + '%;width:1180px;height:560px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(47,123,255,.34),transparent);filter:blur(24px)"></div>' : '';
-  return glCanvas(`${glowBg}<div style="position:absolute;left:210px;right:210px;top:0;bottom:0;display:flex;justify-content:center;${stacked ? 'flex-direction:column;align-items:center' : 'align-items:center'}"><div style="display:flex;${flow}">${name(L.label, `color:${P.ink}`)}${vs}${name(R.label, acc)}</div></div>`, 'plus');
+  return glCanvas(`<div style="position:absolute;left:210px;right:210px;top:0;bottom:0;display:flex;justify-content:center;${stacked ? 'flex-direction:column;align-items:center' : 'align-items:center'}"><div style="display:flex;${flow}">${name(L.label, `color:${P.ink}`)}${vs}${name(R.label, acc)}</div></div>`, 'plus');
 }
 
 function glTiles() {
@@ -701,21 +720,20 @@ function glGlass() {
   const hL = t / wm(L).text, hR = t / wm(R).text, H = Math.max(hL, hR);
   const areaL = wm(L).aspect * hL * hL, areaR = wm(R).aspect * hR * hR;
   const mesh = {
-    blue: `<rect width='1600' height='900' fill='#2C68E6'/><g filter='url(#b)'><circle cx='180' cy='160' r='420' fill='#0A1E70'/><circle cx='1450' cy='120' r='380' fill='#7CC8F8'/><circle cx='900' cy='820' r='420' fill='#1638B0'/><circle cx='1300' cy='760' r='300' fill='#A9DCFB'/><circle cx='620' cy='420' r='260' fill='#3D80F2'/></g>`,
     black: `<rect width='1600' height='900' fill='#0A0A0B'/><g filter='url(#b)'><circle cx='240' cy='240' r='360' fill='#1D4ED8' fill-opacity='.75'/><circle cx='1380' cy='700' r='380' fill='#2F7BFF' fill-opacity='.55'/><circle cx='1180' cy='120' r='220' fill='#7CC8F8' fill-opacity='.35'/></g>`,
     light: `<rect width='1600' height='900' fill='#EEF5FF'/><g filter='url(#b)'><circle cx='160' cy='200' r='420' fill='#9CC6FF'/><circle cx='1480' cy='760' r='420' fill='#BFE6FF'/><circle cx='1300' cy='140' r='300' fill='#E4E8FF'/><circle cx='420' cy='820' r='300' fill='#DCEBFF'/></g>`,
   }[GL_FIELD];
   return `${CB_CSS}${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:${GL_FIELD === 'light' ? 0.35 : 0.7}`)}
-<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:60px;padding:72px 84px;max-width:1180px;border-radius:48px;background:rgba(255,255,255,${{ light: 0.62, blue: 0.8, black: 0.93 }[GL_FIELD]});border:2px solid rgba(255,255,255,.75);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);white-space:nowrap">
-${glMark(L, areaL, 790, hL + 0.5)}<span style="font-size:92px;font-weight:300;color:#0A0A0B;line-height:1">${esc(spec.separator || 'vs')}</span>${glMark(R, areaR, 790, hR + 0.5)}</div>${WHITE_MARK_JS}`;   // the bar stays inside x 210-1390 so the 7:5 card keeps its rounded ends
+<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:60px;padding:72px 84px;max-width:1180px;border-radius:48px;background:rgba(255,255,255,${{ light: 0.62, black: 0.93 }[GL_FIELD]});border:2px solid rgba(255,255,255,.75);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);white-space:nowrap">
+${glMark(L, areaL, 790, hL + 0.5, 0, '#0A0A0B')}<span style="font-size:92px;font-weight:300;color:#0A0A0B;line-height:1">${esc(spec.separator || 'vs')}</span>${glMark(R, areaR, 790, hR + 0.5, 0, '#0A0A0B')}</div>`;   // the bar stays inside x 210-1390 so the 7:5 card keeps its rounded ends
 }
 
 function glSwap() {
-  const L = spec.left, R = spec.right, P = glPal(), dark = GL_FIELD !== 'light', rc = dark ? '1' : '';
-  const glow = R.color ? `rgba(${[1, 3, 5].map((i) => parseInt(R.color.slice(i, i + 2), 16)).join(',')},${dark ? 0.45 : 0.22})` : P.glow;
+  const L = spec.left, R = spec.right, P = glPal();
+  const glow = R.color ? `rgba(${[1, 3, 5].map((i) => parseInt(R.color.slice(i, i + 2), 16)).join(',')},0.22)` : P.glow;
   // both text labels share one size (user taste: parallel things get the same treatment); 520 wide keeps them inside x 210-1390
   const fsShared = !WORDMARK[L.logo || ''] && !WORDMARK[R.logo || ''] ? Math.min(glTextFs(L.label, 520, 150), glTextFs(R.label, 520, 150)) : 0;
-  const item = (d, cx) => `<div style="position:absolute;left:${cx - 300}px;width:600px;top:470px;height:240px;display:grid;place-items:center">${glMark(d, 48000, 520, 150, rc, fsShared)}</div>`;
+  const item = (d, cx) => `<div style="position:absolute;left:${cx - 300}px;width:600px;top:470px;height:240px;display:grid;place-items:center">${glMark(d, 48000, 520, 150, fsShared)}</div>`;
   const arrow = `<svg width="1600" height="900" style="position:absolute;inset:0;overflow:visible"><defs><marker id="ah" viewBox="0 0 12 12" refX="6" refY="6" markerWidth="5.4" markerHeight="5.4" orient="auto"><path d="M1 1 L11 6 L1 11 C3.5 7.5 3.5 4.5 1 1Z" fill="${P.ink}"/></marker></defs>
 <path d="M596 452 C 622 384, 690 352, 742 364 C 800 378, 806 452, 764 458 C 718 465, 714 388, 776 340 C 850 284, 972 296, 1030 418" fill="none" stroke="${P.ink}" stroke-width="9" stroke-linecap="round" stroke-dasharray="20 17" marker-end="url(#ah)"/></svg>`;
   return glCanvas(`<div style="position:absolute;left:${1130 - 380}px;top:${575 - 330}px;width:760px;height:660px;border-radius:50%;background:radial-gradient(closest-side,${glow},transparent);filter:blur(16px)"></div>
@@ -723,53 +741,20 @@ ${arrow}${item(L, 470)}${item(R, 1130)}`, 'plus');
 }
 
 function glBadge() {
-  const P = glPal(), c = spec.color || '#2F7BFF', dark = GL_FIELD !== 'light';
-  const box = dark ? { bg: GL_FIELD === 'blue' ? 'rgba(255,255,255,.14)' : hexMix(c, '#0A0A0B', 0.82), bd: GL_FIELD === 'blue' ? 'rgba(255,255,255,.55)' : hexMix(c, '#0A0A0B', 0.35), tx: GL_FIELD === 'blue' ? '#FFFFFF' : hexMix(c, '#ffffff', 0.35) }
-    : { bg: hexMix(c, '#ffffff', 0.9), bd: hexMix(c, '#ffffff', 0.5), tx: hexMix(c, '#ffffff', 0.28) };
-  const top = spec.logo ? glMark({ logo: spec.logo, label: spec.title || '' }, 44000, 560, 130, dark ? '1' : '') : `<div style="font-size:${glFs(spec.title, 92, 1100, 0.55)}px;font-weight:700;letter-spacing:-.04em;line-height:1.05;color:${P.ink};text-align:center">${esc(spec.title)}</div>`;
+  const P = glPal(), c = spec.color || '#2F7BFF';
+  const box = { bg: hexMix(c, '#ffffff', 0.9), bd: hexMix(c, '#ffffff', 0.5), tx: hexMix(c, '#ffffff', 0.28) };   // the figure's box, tinted from "color"
+  const top = spec.logo ? glMark({ logo: spec.logo, label: spec.title || '' }, 44000, 560, 130) : `<div style="font-size:${glFs(spec.title, 92, 1100, 0.55)}px;font-weight:700;letter-spacing:-.04em;line-height:1.05;color:${P.ink};text-align:center">${esc(spec.title)}</div>`;
   const vfs = glFs(spec.value, 168, 860, 0.6);
   const N = spec.note || {};
   // the note never runs wider than the value box (it would compete with the figure): its type shrinks to fit
   const valueW = String(spec.value).length * 0.6 * vfs + 128, noteChars = String(N.muted || '').length + String(N.strong || '').length + 1;
   const nfs = Math.max(40, Math.min(72, Math.floor((valueW * 0.92) / (noteChars * 0.55))));
-  const note = N.muted || N.strong || N.logo ? `<div style="display:flex;align-items:center;gap:26px;font-size:${N.logo ? 72 : nfs}px;line-height:1"><span style="color:${P.mute};font-weight:400;letter-spacing:-.02em">${esc(N.muted || '')}</span>${N.logo ? glMark({ logo: N.logo, label: N.strong || '' }, 30000, 460, 100, dark ? '1' : '') : N.strong ? `<b style="font-weight:700;letter-spacing:-.045em;color:${P.ink}">${esc(N.strong)}</b>` : ''}</div>` : '';   // no empty <b>: it would take the gap and push a muted-only note off centre
+  const note = N.muted || N.strong || N.logo ? `<div style="display:flex;align-items:center;gap:26px;font-size:${N.logo ? 72 : nfs}px;line-height:1"><span style="color:${P.mute};font-weight:400;letter-spacing:-.02em">${esc(N.muted || '')}</span>${N.logo ? glMark({ logo: N.logo, label: N.strong || '' }, 30000, 460, 100) : N.strong ? `<b style="font-weight:700;letter-spacing:-.045em;color:${P.ink}">${esc(N.strong)}</b>` : ''}</div>` : '';   // no empty <b>: it would take the gap and push a muted-only note off centre
   return glCanvas(`<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:68px">
 ${top}<div style="padding:22px 64px 30px;border-radius:44px;background:${box.bg};border:3px solid ${box.bd};font-size:${vfs}px;font-weight:600;letter-spacing:-.02em;line-height:1.1;color:${box.tx};white-space:nowrap">${esc(spec.value)}</div>${note}</div>`, 'dots');
 }
 
-// brandline (user, round 3): the light blue "glow" field with a near-black headline. Never the site mark or site name; the product's
-// own wordmark (original colours) top-left only when the article is about one product. Rejected: the tint and deep navy looks,
-// blue headline ink, the Med Software Hub mark. "position": "bottom" (reference: headline low, under the logo) or "center".
-function glBrandline() {
-  const ink = '#0A0A0B', rule = 'rgba(10,58,140,.20)';
-  const fs = glFs(spec.headline, 152, 1240, 0.55), lines = String(spec.headline).split('\n').length;
-  const mark = spec.logo ? `<div style="position:absolute;left:120px;top:96px;height:120px;display:flex;align-items:center">${glMark({ logo: spec.logo, label: spec.product || '' }, 44000, 600, 116)}</div>` : '';
-  const place = `top:${Math.round(450 - (fs * 1.04 * lines) / 2) - 20}px`;   // centred vertically (user, round 4)
-  return `${CB_CSS}${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}${glDots('rgba(10,58,140,.08)', 18, 1.1)}
-<svg width="1600" height="900" style="position:absolute;inset:0"><line x1="1504" y1="0" x2="1504" y2="900" stroke="${rule}" stroke-width="2"/><line x1="0" y1="796" x2="1600" y2="796" stroke="${rule}" stroke-width="2"/><circle cx="1504" cy="796" r="16" fill="none" stroke="${rule}" stroke-width="2"/><circle cx="1504" cy="796" r="7" fill="#2F7BFF"/></svg>
-${mark}<div class="cbh" style="left:120px;right:180px;${place};font-size:${fs}px;font-weight:600;letter-spacing:-.035em;line-height:1.04;color:${ink}">${esc(spec.headline).replace(/\n/g, '<br>')}</div>${WHITE_MARK_JS}`;
-}
-
 // ---- Originals (Oct 2026, built on the user's approved taste: Inter, the site blue, brand colours, quiet patterns) ----
-// versus/split: the canvas split down the middle into the two brands' own colours, each half carrying its white wordmark (or
-// white bold name), a white "vs" seal on the seam. Bold; counts as vibrant.
-function glSplit() {
-  const L = spec.left, R = spec.right, lc = L.color || '#0E2A5C', rc = R.color || '#0A5FD8';
-  const half = (s, c, x, cx) => `<div style="position:absolute;left:${x}px;top:0;width:800px;height:900px;overflow:hidden">${glBg(`background:linear-gradient(160deg,${hexMix(c, '#ffffff', 0.1)},${c} 55%,${hexMix(c, '#000000', 0.22)})`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.55`)}
-<div style="position:absolute;left:${cx - x - 210}px;width:420px;top:330px;height:240px;display:grid;place-items:center">${glMark(s, 50000, 400, 150, '1')}</div></div>`;
-  return `${CB_CSS}${half(L, lc, 0, 480)}${half(R, rc, 800, 1120)}
-<div style="position:absolute;left:800px;top:0;width:2px;height:900px;margin-left:-1px;background:rgba(255,255,255,.35)"></div>
-<div style="position:absolute;left:736px;top:386px;width:128px;height:128px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 0 0 10px rgba(255,255,255,.18)"><b style="font-size:48px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B">${esc(spec.separator || 'vs')}</b></div>${WHITE_MARK_JS}`;
-}
-// versus/duet: two soft brand-tinted halves, each with a white card holding the brand's full-colour wordmark; a "vs" pill on the
-// seam. Light and calm.
-function glDuet() {
-  const L = spec.left, R = spec.right, lt = hexMix(L.color || '#0A5FD8', '#ffffff', 0.86), rt = hexMix(R.color || '#0E2A5C', '#ffffff', 0.86);
-  const card = (s, cx) => `<div style="position:absolute;left:${cx - 255}px;top:290px;width:510px;height:320px;border-radius:40px;background:#fff;display:grid;place-items:center;box-shadow:0 24px 50px rgba(20,40,90,.10),0 0 0 1px rgba(20,26,38,.05)">${glMark(s, 44000, 400, 140)}</div>`;
-  return `${CB_CSS}${glBg(`background:linear-gradient(90deg,${lt} 0 50%,${rt} 50% 100%)`)}${glDots('rgba(20,26,38,.07)', 30, 1.3)}
-${card(L, 480)}${card(R, 1120)}
-<div style="position:absolute;left:740px;top:410px;width:120px;height:80px;border-radius:40px;background:#0A0A0B;display:grid;place-items:center"><b style="font-size:40px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(spec.separator || 'vs')}</b></div>${WHITE_MARK_JS}`;
-}
 // receipt: a big headline on the left and a tilted white receipt on the right (zigzag tear at the bottom) listing the article's
 // figures, with a bold "total" line. For cost and pricing articles.
 function receipt() {
@@ -801,41 +786,6 @@ ${spec.label ? `<div style="height:${R}px;line-height:${R}px;font-family:${MONO}
 <div style="height:${R}px;display:flex;align-items:center"><i style="display:block;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)"></i></div>
 <div style="display:flex;gap:26px;align-items:baseline;max-width:1080px;line-height:${R}px"><b style="font-family:${MONO};font-size:34px;font-weight:500;color:#0A5FD8">1.</b><span style="font-size:52px;font-weight:400;letter-spacing:-.015em;color:#3D4A5C">${esc(spec.definition)}</span></div></div>`)}`;
 }
-// versus/rows ("head-to-head"): two full-width rows stacked like a scoreboard. Each row: a brand-colour accent bar, the brand's logo
-// on a brand-tinted tile, its name in bold, and its key fact from the article in a brand-tinted pill; a "vs" disc between the rows.
-// Fits long names (e.g. CompuGroup Medical) and carries one fact per side. Fields: light (white in the grey frame) or black.
-function glRows() {
-  const dark = GL_FIELD === 'black', P = glPal(), W = 1180, H = 230, gap = 40, top = Math.round(450 - (2 * H + gap) / 2);
-  const longest = Math.max(String(spec.left.label).length, String(spec.right.label).length), nfs = Math.min(72, Math.floor(880 / (longest * 0.56)));   // the name has the row to itself (the fact sits under it)
-  const row = (s, y) => {
-    const c = s.color || '#0A5FD8';
-    return `<div style="position:absolute;left:210px;top:${y}px;width:${W}px;height:${H}px;border-radius:36px;overflow:hidden;background:${dark ? '#17171B' : '#fff'};box-shadow:${dark ? 'none' : '0 20px 44px rgba(20,40,90,.08),0 0 0 1px rgba(20,26,38,.06)'}">
-<i style="position:absolute;left:0;top:0;bottom:0;width:14px;background:${c}"></i>
-<div class="ct" style="left:54px;top:${(H - 150) / 2}px;width:150px;height:150px;border-radius:34px;background:${dark ? '#fff' : hexMix(c, '#ffffff', 0.86)}">${logo(s.logo, 104, s.label)}</div>
-<div style="position:absolute;left:240px;right:44px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:16px"><b style="font-size:${nfs}px;font-weight:700;letter-spacing:-.04em;line-height:1;color:${P.ink};white-space:nowrap">${esc(s.label)}</b>
-${s.fact ? `<span style="padding:10px 24px;border-radius:999px;font-size:30px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;background:${dark ? hexMix(c, '#000000', 0.45) : hexMix(c, '#ffffff', 0.86)};color:${dark ? '#fff' : hexMix(c, '#000000', 0.3)}">${esc(s.fact)}</span>` : ''}</div></div>`;
-  };
-  return glCanvas(`${row(spec.left, top)}${row(spec.right, top + H + gap)}
-<div style="position:absolute;left:752px;top:${top + H + gap / 2 - 48}px;width:96px;height:96px;border-radius:50%;background:${dark ? '#fff' : '#0A0A0B'};display:grid;place-items:center;box-shadow:0 0 0 8px ${dark ? '#0A0A0B' : '#fff'}"><b style="font-size:38px;font-weight:600;letter-spacing:-.02em;color:${dark ? '#0A0A0B' : '#fff'}">${esc(spec.separator || 'vs')}</b></div>`, 'none');
-}
-
-// folder ("best X" lists, Oct 2026): an app folder of the products' logos on white tiles (logos only), frosted, on the approved glow
-// field (kept from the retired brandline for a real illustration); the headline on the left in black. 4-9 products.
-function folder() {
-  const items = (spec.cards || []).filter((c) => c.logo).slice(0, 9), n = items.length;
-  const cols = n <= 4 ? 2 : 3, rows = Math.ceil(n / cols), T = 136, G = 34, PAD = 54;
-  const FW = cols * T + (cols - 1) * G + 2 * PAD, FH = rows * T + (rows - 1) * G + 2 * PAD;
-  const fs = glFs(spec.headline, 96, 560, 0.55), lab = spec.label ? 34 + 30 : 0;
-  const fx = 1390 - FW, fy = Math.round(450 - (FH + lab) / 2);
-  const tiles = items.map((c) => `<div class="fdt">${logo(c.logo, 92, c.name)}</div>`).join('');
-  return `${CB_CSS}<style>.fdt{width:${T}px;height:${T}px;border-radius:34px;background:#fff;display:grid;place-items:center;box-shadow:0 12px 26px rgba(20,50,120,.10),0 0 0 1px rgba(20,26,38,.04)}
-.fdt .lg{box-shadow:none;background:transparent;padding:0}.fdt .lg:not(.full){border-radius:0;overflow:visible}.fdt:has(.lg.full){background:transparent}.fdt .lg.full{width:${T}px!important;height:${T}px!important;border-radius:34px}</style>
-${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}
-<div class="cbf" style="background-image:radial-gradient(circle,rgba(10,58,140,.10) 1.2px,transparent 1.8px);background-size:22px 22px;${GL_EDGE_MASK}"></div>
-<div class="cbh" style="left:210px;width:560px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.06;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
-<div style="position:absolute;left:${fx}px;top:${fy}px;width:${FW}px;height:${FH}px;box-sizing:border-box;padding:${PAD}px;border-radius:${Math.round(T * 0.7)}px;background:rgba(255,255,255,.46);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 30px 70px rgba(30,80,170,.16);display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:${G}px">${tiles}</div>
-${spec.label ? `<div style="position:absolute;left:${fx}px;width:${FW}px;top:${fy + FH + 30}px;text-align:center;font-size:34px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.label)}</div>` : ''}${WHITE_MARK_JS}`;
-}
 // shortlist ("best X" lists, Oct 2026): a tilted white notepad on the LEFT (mirrored so it never echoes receipt), the headline on the right; punched top band, a faint
 // margin rule) listing the products on ruled lines with mono numbers; an optional Phosphor "icon" on a blue sticker tile at the pad's
 // top-right corner is the one blue anchor. The "+" grid only frames the edges (taste 4).
@@ -853,110 +803,65 @@ ${items.map(row).join('')}</div>${spec.icon ? `<div style="position:absolute;rig
 }
 
 // lineup ("best X" lists, user reference Oct 2026): one centred row of square logo tiles, evenly spaced (gap ~38% of a tile, logo ~70%
-// of its tile, measured from the reference), a big faint watermark icon behind the row, on the approved glow field. No headline (the
-// reference has none). "glass": "bar" (white tiles on one frosted bar, default) or "tiles" (each tile frosted glass). 3-6 products.
+// of its tile, measured from the reference), white tiles on one frosted bar, on the approved glow field. No headline (the reference has
+// none). 3-6 products. (Each tile frosted, "glass": "tiles", and a watermark icon behind the row were rejected by the user.)
 function lineup() {
-  const items = (spec.cards || []).filter((c) => c.logo).slice(0, 6), n = items.length, bar = spec.glass !== 'tiles';
-  const budget = bar ? 1096 : 1176, T = Math.min(180, Math.floor(budget / (n + (n - 1) * 0.38))), G = Math.round(T * 0.38), PAD = Math.round(T * 0.26);
-  const tile = (c) => `<div style="width:${T}px;height:${T}px;border-radius:${Math.round(T * 0.09)}px;display:grid;place-items:center;flex:none;${bar ? 'background:#fff;box-shadow:0 10px 24px rgba(20,50,120,.10)' : 'background:rgba(255,255,255,.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.95),0 18px 40px rgba(30,80,170,.14)'}">${logo(c.logo, Math.round(T * 0.7), c.name)}</div>`;
+  const items = (spec.cards || []).filter((c) => c.logo).slice(0, 6), n = items.length;
+  const T = Math.min(180, Math.floor(1096 / (n + (n - 1) * 0.38))), G = Math.round(T * 0.38), PAD = Math.round(T * 0.26);
+  const tile = (c) => `<div style="width:${T}px;height:${T}px;border-radius:${Math.round(T * 0.09)}px;display:grid;place-items:center;flex:none;background:#fff;box-shadow:0 10px 24px rgba(20,50,120,.10)">${logo(c.logo, Math.round(T * 0.7), c.name)}</div>`;
   const row = items.map(tile).join('');
-  const mark = spec.watermark ? `<i class="${esc(spec.watermark)}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-8deg);font-size:640px;line-height:1;color:rgba(10,58,140,.07)"></i>` : '';
   return `${CB_CSS}<style>.lu .lg{box-shadow:none;background:transparent;padding:0}.lu .lg:not(.full){border-radius:0;overflow:visible}</style>
 ${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}
-<div class="cbf" style="background-image:radial-gradient(circle,rgba(10,58,140,.10) 1.2px,transparent 1.8px);background-size:22px 22px;${GL_EDGE_MASK}"></div>${mark}
-<div class="lu" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:${G}px;${bar ? `padding:${PAD}px;border-radius:${Math.round(T * 0.3)}px;background:rgba(255,255,255,.42);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 30px 70px rgba(30,80,170,.16)` : ''}">${row}</div>${WHITE_MARK_JS}`;
+<div class="cbf" style="background-image:radial-gradient(circle,rgba(10,58,140,.10) 1.2px,transparent 1.8px);background-size:22px 22px;${GL_EDGE_MASK}"></div>
+<div class="lu" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:${G}px;padding:${PAD}px;border-radius:${Math.round(T * 0.3)}px;background:rgba(255,255,255,.42);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 30px 70px rgba(30,80,170,.16)">${row}</div>`;
 }
-// versus/scale (Oct 2026): a level balance scale holding each brand's logo tile on its pan: a fair "which fits" comparison. The black
-// headline sits on top; the pivot is the one blue anchor. Light (white in the grey frame, "+" grid at the edges) or the glow field.
-function glScale() {
-  const L = spec.left, R = spec.right, glow = spec.field === 'glow', ink = '#141A26';
-  const head = spec.headline || `${L.label} vs ${R.label}`, fs = glFs(head, 84, 1180, 0.55);
-  const BY = 390, LX = 510, RX = 1090, PY = 700, T = 196;
-  const pan = (x) => `<path d="M${x - 150} ${PY} Q ${x} ${PY + 50} ${x + 150} ${PY}" fill="none" stroke="${ink}" stroke-width="8" stroke-linecap="round"/><path d="M${x} ${BY} L ${x - 140} ${PY - 2} M${x} ${BY} L ${x + 140} ${PY - 2}" stroke="${ink}" stroke-width="3" opacity=".55"/>`;
-  const svg = `<svg width="1600" height="900" style="position:absolute;inset:0;overflow:visible">
-<rect x="${LX - 40}" y="${BY - 7}" width="${RX - LX + 80}" height="14" rx="7" fill="${ink}"/>
-<rect x="793" y="${BY}" width="14" height="${780 - BY}" rx="7" fill="${ink}"/><rect x="680" y="772" width="240" height="20" rx="10" fill="${ink}"/>
-${pan(LX)}${pan(RX)}<circle cx="${LX}" cy="${BY}" r="11" fill="${ink}"/><circle cx="${RX}" cy="${BY}" r="11" fill="${ink}"/>
-<defs><linearGradient id="pv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B86F0"/><stop offset="1" stop-color="#0A5FD8"/></linearGradient></defs>
-<circle cx="800" cy="${BY}" r="30" fill="url(#pv)"/><circle cx="800" cy="${BY}" r="10" fill="#fff"/></svg>`;
-  const tile = (s, x) => `<div class="ct" style="left:${x - T / 2}px;top:${PY - T - 8}px;width:${T}px;height:${T}px;border-radius:44px;background:#fff;box-shadow:0 16px 34px rgba(20,40,90,.12),0 0 0 1px rgba(20,26,38,.05)">${logo(s.logo, Math.round(T * 0.7), s.label)}</div>`;
-  const headline = `<div class="cbh" style="left:0;right:0;top:${Math.round(210 - fs * 1.1)}px;text-align:center;font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.08;color:#0A0A0B">${esc(head).replace(/\n/g, '<br>')}</div>`;
-  const inner = `<style>.sc .lg{box-shadow:none;background:transparent;padding:0}</style><div class="sc">${headline}${svg}${tile(L, LX)}${tile(R, RX)}</div>`;
-  if (glow) return `${CB_CSS}${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}<div class="cbf" style="background-image:radial-gradient(circle,rgba(10,58,140,.10) 1.2px,transparent 1.8px);background-size:22px 22px;${GL_EDGE_MASK}"></div>${inner}${WHITE_MARK_JS}`;
-  return glCanvas(`${glPlus('rgba(20,26,38,.20)', 180, 70, 45, GL_EDGE_MASK)}${inner}`, 'none');
-}
-
 // versus/frost (Oct 2026): the user's liked pieces together: two big frosted-glass logo tiles ("I like how you have used logos with
 // these glass bgs, we can utilize them with any other bg") on the approved mesh gradient that was waiting for an illustration, a glass
 // "vs" disc between them and each brand's name under its tile. No headline (like versus/glass). Light mesh only.
 // Marks fill 48% of the tile (was 60%: "the icons are too big and this is why visual balance off", approved review).
 function glFrost() {
-  const L = spec.left, R = spec.right, blue = GL_FIELD === 'blue', T = 340;
-  const mesh = blue
-    ? `<rect width='1600' height='900' fill='#2C68E6'/><g filter='url(#b)'><circle cx='180' cy='160' r='420' fill='#0A1E70'/><circle cx='1450' cy='120' r='380' fill='#7CC8F8'/><circle cx='900' cy='820' r='420' fill='#1638B0'/><circle cx='1300' cy='760' r='300' fill='#A9DCFB'/><circle cx='620' cy='420' r='260' fill='#3D80F2'/></g>`
-    : `<rect width='1600' height='900' fill='#EEF5FF'/><g filter='url(#b)'><circle cx='160' cy='200' r='420' fill='#9CC6FF'/><circle cx='1480' cy='760' r='420' fill='#BFE6FF'/><circle cx='1300' cy='140' r='300' fill='#E4E8FF'/><circle cx='420' cy='820' r='300' fill='#DCEBFF'/></g>`;
-  const glass = `background:rgba(255,255,255,${blue ? 0.7 : 0.55});backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.95),0 24px 60px rgba(${blue ? '8,30,110,.30' : '30,80,170,.16'})`;
-  const ink = blue ? '#FFFFFF' : '#0A0A0B', top = 450 - T / 2 - 40;
+  const L = spec.left, R = spec.right, T = 340;
+  const mesh = `<rect width='1600' height='900' fill='#EEF5FF'/><g filter='url(#b)'><circle cx='160' cy='200' r='420' fill='#9CC6FF'/><circle cx='1480' cy='760' r='420' fill='#BFE6FF'/><circle cx='1300' cy='140' r='300' fill='#E4E8FF'/><circle cx='420' cy='820' r='300' fill='#DCEBFF'/></g>`;
+  const glass = 'background:rgba(255,255,255,0.55);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.95),0 24px 60px rgba(30,80,170,.16)';
+  const ink = '#0A0A0B', top = 450 - T / 2 - 40;
   const side = (s, cx) => `<div class="ct" style="left:${cx - T / 2}px;top:${top}px;width:${T}px;height:${T}px;border-radius:72px;${glass}">${logo(s.logo, Math.round(T * 0.48), s.label)}</div>
 <div style="position:absolute;left:${cx - 300}px;width:600px;top:${top + T + 34}px;text-align:center;font-size:50px;font-weight:600;letter-spacing:-.03em;color:${ink};white-space:nowrap">${esc(s.label)}</div>`;
-  return `${CB_CSS}<style>.fr .lg{box-shadow:none;background:transparent;padding:0}.fr .lg:not(.full){border-radius:0;overflow:visible}</style>${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:${blue ? 0.7 : 0.35}`)}
+  return `${CB_CSS}<style>.fr .lg{box-shadow:none;background:transparent;padding:0}.fr .lg:not(.full){border-radius:0;overflow:visible}</style>${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:0.35`)}
 <div class="fr">${side(L, 530)}${side(R, 1070)}
-<div style="position:absolute;left:735px;top:${top + T / 2 - 65}px;width:130px;height:130px;border-radius:50%;display:grid;place-items:center;${glass}"><b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.separator || 'vs')}</b></div></div>${WHITE_MARK_JS}`;
+<div style="position:absolute;left:735px;top:${top + T / 2 - 65}px;width:130px;height:130px;border-radius:50%;display:grid;place-items:center;${glass}"><b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.separator || 'vs')}</b></div></div>`;
 }
 
 // versus/bento (Oct 2026): a bento grid like a product page: per brand a big name cell, an icon cell and a fact cell (the
-// article's own fact); a blue "vs" disc on the seam is the one blue anchor. Light field only (black lost). For pairs whose logos can't match.
+// article's own fact); a blue "vs" disc on the seam is the one blue anchor. Light cells in the grey frame only (the black field and its
+// "finish" options lost). For pairs whose logos can't match.
 function glBento() {
-  // "finish": "flat" (solid dark cells, the first version), "glass" (frosted cells on the black mesh glow), "lift" (dark cells with a
-  // soft top highlight, bigger names, icons in thin rings) or "light" (light cells in the grey frame; needs "field": "light")
   const L = spec.left, R = spec.right, W = 560, G = 40, x0 = 800 - W - G / 2, top = 175, H1 = 290, H2 = 220, IC = 140;   // icon cells narrow, fact cells wide (QA: a 3-line fact cell looked crammed)
-  const fin = spec.finish || 'flat', light = GL_FIELD === 'light';
   // both names share one size and both facts share one size (taste 2: parallel elements, one treatment)
-  const NF = Math.min(fin === 'lift' ? 104 : 88, Math.floor((W - 96) / (Math.max(String(L.label).length, String(R.label).length) * 0.56)));
+  const NF = Math.min(88, Math.floor((W - 96) / (Math.max(String(L.label).length, String(R.label).length) * 0.56)));
   // the longer fact fits in two lines (QA: three ragged lines looked crammed next to a one-line partner)
   const FF = Math.min(38, Math.floor((W - IC - G - 76) * 2 / (Math.max(String(L.fact || '').length, String(R.fact || '').length) * 0.7)));
   // a fact of 4+ words keeps its first two and its last two words together, so it sets as two even lines
   const tie = (t) => { const w = t.split(' '); return w.length >= 4 ? [w.slice(0, 2).join('\u00a0'), ...w.slice(2, -2), w.slice(-2).join('\u00a0')].join(' ') : t.replace(/ (\S+)$/, '\u00a0$1'); };
-  const C = light ? { cell: 'background:#F3F4F6;box-shadow:inset 0 0 0 2px rgba(20,26,38,.05)', ink: '#0A0A0B', fact: '#3D4A5C', tag: '#5D6675', ring: '#0A0A0B' }
-    : fin === 'glass' ? { cell: 'background:rgba(255,255,255,.07);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.16)', ink: '#fff', fact: '#E3E6EC', tag: '#A9AEB8', ring: '#0A0A0B' }
-    : fin === 'lift' ? { cell: 'background:linear-gradient(180deg,#1D1D23,#121216);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.10),inset 0 0 0 1.5px rgba(255,255,255,.05)', ink: '#fff', fact: '#D7DAE0', tag: '#8A8F98', ring: '#0A0A0B' }
-    : { cell: 'background:#141418;box-shadow:inset 0 0 0 2px rgba(255,255,255,.06)', ink: '#fff', fact: '#D7DAE0', tag: '#8A8F98', ring: '#0A0A0B' };
+  const C = { cell: 'background:#F3F4F6;box-shadow:inset 0 0 0 2px rgba(20,26,38,.05)', ink: '#0A0A0B', fact: '#3D4A5C', tag: '#5D6675' };
   const cell = (x, y, w, h, inner) => `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:34px;overflow:hidden;${C.cell}">${inner}</div>`;
-  const icon = (s) => fin === 'lift'
-    ? `<div style="position:absolute;left:50%;top:50%;width:118px;height:118px;transform:translate(-50%,-50%);border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.16);display:grid;place-items:center"><i class="${esc(s.icon || 'ph ph-cloud')}" style="font-size:72px;color:#fff"></i></div>`
-    : `<i class="${esc(s.icon || 'ph ph-cloud')}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:96px;color:${C.ink};opacity:.92"></i>`;
+  const icon = (s) => `<i class="${esc(s.icon || 'ph ph-cloud')}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:96px;color:${C.ink};opacity:.92"></i>`;
   const side = (s, x) => cell(x, top, W, H1, `<b style="position:absolute;left:48px;bottom:40px;font-size:${NF}px;font-weight:600;letter-spacing:-.04em;line-height:1;color:${C.ink};white-space:nowrap">${esc(s.label)}</b>${s.tag ? `<span style="position:absolute;left:48px;top:40px;font-family:${MONO};font-size:26px;letter-spacing:.08em;text-transform:uppercase;color:${C.tag}">${esc(s.tag)}</span>` : ''}`)
     + cell(x, top + H1 + G, IC, H2, icon(s))
     + cell(x + IC + G, top + H1 + G, W - IC - G, H2, `<span style="position:absolute;left:40px;right:36px;top:50%;transform:translateY(-50%);font-size:${FF}px;font-weight:500;letter-spacing:-.02em;line-height:1.2;color:${C.fact}">${tie(esc(s.fact || '').replace(/-/g, '\u2011'))}</span>`);   // no hyphen breaks, no word left alone
-  const vs = `<div style="position:absolute;left:${800 - 58}px;top:${top + H1 / 2 - 58}px;width:116px;height:116px;border-radius:50%;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 0 0 12px ${light ? '#fff' : fin === 'glass' ? 'rgba(10,10,11,.0)' : '#0A0A0B'}${fin === 'glass' ? ',0 12px 40px rgba(47,123,255,.45)' : ''}"><b style="font-size:44px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(spec.separator || 'vs')}</b></div>`;
-  if (fin === 'glass' && !light) {
-    const mesh = `<rect width='1600' height='900' fill='#0A0A0B'/><g filter='url(#b)'><circle cx='240' cy='240' r='360' fill='#1D4ED8' fill-opacity='.75'/><circle cx='1380' cy='700' r='380' fill='#2F7BFF' fill-opacity='.55'/><circle cx='1180' cy='120' r='220' fill='#7CC8F8' fill-opacity='.35'/></g>`;
-    return `${CB_CSS}${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.7`)}${side(L, x0)}${side(R, x0 + W + G)}${vs}${WHITE_MARK_JS}`;
-  }
-  // light: no pattern (user, batch 4: "delete pattern from bg, it looks overwhelming here"): the grid of cells is texture enough
-  return glCanvas(`${side(L, x0)}${side(R, x0 + W + G)}${vs}`, light ? 'none' : 'plus');
+  const vs = `<div style="position:absolute;left:${800 - 58}px;top:${top + H1 / 2 - 58}px;width:116px;height:116px;border-radius:50%;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 0 0 12px #fff"><b style="font-size:44px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(spec.separator || 'vs')}</b></div>`;
+  // no pattern (user, batch 4: "delete pattern from bg, it looks overwhelming here"): the grid of cells is texture enough
+  return glCanvas(`${side(L, x0)}${side(R, x0 + W + G)}${vs}`, 'none');
 }
-// versus/chat (Oct 2026): a dark-mode message thread: the article's question in a blue bubble on the right, a typing indicator,
-// then one grey reply bubble per brand with its fact. A real interface, no metaphor. Black field.
-function glChat() {
-  const Q = spec.question || `${spec.left.label} or ${spec.right.label}?`, qfs = Math.min(58, Math.floor(820 / (String(Q).length * 0.52)));
-  const bubble = (txt, me, fs) => `<div style="align-self:${me ? 'flex-end' : 'flex-start'};max-width:880px;padding:26px 40px;border-radius:44px;${me ? 'border-bottom-right-radius:14px;background:linear-gradient(180deg,#3B86F0,#0A5FD8);color:#fff' : 'border-bottom-left-radius:14px;background:#26262B;color:#F2F3F5'};font-size:${fs}px;font-weight:500;letter-spacing:-.02em;line-height:1.2">${txt}</div>`;
-  const reply = (s) => bubble(`<b style="font-weight:700;color:#fff">${esc(s.label)}</b><span style="color:#A9AEB8">&nbsp;·&nbsp;</span>${esc(s.fact || '')}`, false, 44);
-  const dots = `<div style="align-self:flex-start;padding:24px 30px;border-radius:40px;border-bottom-left-radius:14px;background:#26262B;display:flex;gap:12px">${[0.9, 0.6, 0.35].map((o) => `<i style="width:16px;height:16px;border-radius:50%;background:#fff;opacity:${o}"></i>`).join('')}</div>`;
-  return glCanvas(`<div style="position:absolute;left:250px;right:250px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:26px">
-${bubble(esc(Q), true, qfs)}${spec.typing === false ? '' : dots}${reply(spec.left)}${reply(spec.right)}</div>`, 'plus');
-}
-
-const modes = { lineup, folder, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, brandline: glBrandline, receipt, definition };
+const modes = { lineup, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, receipt, definition };
 
 
-// ---- heading must mirror the blog title: same key words, same meaning, just shorter ----
+// ---- heading must mirror the blog title: same key words, same meaning, just shorter. Every headline is black #0A0A0B (user). ----
 const STOP = new Set('a an the and or of for to in on at by with your you our is are be how what why when which who vs versus its it this that from into without about best top guide per 2024 2025 2026 2027'.split(' '));
 const stem = (w) => w.endsWith('sses') ? w.slice(0, -2) : w.endsWith('ss') ? w : w.length > 4 && /(ches|shes|xes|zes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w;
 const words = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9+ ]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w)).map(stem);
-const HEADING = { dark: spec.headline, versus: ['pills', 'connect', 'duo', 'tiles', 'scale'].includes(spec.variant) ? spec.headline : undefined, brandline: spec.headline, receipt: spec.headline, folder: spec.headline, lineup: spec.headline, shortlist: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
-const heading = HEADING[spec.mode || 'before-after'];
-if (heading !== undefined && !args.includes('--force')) {
+const HEADING = { dark: spec.headline, versus: ['pills', 'connect', 'duo', 'tiles'].includes(VARIANT) ? spec.headline : undefined, receipt: spec.headline, shortlist: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
+const heading = HEADING[MODE];
+if (heading !== undefined && !force) {
   if (!spec.articleTitle) { console.error('HEADING CHECK FAILED: add "articleTitle" (the blog post\'s real title) to the spec. The image heading must reuse its words.'); process.exit(3); }
   const tw = new Set(words(spec.articleTitle)), hw = words(heading), shared = hw.filter((w) => tw.has(w));
   const need = spec.mode === 'stat' ? shared.length >= 2 : shared.length >= 2 && shared.length / hw.length >= 0.75;
@@ -967,27 +872,19 @@ if (heading !== undefined && !args.includes('--force')) {
   }
 }
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
-// A layout (mode + variant) is used once per category (layouts not used anywhere go first; see usage.mjs); same-topic articles never share a mode.
-const MODE = spec.mode || 'before-after';
-const ALL_MODES = Object.keys(LAYOUTS);
-if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
-const VARIANT = spec.variant || LAYOUTS[MODE][0];
-if (!LAYOUTS[MODE].includes(VARIANT)) { console.error(`Unknown variant "${VARIANT}" for ${MODE}. Variants: ${LAYOUTS[MODE].join(', ')}`); process.exit(1); }
-const LAYOUT = `${MODE}/${VARIANT}`;
-const ALL_LAYOUTS = ALL_MODES.flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
-const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
+// A used layout is refused only in a category it was already used in (layouts not used anywhere go first; see usage.mjs); same-topic
+// articles never share a mode.
 // defaults match the reference set (references/approved/)
-// Backgrounds: light = sky, paper, cream, g5; vibrant = blue (about 1 in 3, shared with the black headline layouts).
+// Backgrounds (the card layouts): light = sky, paper, cream, g5; vibrant = blue (about 1 in 3, shared with the black headline layouts).
 // Background fit: each layout lists only the backgrounds that flatter its illustration, best first.
 // Judged on figure/ground contrast, temperature harmony and colour dosage:
-//  - grey-heavy illustrations (bars, skeletons, unchecked boxes) need colour behind them: sky or g5
-//  - illustrations that already carry colour (giant number, pill bar) sit well on a quiet neutral: paper or cream
+//  - grey-heavy illustrations (bars, skeletons) need colour behind them: sky or g5 (the checklist goes on the vibrant blue only)
+//  - illustrations that already carry colour (giant number) sit well on a quiet neutral: paper or cream
+//  - prompt paints its own full field (CANVAS), so it has no entry here
 //  - big white app windows sit on sky; cool greys never go on cream
 //  - blue dosage: a big blue mass (hub tile) gets a neutral field (cream/paper), never g5
 //  - g5 lifts a single floating white card with light rising under it
-const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'sky'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
-// Chatbase-style layouts paint their own canvas (white in a grey frame, or black); 'dark' counts as vibrant
-// logotype: split a black lockup into its icon and wordmark at the widest clear gap; a bare icon is turned white for the black tile
+const BG_FIT = { hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
 // crop to the visible ink (sharp's trim keeps transparent rows)
 async function inkCrop(buf) {
   const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -995,6 +892,7 @@ async function inkCrop(buf) {
   for (let y = 0; y < info.height; y++) for (let x = 0; x < info.width; x++) if (data[(y * info.width + x) * 4 + 3] > 20) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
   return x1 < 0 ? buf : sharp(buf).extract({ left: x0, top: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }).png().toBuffer();
 }
+// logotype: split a black lockup into its icon and wordmark at the widest clear gap; a bare icon is turned white for the black tile
 async function splitLockup(buf) {
   const src = await sharp(buf).trim().ensureAlpha().png().toBuffer();
   const { data, info } = await sharp(src).raw().toBuffer({ resolveWithObject: true });
@@ -1023,7 +921,6 @@ async function splitLockup(buf) {
   const uri = (b) => `data:image/png;base64,${b.toString('base64')}`, wm = await sharp(word).metadata();
   return { icon: uri(out), tile, word: uri(word), aspect: wm.width / wm.height };
 }
-// refuse after sharp's worker threads settle: an immediate process.exit can crash Node on Windows (exit 127 instead of 2)
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
 // logo fetches for the pre-render checks: retry network errors, rate limits and 5xx (a real 404 is an answer, not a failure)
 const fetchRetry = async (url) => {
@@ -1035,7 +932,7 @@ const fetchRetry = async (url) => {
     } catch (e) { if (i >= 3) throw e; await new Promise((res) => setTimeout(res, 400 * (i + 1))); }
   }
 };
-// exit only after sharp's worker threads settle: an immediate process.exit can crash Node on Windows
+// exit only after sharp's worker threads settle: an immediate process.exit can crash Node on Windows (exit 127 instead of 2)
 const settleExit = async (code) => { await new Promise((r) => setTimeout(r, 200)); process.exit(code); };
 const refuse = async (msg) => { console.error(msg); await settleExit(2); };
 // logotype: fetch the product's full logo lockup (both Brandfetch themes, or a local file), keep the version whose ink is black
@@ -1056,6 +953,10 @@ if (MODE === 'logotype') {
   const ref = spec.logotype || spec.logo;
   if (ref && /\.(png|svg|webp|jpe?g)$/i.test(ref)) sources.push(['file', ref]);
   else if (ref && BF_CLIENT) for (const th of ['dark', 'light']) sources.push(['url', `https://cdn.brandfetch.io/${encodeURIComponent(ref)}/w/1600/h/600/theme/${th}/fallback/404/type/logo?c=${encodeURIComponent(BF_CLIENT)}`]);
+  if (sources[0]?.[0] === 'file') {
+    const f = ref.startsWith('file:') ? fileURLToPath(ref) : path.resolve(path.dirname(specFile), ref);
+    if (!fs.existsSync(f)) await refuse(`LOGO FILE MISSING: ${ref} (looked for ${f}). Keep custom logos in featured-images/assets/ and reference them relative to the spec.`);
+  }
   const tried = [];
   for (const [kind, src] of sources) {
     try {
@@ -1069,10 +970,12 @@ if (MODE === 'logotype') {
       }
     } catch { tried.push(null); }
   }
-  if (!LOGOTYPE && !args.includes('--force')) {
+  // even --force can't draw a logotype without a logo
+  if (!LOGOTYPE) {
     await refuse(`LOGOTYPE CHECK FAILED: no black logo lockup found for "${ref}". This layout needs a black logo (icon and wordmark). Use "dark" for this product, or save its black logo to featured-images/assets/ and set "logotype": "../assets/<file>.png".`);
   }
 }
+const CHECK_ONLY = args.includes('--check-only');
 // versus/pills: each logo sits on a white circle, so both products need a mark that works on white. Resolve the logo chain the
 // way the page does; a product whose only logo is a solid app tile (e.g. NetSuite's dark square) is refused.
 const solidTile = async (buf) => {   // an app icon that fills its square: opaque, non-white corners
@@ -1081,8 +984,11 @@ const solidTile = async (buf) => {   // an app icon that fills its square: opaqu
   return [[2, 2], [W - 3, 2], [2, H - 3], [W - 3, H - 3]].every(([x, y]) => { const q = at(x, y); return q[3] > 200 && !(q[0] > 232 && q[1] > 232 && q[2] > 232); });
 };
 // true: the brand has a logo that sits on white; false: its only logo is a solid app tile; null: no logo found
+// (under --check-only, Brandfetch's generated lettermark doesn't count as a logo, so logo-check.mjs never says "yes" for a brand
+// with no real logo)
 const sitsOnWhite = async (d) => {
-  for (const [url, kind] of logoChain(d, slugOfDomain(d))) {
+  for (const [url0, kind] of logoChain(d, slugOfDomain(d))) {
+    const url = CHECK_ONLY ? url0.replace('/fallback/lettermark/', '/fallback/404/') : url0;
     try {
       let buf;
       if (url.startsWith('data:')) buf = Buffer.from(url.split(',')[1], 'base64');
@@ -1100,6 +1006,7 @@ if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
   for (const side of [spec.left, spec.right]) {
     if (!side || !side.logo) continue;
     const onWhite = await sitsOnWhite(side.logo);
+    if (CHECK_ONLY) console.log(`ONWHITE ${side.logo} ${onWhite}`);   // logo-check.mjs: "yes" only when a logo was found and sits on white
     if (onWhite === false) {
       await refuse(`PILLS LOGO CHECK FAILED: ${side.label}'s only logo is a solid app tile, and versus/pills needs a logo on a white circle. Use versus/connect, versus/slash or versus/duo, or save the brand's transparent logo to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
     }
@@ -1136,17 +1043,13 @@ if (LAYOUT === 'versus/slash' && !args.includes('--force')) {
   for (const side of [spec.left, spec.right]) if (side && !slashSplit(side.label))
     await refuse(`SLASH NAME CHECK FAILED: "${side.label}" can't be shown in two colours (white + the brand colour) without guessing. Mark the coloured part with {{ }} (e.g. "Acu{{matica}}"), or use the article's fuller product name (e.g. "SAP Business One"). Some of the name must stay white.`);
 }
-const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'swap/default', 'badge/default', 'brandline/default', 'versus/split', 'versus/duet', 'receipt/default', 'definition/default', 'versus/rows', 'folder/default', 'shortlist/default', 'lineup/default', 'versus/scale', 'lineup/default', 'versus/scale', 'versus/frost', 'versus/bento', 'versus/chat'];
-const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', ...GL_LAYOUTS].includes(LAYOUT);
-// black fields count as vibrant (1 in 3, never neighbours), and so do the Gumloop layouts on the black or blue field;
-// versus/split's two saturated brand-colour halves are vibrant too; duet, receipt and definition are light
-const LIGHT_ONLY = ['versus/duet', 'receipt/default', 'definition/default', 'brandline/default', 'folder/default', 'shortlist/default'];
-const VIVID = MODE === 'dark' || ['versus/slash', 'versus/duo', 'versus/split'].includes(LAYOUT) || (GL_LAYOUTS.includes(LAYOUT) && !LIGHT_ONLY.includes(LAYOUT) && LAYOUT !== 'versus/split' && GL_FIELD !== 'light');
+// vibrant (at most 1 in 3 per category, never neighbours): the black headline layouts (dark, versus/slash, versus/duo) and the Gumloop
+// layouts on the black or blue field (glass on black, tiles on blue); the Originals and every light field are calm
+const VIVID = MODE === 'dark' || ['versus/slash', 'versus/duo'].includes(LAYOUT) || (GL_LAYOUTS.includes(LAYOUT) && GL_FIELD !== 'light');
 // Gumloop layouts: fetch each brand's full wordmark (icon + typography) before rendering. Both Brandfetch themes are tried and the
-// darkest-ink version kept (recoloured white on dark fields in the page); a white background is keyed out; a solid tile is not a
+// darkest-ink version kept (shown in its original colours); a white background is keyed out; a solid tile is not a
 // wordmark, and a brand without one is typeset in Inter instead.
 const WORDMARK = {};
-let SITE_MARK = '';
 if (GL_LAYOUTS.includes(LAYOUT)) {
   const inkStats = async (buf) => {
     const { data } = await sharp(buf).ensureAlpha().resize(400, 400, { fit: 'inside' }).raw().toBuffer({ resolveWithObject: true });
@@ -1200,12 +1103,13 @@ if (GL_LAYOUTS.includes(LAYOUT)) {
   // versus/glass: each mark gets ~400px of the bar, so an ultra-wide lockup (e.g. Oracle NetSuite's ~13:1) renders too thin to read
   if (LAYOUT === 'versus/glass' && !args.includes('--force')) for (const side of [spec.left, spec.right]) {
     const W = side && WORDMARK[side.logo || ''];
+    if (CHECK_ONLY && side) console.log(`WORDMARK ${side.logo} ${W ? W.aspect.toFixed(2) : 'none'}`);   // logo-check.mjs: "yes" only with a compact wordmark
     if (W && W.aspect > 9) await refuse(`GLASS LOGO CHECK FAILED: ${side.label}'s wordmark is too wide (${W.aspect.toFixed(1)}:1) to read on the glass bar. Save a compact lockup (4:1 or narrower) to featured-images/assets/ and set "logo": "../assets/<file>.png", or use versus/tiles, versus/type or another versus layout.`);
   }
 }
 // --check-only: stop after the logo checks (used by logo-check.mjs while planning; nothing is rendered or recorded)
-if (args.includes('--check-only')) { console.log('CHECKS PASSED'); await settleExit(0); }
-Object.assign(BG_FIT, { dark: ['paper'], logotype: ['cream'] });
+if (CHECK_ONLY) { console.log('CHECKS PASSED'); await settleExit(0); }
+Object.assign(BG_FIT, { logotype: ['cream'] });
 const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m, l[0]]));
 // The checklist on a light field was deleted in the approved review (Oct 2026): a checklist goes on the vibrant blue only.
 if (MODE === 'checklist') {
@@ -1221,23 +1125,15 @@ if (spec.bg && !BG_OK.includes(spec.bg)) {
   console.error(`BACKGROUND CHECK FAILED: "${spec.bg}" is not a background. Use a light background (${BGS.join(', ')}) or the vibrant "blue".`);
   process.exit(2);
 }
-const category = spec.category || spec.brand || 'default';
-const brandKey = (spec.brand || 'default').replace(/[^a-z0-9-]/gi, '');
+const brandKey = brandKeyOf(spec.brand);
 const ledgerFile = path.join(path.dirname(outDir), '.featured-ledger.json');
-const historyDir = process.env.FEATURED_HISTORY_DIR || path.join(os.homedir(), '.blog-featured-images');
-const historyFile = path.join(historyDir, `history-${brandKey}.json`);
-const readJson = (f) => { try { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : []; } catch { return []; } };
-const ledger = readJson(ledgerFile), siteHistory = readJson(historyFile);
-const bySlug = new Map();
-// Merge per slug, newest entry wins (a stale folder ledger must never override a newer site-history reservation).
-for (const e of [...siteHistory, ...ledger].sort((x, y) => String(x.at).localeCompare(String(y.at)))) bySlug.set(e.slug, { ...bySlug.get(e.slug), ...e });
-const history = [...bySlug.values()].sort((x, y) => String(x.at).localeCompare(String(y.at)));
-// a design the user rejected and had replaced ("superseded") is no longer on the site, so it doesn't count toward rotation
-const prior = history.filter((e) => e.category === category && e.slug !== slug && !e.superseded);
-// layout variety is site-wide: the user sees every image, so a layout counts as used wherever it appeared (user: "don't repeat any
-// illustration, only if it makes actual sense")
-const priorSite = history.filter((e) => e.slug !== slug && !e.superseded);
-const force = args.includes('--force');
+const historyDir = historyDirOf(), historyFile = historyFileOf(brandKey);
+// the site history merged with this folder's ledger (usage.mjs loadHistory; plan.mjs reads the same site history, it has no folder)
+const history = loadHistory(brandKey, ledgerFile);
+// what counts: not superseded (a design the user rejected and had replaced is no longer on the site), and not this slug's old entry
+const priorSite = countable(history, [slug]);
+// this category's images, for the neighbour checks (vibrant, series mark, background); a reservation isn't an image yet, so it is skipped
+const prior = priorSite.filter((e) => normCat(e.category) === category && !e.reserved);
 // ---- content check: each layout needs enough real content to fill its frame (a sparse window or hub looks unfinished) ----
 const n = (a) => (Array.isArray(a) ? a.length : 0);
 const thin = {
@@ -1248,9 +1144,10 @@ const thin = {
   timeline: () => n(spec.steps) < 3 && 'timeline needs 3+ steps',
   stat: () => n(spec.card?.rows) < 2 && 'stat card needs 2+ rows',
   focus: () => n(spec.rows) < 2 && 'focus needs 2+ rows',
-  folder: () => n((spec.cards || []).filter((c) => c.logo)) < 4 && 'folder needs 4-9 products with logos',
   shortlist: () => n(spec.items) < 3 && 'shortlist needs 3+ items',
   lineup: () => n((spec.cards || []).filter((c) => c.logo)) < 3 && 'lineup needs 3-6 products with logos',
+  // a Phosphor icon in place of the product logo was rejected ("icon is not looking good"): dark needs the real logo
+  dark: () => !(spec.panelLogo || spec.panelLogoUrl) && 'dark needs the product\'s own logo ("panelLogo")',
 }[MODE]?.();
 if (thin && !force) { console.error(`CONTENT CHECK FAILED: ${thin}. Use the article's facts to fill it, or pick a layout that suits fewer facts.`); process.exit(2); }
 // ---- comparison fairness: an "X vs Y" article shows both products (dark features one brand, so it is for single-brand articles) ----
@@ -1274,8 +1171,14 @@ Same-topic articles must use different compositions. Used for this topic: ${same
 }
 // Layout usage (the user's rule, Oct 2026): a layout not used yet is free for any article it suits; a used layout can't be used again
 // in the same category, only in a different one. Usage = site history + the user's record (references/used-layouts.json), see usage.mjs.
-const USE = usageOf(priorSite);
-const usedHere = force || args.includes('--user-pick') ? null : blocked(USE, LAYOUT, category);   // --user-pick: the user chose this layout for this article
+const REC = userRecord(brandKey);
+warnRecord(REC);
+const USE = usageOf(priorSite, REC);
+// the user's own pick skips the category rule and the site-wide cap (never the same-topic check above): --user-pick, or this slug's
+// reservation made as a user pick in plan.mjs ("slug=layout!") for this same layout
+const myRes = history.find((e) => e.slug === slug && e.reserved);
+const USER_PICK = args.includes('--user-pick') || !!(myRes && myRes.userPick && layoutOf(myRes) === LAYOUT);
+const usedHere = force || USER_PICK ? null : blocked(USE, LAYOUT, category);
 if (usedHere) {
   const free = freeFor(USE, category);
   console.error(`VARIETY CHECK FAILED: ${usedHere}
@@ -1286,25 +1189,27 @@ Used only in other categories (free here): ${free.elsewhere.join(', ') || 'none'
 }
 // vibrant images (deep-dunes blue, black headline layouts): at most 1 in 3 per category, never two neighbours
 if ((spec.bg === 'blue' || VIVID) && !force) {
-  const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
+  const lastTwo = prior.slice(-2);
   if (lastTwo.some((e) => e.vibrant || e.bg === 'blue')) {
     console.error(`VIBRANT CHECK FAILED: a recent "${category}" image already uses a vibrant field (the deep-dunes blue or a black layout) (${lastTwo.filter((e) => e.vibrant || e.bg === 'blue').map((e) => e.slug).join(', ')}).
-Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. ${MODE === 'checklist' ? 'A checklist is blue only, so pick another layout for this article.' : 'Use a light background (sky, paper, cream, g5) for this one.'}`);
+Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. ${MODE === 'checklist' ? 'A checklist is blue only, so pick another layout for this article.' : CANVAS ? 'This layout paints its own canvas ("bg" is refused here): pick a light layout, or "field": "light" for versus/tiles and versus/glass.' : 'Use a light background (sky, paper, cream, g5) for this one.'}`);
     process.exit(2);
   }
 }
 // site mark + series tag: some images, never all. At most 1 in 3 per category, never on two neighbours.
 if (spec.craft === true && spec.series && !force) {
-  const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
+  const lastTwo = prior.slice(-2);
   if (lastTwo.some((e) => e.series)) {
     console.error(`SERIES CHECK FAILED: the site mark was used on a recent "${category}" image (${lastTwo.filter((e) => e.series).map((e) => e.slug).join(', ')}).
 Use it on at most 1 in 3 images and never on neighbours. Remove "series" from this spec.`);
     process.exit(2);
   }
 }
-let BG = spec.bg || (CB_LAYOUT ? 'paper' : DEFAULT_BG[MODE]);
-const prevBg = prior.length ? prior[prior.length - 1].bg : null; // history is sorted by time
-const FIT = CB_LAYOUT ? ['paper'] : BG_FIT[MODE] || ['sky', 'g5'];
+// a layout that paints its own canvas (prompt too) still sits on 'paper' (the page under it, hidden by the canvas), but is
+// recorded as 'canvas'; the fine overlay grain sits on top
+let BG = spec.bg || (CANVAS ? 'paper' : DEFAULT_BG[MODE]);
+const prevBg = prior.length ? prior[prior.length - 1].bg : null;   // the category's last rendered image (history is sorted by time)
+const FIT = CANVAS ? ['paper'] : BG_FIT[MODE] || ['sky', 'g5'];
 // Vibrant fit: the deep-dunes blue flatters only illustrations built on a big white card.
 // Blue-heavy illustrations and floating logo tiles never go on blue.
 const BLUE_FIT = ['checklist', 'versus/table', 'window', 'before-after/flow'];
@@ -1314,7 +1219,7 @@ if (spec.bg === 'blue' && !BLUE_FIT.includes(MODE) && !BLUE_FIT.includes(LAYOUT)
 }
 if (!spec.bg && BG === prevBg) BG = FIT.find((b) => b !== prevBg) || BG;   // neighbours differ, but only within the layout's fitting backgrounds
 if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force) {
-  console.error(`BACKGROUND FIT FAILED: "${spec.bg}" doesn't flatter the ${MODE} illustration. Use ${FIT.map((b) => `"${b}"`).join(' or ')} (or the vibrant "blue").`);
+  console.error(`BACKGROUND FIT FAILED: "${spec.bg}" doesn't flatter the ${MODE} illustration. Use ${FIT.map((b) => `"${b}"`).join(' or ')}${BLUE_FIT.includes(MODE) || BLUE_FIT.includes(LAYOUT) ? ' (or the vibrant "blue")' : ''}.`);
   process.exit(2);
 }
 // texture (edge guide lines + a few margin accent dots) = the anti-bland structure layer. On by default for 'sky'/'paper'
@@ -1354,8 +1259,7 @@ const CRAFT_CSS = `
 .smark img{width:40px;height:40px;border-radius:10px}.smark b{font-size:26px;font-weight:600;color:#141A26;letter-spacing:-.01em}
 .smark span{font-family:${MONO};font-size:22px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#0A5FD8}
 .sm-top{left:50%;top:84px;transform:translateX(-50%)}.sm-bottom{left:50%;bottom:72px;transform:translateX(-50%)}.sm-tl{left:240px;top:96px}
-/* focus */
-.fh{color:#141A26;font-weight:500;letter-spacing:-.03em}
+/* focus (the headline keeps its black and its 600 weight, taste 3) */
 .fct{font-family:${MONO};text-transform:uppercase;letter-spacing:.08em;font-size:20px;color:#7F8794}
 .fr b{font-family:${MONO};font-size:26px;font-weight:500;color:#141A26;text-transform:uppercase}.fr.on b{color:#0A5FD8}
 .fr em{color:#141A26}.fr.on em{color:#0A5FD8}
@@ -1368,8 +1272,9 @@ const CRAFT_CSS = `
 .fleg{font-family:${MONO};text-transform:uppercase;font-size:22px;letter-spacing:.06em}.fleg .f1{color:#7F8794}.fleg .f2{color:#0A5FD8}
 `;
 // field grain: heavy on blue, fine on sky/paper/g5 (multiply, since overlay barely shows on near-white); none on cream.
-// "grain": false turns it off on a light field.
-const GRAIN = BG === 'blue' || (spec.grain !== false && BG !== 'cream');
+// "grain": false turns it off on a light field: both layers, the field grain (.bgn) and the fine overlay (.grain).
+const NO_GRAIN = spec.grain === false && BG !== 'blue';
+const GRAIN = !NO_GRAIN && BG !== 'cream';
 const LIGHT_GRAIN = `.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:multiply;opacity:.2}`;
 const BG_CSS = {
   blue: `body{background:${BLUE_GLOW};background-size:cover}body:before{display:none}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85}`,
@@ -1408,18 +1313,20 @@ body:before{content:"";position:absolute;inset:-100px;display:none}
 .grain{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.09;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 </style></head><body class="${BG === 'blue' ? 'fd' : ''}">${GRAIN ? '<div class="bgn"></div>' : ''}
 ${TEX ? '<div class="tex"><i class="acc"></i></div>' : ''}${frameLayer()}
-${MODE === 'before-after' && spec.variant === 'flow' ? baFlow() : modes[spec.mode] ? modes[spec.mode]() : `<div class="lbl l1" style="top:${baTop}px">${esc(before.label)}</div><div class="lbl l2" style="top:${baTop}px">${esc(after.label)}</div>
+${LAYOUT === 'before-after/flow' ? baFlow() : modes[MODE] ? modes[MODE]() : `<div class="lbl l1" style="top:${baTop}px">${esc(before.label)}</div><div class="lbl l2" style="top:${baTop}px">${esc(after.label)}</div>
 <div class="c c1" style="top:${baTop + 90}px"><div class="raw">${before.lines.map(esc).join('<br>')}<span class="caret"></span></div></div>
 <svg class="conn" viewBox="0 0 80 900" style="transform:translateY(${baTop + 90 - 250}px)"><path d="M0 ${306 + 42 * (before.lines.length - 1)} H 40 V 440 H 80" fill="none" stroke="#9AA3B2" stroke-width="3" stroke-dasharray="9 9"/></svg>
 <div class="c c2" style="top:${baTop + 90}px;height:${baH}px"><h3>${esc(after.heading)}</h3><ul>${after.items.map((t, i) => `<li${i === 0 ? ' class="a"' : ''}>${esc(t)}</li>`).join('')}</ul></div>
 ${spec.legend ? `<div class="legend" style="top:${baTop + 90 + baH + 64}px"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : ''}`}
 ${cursorLayer()}
 <style>${BG_CSS[BG] || ''}</style>
-${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}${BG === 'cream' ? '' : '<div class="grain"></div>'}</body></html>`;
+${CRAFT ? `<style>${CRAFT_CSS}</style>${seriesMark}` : ''}${BG === 'cream' || NO_GRAIN ? '' : '<div class="grain"></div>'}</body></html>`;
 
 
-// Brand colours: swap the default blue palette for the brand's.
-const swaps = { '#3B86F0': brand.accentLight, '#0A5FD8': brand.accent, '#27ACF2': brand.sky, '#2C5FAE': brand.labelAfter, '#2C7BD8': brand.legendAfter, '#0E2A5C': brand.headline, '#7C7468': brand.labelBefore };
+// Brand colours: swap the default blue palette for the brand's. Headlines are always black #0A0A0B (user), so a brand file's
+// "headline" (default #0A0A0B) recolours nothing; anything else is reported.
+if (brand.headline && brand.headline.toUpperCase() !== '#0A0A0B') console.warn(`BRAND NOTE: "headline": "${brand.headline}" in ${path.basename(brandFile)} is ignored; headlines are always black #0A0A0B.`);
+const swaps = { '#3B86F0': brand.accentLight, '#0A5FD8': brand.accent, '#27ACF2': brand.sky, '#2C5FAE': brand.labelAfter, '#2C7BD8': brand.legendAfter, '#7C7468': brand.labelBefore };
 let out = html;
 for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
 // Shadows: none on the vibrant blue; minimal and tinted to the field on light backgrounds.
@@ -1461,26 +1368,28 @@ execFileSync(findChrome(), ['--headless=new', '--disable-gpu', '--hide-scrollbar
 try { fs.rmSync(PROFILE, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
 const master = await sharp(raw).png().toBuffer();
 fs.writeFileSync(path.join(outDir, 'master.png'), master);
-// dark's text column starts at x 120, so its 7:5 crop shifts left (x 100–1360 keeps the text and the panel's name)
-// duo spans the full width (headline at x ~96, panels to x ~1572), so no 1260px window holds it: its 7:5 is the whole
-// master padded top and bottom with its own black field. dark's text column starts at x 120, so its crop shifts left.
+// 7:5 crop (1260 x 900): x 170-1430 holds the content column (x 210-1390). dark's text column starts at x 120, so its crop shifts left
+// (x 100-1360 keeps the text and the panel's name). duo spans the full width (headline at x ~96, panels to x ~1572), so no 1260px
+// window holds it: its 7:5 is the whole master padded top and bottom with its own black field.
 const crop75 = LAYOUT === 'versus/duo'
   ? await sharp(master).extend({ top: 121, bottom: 122, left: 0, right: 0, background: '#0A0A0B' }).toBuffer()
-  : await sharp(master).extract({ left: MODE === 'brandline' ? 15 : MODE === 'dark' ? 100 : 170, top: 0, width: 1260, height: 900 }).toBuffer();
+  : await sharp(master).extract({ left: MODE === 'dark' ? 100 : 170, top: 0, width: 1260, height: 900 }).toBuffer();
 await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x250.png'));
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, out: path.resolve(outDir), at: new Date().toISOString() };
-// Parallel renders share these files: take a lock, re-read, then write, so no entry is lost.
-fs.mkdirSync(historyDir, { recursive: true });
-const lock = historyFile + '.lock';
-for (let i = 0; ; i++) {
-  try { fs.mkdirSync(lock); break; } catch { if (i > 300) { fs.rmSync(lock, { recursive: true, force: true }); } Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50); }
-}
-try {
-  fs.writeFileSync(ledgerFile, JSON.stringify([...readJson(ledgerFile).filter((e) => e.slug !== slug), entry], null, 1));
-  fs.writeFileSync(historyFile, JSON.stringify([...readJson(historyFile).filter((e) => e.slug !== slug), entry], null, 1));
-} finally { fs.rmSync(lock, { recursive: true, force: true }); }
+// bg = what the image is painted on: the card layouts' field, or "canvas" for a layout that paints its own, prompt included (plus its
+// "field" when it has a choice), so the next card's background check compares like with like
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: CANVAS ? 'canvas' : BG, ...(GL_FIT ? { field: GL_FIELD } : {}), series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, ...(USER_PICK ? { userPick: true } : {}), out: path.resolve(outDir), at: new Date().toISOString() };
+// Parallel renders share these files: take the lock (usage.mjs), re-read, then write, so no entry is lost. A re-render replaces the
+// slug's entry but keeps what finalize.mjs and the user set on it.
+const KEEP = ['final', 'finalizedAt', 'stored', 'superseded'];
+withLock(historyFile, () => {
+  const L = readJson(ledgerFile), H = readJson(historyFile), old = { ...L.find((e) => e.slug === slug), ...H.find((e) => e.slug === slug) };
+  const e = { ...entry };
+  for (const k of KEEP) if (old[k] !== undefined) e[k] = old[k];
+  fs.writeFileSync(ledgerFile, JSON.stringify([...L.filter((x) => x.slug !== slug), e], null, 1));
+  fs.writeFileSync(historyFile, JSON.stringify([...H.filter((x) => x.slug !== slug), e], null, 1));
+});
 console.log(`${outDir}
-  layout=${LAYOUT} ${GL_LAYOUTS.includes(LAYOUT) ? `field=${MODE === 'brandline' ? 'glow' : GL_FIELD}` : `bg=${BG}`} category=${category} words=${WORDS}/${MAX_WORDS}`);
+  layout=${LAYOUT} ${GL_LAYOUTS.includes(LAYOUT) ? `field=${GL_FIELD}` : `bg=${BG}`} category=${category} words=${WORDS}/${MAX_WORDS}`);

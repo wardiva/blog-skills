@@ -9,7 +9,6 @@
  "placeholder": "Pricing model",
  "chips": [],
  "panel": {
-  "label": "",
   "rows": [
    {
     "title": "Free tier",

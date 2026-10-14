@@ -71,15 +71,17 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 
 5. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting as used in their category, and can never be re-created or overwritten.
 
+**Which layouts are free.** The user's rule: "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used". So a layout not used yet goes first, and a used layout comes back only in a different category. Usage is kept per brand: every image rendered (drafts too), reserved or delivered, plus your own record, `references/used-layouts.json`, which is the truth for its brand up to its `recordedAt`. A re-render of the same article replaces its entry, and `plan.mjs --release` frees a reservation you won't use. To pick a layout yourself for one article, reserve it as `<slug>=<layout>!`.
+
 **Built-in checks** (the renderer refuses to finish):
 
 | Check | Rule |
 |---|---|
 | `HEADING CHECK FAILED` | The image heading must reuse the blog title's own words |
 | `TEXT CHECK FAILED` | At most 15 words per image and 7 per element (no sentences) |
-| `VARIETY CHECK FAILED` | A layout is used once per category: one not used yet goes first, a used one is free only in a different category; favourites have a site-wide cap (slash, connect, duo 5; dark 3; pills, logotype 2) |
+| `VARIETY CHECK FAILED` | A layout is used once per category (see "Which layouts are free"); favourites also have a site-wide cap (slash, connect, duo 5; dark 3; pills, logotype 2); same-topic articles never share a mode |
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
-| `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
+| `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist, and a layout that paints its own canvas takes no `bg` at all |
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
 | `CONNECT LOGO CHECK FAILED` | `versus/connect` needs each brand's own app icon (with its background colour); otherwise use another versus layout |
 | `SLASH NAME CHECK FAILED` | A `versus/slash` name must be white + its brand colour; a one-word name with no capital break needs its coloured part marked |
@@ -88,19 +90,21 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `CHECKLIST FIELD FAILED` | The checklist goes on the vibrant blue only (the renderer sets it) |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
-| `FIELD FIT FAILED` | A Gumloop layout only takes its approved fields |
+| `FIELD FIT FAILED` | Gumloop layouts, `versus/frost` and `versus/bento` take their approved fields; prompt takes only `"soft"`; every other layout takes no `field` |
 | `TILES LOGO CHECK FAILED` / `GLASS LOGO CHECK FAILED` | `versus/tiles` needs two tiles that match (both filled or both white); `versus/glass` needs wordmarks that fit the bar |
-| `LOGO FILE MISSING` | A logo file named in the spec isn't in `featured-images/assets/` |
+| `LOGO FILE MISSING` | The local logo file named in the spec doesn't exist at that path (relative to the spec) |
 | `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
 | `CONTENT CHECK FAILED` | Each layout needs enough real facts to fill its frame |
-| `FAIRNESS CHECK FAILED` | An X vs Y article always shows both products |
+| `FAIRNESS CHECK FAILED` | `dark` is refused when the title says "vs" or "versus": an X vs Y article always shows both products |
+| `RETIRED LAYOUT` | `brandline`, `folder`, `versus/scale`, `versus/chat`, `versus/split`, `versus/duet`, `versus/rows` and `versus/logos` were retired by the user and never come back |
+| `CATEGORY MISSING` | Every spec names its blog category (a layout is used once per category) |
 
 **The look:**
 - **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue**, only behind a big white card (the Gumloop tiles have their own blue field) (blue and black images together on at most 1 in 3 per category).
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
 - **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
-- **One bold blue anchor**, white UI cards, black headlines (semibold on card layouts; white on dark fields; Inter Medium on headline layouts), a hero at 55–70% of the width.
-- **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
+- **One bold blue anchor**, white UI cards, black `#0A0A0B` headlines on every layout and brand (white on the black and blue fields; semibold on card layouts, Inter Medium on headline layouts), a hero at 55–70% of the width.
+- **Logos:** a free chain, loaded at render time: a local file or URL in the spec first; then Brandfetch symbol (with a client ID) → Iconify → Simple Icons → Brandfetch square icon (with an ID; Google's favicon without one) → letter tile. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
 ## Layouts (19 modes, 30 layouts)
 
@@ -116,7 +120,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `ranked` | default | Rankings by a real metric | no |
 | `timeline` | default | Processes, implementation | no |
 | `checklist` | default | How to choose, requirements | blue only |
-| `prompt` | default | Cost, pricing, FAQ | no |
+| `prompt` | default | Cost, FAQ, "what is" | no |
 | `stack` | default | One key rule | no |
 | `window` | default | Vendor lists, pricing tables | yes |
 
@@ -131,7 +135,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `dark` | Single-product articles (review, pricing, features): the product's icon in black on a white tile top-left, its colour as the panel, white logo; once per category, at most 3 across the site |
 | `logotype` | Single-product articles with a black logo: icon on a black tile beside the wordmark, on cream with a faint grid; once per category, at most 2 across the site |
 
-**Gumloop layouts** (after the user's Gumloop references; each has its own approved fields, set with `"field"`; black and blue fields count as vibrant; logos are each brand's full wordmark):
+**Gumloop layouts** (after the user's Gumloop references; each has its own approved fields, set with `"field"`; black and blue fields count as vibrant; glass, swap and badge show each brand's full wordmark, tiles its app icon or mark, type the names only):
 
 | Layout | Best for | Fields |
 |---|---|---|
@@ -154,9 +158,11 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 
 ## Add your own site
 
-Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours, and optionally `markUrl` (the site's own square icon) and `markName` for the site mark (card layouts only). Then set `"brand": "<site>"` in specs. Variety history is kept separately per brand.
+Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours, and optionally `markUrl` (the site's own square icon) and `markName` for the site mark (card layouts only). Then set `"brand": "<site>"` in specs. Usage history is kept separately per brand, and the user's record in `references/used-layouts.json` belongs to one brand (its `"brand"` key), so a new site has no record until you keep one for it: until then its own history decides.
 
 ## What's inside
+
+Paths are inside `skills/blog-featured-images/`.
 
 | Path | Contents |
 |---|---|
@@ -169,8 +175,10 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `references/lessons.md` | What each batch and review taught, speed tools, gotchas, pre-flight checks |
 | `references/checks.md` | Every renderer check and the feedback behind it, plus the regression test |
 | `references/inspiration.md` | Every reference the user shared and what was taken from it |
-| `references/used-layouts.json` | The user's own record of which layouts are used and in which categories, kept on a Template Usage page; for every layout it lists it overrides the history as of its `recordedAt` |
-| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `usage.mjs` (the shared usage rule: the user's record plus newer history), `logo-check.mjs` (which logo-dependent layouts each brand can use), `test-examples.mjs` (regression test; `--refresh` rebuilds the approved images), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
+| `references/used-layouts.json` | The user's own record of which layouts are used and in which categories, for one brand, kept on a Template Usage page; the truth up to its `recordedAt` |
+| `references/fields/` | Approved backgrounds (the glow field `lineup` uses, and the blue mesh still without a layout) |
+| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs` (free layouts per category, reservations, `--release`), `usage.mjs` (the shared usage rule: the site history, the user's record, and the lock parallel renders share), `logo-check.mjs` (which logo-dependent layouts each brand can use), `test-examples.mjs` (regression test; `--refresh` rebuilds the approved images), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
+| `brands/` | Brand files: `default.json`, `medsoftwarehub.json`, and `_template.json` for a new site |
 | `examples/` | Approved specs for every layout |
 | `assets/` | Logo files a few examples use |
 

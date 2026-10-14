@@ -12,37 +12,30 @@
  "cards": [
   {
    "name": "NetSuite",
-   "sub": "$999/mo base",
    "logo": "netsuite.com"
   },
   {
    "name": "SAP Business One",
-   "sub": "From $95/user/mo",
    "logo": "sap.com"
   },
   {
    "name": "Dynamics 365",
-   "sub": "$80/user/mo",
    "logo": "microsoft.com"
   },
   {
    "name": "Acumatica",
-   "sub": "From $6,396/yr",
    "logo": "acumatica.com"
   },
   {
    "name": "Odoo",
-   "sub": "$24.90/user/mo",
    "logo": "odoo.com"
   },
   {
    "name": "Sage Intacct",
-   "sub": "From $15K/yr",
    "logo": "sage.com"
   },
   {
    "name": "Epicor Kinetic",
-   "sub": "$1,500/mo base",
    "logo": "epicor.com"
   }
  ]

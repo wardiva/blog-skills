@@ -1,6 +1,7 @@
 {
- "_note": "The user's record of which layouts are used on the site, kept on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q, collection \"usage\"). For every layout listed here it is the truth as of recordedAt (an older history image the user marked not used never went live); images delivered after recordedAt are added on top. A layout not used yet is free for any article it suits and goes first; a used layout cannot be used again in a category listed here, only in a different one. scripts/usage.mjs applies it.",
+ "_note": "The user's record of which layouts are used on the site, kept on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q, collection \"usage\"). For every layout listed here it is the truth as of recordedAt (an older history image the user marked not used never went live); every image rendered (drafts too), reserved or delivered after recordedAt that isn't superseded is added on top. A layout not used yet is free for any article it suits and goes first; a used layout cannot be used again in a category listed here, only in a different one. scripts/usage.mjs applies it.",
  "source": "The user's own selections on the Template Usage page (all 30 layouts, Save all & finish).",
+ "brand": "medsoftwarehub",
  "recordedAt": "2026-10-14T19:46:04.294Z",
  "updatedAt": "2026-10-15",
  "layouts": {

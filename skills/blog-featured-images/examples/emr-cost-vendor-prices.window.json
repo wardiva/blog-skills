@@ -3,30 +3,22 @@
  "category": "clinical-software",
  "mode": "window",
  "slug": "emr-cost-vendor-prices",
- "window": {
-  "search": "",
-  "action": ""
- },
  "list": {
   "icon": "ph ph-currency-dollar",
   "heading": "EMR Software Cost",
-  "sub": "",
   "rows": [
    {
     "title": "DrChrono",
-    "sub": "",
     "meta": "$30",
     "logo": "drchrono.com"
    },
    {
     "title": "SimplePractice",
-    "sub": "",
     "meta": "$49–$99",
     "logo": "simplepractice.com"
    },
    {
     "title": "eClinicalWorks",
-    "sub": "",
     "meta": "$449",
     "logo": "eclinicalworks.com"
    }
@@ -34,8 +26,7 @@
  },
  "detail": {
   "question": "2–5 providers, year one?",
-  "heading": "$40K–$150K",
-  "points": []
+  "heading": "$40K–$150K"
  },
  "bleed": true,
  "cursor": [
