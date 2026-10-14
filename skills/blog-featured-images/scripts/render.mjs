@@ -483,9 +483,9 @@ ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.
 
 // "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
 function cbDark() {
-  // top-left: the product's own icon on a white tile (user reference), never the site mark
+  // top-left: the product's own icon on a white tile (user reference), never the site mark; the icon is recoloured to the field's black #0A0A0B
   const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 620), d = spec.panelLogoUrl || spec.panelLogo;
-  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${d ? cbTile(d, 96, 120, 90, 0.24, spec.product || '').replace(/box-shadow:[^"]*/, 'box-shadow:none') : ''}
+  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${d ? cbTile(d, 96, 120, 90, 0.24, spec.product || '').replace(/box-shadow:[^"]*/, 'box-shadow:none').replace('<img ', '<img data-white="#0A0A0B" ') : ''}
 <div style="position:absolute;left:120px;bottom:110px;width:620px">
 ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
 <div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline)}</div></div>
@@ -540,14 +540,14 @@ function cbVersusSlash() {
 
 // shared: turn panel marks white (used by versus/duo and dark)
 const WHITE_MARK_JS = `<script>
-// turn each panel mark white: estimate the background from the corners, keep the ink as alpha
-function duoWhite(img){if(img.dataset.done)return;img.dataset.done=1;try{const w=img.naturalWidth,h=img.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(img,0,0);
+// recolour each mark (white, or the hex in data-white): estimate the background from the corners, keep the ink as alpha
+function duoWhite(img){if(img.dataset.done)return;img.dataset.done=1;try{const hx=img.dataset.white,C=hx[0]==='#'?[1,3,5].map((k)=>parseInt(hx.slice(k,k+2),16)):[255,255,255];const w=img.naturalWidth,h=img.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(img,0,0);
 const id=x.getImageData(0,0,w,h),d=id.data,px=(a,b)=>(b*w+a)*4,cs=[[1,1],[w-2,1],[1,h-2],[w-2,h-2]].map(([a,b])=>d.subarray(px(a,b),px(a,b)+4));
 const opaque=cs.every((p)=>p[3]>200),bg=opaque?[0,1,2].map((k)=>cs.reduce((s,p)=>s+p[k],0)/4):null;
 for(let i=0;i<d.length;i+=4){let a=d[i+3]/255;if(bg){const dist=(Math.hypot(d[i]-bg[0],d[i+1]-bg[1],d[i+2]-bg[2])-45)/110;a=Math.max(0,Math.min(1,dist))*a;}else{const lum=(d[i]+d[i+1]+d[i+2])/765;a=a*(lum>0.92?0:1);}
-d[i]=d[i+1]=d[i+2]=255;d[i+3]=Math.round(a*255);}
+d[i]=C[0];d[i+1]=C[1];d[i+2]=C[2];d[i+3]=Math.round(a*255);}
 x.putImageData(id,0,0);let x0=w,y0=h,x1=-1,y1=-1;for(let b=0;b<h;b++)for(let a=0;a<w;a++)if(d[(b*w+a)*4+3]>40){if(a<x0)x0=a;if(a>x1)x1=a;if(b<y0)y0=b;if(b>y1)y1=b;}
-if(x1<0){img.src=c.toDataURL('image/png');return;}const cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');o.width=cw;o.height=ch;o.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);img.src=o.toDataURL('image/png');
+if(x1<0){img.src=c.toDataURL('image/png');return;}const cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');o.width=cw;o.height=ch;o.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);img.src=o.toDataURL('image/png');if(!img.closest('.wm'))return;
 if(cw/ch>2.2&&cw<300){const box=img.closest('.wm');box.style.display='none';const nm=box.nextElementSibling;if(nm){nm.style.fontSize='88px';nm.style.fontWeight='700';nm.style.letterSpacing='-.03em';}return;}
 if(cw/ch>2.2){const box=img.closest('.wm');box.style.width='380px';img.style.maxWidth='380px';img.style.width='360px';img.style.height='auto';img.style.maxHeight='120px';const nm=box.nextElementSibling;if(nm)nm.style.display='none';}}catch(e){}}
 document.querySelectorAll('img[data-white]').forEach((im)=>{const go=()=>duoWhite(im);if(im.complete&&im.naturalWidth)go();else im.addEventListener('load',go,{once:true});});
