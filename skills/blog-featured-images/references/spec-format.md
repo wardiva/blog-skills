@@ -164,9 +164,55 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 - The layout for articles about **one product** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category. An X vs Y title is refused ("FAIRNESS CHECK FAILED").
 - `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). `panelLogo` is the product's domain (or `"../assets/<file>.png"`); it fills both spots automatically: white on the panel, and black `#0A0A0B` on the white tile top-left (the site mark is never shown). `product` is the name shown under the mark.
 
+- A topic article with no single product (e.g. "What is EMR software") uses `"panelIcon": "ph ph-file-text"` (any Phosphor class) instead of `panelLogo`: black on the white tile top-left, large and white on the panel, in the site blue unless `color` is set. Never the site mark.
 ## Logotype (`"mode": "logotype"`; single product with a black logo)
 ```json
 { "mode": "logotype", "product": "Notion", "logotype": "notion.com" }
 ```
 - Only for a single-product article whose logo is **black** (icon and wordmark) with strong typography; may repeat up to 2 times per category. Coloured logos use `dark`.
 - `logotype`: the product's domain (the renderer fetches its full lockup and keeps the black version) or `"../assets/<file>.png"`. The renderer splits the lockup: the icon goes in white on a black rounded tile beside the wordmark (an icon that is already a tile keeps its own); a logo with no separate icon is refused. No other text appears; the heading rule doesn't apply.
+
+---
+
+# Gumloop layouts (user references, approved Oct 2026)
+Six layouts after the user's Gumloop references. They paint their own canvas (`bg` is ignored); `"field"` picks the canvas from the layout's approved list (first = default), anything else is refused ("FIELD FIT FAILED"). `black` and `blue` count as vibrant (1 in 3, never neighbours). `light` is white in the grey frame. Logos are each brand's full **wordmark** (icon + typography): the renderer fetches it (Brandfetch `logo`, both themes, darkest ink kept; a white background is keyed out; pale near-white wordmark text is darkened so it reads), or uses `"../assets/<file>.png"`. A brand without a wordmark is typeset in bold Inter. Previews and approved specs: `examples/*.gumloop-*.json`, `references/approved/18-*.webp` to `28-*.webp`.
+
+## Versus type (`"mode": "versus", "variant": "type"`; fields: light, blue)
+```json
+{ "mode": "versus", "variant": "type", "field": "light", "left": { "label": "Odoo" }, "right": { "label": "Sage Intacct" } }
+```
+- The names exactly as the article writes them, big and bold; a small "vs" centred between them; the right name takes the accent (`right.color` for a brand colour on the light field). Long pairs stack (name / vs / name). No headline, so the heading rule doesn't apply; the names carry the title. Rejected: the black field.
+
+## Versus tiles (`"mode": "versus", "variant": "tiles"`; fields: blue, black, light)
+```json
+{ "mode": "versus", "variant": "tiles", "field": "blue", "headline": "AdvancedMD vs athenahealth", "sub": "for Multi-Location Practices",
+  "left": { "label": "AdvancedMD", "logo": "advancedmd.com" }, "right": { "label": "athenahealth", "logo": "athenahealth.com" } }
+```
+- Each tile is the brand's **own app icon filled with its brand colour**, edge to edge (user): a mark on a white tile is rejected. Both brands need one (Brandfetch icon or a square app icon in `../assets/`), or the layout is refused ("TILES LOGO CHECK FAILED"): use versus/type or versus/glass instead. `headline` follows the heading rule; `sub` is the title's own angle (optional). Sparse dot field and a faint ring: keep the pattern quiet.
+
+## Versus glass (`"mode": "versus", "variant": "glass"`; fields: light, black, blue)
+```json
+{ "mode": "versus", "variant": "glass", "field": "light", "left": { "label": "athenahealth", "logo": "athenahealth.com" }, "right": { "label": "eClinicalWorks", "logo": "../assets/eclinicalworks-wordmark.png" } }
+```
+- Both wordmarks in their original colours on a frosted bar over a mesh gradient. Best when both brands have strong wordmarks; check each one reads on the light bar. The blue mesh was approved in round 2.
+- The wordmarks must **name the products**: a parent-brand mark alone (SAP for SAP Business One, Microsoft for Dynamics 365, Sage for Sage Intacct) fails Fact QA, so use another versus layout for those. An ultra-wide lockup (over 9:1, e.g. Oracle NetSuite at ~13:1) is refused ("GLASS LOGO CHECK FAILED"): save a compact lockup to assets or use another versus layout. The renderer measures each wordmark's lettering (type, not icon) and sizes both so their lettering matches, inside the bar.
+
+## Swap (`"mode": "swap"`; fields: light, black)
+```json
+{ "mode": "swap", "field": "black", "left": { "label": "On-premise" }, "right": { "label": "Cloud ERP" } }
+```
+- Old → new: `left` is the old thing, `right` the new one (soft glow behind it, `right.color` tints the glow). Each side is a wordmark (`logo`) or the article's own words (labels over ~11 characters break onto two lines). For switch/migration, "what is X" (old way → X) and "is X worth it" (in-house → outsourced).
+- The labels carry the title's subject ("Old EMR" → "New EMR", not "Old system" → "New system"): swap has no headline.
+
+## Badge (`"mode": "badge"`; field: light)
+```json
+{ "mode": "badge", "title": "HIPAA Compliance Software Cost", "value": "$99–$749/mo", "note": { "muted": "Most practices", "strong": "$150–$750" } }
+```
+- `title` (heading rule applies) or `logo` (a product's wordmark) on top; `value` = the key figure with its unit/qualifier (one figure or range, ≤ ~14 characters); `note` = a muted label + a bold value (or `note.logo`), optional. The figures must agree (F3). `color` tints the box (default blue). Rejected: the blue field.
+- Keep `value` to about 12 characters so it stays the dominant line: abbreviate thousands as K ("$15K–$30K"), and keep the qualifier in `note` ("Solo provider" / "First year").
+
+## Brandline (`"mode": "brandline"`; the glow field only)
+```json
+{ "mode": "brandline", "headline": "What Is\nEMR Software?" }
+```
+- A big two-line `headline` (heading rule; ≤ 7 words, `\n` breaks the line) in near-black #0A0A0B, centred vertically on the left, on a light blue gradient with a soft glow bottom-right, faint dots and the crosshair rule. `logo` (a product's wordmark, original colours) sits top-left only for a single-product article. Never the site mark or site name. No `color`/`look`: the tint and deep navy looks, blue headline ink, other colours and the low headline position were rejected.

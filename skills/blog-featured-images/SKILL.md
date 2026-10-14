@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) - 13 modes / 19 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge, brand headline) - 16 modes / 25 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog Featured Images
@@ -129,7 +129,7 @@ When a category's least-used tier already has one use each, add a new variant be
 
 Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`, `paper`, `cream`, `g5`), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. Headline layouts paint their own canvas.
 
-## Layouts: 13 modes, 19 layouts
+## Layouts: 16 modes, 25 layouts
 
 **Card layouts** (light fields, white UI cards):
 
@@ -159,6 +159,19 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 | `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant); up to 5 per category |
 | `dark` | black, the product's icon in black (#0A0A0B) on a white tile top-left, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | single-product articles; never X vs Y (vibrant); up to 3 per category |
 | `logotype` | the product's black logo: its icon in white on a black rounded tile beside the black wordmark, large and centred on cream with a faint grid; no other text | single-product articles whose logo is **black** with strong typography; up to 2 per category |
+
+**Gumloop layouts** (user references, approved Oct 2026; they paint their own canvas, `bg` is ignored). Set `"field"` to one of the layout's approved fields (first = default); anything else is refused ("FIELD FIT FAILED"). The black and blue fields count as vibrant. Logos are each brand's full **wordmark** (icon + typography), fetched automatically; a brand without one is typeset in Inter:
+
+| Layout | Shows | Best for | Fields (default first) |
+| --- | --- | --- | --- |
+| `versus/type` | the two names set big and bold, a small centred "vs", the second name in the accent, on a faint "+" grid | X vs Y (names, no logos) | light, blue |
+| `versus/tiles` | two tilted tiles, each the brand's **own app icon filled with its brand colour** (edge to edge, never a mark on white), above a big "A vs B" headline and the title's angle as a subline, sparse dot field, faint ring | X vs Y, only when both brands have a filled app icon ("TILES LOGO CHECK FAILED" otherwise: use type or glass) | blue, black, light |
+| `versus/glass` | both full wordmarks in their own colours on a frosted glass bar over a mesh gradient | X vs Y, brands with strong wordmarks | light, black, blue |
+| `swap` | the old thing → a dashed loop arrow → the new thing with a soft glow, "+" grid | switch, migration, "is X worth it", "old way → new way" | light, black |
+| `badge` | a title (or logo), the key figure in a tinted rounded box, a muted + bold line under it, sparse dots | cost and stat articles | light |
+| `brandline` | a big two-line near-black headline centred vertically on the left, on a light blue gradient with a soft glow, faint dots and a crosshair rule; the product's own wordmark top-left only for a single-product article | single-product or general articles | glow only |
+
+`brandline` never shows the site mark or the site name (the user rejected it): with no single product, the headline stands alone.
 
 ## The Rules
 
@@ -276,6 +289,9 @@ Never work around a refusal with `--force` or another folder.
 | `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 2+ window rows), or pick a layout that suits fewer facts |
 | `FAIRNESS CHECK FAILED` | An X vs Y article: use a versus layout that shows both products |
 | `LOGO FILE MISSING` | Put the logo file in `featured-images/assets/` and reference it relative to the spec |
+| `FIELD FIT FAILED` | That Gumloop layout doesn't use this field: use one it lists, or leave `field` out for its default |
+| `GLASS LOGO CHECK FAILED` | A wordmark is too wide for the glass bar: save a compact lockup (4:1 or narrower) to `featured-images/assets/`, or use another versus layout |
+| `TILES LOGO CHECK FAILED` | A brand has no app icon filled with its own colour: use versus/type, versus/glass or another comparison layout (or save the brand's square app icon to `featured-images/assets/`) |
 | `FINAL IMAGE LOCKED` | That article's image was already delivered and is permanent. Don't re-create it; a new article needs its own slug and folder. Redo it only if the user explicitly asks (`--force`) |
 
 ## Setup

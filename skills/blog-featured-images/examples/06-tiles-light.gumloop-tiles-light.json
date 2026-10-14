@@ -1,0 +1,19 @@
+{
+  "articleTitle": "Microsoft Dynamics 365 vs Acumatica for Growing Businesses (2026)",
+  "brand": "medsoftwarehub",
+  "mode": "versus",
+  "variant": "tiles",
+  "field": "light",
+  "headline": "Dynamics 365 vs Acumatica",
+  "sub": "for Growing Businesses",
+  "left": {
+    "label": "Dynamics 365",
+    "logo": "microsoft.com"
+  },
+  "right": {
+    "label": "Acumatica",
+    "logo": "acumatica.com"
+  },
+  "category": "<category>",
+  "slug": "<slug>"
+}

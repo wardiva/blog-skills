@@ -144,6 +144,8 @@ Keep this context: you may get re-rendered images to re-check.
 - a mark on a white tile in connect
 - rounded outer pill ends or watercolour blotches on the pills
 - any text weight other than Inter 500 Medium in pills, connect, duo or dark
+- versus/type on the black field, badge on the blue field, or brandline with the site mark/name, blue headline ink, another colour or a low headline (Gumloop layouts)
+- busy patterns on the Gumloop layouts: dot grids and the tiles ring stay sparse and faint
 - a slash name in one colour (white is always part of it), or slash names made bigger than their auto-fit size
 
 FAIL any image that brings one back.

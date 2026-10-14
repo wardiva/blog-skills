@@ -20,7 +20,7 @@ const ri = args.indexOf('--reserve');
 const reqs = ri >= 0 ? args.slice(ri + 1).filter((a) => !a.startsWith('--')) : [];
 const batchSlugs = new Set(reqs.map((r) => r.split('=')[0]));
 let hist = history.filter((e) => e.final || !batchSlugs.has(e.slug));   // re-planning replaces a slug's old entry; delivered entries always stay
-const usage = () => Object.fromEntries(ALL.map((l) => [l, hist.filter((e) => e.category === category && layoutOf(e) === l).length]));
+const usage = () => Object.fromEntries(ALL.map((l) => [l, hist.filter((e) => e.category === category && !e.superseded && layoutOf(e) === l).length]));   // superseded = a delivered design the user rejected and had replaced
 const errors = [];
 for (const r of reqs) {
   const [slug, rest] = r.split('='); const [lay, topic] = (rest || '').split('@');
@@ -28,7 +28,7 @@ for (const r of reqs) {
   if (!ALL.includes(layout)) { errors.push(`${slug}: unknown layout ${layout}`); continue; }
   if (history.some((e) => e.slug === slug && e.final)) { errors.push(`${slug}: already delivered (final); delivered images can't be re-created`); continue; }
   const u = usage(), min = Math.min(...ALL.filter((l) => !REPEATABLE[l]).map((l) => u[l]));
-  if (u[layout] > min && !(REPEATABLE[layout] && u[layout] < REPEATABLE[layout])) { errors.push(`${slug}: ${layout} used ${u[layout]}x, least-used are: ${ALL.filter((l) => u[l] === min).join(', ')}`); continue; }
+  if (!args.includes("--user-pick") && u[layout] > min && !(REPEATABLE[layout] && u[layout] < REPEATABLE[layout])) { errors.push(`${slug}: ${layout} used ${u[layout]}x, least-used are: ${ALL.filter((l) => u[l] === min).join(', ')}`); continue; }
   if (topic && hist.some((e) => e.topic === topic && e.mode === mode)) { errors.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
   hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, at: new Date().toISOString() });
 }

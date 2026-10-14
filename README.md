@@ -1,10 +1,10 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in two families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), and Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream). It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in three families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream), and Gumloop-style layouts (bold type vs, tilted app-icon tiles, a frosted wordmark bar, a switch arrow, a figure badge, a brand headline). It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
-*A selection from the finalized reference set: card layouts (top) and all six headline layouts (bottom). The same images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
+*A selection from the finalized reference set: card layouts (top), the six headline layouts (middle) and the Gumloop layouts (bottom). The same images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
 
 Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
@@ -87,6 +87,8 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `LOGOTYPE CHECK FAILED` | `logotype` needs a black logo with a separate icon; coloured logos use `dark` |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
+| `FIELD FIT FAILED` | A Gumloop layout only takes its approved fields |
+| `TILES LOGO CHECK FAILED` / `GLASS LOGO CHECK FAILED` | `versus/tiles` needs both brands' filled app icons; `versus/glass` needs wordmarks that fit the bar |
 | `LOGO FILE MISSING` | A logo file named in the spec isn't in `featured-images/assets/` |
 | `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
 | `CONTENT CHECK FAILED` | Each layout needs enough real facts to fill its frame |
@@ -99,7 +101,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **One bold blue anchor**, white UI cards, navy headlines on card layouts (near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (13 modes, 19 layouts)
+## Layouts (16 modes, 25 layouts)
 
 **Card layouts:**
 
@@ -128,6 +130,17 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `dark` | Single-product articles (review, pricing, features): the product's icon in black on a white tile top-left, its colour as the panel, white logo; up to 3 per category |
 | `logotype` | Single-product articles with a black logo: icon on a black tile beside the wordmark, on cream with a faint grid; up to 2 per category |
 
+**Gumloop layouts** (after the user's Gumloop references; each has its own approved fields, set with `"field"`; black and blue fields count as vibrant; logos are each brand's full wordmark):
+
+| Layout | Best for | Fields |
+|---|---|---|
+| `versus/type` | X vs Y as big bold names with a small centred "vs" on a faint "+" grid | light, blue |
+| `versus/tiles` | X vs Y with two tilted tiles, each the brand's own filled app icon, above the headline | blue, black, light |
+| `versus/glass` | X vs Y with both full wordmarks on a frosted glass bar over a mesh gradient | light, black, blue |
+| `swap` | Switch, migration, "old way → new way": old → dashed loop arrow → new | light, black |
+| `badge` | Cost and stat articles: the key figure in a tinted rounded box | light |
+| `brandline` | Single-product or general articles: a big near-black headline on a light blue glow | glow |
+
 ## Add your own site
 
 Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours, and optionally `markUrl` (the site's own square icon) and `markName` for the site mark (card layouts only). Then set `"brand": "<site>"` in specs. Variety history is kept separately per brand.
@@ -144,6 +157,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `references/lessons.md` | Speed tools, gotchas, pre-flight checks, taste |
 | `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `logo-check.mjs` (which logo-dependent layouts each brand can use), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
 | `examples/` | Approved specs for every layout |
+| `assets/` | Logo files a few examples use |
 
 ## Troubleshooting
 

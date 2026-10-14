@@ -1,0 +1,19 @@
+{
+  "articleTitle": "AdvancedMD vs athenahealth for Multi-Location Practices (2026)",
+  "brand": "medsoftwarehub",
+  "mode": "versus",
+  "variant": "tiles",
+  "field": "blue",
+  "headline": "AdvancedMD vs athenahealth",
+  "sub": "for Multi-Location Practices",
+  "left": {
+    "label": "AdvancedMD",
+    "logo": "advancedmd.com"
+  },
+  "right": {
+    "label": "athenahealth",
+    "logo": "athenahealth.com"
+  },
+  "category": "<category>",
+  "slug": "<slug>"
+}

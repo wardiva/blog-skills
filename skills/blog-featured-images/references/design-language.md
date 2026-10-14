@@ -243,3 +243,7 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 ## 14. Borrow Principles, Never Ornaments
 
 Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments: variety comes from layout, never from palette or type.
+
+## 15. Gumloop layouts (user references, Oct 2026)
+
+Six layouts after the user's Gumloop references: `versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`, `brandline` (specs in `spec-format.md`). They keep the references' composition, patterns ("+" grid, sparse dot field, crosshair rule) and type scale, in our family: Inter 700 for names, our blue accent, the grey frame on white, the deep-dunes blue and black (both vibrant). Each layout uses only its approved fields (type: light, blue; tiles: blue, black, light; glass: light, black, blue; swap: light, black; badge: light; brandline: the glow field only). Logos are full wordmarks in their own colours on light surfaces and white on dark fields. Keep patterns quiet: the user rejected busy dot grids. `brandline` has a near-black headline centred vertically and never shows the site mark or name.

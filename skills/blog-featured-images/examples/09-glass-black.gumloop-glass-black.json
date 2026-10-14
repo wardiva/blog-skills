@@ -1,0 +1,17 @@
+{
+  "articleTitle": "Odoo vs Sage Intacct for Small to Mid-Size Businesses (2026)",
+  "brand": "medsoftwarehub",
+  "mode": "versus",
+  "variant": "glass",
+  "field": "black",
+  "left": {
+    "label": "Odoo",
+    "logo": "../assets/odoo-wordmark.png"
+  },
+  "right": {
+    "label": "Sage Intacct",
+    "logo": "sage.com"
+  },
+  "category": "<category>",
+  "slug": "<slug>"
+}

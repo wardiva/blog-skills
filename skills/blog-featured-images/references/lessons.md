@@ -75,3 +75,23 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 - Use the article's own wording for names and numbers; QA compares every value against the article file.
 - Raw article text (agent-browser) beats a summary (WebFetch) for checking facts.
 - Never invent sample values (patient names, drugs); use the article's own words.
+
+## 8. The Gumloop layouts (Oct 2026)
+
+- Six new layouts from the user's Gumloop references: versus/type, versus/tiles, versus/glass, swap, badge, brandline. Approved fields only: type light/blue, tiles blue/black/light, glass light/black, swap light/black, badge light, brandline glow only (the renderer refuses the rest).
+- The user's review notes that stayed: "vs" vertically centred between the names; patterns (dot grids, the tiles ring) kept sparse and faint ("pattern is too much"); the "+" grid is fine as is.
+- Rejected: versus/type on black, badge on the blue field, brandline in any look but the glow field with a black centred headline (the tint and deep navy looks, blue headline ink, the Med Software Hub mark and name, the low headline position). Glass on the blue mesh was approved in round 2.
+- Inline `style="background:url("…")"` breaks on the inner double quotes: put data-URI backgrounds in a `<style>` block (the `glBg` helper).
+- A per-image review page (Approve / Disapprove + a note, saved to the page's database) made the decisions fast; read them back with ArtifactData.
+- First test run (6 articles, full Maker + QA flow) fixed in the renderer: swap labels capped inside x 210-1390; the pale-wordmark darkening only touches free-standing pale ink (SAP's white letters stay white); the glass bar stays inside the card; glass sizes both wordmarks by their measured lettering height (type, not icon) and refuses lockups wider than 9:1 ("GLASS LOGO CHECK FAILED"); the vibrant refusal names black layouts too.
+- Glass needs wordmarks that name the products (a parent mark like SAP for SAP Business One fails Fact QA); use tiles or type for those. Badge values stay short (abbreviate thousands as K). Swap labels carry the title's subject ("Old EMR" -> "New EMR").
+
+## 9. Batch-3 review (Oct 2026)
+
+- The user judges variety across EVERY image they have seen, not per category: a layout they recognise from an earlier batch ("this template is already used") is rejected even in another category. Prefer layouts the user hasn't seen recently.
+- versus/tiles: brand-filled app icons only, edge to edge; a mark on a white tile is rejected (renderer refuses it).
+- When the user asks for a comparison layout on a duplicate-topic article, their request beats the same-topic rule: drop the "topic" and use a versus variant the first article didn't.
+- Single-topic "what is X" articles may use `dark` with `panelIcon` (no product logo, no site mark).
+- Stack: keep it to the title plus one lead line when the lead already carries the figure ("too much text").
+- Batch-3 round 2: the user LOVES `dark` but only with a real product logo: never on a topic article with an icon ("icon is not looking good"). Save it for single-product articles.
+- Nearly every layout has now been seen by the user; when the least-used set runs dry, build new originals in the same family rather than repeat.

@@ -1,0 +1,19 @@
+{
+  "articleTitle": "ModMed vs Nextech for Dermatology Practices (2026)",
+  "brand": "medsoftwarehub",
+  "mode": "versus",
+  "variant": "tiles",
+  "field": "black",
+  "headline": "ModMed vs Nextech",
+  "sub": "for Dermatology Practices",
+  "left": {
+    "label": "ModMed",
+    "logo": "../assets/modmed-icon.png"
+  },
+  "right": {
+    "label": "Nextech",
+    "logo": "../assets/nextech-icon.png"
+  },
+  "category": "<category>",
+  "slug": "<slug>"
+}

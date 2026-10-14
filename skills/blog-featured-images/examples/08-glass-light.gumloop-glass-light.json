@@ -1,0 +1,17 @@
+{
+  "articleTitle": "Athenahealth Vs Eclinical works For Small Practices (2026)",
+  "brand": "medsoftwarehub",
+  "mode": "versus",
+  "variant": "glass",
+  "field": "light",
+  "left": {
+    "label": "athenahealth",
+    "logo": "athenahealth.com"
+  },
+  "right": {
+    "label": "eClinicalWorks",
+    "logo": "../assets/eclinicalworks-wordmark.png"
+  },
+  "category": "<category>",
+  "slug": "<slug>"
+}
