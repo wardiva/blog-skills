@@ -68,7 +68,7 @@ Read these before your first image in a session:
 | `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant) |
 | `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand, never X vs Y (vibrant) |
 
-The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants). **Favourites repeat:** `versus/slash` and `versus/connect` may each be used up to 5 times per category instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants). **Favourites repeat:** `versus/slash`, `versus/connect` and `versus/duo` may each be used up to 5 times per category instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
 ## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.

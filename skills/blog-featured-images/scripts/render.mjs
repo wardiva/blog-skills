@@ -539,7 +539,7 @@ function cbVersusSlash() {
 }
 
 // "versus/duo" (user reference, Chatbase "Zendesk and Zendesk Sunshine"): black field, tag pill and a big light-weight white
-// headline top-left, site mark top-right; two watercolour panels below, each in that brand's own colour (or the subtle blue),
+// headline top-left (no site mark); two watercolour panels below, each in that brand's own colour (or the subtle blue),
 // carrying the brand's mark in white plus its name. The mark is turned white in the page: background removed, ink kept as alpha.
 function cbVersusDuo() {
   const L = spec.left, R = spec.right, head = spec.headline || `${L.label} vs\n${R.label}`, fs = cbFs(head, 116, 1100);
@@ -552,7 +552,7 @@ function cbVersusDuo() {
 <b style="font-size:46px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(d.label)}</b></div></div>`;
   };
   return `${CB_CSS}<style>.wm .lg{background:transparent!important;box-shadow:none!important;padding:0!important;width:auto!important;height:110px!important;overflow:visible}.wm .lg img{width:auto;max-width:200px;height:110px;object-fit:contain}.wm .lg.full{border-radius:0}</style>
-<div class="cbf" style="background:#0A0A0B"></div>${cbMark().replace('class="cbm"', 'class="cbm" style="left:auto;right:96px"')}
+<div class="cbf" style="background:#0A0A0B"></div>
 ${spec.tag ? `<div style="position:absolute;left:96px;top:90px;display:inline-flex;align-items:center;gap:14px;padding:14px 28px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px"><i style="width:14px;height:14px;border-radius:50%;background:#F472B6;display:block"></i>${esc(spec.tag)}</div>` : ''}
 <div class="cbh" style="left:96px;top:${spec.tag ? 190 : 110}px;width:1180px;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(head).replace(/class="bt"/g, 'style="color:#fff"')}</div>
 ${panel(L, 0, 28)}${panel(R, 1, 816)}
