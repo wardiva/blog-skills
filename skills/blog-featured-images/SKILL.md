@@ -25,11 +25,11 @@ Read these before your first image in a session:
 
 ## The hard rules
 1. **The heading mirrors the blog title:** its own words, shorter (drop the year and filler). Set `"articleTitle"` in every spec ("HEADING CHECK FAILED" otherwise).
-2. **Only the article's own facts** (numbers, names, steps, comparisons) in its own wording. Never invent anything.
+2. **Only the article's own facts** (numbers, names, steps, comparisons) in its own wording. Never invent anything. **Keep qualifiers** ("per provider", "up to", "from", "minimum"): a figure without its qualifier is wrong. Figures shown together never contradict each other.
 3. **Easy to understand:** one idea, one focal point, visual first (icon, logo, number, arrow, bars). Check it at 350×250.
 4. **Minimal (enforced):** at most **15 visible words**, max 7 per element, no sentences ("TEXT CHECK FAILED"). Secondary lines only when they are the story. Never fill space.
 5. **Different every time (enforced):** a layout (mode + variant) never repeats in a category until all have been used; same-topic articles never share a mode ("VARIETY CHECK FAILED"). A site-wide history per brand records every render.
-6. **Logos where products are named:** `"logo": "<domain>"`; the renderer's free chain finds it. Logos fill ~65% of their tile; app icons become the tile.
+6. **Logos where products are named:** `"logo": "<domain>"`; the renderer's free chain finds it, fits badges to their tile and darkens pale grey marks. **Check every logo is the brand's real current mark** (not a campaign or anniversary badge). If it isn't, save the official mark from the brand's own website to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`.
 7. **Background fits the illustration (enforced):** leave `bg` out and the renderer picks the layout's best light background; anything outside the layout's fit list is refused ("BACKGROUND FIT FAILED"). Blue-heavy illustrations get a neutral field.
 8. **Vibrant + subtle mix (enforced):** the deep-dunes blue (`"bg": "blue"`, only for `checklist`, `versus/table`, `window`, `before-after/flow`) and the black layouts (`dark`, `versus/slash`) together appear on about 1 in 3 images per category, never neighbours ("VIBRANT CHECK FAILED", "VIBRANT FIT FAILED").
 9. **Visual appeal is a hard gate:** an image that passes every check but doesn't look good fails QA (blue dosage, logo balance, logos only, figure/ground, balance).
@@ -37,6 +37,7 @@ Read these before your first image in a session:
 11. **Site mark only sometimes (enforced):** `"craft": true` + `"series"` adds the site mark + series tag, in a natural empty slot, on at most 1 in 3 images, never neighbours ("SERIES CHECK FAILED").
 12. **White designs sit in a grey frame:** a white rounded panel inset 28px on `#F2F2F3` (automatic in `versus/pills` and `versus/connect`).
 13. **Delivered images are permanent (enforced):** once QA passes and the user has the images, finalize them (`scripts/finalize.mjs`). A finalized image keeps its files in `featured-images/<slug>/`, stays in the site history and the folder ledger forever (it keeps counting for layout rotation), and is never re-created or overwritten ("FINAL IMAGE LOCKED"). Redo one only when the user explicitly asks.
+14. **Enough content, fair comparisons (enforced):** each layout needs enough real content to fill its frame ("CONTENT CHECK FAILED"), and an X vs Y article always shows both products ("FAIRNESS CHECK FAILED": `dark` is for single-brand articles).
 
 ## Layouts: 12 modes, 18 layouts
 
@@ -54,7 +55,7 @@ Read these before your first image in a session:
 | `ranked` | bars ranked by a real metric | rankings | sky, g5 | no |
 | `timeline` | steps on a track + callout | process, "how long" | cream, sky | no |
 | `checklist` | tilted checklist card with progress | how to choose, requirements | g5, sky | **yes** |
-| `prompt` | faded panel, headline, pill bar | cost, FAQ, "what is" | paper, cream | no |
+| `prompt` | faded panel, headline, pill bar | cost, FAQ, "what is" | paper, sky | no |
 | `stack` | takeaway card, two cards peeking from the top | one key rule | g5, cream | no |
 | `window` | app window: list pane + detail pane | vendor lists, pricing | sky, g5 | **yes** |
 
@@ -65,7 +66,7 @@ Read these before your first image in a session:
 | `versus/pills` | two facing blue pills with the logos at the tips, the question below | X vs Y |
 | `versus/connect` | centred headline, two logo tiles linked to a VS circle, dot patches | X vs Y |
 | `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
-| `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand (vibrant) |
+| `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand, never X vs Y (vibrant) |
 
 The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants plus `dark`). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
@@ -83,6 +84,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
    ```bash
    node "<skill-dir>/scripts/render.mjs" "featured-images/specs/<slug>.json" --out "featured-images/<slug>"
    ```
+   `featured-images/` lives in the user's project folder, never in a temporary or scratch folder. Fix renderer problems in the skill itself, then say so in the delivery note.
    Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… bg=… words=N/15`.
 4. **QA:** `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out featured-images/qa-sheet.png --highlight <slugs>`, then one QA agent.
 5. **Fix** only the failures, in parallel. **Deliver** the QA-passed images as a contact sheet with each layout and the facts used. Ask before uploading anything to a website.
@@ -90,7 +92,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
    ```bash
    node "<skill-dir>/scripts/finalize.mjs" --brand <b> <slug> <slug> ...
    ```
-   `--list` shows every delivered image.
+   It also copies each image and its spec to `~/.blog-featured-images/delivered/<brand>/<slug>/`. `--list` shows every delivered image.
 7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick.
 
 **When the renderer refuses** (never work around it with `--force` or another folder):
@@ -104,6 +106,9 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black); use a light background or a light layout |
 | `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` |
 | `SERIES CHECK FAILED` | Remove `"series"` |
+| `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 3+ window rows), or pick a layout that suits fewer facts |
+| `FAIRNESS CHECK FAILED` | An X vs Y article: use a versus layout that shows both products |
+| `LOGO FILE MISSING` | Put the logo file in `featured-images/assets/` and reference it relative to the spec |
 | `FINAL IMAGE LOCKED` | That article's image was already delivered and is permanent. Don't re-create it; a new article needs its own slug and folder. Redo it only if the user explicitly asks (`--force`) |
 
 ## Setup

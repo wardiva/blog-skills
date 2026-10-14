@@ -48,21 +48,40 @@ const LOGO_STYLE = ['color', 'mono', 'tint'].includes(spec.logoStyle) ? spec.log
 // (shown edge to edge, like an app icon, so dark tiles look intentional) -> lettermark. Without a Brandfetch ID, the Brandfetch steps are skipped.
 const bf = (d, type, fb) => `https://cdn.brandfetch.io/${encodeURIComponent(d)}/w/256/h/256/fallback/${fb}/type/${type}?c=${encodeURIComponent(BF_CLIENT)}`;
 const slugOfDomain = (d) => String(d).toLowerCase().replace(/^www\./, '').split('.')[0].replace(/[^a-z0-9]/g, '');
-const logoChain = (d, slug) => [
+const localLogo = (d) => {
+  if (/^https?:/.test(d)) return null;
+  const f = d.startsWith('file:') ? fileURLToPath(d) : path.resolve(path.dirname(specFile), d);
+  if (!/\.(png|svg|webp|jpe?g)$/i.test(f)) return null;
+  if (!fs.existsSync(f)) { console.error(`LOGO FILE MISSING: ${d} (looked for ${f}). Keep custom logos in featured-images/assets/ and reference them relative to the spec.`); process.exit(2); }
+  const ext = path.extname(f).slice(1).toLowerCase(), mime = ext === 'svg' ? 'image/svg+xml' : ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
+  return `data:${mime};base64,${fs.readFileSync(f).toString('base64')}`;
+};
+const logoChain = (d, slug) => localLogo(d) ? [[localLogo(d), '']] : /^https?:/.test(d) ? [[d, '']] : [   // a URL is used as is (e.g. a mark cut from the official icon)
   ...(BF_CLIENT ? [[bf(d, 'symbol', '404'), '']] : []),
   [`https://api.iconify.design/logos/${slug}-icon.svg`, ''],
   [`https://api.iconify.design/logos/${slug}.svg`, ''],
   [`https://cdn.simpleicons.org/${slug}`, ''],
   ...(BF_CLIENT ? [[bf(d, 'icon', 'lettermark'), 'full']] : [[`https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128`, '']]),
 ];
-const LOGO_JS = `<script>function lgNext(img){const c=JSON.parse(img.dataset.chain);const k=+(img.dataset.k||0)+1;if(k>=c.length){img.onerror=null;img.parentNode.classList.add('lgx');img.parentNode.textContent=img.dataset.l;return;}img.dataset.k=k;if(c[k][1])img.parentNode.classList.add(c[k][1]);img.src=c[k][0];}</script>`;
+// The square-icon step is only edge to edge when the icon really is a solid app tile (opaque, non-white corners).
+// A white or transparent square with a small or wide mark inside is cropped to the mark and sits in a normal white tile.
+const LOGO_JS = `<script>function lgNext(img){const c=JSON.parse(img.dataset.chain);const k=+(img.dataset.k||0)+1;if(k>=c.length){img.onerror=null;img.parentNode.classList.add('lgx');img.parentNode.textContent=img.dataset.l;return;}img.dataset.k=k;if(c[k][1]==='full')img.dataset.full='1';else if(c[k][1])img.parentNode.classList.add(c[k][1]);img.src=c[k][0];}
+function lgFit(img){if(img.dataset.full!=='1')return;img.dataset.full='done';const sp=img.parentNode;try{const w=img.naturalWidth,h=img.naturalHeight,cv=document.createElement('canvas');cv.width=w;cv.height=h;const x=cv.getContext('2d');x.drawImage(img,0,0);const d=x.getImageData(0,0,w,h).data;const at=(a,b)=>d.subarray((b*w+a)*4,(b*w+a)*4+4);
+const ink=(p)=>p[3]>40&&!(p[0]>232&&p[1]>232&&p[2]>232);const cs=[[2,2],[w-3,2],[2,h-3],[w-3,h-3]].map(([a,b])=>at(a,b));
+if(cs.every((p)=>p[3]>200&&ink(p))){sp.classList.add('full');return;}
+let x0=w,y0=h,x1=-1,y1=-1;for(let b=0;b<h;b++)for(let a=0;a<w;a++)if(ink(at(a,b))){if(a<x0)x0=a;if(a>x1)x1=a;if(b<y0)y0=b;if(b>y1)y1=b;}
+if(x1<0){sp.classList.add('full');return;}let ink2=0,tot=0,lum=0,sat=0;for(let b=y0;b<=y1;b+=2)for(let a=x0;a<=x1;a+=2){tot++;const p=at(a,b);if(ink(p)){ink2++;const mx=Math.max(p[0],p[1],p[2]),mn=Math.min(p[0],p[1],p[2]);lum+=(p[0]+p[1]+p[2])/3;sat+=mx?(mx-mn)/mx:0;}}
+const ar=(x1-x0+1)/(y1-y0+1),big=sp.offsetWidth>=90;if(big&&ar>0.8&&ar<1.25&&ink2/tot>0.6)sp.classList.add('badge');
+const pale=ink2&&sat/ink2<0.15&&lum/ink2>125;const m=Math.round(Math.max(x1-x0,y1-y0)*0.03),cw=x1-x0+1+2*m,ch=y1-y0+1+2*m,o=document.createElement('canvas');o.width=cw;o.height=ch;const ox=o.getContext('2d');
+ox.drawImage(cv,x0,y0,x1-x0+1,y1-y0+1,m,m,x1-x0+1,y1-y0+1);if(pale){const id=ox.getImageData(0,0,cw,ch),q=id.data;for(let k=0;k<q.length;k+=4){for(let c=0;c<3;c++)q[k+c]=Math.round(255*Math.pow(q[k+c]/255,3));}ox.putImageData(id,0,0);}img.src=o.toDataURL('image/png');}catch(e){sp.classList.add('full');}}</script>`;
 const logo = (d, size = 48, label = '') => {
   if (!d) return '';
   const chain = logoChain(d, slugOfDomain(d));
-  return `<span class="lg lg-${LOGO_STYLE}" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.46)}px"><img src="${chain[0][0]}" data-chain='${JSON.stringify(chain).replace(/'/g, '&#39;')}' data-l="${esc((label || slugOfDomain(d))[0].toUpperCase())}" onerror="lgNext(this)" alt=""></span>`;
+  return `<span class="lg lg-${LOGO_STYLE}" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.46)}px"><img src="${chain[0][0]}" data-chain='${JSON.stringify(chain).replace(/'/g, '&#39;')}' data-l="${esc(((label || slugOfDomain(d) || "?")[0] || "?").toUpperCase())}" onerror="lgNext(this)" onload="lgFit(this)" alt=""></span>`;
 };
 const LOGO_CSS = `.lg{display:inline-grid;place-items:center;flex:none;border-radius:14px;overflow:hidden;box-sizing:border-box}.lg img{width:100%;height:100%;object-fit:contain;display:block}
 .lg-color{background:#fff;padding:7px;box-shadow:0 0 0 1px rgba(20,26,38,.08)}
+.lg.badge{overflow:visible!important}.lg.badge img{transform:scale(1.38)}
 .lg.full{padding:0}.lg.full img{border-radius:inherit}.lg.lgx{font-weight:600;color:#5D6675;background:#EEF2F7}
 .lg-mono{background:#F1F3F6;padding:9px}.lg-mono img{filter:grayscale(1) contrast(1.15);opacity:.8;mix-blend-mode:multiply}
 .lg-tint{background:#E3F0FD;padding:9px}.lg-tint img{filter:grayscale(1) contrast(1.2);mix-blend-mode:luminosity;opacity:.75}`;
@@ -92,7 +111,7 @@ function versus() {
 .lgt{width:240px;height:240px;border-radius:56px;background:#fff;display:grid;place-items:center;box-shadow:0 30px 70px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
 .lgt .lg{box-shadow:none;background:transparent;padding:0}.lgt .lg:not(.full){border-radius:0;overflow:visible}.lgt:has(.lg.full){background:transparent}.lgt .lg.full{width:240px!important;height:240px!important;border-radius:56px}
 .lgs b{margin-top:30px;font-size:44px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;color:#0E2A5C}.l1 b,.l2 b{color:#0E2A5C}
-.lgs span{margin-top:18px;width:340px;box-sizing:border-box;padding:12px 0;border-radius:999px;background:#fff;box-shadow:0 0 0 1px rgba(20,26,38,.07),0 8px 20px rgba(30,60,110,.06);font-size:28px;color:#5D6675;white-space:nowrap;text-align:center}
+.lgs > span{margin-top:18px;width:340px;box-sizing:border-box;padding:12px 0;border-radius:999px;background:#fff;box-shadow:0 0 0 1px rgba(20,26,38,.07),0 8px 20px rgba(30,60,110,.06);font-size:28px;color:#5D6675;white-space:nowrap;text-align:center}
 .lgv{position:absolute;left:50%;top:120px;transform:translate(-50%,-50%);width:84px;height:84px;border-radius:50%;background:linear-gradient(150deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:27px;font-weight:600;box-shadow:0 0 0 6px #fff,0 2px 6px rgba(20,26,38,.08)}
 </style>
 ${spec.band === false ? '' : '<div class="lgband"></div>'}<div class="lgw">${side(L, 'l1')}${side(R, 'l2')}<div class="lgv">VS</div></div>`;
@@ -240,19 +259,23 @@ function stack() {
 // "window" (Granola app-window shots): a whole macOS-style window, list pane + detail pane, real text.
 function appwin() {
   const W = spec.window || {}, L = spec.list, D = spec.detail;
+  // the window fits its content: left = header + rows, right = question + heading + points. A short window is centred, never
+  // left with an empty bottom half; bleed only when the content is tall enough to reach the edge.
+  const nr = Math.min(L.rows.length, 5), leftH = 66 + 182 + (L.sub ? 30 : 0) + nr * 72 + 40, rightH = 66 + 40 + 48 + 96 + (D.points || []).length * 43 + 40;
+  const H = Math.max(leftH, rightH, 440), BLEED = spec.bleed && H >= 640, WT = BLEED ? 150 : Math.round((900 - H) / 2);
   const rows = L.rows.slice(0, 5).map((r, i) => `<div class="wr${i === L.highlight ? " wh" : ""}">${r.logo ? logo(r.logo, 46) : r.icon ? `<span class="wav"><i class="${esc(r.icon)}" aria-hidden="true"></i></span>` : `<span class="wav">${esc((r.title || '?').trim()[0])}</span>`}<div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
   return `<style>
-.win{position:absolute;left:${spec.bleed ? 230 : 210}px;top:${spec.bleed ? 150 : 95}px;width:${spec.bleed ? 1300 : 1180}px;height:${spec.bleed ? 820 : 720}px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
+.win{position:absolute;left:${BLEED ? 230 : 210}px;top:${WT}px;width:${BLEED ? 1300 : 1180}px;height:${BLEED ? 820 : H}px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
 .wt{height:66px;display:flex;align-items:center;gap:10px;padding:0 26px;border-bottom:1px solid #EEF0F4;background:#FAFBFC}
 .wt i.d{width:14px;height:14px;border-radius:50%}.wt .s{margin:0 auto;width:440px;height:38px;border-radius:10px;background:#EEF0F4;display:flex;align-items:center;justify-content:center;gap:10px;font-size:18px;color:#7F8794}
 .wt .a{font-size:18px;font-weight:500;color:#141A26;background:#EEF0F4;border-radius:10px;padding:8px 16px}
-.wb{display:grid;grid-template-columns:640px 1fr;height:654px}
+.wb{display:grid;grid-template-columns:640px 1fr;height:${(BLEED ? 820 : H) - 66}px}
 .wl{padding:40px 44px;border-right:1px solid #EEF0F4}
 .wi{width:54px;height:54px;border-radius:14px;background:#E3F0FD;display:grid;place-items:center;font-size:30px;color:#0A5FD8}
 .wl h2{margin:16px 0 4px;white-space:nowrap;font-size:${Math.min(42, Math.floor(552 / (String(spec.list.heading || "").length * 0.56 || 1)))}px;font-weight:600;letter-spacing:-.02em}.wl .ws{font-size:22px;color:#7F8794;margin-bottom:22px}
 .wr{display:flex;align-items:center;gap:16px;padding:13px 0}.wr .wav{width:46px;height:46px;border-radius:50%;background:#EEF2F7;display:grid;place-items:center;font-size:20px;font-weight:600;color:#5D6675;flex:none}
 .wr.wh{margin:0 -18px;padding:13px 18px;border-radius:16px;background:linear-gradient(90deg,#3B86F0,#0A5FD8);color:#fff}.wr.wh .wav{background:rgba(255,255,255,.2);color:#fff}.wr.wh span,.wr.wh em{color:rgba(255,255,255,.85)}.wr b{display:block;font-size:24px;font-weight:500}.wr span{font-size:19px;color:#7F8794}.wr em{margin-left:auto;font-style:normal;font-size:20px;color:#141A26;font-weight:500;white-space:nowrap}
-.wd{padding:40px ${spec.bleed ? 150 : 40}px 40px 40px}.wq{margin-left:${spec.bleed ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
+.wd{padding:40px ${BLEED ? 150 : 40}px 40px 40px}.wq{margin-left:${BLEED ? '0' : 'auto'};width:fit-content;max-width:440px;background:#F1F4F8;border-radius:18px;padding:12px 18px;font-size:20px;color:#141A26}
 .wd h3{margin:30px 0 16px;font-size:32px;font-weight:600;line-height:1.2;letter-spacing:-.015em}
 .wd ul{margin:0;padding:0 0 0 24px;display:grid;gap:12px;font-size:22px;line-height:1.4;color:#5D6675}
 </style>
@@ -265,7 +288,7 @@ function appwin() {
 // "timeline": steps on a track, steps up to the highlight filled, a callout card on the highlighted step.
 function timeline() {
   const n = spec.steps.length, h = spec.highlight ?? n - 1, x = (i) => 270 + i * (1060 / (n - 1));
-  const cw = 440, cx = Math.min(Math.max(x(h) - cw / 2, 210), 1390 - cw);
+  const cw = spec.callout.text ? 440 : Math.max(240, String(spec.callout.title).length * 22 + 80), cx = Math.min(Math.max(x(h) - cw / 2, 210), 1390 - cw);
   const steps = spec.steps.map((s, i) => `<div class="ts${i < h ? ' done' : ''}${i === h ? ' on' : ''}" style="left:${x(i)}px"><b>${esc(s.label)}</b><i></i><span>${esc(s.sub || '')}</span></div>`).join('');
   return `<style>
 .th{position:absolute;left:210px;top:150px;font-size:58px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
@@ -278,12 +301,13 @@ function timeline() {
 .ts span{margin-top:18px;font-size:21px;color:#9AA3B2;white-space:nowrap}
 .ts.done i{background:#0A5FD8;border-color:#0A5FD8}.ts.done b{color:#141A26}
 .ts.on i{width:46px;height:46px;margin-top:14px;background:#0A5FD8;border-color:#fff;box-shadow:0 0 0 8px rgba(10,95,216,.18)}.ts.on b{color:#0A5FD8;font-weight:600}
-.tc{position:absolute;left:${cx}px;top:360px;width:${cw}px;background:#fff;border-radius:20px;padding:26px 30px;box-shadow:0 24px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
-.tc b{display:block;font-size:30px;font-weight:600;color:#141A26}.tc span{display:block;margin-top:8px;font-size:22px;line-height:1.35;color:#7F8794}
+.tc{position:absolute;left:${cx}px;bottom:${900 - 548}px;width:${cw}px;text-align:${spec.callout.text ? 'left' : 'center'};background:#fff;border-radius:20px;padding:24px 30px;box-shadow:0 24px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
+.tc:after{content:'';position:absolute;left:${x(h) - cx - 12}px;bottom:-11px;width:24px;height:24px;background:#fff;transform:rotate(45deg);border-radius:4px}
+.tc b{display:block;font-size:${spec.callout.text ? 30 : 40}px;font-weight:600;color:#0A5FD8;letter-spacing:-.02em}.tc span{display:block;margin-top:8px;font-size:22px;line-height:1.35;color:#7F8794}
 </style>
 <div class="th">${esc(spec.headline)}</div><div class="tsb">${esc(spec.sub || '')}</div>
 <div class="tt"></div><div class="tf"></div>${steps}
-<div class="tc"><b>${esc(spec.callout.title)}</b><span>${esc(spec.callout.text)}</span></div>`;
+<div class="tc"><b>${esc(spec.callout.title)}</b>${spec.callout.text ? `<span>${esc(spec.callout.text)}</span>` : ''}</div>`;
 }
 
 // "checklist": a tilted checklist card with real items, progress pill and bar.
@@ -441,7 +465,7 @@ const CB_CSS = `<style>.cbf{position:absolute;inset:0}.cbh{position:absolute;fon
 .bt{background:linear-gradient(180deg,#1E88F5,#0F6FE0);-webkit-background-clip:text;background-clip:text;color:transparent}
 .ct{position:absolute;background:#fff;display:grid;place-items:center;overflow:hidden}.ct .lg{background:transparent;box-shadow:none;padding:0}.ct .lg:not(.full){border-radius:0;overflow:visible}
 .ct:has(.lg.full) .lg{width:100%!important;height:100%!important;border-radius:0}
-.cbm{position:absolute;left:96px;top:90px;width:96px;height:96px;border-radius:24px}</style>`;
+.cbm{position:absolute;left:210px;top:90px;width:96px;height:96px;border-radius:24px}</style>`;
 const cbTile = (d, S, x, y, round = 0.22, label = '') => `<div class="ct" style="left:${x}px;top:${y}px;width:${S}px;height:${S}px;border-radius:${Math.round(S * round)}px;box-shadow:0 10px 26px rgba(10,40,120,.12)">${logo(d, Math.round(S * 0.62), label)}</div>`;
 // White frame: a white design always sits in a white rounded panel inset 28px on a light-grey frame,
 // so the featured image reads as its own block on a white blog page. Inner content keeps canvas coordinates.
@@ -463,10 +487,10 @@ ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.
 
 // "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
 function cbDark() {
-  const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 740), d = spec.panelLogo;
+  const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 620), d = spec.panelLogo;
   const white = spec.panelLogoUrl || (d ? `https://cdn.simpleicons.org/${slugOfDomain(d)}/ffffff` : '');
   return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${cbMark()}
-<div style="position:absolute;left:96px;bottom:110px;width:740px">
+<div style="position:absolute;left:210px;bottom:110px;width:620px">
 ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
 <div class="cbh" style="position:static;font-size:${fs}px;color:#fff">${cbHl(spec.headline)}</div></div>
 <div style="position:absolute;left:860px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden">
@@ -478,7 +502,7 @@ ${white ? `<img src="${white}" alt="" style="position:absolute;left:50%;top:50%;
 // "versus/connect": centred headline with a gradient phrase, a divider
 // with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 function cbVersusConnect() {
-  const L = spec.left, R = spec.right, head = spec.headline || `{{${L.label} vs}}\n${R.label}`, fs = cbFs(head, 104, 1200);
+  const L = spec.left, R = spec.right, head = spec.headline || `{{${L.label} vs}}\n${R.label}`, fs = cbFs(head, 104, 1060);   // 1060: a long first line stays clear of the corner dot patches
   const S = 240, cy = 620, lx = 330, rx = 1270, cr = 74;
   const dots = (x0) => { let d = ''; for (let r = 0; r < 6; r++) for (let c = 0; c < 8; c++) d += `<circle cx="${x0 + c * 22}" cy="${70 + r * 22}" r="2.6"/>`; return d; };
   const wave = (x1, x2, a, ph) => { const k = (x2 - x1) * 0.42; return `M${x1} ${cy} C ${x1 + k} ${cy - a * ph}, ${x2 - k} ${cy + a * ph}, ${x2} ${cy}`; };   // one long gentle S per strand; the pair crosses mid-way
@@ -556,7 +580,7 @@ const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default']
 //  - big white app windows sit on sky; cool greys never go on cream
 //  - blue dosage: a big blue mass (hub tile) gets a neutral field (cream/paper), never g5
 //  - g5 lifts a single floating white card with light rising under it
-const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'cream'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
+const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'sky'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
 // Chatbase-style layouts paint their own canvas (white in a grey frame, or black); 'dark' counts as vibrant
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash'].includes(LAYOUT);
 const VIVID = MODE === 'dark' || LAYOUT === 'versus/slash';   // black fields count as vibrant (1 in 3, never neighbours)
@@ -581,6 +605,23 @@ for (const e of [...siteHistory, ...ledger].sort((x, y) => String(x.at).localeCo
 const history = [...bySlug.values()].sort((x, y) => String(x.at).localeCompare(String(y.at)));
 const prior = history.filter((e) => e.category === category && e.slug !== slug);
 const force = args.includes('--force');
+// ---- content check: each layout needs enough real content to fill its frame (a sparse window or hub looks unfinished) ----
+const n = (a) => (Array.isArray(a) ? a.length : 0);
+const thin = {
+  window: () => n(spec.list?.rows) < 3 && n(spec.detail?.points) < 2 && 'window needs 3+ list rows, or 2+ rows plus 2+ detail points',
+  hub: () => n(spec.cards) < 6 && 'hub needs 6–7 products',
+  ranked: () => n(spec.rows) < 3 && 'ranked needs 3+ rows',
+  checklist: () => n(spec.items) < 3 && 'checklist needs 3+ items',
+  timeline: () => n(spec.steps) < 3 && 'timeline needs 3+ steps',
+  stat: () => n(spec.card?.rows) < 2 && 'stat card needs 2+ rows',
+  focus: () => n(spec.rows) < 2 && 'focus needs 2+ rows',
+}[MODE]?.();
+if (thin && !force) { console.error(`CONTENT CHECK FAILED: ${thin}. Use the article's facts to fill it, or pick a layout that suits fewer facts.`); process.exit(2); }
+// ---- comparison fairness: an "X vs Y" article shows both products (dark features one brand, so it is for single-brand articles) ----
+if (MODE === 'dark' && /\bvs\.?\b|\bversus\b/i.test(spec.articleTitle || '') && !force) {
+  console.error('FAIRNESS CHECK FAILED: "dark" features one brand, but this is an X vs Y article. Use a versus layout so both products are shown.');
+  process.exit(2);
+}
 // Delivered images are permanent: a finalized image is never re-created or overwritten (only if the user explicitly asks: --force).
 const deliveredHere = history.find((e) => e.final && (e.slug === slug || path.resolve(e.out || '') === path.resolve(outDir)));
 if (deliveredHere && !force) {
@@ -663,7 +704,7 @@ const NOISE = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://
 const CRAFT = spec.craft === true;
 // text and structure that sit directly on a saturated field turn white
 const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}
-body.fd .lgs b,body.fd .l1 b,body.fd .l2 b{color:#fff}body.fd .lgs span{background:rgba(255,255,255,.16);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
+body.fd .lgs b,body.fd .l1 b,body.fd .l2 b{color:#fff}body.fd .lgs > span{background:rgba(255,255,255,.16);color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.28)}
 body.fd .lgv{box-shadow:0 0 0 6px rgba(255,255,255,.9)}body.fd .lgband{border-color:rgba(255,255,255,.3);background:repeating-linear-gradient(135deg,rgba(255,255,255,.1) 0 2px,transparent 2px 16px)}
 body.fd .tex .acc{display:none}body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
 body.fd svg.fl g{stroke:#fff}body.fd .fb{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}body.fd .fb b{color:#fff}body.fd .fb span{color:rgba(255,255,255,.8)}body.fd .fb .fi{background:rgba(255,255,255,.2);color:#fff}
@@ -685,7 +726,7 @@ const CRAFT_CSS = `
 .fr.gh>i>i,.fr.gh s{background:#E3E7EE}
 /* versus logos */
 .lgs.l1 b,.lgs.l2 b{color:#141A26}
-.lgs span{font-family:${MONO};text-transform:uppercase;letter-spacing:.06em;font-size:24px;color:#5D6675;background:#fff}
+.lgs > span{font-family:${MONO};text-transform:uppercase;letter-spacing:.06em;font-size:24px;color:#5D6675;background:#fff}
 /* before-after flow */
 .fb{background:#fff;border:2px dashed #D3D9E2;box-shadow:none}
 .fb .fi{background:#fff;color:#141A26;box-shadow:0 0 0 2px #E3E7EE}.fb b{color:#141A26;font-weight:500}.fb span{font-family:${MONO};color:#8A93A5}
@@ -781,7 +822,7 @@ fs.writeFileSync(file, out);
 const raw = path.join(outDir, 'raw.png');
 const PROFILE = path.join(os.tmpdir(), `bfi-chrome-${process.pid}`); // one profile per render, so parallel renders never collide
 execFileSync(findChrome(), ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1', '--window-size=1600,900',
-  '--virtual-time-budget=8000', `--user-data-dir=${PROFILE}`, '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36', `--screenshot=${raw}`, pathToFileURL(file).href], { stdio: 'ignore' });
+  '--virtual-time-budget=8000', '--disable-web-security', `--user-data-dir=${PROFILE}`, '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36', `--screenshot=${raw}`, pathToFileURL(file).href], { stdio: 'ignore' });
 fs.rmSync(PROFILE, { recursive: true, force: true });
 const master = await sharp(raw).png().toBuffer();
 fs.writeFileSync(path.join(outDir, 'master.png'), master);

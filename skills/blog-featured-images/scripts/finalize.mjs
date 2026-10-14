@@ -1,6 +1,6 @@
 // Finalize delivered images: marks them permanent in the site-wide history and in their folder's ledger.
 // A finalized image is never re-created or overwritten (the renderer refuses with "FINAL IMAGE LOCKED"), its files stay where
-// they are, and it keeps counting for layout rotation forever.
+// they are, a copy goes to ~/.blog-featured-images/delivered/<brand>/<slug>/, and it keeps counting for layout rotation forever.
 // Usage:
 //   node finalize.mjs --brand <brand> <slug> [<slug> ...]      # after QA passes and the images are delivered
 //   node finalize.mjs --brand <brand> --list                    # show every delivered image
@@ -19,7 +19,7 @@ const readJson = (f) => { try { return fs.existsSync(f) ? JSON.parse(fs.readFile
 if (args.includes('--list')) {
   const done = readJson(historyFile).filter((e) => e.final);
   console.log(`${done.length} delivered image(s) for "${brand}":`);
-  for (const e of done) console.log(`  ${e.finalizedAt?.slice(0, 10)}  ${e.category}  ${e.layout}  ${e.slug}\n      ${e.out}`);
+  for (const e of done) console.log(`  ${e.finalizedAt?.slice(0, 10)}  ${e.category}  ${e.layout}  ${e.slug}\n      ${e.stored || e.out}`);
   process.exit(0);
 }
 if (!slugs.length) { console.error('Usage: node finalize.mjs --brand <brand> <slug> [<slug> ...]   |   --list'); process.exit(1); }
@@ -34,7 +34,13 @@ try {
     const e = history.find((x) => x.slug === slug && !x.reserved);
     if (!e) { missing.push(slug); continue; }
     if (!fs.existsSync(path.join(e.out, 'master.png'))) { missing.push(`${slug} (no master.png in ${e.out})`); continue; }
-    Object.assign(e, { final: true, finalizedAt: e.finalizedAt || at });
+    // durable copy: ~/.blog-featured-images/delivered/<brand>/<slug>/ (master, crops, spec), whatever folder the batch ran in
+    const store = path.join(historyDir, 'delivered', brand, slug);
+    fs.mkdirSync(store, { recursive: true });
+    for (const name of fs.readdirSync(e.out)) if (/\.(png|webp|json)$/i.test(name)) fs.copyFileSync(path.join(e.out, name), path.join(store, name));
+    const specPath = path.join(path.dirname(e.out), 'specs', `${slug}.json`);
+    if (fs.existsSync(specPath)) fs.copyFileSync(specPath, path.join(store, 'spec.json'));
+    Object.assign(e, { final: true, finalizedAt: e.finalizedAt || at, stored: store });
     const ledgerFile = path.join(path.dirname(e.out), '.featured-ledger.json');
     fs.writeFileSync(ledgerFile, JSON.stringify([...readJson(ledgerFile).filter((x) => x.slug !== slug), e], null, 1));
   }

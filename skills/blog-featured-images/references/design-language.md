@@ -6,7 +6,7 @@ The approved look for blog featured images. **This file is the rulebook.** Two f
 
 ## 1. The non-negotiable rules
 
-1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article.
+1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article, **with its qualifier** ("per provider", "up to", "from", "minimum"). Figures shown together never contradict each other (a breakdown sits inside the headline range).
 2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
 3. **Different every time.** No layout repeats in a category until every layout has been used, and articles on the same topic never share a mode (see 9).
 4. **Minimal.** At most 15 words, labels not sentences (see 7).
@@ -55,7 +55,7 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 | hub | cream, paper | a big blue tile needs a neutral field |
 | timeline | cream, sky | a thin track and callout on a calm warm field |
 | stat | paper, cream | the giant number brings the colour |
-| prompt | paper, cream | the pill bar and headline bring the colour |
+| prompt | paper, sky | its panel and bar are cool blue, so the field is cool too |
 
 - Cool greys never sit on cream; on cream the guide lines turn warm and the blue margin dots are hidden (automatic).
 - Always check at 350×250 next to the neighbours: the hero separates cleanly, and the field never fights the illustration's colours.
@@ -85,13 +85,13 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 | `versus/pills` | grey frame, two white panels: on top, two blue pills face each other with the two logos at the tips; below, the question ("A or {{B?}}") | X vs Y |
 | `versus/connect` | grey frame, one white panel: a centred headline with a blue phrase and a small sparkle divider; two big logo tiles linked by thin crossing strands to a white **VS** circle; small dot patches in the top corners | X vs Y |
 | `versus/slash` | black field with a fine dot grid; the two names in heavy caps (a coloured part each); a big italic **VS** with a glowing diagonal streak | X vs Y (vibrant) |
-| `dark` | black field, site mark, a tag pill, a white headline; a panel in the **product's own brand colour** with its white logo | one vivid brand: reviews, comparisons (vibrant) |
+| `dark` | black field, site mark, a tag pill, a white headline; a panel in the **product's own brand colour** with its white logo | one vivid brand: reviews, pricing, "is X worth it" (vibrant). Never an X vs Y article |
 
 - **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Headline key phrases use `{{ }}` and render in the same blue.
 - **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
 - **Black fields** (`dark`, `versus/slash`) count as vibrant (see 3).
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` uses it for its panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
-- **Seven ways to show X vs Y:** `versus/overlap`, `table`, `logos`, `pills`, `connect`, `slash`, and `dark` when one brand leads. Comparison-heavy categories rotate a long time without repeats.
+- **Six ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `logos`, `pills`, `connect`, `slash`. An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
 - These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390.
 
 ---
@@ -147,10 +147,11 @@ Calm is good; bland is not.
 1. **One bold anchor:** exactly one high-contrast element (selection box, VS badge, blue tile, big blue number, highlighted row). Never two, never none.
 2. **One hero at 55–70% of the width**, everything else secondary. The hero's mass sits at or slightly above the canvas centre.
 3. **Structure tied to the frame:** the guide lines, the frame grid (stat, ranked, timeline, window by default; `"frame": false` turns it off), an edge-to-edge band, or a card bleeding off an edge. Nothing just floats.
-4. **Bleed for big UI:** windows and panels may run off the bottom or right edge (`"bleed": true`), but every word stays inside x 210–1390. A bleeding card is cut just after its content, never with empty white below.
+4. **Bleed for big UI:** windows and panels may run off the bottom or right edge (`"bleed": true`), but every word stays inside x 210–1390. A card is never left with empty white: the window sizes to its content and only bleeds when it is tall enough.
 5. **Hard alignment:** connectors hit centres, selection handles sit on the corners, gaps are even.
 6. **At most one interaction cue:** a cursor (`"cursor": [x, y]`) pointing at the key fact, never covering text.
 7. **Scale contrast:** one very large element against small labels.
+8. **Enough content:** each layout needs enough real facts to fill its frame (window 3+ rows, hub 6+ products, ranked/checklist/timeline 3+, stat card 2+). The renderer refuses thinner specs ("CONTENT CHECK FAILED").
 
 ---
 
@@ -172,7 +173,8 @@ Calm is good; bland is not.
 - **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` → Simple Icons → Brandfetch icon (used as an app tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped.
 - **Brandfetch client ID:** free at brandfetch.com/developers. Keep it **local** (`~/.blog-featured-images/config.json` or `BRANDFETCH_CLIENT_ID`); never commit it.
 - **Style:** original colours (`"logoStyle": "color"`, the default) in white tiles; one style per image. `mono` and `tint` exist for when colour logos would compete with the anchor.
-- **Balance:** see 2.
+- **Balance:** see 2. Solid round or square badges fill their tile; pale grey marks are darkened automatically so they read.
+- **Right mark:** check each logo is the brand's real current mark (not an anniversary or campaign badge). If the chain finds the wrong one, save the official mark from the brand's own website (its site icon or logo) to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`; the renderer embeds it.
 
 ---
 
@@ -182,7 +184,7 @@ Calm is good; bland is not.
 2. **Strict rotation:** in a category, only the least-used layouts are allowed ("VARIETY CHECK FAILED" lists them).
 3. **Same topic** (e.g. duplicate URLs `…-guide` and `…-guide-2`): never the same mode, and different facts or angles.
 4. Never `--force` unless the user explicitly asks, and never render into another folder to dodge a check.
-5. **Delivered images are permanent.** After delivery, `scripts/finalize.mjs` marks them final in the site history and the folder ledger (`featured-images/.featured-ledger.json`). Their files stay in `featured-images/<slug>/`, they keep counting for rotation forever, and the renderer refuses to re-create or overwrite them ("FINAL IMAGE LOCKED"). A new article always gets its own slug and folder.
+5. **Delivered images are permanent.** After delivery, `scripts/finalize.mjs` marks them final in the site history and the folder ledger (`featured-images/.featured-ledger.json`) and copies them to `~/.blog-featured-images/delivered/<brand>/<slug>/`. Their files stay in `featured-images/<slug>/` (in the project, never a scratch folder), they keep counting for rotation forever, and the renderer refuses to re-create or overwrite them ("FINAL IMAGE LOCKED"). A new article always gets its own slug and folder.
 
 ---
 

@@ -54,7 +54,17 @@ Read this before every batch.
 - **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting for rotation, and can't be re-created. Never delete the history file.
 - An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
 
-## 6. Facts
+## 6. First real batch (17 articles)
+
+- **Qualifiers got dropped:** "$140/mo minimum" lost "per provider", "96% collection rate" lost "up to". Copy the article's qualifier with the figure.
+- **A breakdown contradicted its hero** ("4–9%" hero, "3–6%" row). Rows must sit inside the hero's range.
+- **A one-brand image for an X vs Y article** (dark layout) looked like an ad. Comparisons always show both products.
+- **Thin specs left empty frames** (a window with 2 rows). The renderer now refuses thin specs and sizes the window to its content.
+- **Logo chain surprises:** a brand's "icon" can be a stale anniversary badge (Availity) or a pale grey wordmark (Sectra). Check every logo by eye; use the official site icon from the brand's website when needed.
+- **Work in the project folder.** One batch rendered into a temporary scratch folder; delivered images must live in the project's `featured-images/` (finalize also keeps a copy in `~/.blog-featured-images/delivered/`).
+- **Fix the skill, then publish:** renderer fixes made during a batch go into the skill and are pushed, never left as local patches.
+
+## 7. Facts
 
 - Use the article's own wording for names and numbers; QA compares every value against the article file.
 - Raw article text (agent-browser) beats a summary (WebFetch) for checking facts.

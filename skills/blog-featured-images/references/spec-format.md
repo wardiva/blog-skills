@@ -13,7 +13,7 @@ One JSON file per article. Top-level fields shared by all layouts:
 | `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, `logos`, and the headline variants `pills`, `connect`, `slash`. Mode + variant = one layout |
 | `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on about 1 in 3 images, only for `checklist`, `versus/table`, `window`, `before-after/flow` |
 | `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns it off on a light field |
-| `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself |
+| `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself. When it finds the wrong mark, use a file instead: `"../assets/<file>.png"` (relative to the spec; the official mark saved from the brand's website) |
 | `logoStyle` | no | `color` (default), `mono` or `tint`. One style per image |
 | `frame` | no | Faint grid + registration squares. On by default for `stat`, `ranked`, `timeline`, `window` (never on blue). `true`/`false` overrides |
 | `texture` | no | Thin guide lines at x 210/1390 + a few margin dots. On by default for sky/paper fields and for checklist, ranked, focus, versus, before-after and stack; off where the frame grid is on (never both). `true`/`false` overrides |
@@ -73,7 +73,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
   "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "logo": "microsoft.com", "value": "$48,000/yr", "pct": 48000 },
                                                  { "name": "Acumatica", "logo": "acumatica.com", "value": "$6,396/yr", "pct": 6396 } ] } }
 ```
-- `value` up to ~8 characters (auto-sized). Card `rows`: 2–4, all in the same unit. `card.highlight` picks the blue row; `null` when no row is the hero's subject.
+- `value` up to ~8 characters (auto-sized). Card `rows`: 2–4, all in the same unit, and inside the hero's range (a row outside it reads as an error). `card.highlight` picks the blue row; `null` when no row is the hero's subject.
 
 ## Ranked (`"mode": "ranked"`; rankings by a real metric)
 ```json
@@ -89,7 +89,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
   "steps": [ { "label": "Audit" }, { "label": "Extract" }, { "label": "Validate" }, { "label": "Go live" } ],
   "highlight": 2, "callout": { "title": "6 to 12 weeks" } }
 ```
-- `steps`: 3–6, labels up to ~14 characters. `highlight` is the current step.
+- `steps`: 3–6, labels up to ~14 characters. `highlight` is the current step. The callout sits just above it with a pointer; a title-only callout (e.g. `"6 to 12 weeks"`) is shown large in blue.
 
 ## Checklist (`"mode": "checklist"`; how to choose, requirements)
 ```json
@@ -122,7 +122,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
   "detail": { "question": "50 users, yearly?", "heading": "$48,000 vs $6,396" },
   "bleed": true, "cursor": [1400, 470] }
 ```
-- `rows`: 3–4 (max 5); `detail.points`: 2–3 short ones, or none. A row without a product takes `"icon"` instead of `"logo"`. `"highlight": <row index>` in `list` makes that row the blue anchor. Works on the vibrant blue (the grid is removed there).
+- `rows`: 3–4 (max 5), or 2 rows plus 2+ `detail.points` ("CONTENT CHECK FAILED" otherwise). The window sizes to its content. A row without a product takes `"icon"` instead of `"logo"`. `"highlight": <row index>` in `list` makes that row the blue anchor. Works on the vibrant blue (the grid is removed there).
 
 ---
 
@@ -152,4 +152,5 @@ Four layouts: `versus/pills`, `versus/connect`, `versus/slash` and `dark`. They 
 ```json
 { "mode": "dark", "tag": "ERP comparison", "headline": "Odoo vs\nSage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
 ```
+- For single-brand articles only (reviews, pricing, "is X worth it"); an X vs Y title is refused ("FAIRNESS CHECK FAILED").
 - `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). The panel logo is shown in white (Simple Icons); set `panelLogoUrl` for a brand Simple Icons lacks.

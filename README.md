@@ -65,7 +65,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), picks the least-used layout per article and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
 2. **Makers** (parallel subagents): write each spec from the article's facts and render it.
 3. **QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no reused layout, 2-second scan, minimal text, balanced, true to the article, clean logos. Failures go back to their Maker; only images that pass are delivered.
-4. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored, keep counting for layout rotation, and can never be re-created or overwritten.
+4. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting for layout rotation, and can never be re-created or overwritten.
 
 **Built-in checks** (the renderer refuses to finish):
 
@@ -80,13 +80,15 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 | `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
+| `CONTENT CHECK FAILED` | Each layout needs enough real facts to fill its frame |
+| `FAIRNESS CHECK FAILED` | An X vs Y article always shows both products |
 
 **The look:**
 - **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue** on about 1 in 3 images, only behind a big white card.
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
 - **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
 - **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
-- **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons become the tile, and "best of" hubs show logos only.
+- **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, badges and app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
 ## Layouts (12 modes, 18 layouts)
 
@@ -113,7 +115,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `versus/pills` | X vs Y: two facing pills with the logos, the question below |
 | `versus/connect` | X vs Y: two logo tiles linked to a VS circle |
 | `versus/slash` | X vs Y on black: bold names, italic VS |
-| `dark` | One vivid brand, its colour as the panel |
+| `dark` | One vivid brand (never X vs Y), its colour as the panel |
 
 ## Add your own site
 

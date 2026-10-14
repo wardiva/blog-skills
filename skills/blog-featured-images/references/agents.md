@@ -34,6 +34,7 @@ For each article below:
 1. Read <featured-images>/articles/<slug>.md (already fetched; don't fetch the URL). Use only its own facts, in its own wording.
 2. Write <featured-images>/specs/<slug>.json for the ASSIGNED layout. Set articleTitle, brand, category, topic, slug.
    - At most 15 words, max 7 per element, labels not sentences, no fact twice, nothing added to fill space.
+   - Keep each figure's qualifier (per provider, up to, from, minimum). An X vs Y article shows both products.
    - "logo": "<official domain>" on every named product. Hub: logos only.
    - bg: leave it out (the renderer picks the best light field), unless the plan says "blue".
 3. Render: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>". Never use --force.
@@ -76,8 +77,8 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 
 **6. Balanced.** Headline 56–76px and under ~760px wide; hero at 55–70% of the width, at or slightly above the centre; nothing wraps, clips or overlaps; every word inside x 210–1390; badges and cursors never touch text.
 
-**7. True to the article.** The heading mirrors the blog title's own words; every number and name appears in the article.
+**7. True to the article.** The heading mirrors the blog title's own words; every number and name appears in the article **with its qualifier** (per provider, up to, from, minimum); figures shown together don't contradict each other. An X vs Y image shows both products.
 
-**8. Logos.** Every named product has a real logo that loaded (no broken image, no letter tile where a real logo exists), in one style.
+**8. Logos.** Every named product has its real, current mark (not an anniversary or campaign badge, not a generic parent-company mark when the product has its own), loaded, legible at 350×250, and balanced against the other logos.
 
 **9. Guardrails respected** (design language, section 13).
