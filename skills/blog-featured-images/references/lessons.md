@@ -21,7 +21,7 @@ Read this before every batch.
 - Long Python or JS inside a bash heredoc breaks on quotes. Write a script file and run it.
 - Paths with spaces: never pass them through a shell. Call `node <tool>.js` directly or use an env var such as `AGENT_BROWSER_EXECUTABLE_PATH`.
 - agent-browser's daemon keeps child pipes open; finish on process **exit**, not pipe close.
-- Parallel headless Chrome renders crash if they share one `--user-data-dir`. The renderer uses one profile per process.
+- Parallel headless Chrome renders crash if they share one `--user-data-dir`. The renderer uses one profile per process, and its cleanup retries (on Windows, Chrome can hold the folder for a moment after exit).
 - Brandfetch's logo CDN needs a client ID, must be hotlinked, and blocks the "HeadlessChrome" user agent (the renderer sends a normal one). Some brands (NetSuite, SAP, Sage, Epicor) have no symbol, only an icon; the chain handles it.
 - A message sent to an agent just as it finishes may be dropped. If no reply comes, send it again.
 
