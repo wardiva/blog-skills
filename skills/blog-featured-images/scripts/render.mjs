@@ -483,8 +483,9 @@ ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.
 
 // "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
 function cbDark() {
+  // top-left: the product's own icon on a white tile (user reference), never the site mark
   const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 620), d = spec.panelLogoUrl || spec.panelLogo;
-  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${cbMark().replace('class="cbm"', 'class="cbm" style="left:120px"')}
+  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${d ? cbTile(d, 96, 120, 90, 0.24, spec.product || '').replace(/box-shadow:[^"]*/, 'box-shadow:none') : ''}
 <div style="position:absolute;left:120px;bottom:110px;width:620px">
 ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
 <div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline)}</div></div>

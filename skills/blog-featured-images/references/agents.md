@@ -67,7 +67,7 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 
 **2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
-**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`). Blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390 (`dark`'s text column starts at x 120).
+**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`). Blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390 (`dark`'s text column starts at x 120, and its top-left tile is the product's own icon, not the site mark).
 
 **2c. Logotype.** The article is about one product and its logo is black (icon and wordmark) with strong typography; the icon sits in white on a black rounded tile beside the wordmark (or keeps its own tile), sharp, large and centred on cream; no other text; at most 2 per category (coloured logos use `dark`).
 
