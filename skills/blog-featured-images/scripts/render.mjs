@@ -939,7 +939,8 @@ const raw = path.join(outDir, 'raw.png');
 const PROFILE = path.join(os.tmpdir(), `bfi-chrome-${process.pid}`); // one profile per render, so parallel renders never collide
 execFileSync(findChrome(), ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--force-device-scale-factor=1', '--window-size=1600,900',
   '--virtual-time-budget=8000', '--disable-web-security', `--user-data-dir=${PROFILE}`, '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36', `--screenshot=${raw}`, pathToFileURL(file).href], { stdio: 'ignore' });
-fs.rmSync(PROFILE, { recursive: true, force: true });
+// Windows: Chrome can still hold the profile for a moment after exit; retry, and never fail a finished render over a temp folder
+try { fs.rmSync(PROFILE, { recursive: true, force: true, maxRetries: 10, retryDelay: 200 }); } catch {}
 const master = await sharp(raw).png().toBuffer();
 fs.writeFileSync(path.join(outDir, 'master.png'), master);
 // dark's text column starts at x 120, so its 7:5 crop shifts left (x 100–1360 keeps the text and the panel's name)
