@@ -145,9 +145,10 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 ## Versus slash (`"mode": "versus", "variant": "slash"`; black, counts as vibrant)
 ```json
 { "mode": "versus", "variant": "slash",
-  "left": { "label": "Dynamics\n{{365}}", "color": "#3D7BFF" }, "right": { "label": "Acumatica", "color": "#36C5F0" } }
+  "left": { "label": "AdvancedMD", "color": "#FF6A13" }, "right": { "label": "CureMD", "color": "#1E88D6" } }
 ```
-- Names in caps; the `{{ }}` part takes that side's `color` (without markup: the last word, or the whole single word). Short names read best (≤ 10 letters per line).
+- Every name is **two-tone: white + that side's `color`**, never all one colour. The renderer splits it: several words → the last word is coloured (on its own line); one word → split at its last capital break (`AdvancedMD` → ADVANCED + **MD**, `CureMD` → CURE + **MD**, `NetSuite` → NET + **SUITE**); or mark the coloured part yourself with `{{ }}` (some of the name must stay white). A one-word name with no capital break (`Acumatica`, `SAP`) is refused ("SLASH NAME CHECK FAILED"): mark it (`"Acu{{matica}}"`) or use the article's fuller name (`"SAP Business One"`).
+- `color`: the brand's own colour. Names in caps; short names read best (≤ 10 letters per line).
 
 ## Versus duo (`"mode": "versus", "variant": "duo"`; black, counts as vibrant)
 ```json

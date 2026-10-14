@@ -66,9 +66,11 @@ For each article below:
    - Every figure keeps its qualifier (per provider, up to, from, minimum); figures shown together never contradict.
      An X vs Y article shows both products.
    - "logo": "<official domain>" on every named product (hub: logos only). dark/duo: "color" = the brand's own colour.
-   - bg: leave it out unless your brief says "blue". Headline layouts: no {{ }} (no blue words).
+   - bg: leave it out unless your brief says "blue". Headline layouts: no {{ }} in headlines (no blue words);
+     slash names are two-tone (white + brand colour): use {{ }} only to pick the coloured part.
 3. Render: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>".
    A text/heading/content check failing: fix the spec within the layout and render again.
+   SLASH NAME: mark the coloured part with {{ }} or use the fuller product name.
    The layout itself refused (VARIETY, PILLS/CONNECT/LOGOTYPE LOGO, FAIRNESS, VIBRANT) or FINAL IMAGE LOCKED: stop and report it.
 4. Open master.png and card-350x250.png once: fix wraps, clipping, a wrong or stale logo, anything that clearly looks off.
 Articles: <article file, layout, bg, category, topic, slug, brand, colour/logo notes>
@@ -108,6 +110,7 @@ Keep this context: you may get re-rendered images to re-check.
 
 **V2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`).
 - **Type and colour:** every text element is Inter 500 Medium (slash: Poppins caps). The pills and connect headlines are all near-black.
+- **Slash:** each name is two-tone, white first and the brand's colour on the last part; never all one colour, never an awkward mid-word split.
 - **Pills:** the pills run off the outer edges with flat cuts, tips ~112px apart, with a subtle gradient and fine noise. Both logos sit on white circles.
 - **Connect:** both tiles are the brands' own app icons in their original colours, edge to edge, and current (not an anniversary badge).
 - **Duo:** a white headline and two panels in each brand's own colour (the subtle blue when it has none) with white marks.
@@ -141,6 +144,7 @@ Keep this context: you may get re-rendered images to re-check.
 - a mark on a white tile in connect
 - rounded outer pill ends or watercolour blotches on the pills
 - any text weight other than Inter 500 Medium in pills, connect, duo or dark
+- a slash name in one colour (white is always part of it)
 
 FAIL any image that brings one back.
 

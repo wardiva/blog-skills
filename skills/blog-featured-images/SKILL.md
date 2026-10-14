@@ -65,7 +65,7 @@ Read these before your first image in a session:
 |---|---|---|
 | `versus/pills` | two facing blue pills (flat cuts at the outer edges, rounded tips a little over half a pill's height apart, a subtle gradient with fine noise) with the logos on **white circles** at the tips, the question below in near-black | X vs Y, only when both products have a logo that sits on white ("PILLS LOGO CHECK FAILED" otherwise); may repeat up to 2 times per category |
 | `versus/connect` | centred near-black headline, each brand's **own app icon in its original colours** filling its tile, linked to a VS circle, dot patches | X vs Y, only when both brands have a solid app icon with its own background colour ("CONNECT LOGO CHECK FAILED" otherwise); may repeat up to 5 times per category |
-| `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
+| `versus/slash` | black, dot grid, heavy-caps names, every name is two-tone, **white + that brand's colour** (never all one colour), italic VS with a glowing streak | X vs Y (vibrant) |
 | `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant) |
 | `dark` | black, the product's icon in black (#0A0A0B) on a white tile top-left, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | **the layout for single-product articles** (review, pricing, features, "is X worth it"); never X vs Y (vibrant; may repeat up to 3 times per category) |
 | `logotype` | the product's black logo: its icon in white on a black rounded tile beside the black wordmark, large and centred on cream with a faint grid; no other text | single-product articles whose logo is **black** with strong typography (may repeat up to 2 times per category) |
@@ -111,6 +111,7 @@ Each role's job, steps, prompt template and limits are in `references/agents.md`
 | `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` |
 | `SERIES CHECK FAILED` | Remove `"series"` |
 | `CONNECT LOGO CHECK FAILED` | A brand has no solid app icon with its own background colour: use `versus/pills`, `versus/slash` or `versus/duo` (or save the brand's square app icon to `featured-images/assets/`) |
+| `SLASH NAME CHECK FAILED` | A one-word name with no capital break (e.g. Acumatica) can't be split into white + colour: mark the coloured part with `{{ }}` ("Acu{{matica}}") or use the article's fuller product name |
 | `PILLS LOGO CHECK FAILED` | A product's only logo is a solid app tile, which can't sit on the white circle: use `versus/connect`, `versus/slash` or `versus/duo` (or save the brand's transparent logo to `featured-images/assets/`) |
 | `LOGOTYPE CHECK FAILED` | The product's logo isn't black, or has no separate icon for the black tile: use `dark` (or, if the brand has a black lockup, save it to `featured-images/assets/` and set `"logotype"` to it) |
 | `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 2+ window rows), or pick a layout that suits fewer facts |

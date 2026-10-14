@@ -155,7 +155,7 @@ function hub() {
     });
     return `<style>
 .tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
-.tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap}
+.tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap;text-align:center;line-height:1.15}
 .hq{position:absolute;width:${S}px;height:${S}px;border-radius:38px;background:#fff;display:grid;place-items:center;box-shadow:0 18px 40px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
 .hq .lg{box-shadow:none;background:transparent;padding:0}.hq .lg:not(.full){border-radius:0;overflow:visible}
 .hq:has(.lg.full){background:transparent}.hq .lg.full{width:${S}px!important;height:${S}px!important;border-radius:38px}
@@ -163,7 +163,7 @@ svg.arr{position:absolute;inset:0;overflow:visible}
 </style>
 <svg class="arr" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
 <g filter="url(#rough)" fill="none" stroke="#141A26" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${arrows}</g></svg>
-<div class="tile">${spec.hubLabel ? `<div class="tl"><b>${esc(spec.hubLabel.big)}</b><span>${esc(spec.hubLabel.small || '')}</span></div>` : `<i class="${esc(spec.hubIcon || 'ph-fill ph-buildings')}"></i>`}</div>${tiles}`;
+<div class="tile">${spec.hubLabel ? `<div class="tl"><b>${esc(spec.hubLabel.big)}</b><span>${esc(spec.hubLabel.small || '').replace(/\n/g, '<br>')}</span></div>` : `<i class="${esc(spec.hubIcon || 'ph-fill ph-buildings')}"></i>`}</div>${tiles}`;
   }
   const slots = [[215, 100, -5], [214, 360, 4], [245, 615, -3], [1055, 90, 4], [1060, 355, -4], [1045, 620, 3], [640, 705, 2]];
   const LOGOS = spec.cards.some((c) => c.logo), CW = LOGOS ? 345 : 320, CH = spec.showSubs ? 160 : 112;
@@ -183,7 +183,7 @@ svg.arr{position:absolute;inset:0;overflow:visible}
   });
   return `<style>
 .tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
-.tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap}
+.tile i{font-size:150px;color:#fff}.tl{display:flex;flex-direction:column;align-items:center;color:#fff}.tl b{font-size:150px;font-weight:600;line-height:1;letter-spacing:-.04em}.tl span{margin-top:8px;font-size:34px;font-weight:500;opacity:.92;white-space:nowrap;text-align:center;line-height:1.15}
 .hc{position:absolute;width:${CW}px;height:${CH}px;background:#fff;border-radius:20px;border:2px solid #E3E1DC;display:flex;flex-direction:column;justify-content:center;padding:0 26px;gap:8px}
 .hc.hl{flex-direction:row;align-items:center;justify-content:flex-start;gap:18px;padding:0 22px}.ht{display:flex;flex-direction:column;gap:8px;min-width:0}.hl .ht b{font-size:28px}
 .hc b{white-space:nowrap;font-size:30px;font-weight:500;color:#141A26;letter-spacing:-.01em}.hc span{font-size:20px;color:#7F8794}
@@ -191,7 +191,7 @@ svg.arr{position:absolute;inset:0;overflow:visible}
 </style>
 <svg class="arr" viewBox="0 0 1600 900" width="1600" height="900"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs>
 <g filter="url(#rough)" fill="none" stroke="#141A26" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">${arrows}</g></svg>
-<div class="tile">${spec.hubLabel ? `<div class="tl"><b>${esc(spec.hubLabel.big)}</b><span>${esc(spec.hubLabel.small || '')}</span></div>` : `<i class="${esc(spec.hubIcon || 'ph-fill ph-buildings')}"></i>`}</div>${cards}`;
+<div class="tile">${spec.hubLabel ? `<div class="tl"><b>${esc(spec.hubLabel.big)}</b><span>${esc(spec.hubLabel.small || '').replace(/\n/g, '<br>')}</span></div>` : `<i class="${esc(spec.hubIcon || 'ph-fill ph-buildings')}"></i>`}</div>${cards}`;
 }
 
 // "prompt" mode (Granola "Introducing Recipes"): a faded app panel, a big headline over it, a pill input bar with chips.
@@ -508,9 +508,19 @@ ${iconTile('left', L, lx - S / 2, cy - S / 2)}${iconTile('right', R, rx - S / 2,
 
 // "versus/slash": black field with a fine dot grid, the two names in heavy caps
 // (a coloured part each), a big italic VS with a glowing diagonal streak. The {{ }} part of each label takes that side's colour.
+// versus/slash names are always two-tone, white + the brand colour (user reference). Returns the name with the coloured part
+// in {{ }}, or null when it can't be split without guessing: {{ }} given (some white must remain) -> as given;
+// several words -> the last word coloured, on its own line; one word -> split at its last capital break (AdvancedMD -> Advanced{{MD}}).
+const slashSplit = (t) => {
+  const s = String(t || '').trim();
+  if (/\{\{/.test(s)) return s.replace(/\{\{[\s\S]*?\}\}/g, '').replace(/\s/g, '') ? s : null;
+  if (/\s/.test(s)) return s.replace(/^([\s\S]*\S)\s+(\S+)$/, '$1\n{{$2}}');
+  const m = s.match(/^(.*[a-z0-9])([A-Z][\s\S]*)$/) || s.match(/^(.*[A-Za-z])(\d[\s\S]*)$/);
+  return m ? `${m[1]}{{${m[2]}}}` : null;
+};
 function cbVersusSlash() {
   const L = spec.left, R = spec.right;
-  const split = (t) => /\{\{/.test(t) ? t : (t.trim().includes(' ') ? t.trim().replace(/^(.*)\s(\S+)$/, '$1\n{{$2}}') : `{{${t}}}`);
+  const split = (t) => slashSplit(t) || `{{${t}}}`;   // null only under --force (refused before rendering otherwise)
   const name = (t, col) => esc(split(t)).replace(/\{\{([\s\S]+?)\}\}/g, `<span style="color:${col}">$1</span>`).replace(/\n/g, '<br>');
   const longest = Math.max(...[L.label, R.label].flatMap((t) => split(t).replace(/\{\{|\}\}/g, '').split('\n')).map((l) => l.length));
   const fs = Math.min(104, Math.floor(500 / (longest * 0.88)));   // Poppins 800 caps ~0.88em per letter; names stay inside x 210-1390   // Poppins 800 caps run ~0.9em per letter
@@ -747,6 +757,10 @@ if (LAYOUT === 'versus/connect') {
       await refuse(`CONNECT LOGO CHECK FAILED: no app icon with its own background colour found for ${side ? side.label : k}${BF_CLIENT ? '' : ' (no Brandfetch client ID set)'}. versus/connect shows each brand's app icon in its original colours. Use versus/pills, versus/slash or versus/duo, or save the brand's square app icon to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
     }
   }
+}
+if (LAYOUT === 'versus/slash' && !args.includes('--force')) {
+  for (const side of [spec.left, spec.right]) if (side && !slashSplit(side.label))
+    await refuse(`SLASH NAME CHECK FAILED: "${side.label}" can't be shown in two colours (white + the brand colour) without guessing. Mark the coloured part with {{ }} (e.g. "Acu{{matica}}"), or use the article's fuller product name (e.g. "SAP Business One"). Some of the name must stay white.`);
 }
 // --check-only: stop after the logo checks (used by logo-check.mjs while planning; nothing is rendered or recorded)
 if (args.includes('--check-only')) { console.log('CHECKS PASSED'); await settleExit(0); }
@@ -992,7 +1006,11 @@ try { fs.rmSync(PROFILE, { recursive: true, force: true, maxRetries: 10, retryDe
 const master = await sharp(raw).png().toBuffer();
 fs.writeFileSync(path.join(outDir, 'master.png'), master);
 // dark's text column starts at x 120, so its 7:5 crop shifts left (x 100–1360 keeps the text and the panel's name)
-const crop75 = await sharp(master).extract({ left: MODE === 'dark' ? 100 : 170, top: 0, width: 1260, height: 900 }).toBuffer();
+// duo spans the full width (headline at x ~96, panels to x ~1572), so no 1260px window holds it: its 7:5 is the whole
+// master padded top and bottom with its own black field. dark's text column starts at x 120, so its crop shifts left.
+const crop75 = LAYOUT === 'versus/duo'
+  ? await sharp(master).extend({ top: 121, bottom: 122, left: 0, right: 0, background: '#0A0A0B' }).toBuffer()
+  : await sharp(master).extract({ left: MODE === 'dark' ? 100 : 170, top: 0, width: 1260, height: 900 }).toBuffer();
 await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x250.png'));
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));

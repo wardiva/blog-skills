@@ -1,0 +1,10 @@
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "articleTitle": "AdvancedMD vs CureMD for RCM: Pricing and Features (2026)",
+ "slug": "advancedmd-vs-curemd-slash",
+ "mode": "versus",
+ "variant": "slash",
+ "left": { "label": "AdvancedMD", "color": "#FF6A13" },
+ "right": { "label": "CureMD", "color": "#1E88D6" }
+}
