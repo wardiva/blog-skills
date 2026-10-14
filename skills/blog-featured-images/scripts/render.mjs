@@ -460,13 +460,11 @@ const cbFs = (t, max, width) => { const lines = String(t).replace(/\{\{|\}\}/g, 
 const CB_CSS = `<style>.cbf{position:absolute;inset:0}.cbh{position:absolute;font-weight:700;letter-spacing:-.045em;line-height:1.02;color:#0A0A0B}
 .bt{background:linear-gradient(180deg,#1E88F5,#0F6FE0);-webkit-background-clip:text;background-clip:text;color:transparent}
 .ct{position:absolute;background:#fff;display:grid;place-items:center;overflow:hidden}.ct .lg{background:transparent;box-shadow:none;padding:0}.ct .lg:not(.full){border-radius:0;overflow:visible}
-.ct:has(.lg.full) .lg{width:100%!important;height:100%!important;border-radius:0}
-.cbm{position:absolute;left:210px;top:90px;width:96px;height:96px;border-radius:24px}</style>`;
+.ct:has(.lg.full) .lg{width:100%!important;height:100%!important;border-radius:0}</style>`;
 const cbTile = (d, S, x, y, round = 0.22, label = '') => `<div class="ct" style="left:${x}px;top:${y}px;width:${S}px;height:${S}px;border-radius:${Math.round(S * round)}px;box-shadow:0 10px 26px rgba(10,40,120,.12)">${logo(d, Math.round(S * 0.62), label)}</div>`;
 // White frame: a white design always sits in a white rounded panel inset 28px on a light-grey frame,
 // so the featured image reads as its own block on a white blog page. Inner content keeps canvas coordinates.
 const cbFramed = (inner, right = 28) => `<div class="cbf" style="background:#F2F2F3"></div><div style="position:absolute;left:28px;top:28px;right:${right}px;bottom:28px;border-radius:28px;background:#fff;overflow:hidden"><div style="position:absolute;left:-28px;top:-28px;width:1600px;height:900px">${inner}</div></div>`;
-const cbMark = () => brand.markUrl ? `<img class="cbm" src="${brand.markUrl}" alt="">` : '';
 
 // "versus/pills": grey canvas, two white panels; two blue pills face each other with the logos at the tips; the question below
 function cbVersusPills() {

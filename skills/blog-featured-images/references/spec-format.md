@@ -126,7 +126,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
 ---
 
 # Headline layouts
-Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark` and `logotype`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
+Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark` and `logotype`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically, and none shows the site mark. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
 
 ## Versus pills (`"mode": "versus", "variant": "pills"`)
 ```json
@@ -160,7 +160,7 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 Review", "product": "Sage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
 ```
 - The layout for articles about **one product** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category. An X vs Y title is refused ("FAIRNESS CHECK FAILED").
-- `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). `panelLogo` is the product's domain (or `"../assets/<file>.png"`); its mark is turned white automatically. `product` is the name shown under the mark.
+- `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). `panelLogo` is the product's domain (or `"../assets/<file>.png"`); it fills both spots automatically: white on the panel, and black `#0A0A0B` on the white tile top-left (the site mark is never shown). `product` is the name shown under the mark.
 
 ## Logotype (`"mode": "logotype"`; single product with a black logo)
 ```json

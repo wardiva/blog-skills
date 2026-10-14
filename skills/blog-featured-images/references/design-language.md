@@ -78,7 +78,7 @@ The renderer refuses the rest ("VIBRANT FIT FAILED"). On blue, text on the field
 ---
 
 ## 3d. Headline layouts
-Bold names or a big, tight headline carry the image, with colour in a few clean shapes. Three are for X vs Y:
+Bold names or a big, tight headline carry the image, with colour in a few clean shapes. Four are for X vs Y and two for single-product articles. **None shows the site mark.**
 
 | Layout | What you see | Best for |
 |---|---|---|
@@ -232,9 +232,9 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ## 13. Guardrails
 
-- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black only in `dark` and `versus/slash`.
+- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash` and `versus/duo`, and black ink only in `logotype` and `dark`'s top-left icon.
 - **Logos:** never a tiny logo in a big tile, an app icon shrunk inside a white tile, or invented or warped logos.
-- **Layouts:** never two layouts with the same skeleton; never anything added to fill space; a white design always has the grey frame.
+- **Layouts:** never two layouts with the same skeleton; never anything added to fill space; a white design always has the grey frame; never the site mark on a headline layout; never a one-brand image for an X vs Y article.
 - **Details:** no heavy shadows, small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos or neon.
 
 ## 14. Inspiration

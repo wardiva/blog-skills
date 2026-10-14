@@ -1,10 +1,10 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in two families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), and Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black + brand colour). It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in two families: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), and Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream). It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
-*The finalized reference set: card layouts (top) and headline layouts (bottom). The same images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
+*A selection from the finalized reference set: card layouts (top) and all six headline layouts (bottom). The same images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
 
 Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
@@ -77,7 +77,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
-| `LOGOTYPE CHECK FAILED` | `logotype` needs a black logo lockup; coloured logos use `dark` |
+| `LOGOTYPE CHECK FAILED` | `logotype` needs a black logo with a separate icon; coloured logos use `dark` |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 | `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
@@ -109,7 +109,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `stack` | default | One key rule | no |
 | `window` | default | Vendor lists, pricing tables | yes |
 
-**Headline layouts** (after Chatbase: subtle vivid blue shapes, white designs in a grey frame, two on black):
+**Headline layouts** (after Chatbase: subtle vivid blue shapes, white designs in a grey frame, three on black, one on cream; no site mark):
 
 | Layout | Best for |
 |---|---|
@@ -122,7 +122,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 
 ## Add your own site
 
-Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours, and optionally `markUrl` (the site's own square icon) and `markName` for the site mark. Then set `"brand": "<site>"` in specs. Variety history is kept separately per brand.
+Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours, and optionally `markUrl` (the site's own square icon) and `markName` for the site mark (card layouts only). Then set `"brand": "<site>"` in specs. Variety history is kept separately per brand.
 
 ## What's inside
 

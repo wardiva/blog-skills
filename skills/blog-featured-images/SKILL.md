@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (mostly X vs Y - facing pills, connected logos, black slash, black + brand colour) - 13 modes / 19 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) - 13 modes / 19 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog featured images
@@ -15,12 +15,12 @@ Read these before your first image in a session:
 - `references/lessons.md`: speed tools, pre-flight checks and gotchas.
 
 ## The target look
-- **Two families:** card layouts on light fields, and four headline layouts after Chatbase (three of them for X vs Y; subtle vivid blue shapes, white designs in a grey frame, two on black).
+- **Two families:** card layouts on light fields, and six headline layouts after Chatbase (four for X vs Y, two for single-product articles; subtle vivid blue shapes, white designs in a grey frame, three on black, one on cream). Headline layouts never show the site mark.
 - **Light fields** (`sky`, `paper`, `cream`, `g5`) with thin guide lines and fine grain (no grain on `cream`), each chosen to flatter its illustration.
 - **About 1 in 3 images on the vibrant "deep dunes" blue** (heavy grain, soft rolling bands), and only when the illustration is a big white card.
 - One big white UI card or hero. Blue gradient only for the active/anchor element; grey for inactive.
 - Navy headlines; real colour logos, balanced in their tiles; logos alone where they're recognisable.
-- No drop shadows on the blue; minimal, field-tinted shadows on light fields.
+- No drop shadows on blue or black; minimal, field-tinted shadows on light fields.
 - At most 15 words.
 
 ## The hard rules
@@ -33,8 +33,8 @@ Read these before your first image in a session:
 7. **Background fits the illustration (enforced):** leave `bg` out and the renderer picks the layout's best light background; anything outside the layout's fit list is refused ("BACKGROUND FIT FAILED"). Blue-heavy illustrations get a neutral field.
 8. **Vibrant + subtle mix (enforced):** the deep-dunes blue (`"bg": "blue"`, only for `checklist`, `versus/table`, `window`, `before-after/flow`) and the black layouts (`dark`, `versus/slash`, `versus/duo`) together appear on about 1 in 3 images per category, never neighbours ("VIBRANT CHECK FAILED", "VIBRANT FIT FAILED").
 9. **Visual appeal is a hard gate:** an image that passes every check but doesn't look good fails QA (blue dosage, logo balance, logos only, figure/ground, balance).
-10. **Shadows follow the background:** none on the blue; minimal and tinted on light fields (automatic).
-11. **Site mark only sometimes (enforced):** `"craft": true` + `"series"` adds the site mark + series tag, in a natural empty slot, on at most 1 in 3 images, never neighbours ("SERIES CHECK FAILED").
+10. **Shadows follow the background:** none on blue or black; minimal and tinted on light fields (automatic).
+11. **Site mark only sometimes (enforced):** `"craft": true` + `"series"` adds the site mark + series tag to a card layout, in a natural empty slot, on at most 1 in 3 images, never neighbours ("SERIES CHECK FAILED"). Headline layouts never show it (`dark` shows the product's own icon instead).
 12. **White designs sit in a grey frame:** a white rounded panel inset 28px on `#F2F2F3` (automatic in `versus/pills` and `versus/connect`).
 13. **Delivered images are permanent (enforced):** once QA passes and the user has the images, finalize them (`scripts/finalize.mjs`). A finalized image keeps its files in `featured-images/<slug>/`, stays in the site history and the folder ledger forever (it keeps counting for layout rotation), and is never re-created or overwritten ("FINAL IMAGE LOCKED"). Redo one only when the user explicitly asks.
 14. **Enough content, fair comparisons (enforced):** each layout needs enough real content to fill its frame ("CONTENT CHECK FAILED"), and an X vs Y article always shows both products ("FAIRNESS CHECK FAILED": `dark` is for single-brand articles).
@@ -58,7 +58,7 @@ Read these before your first image in a session:
 | `stack` | takeaway card, two cards peeking from the top | one key rule | g5, cream | no |
 | `window` | app window: list pane + detail pane | vendor lists, pricing | sky, g5 | **yes** |
 
-**Headline layouts** (after Chatbase; they paint their own canvas, `bg` is ignored). White ones sit in a grey frame; black ones count as vibrant:
+**Headline layouts** (after Chatbase; they paint their own canvas, `bg` is ignored). White ones sit in a grey frame, `logotype` sits on cream; black ones count as vibrant:
 
 | Layout | Shows | Best for |
 |---|---|---|
@@ -94,7 +94,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
    node "<skill-dir>/scripts/finalize.mjs" --brand <b> <slug> <slug> ...
    ```
    It also copies each image and its spec to `~/.blog-featured-images/delivered/<brand>/<slug>/`. `--list` shows every delivered image.
-7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick.
+7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick. Never bring back anything `references/lessons.md` lists as rejected.
 
 **When the renderer refuses** (never work around it with `--force` or another folder):
 | Message | Fix |
@@ -107,7 +107,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black); use a light background or a light layout |
 | `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` |
 | `SERIES CHECK FAILED` | Remove `"series"` |
-| `LOGOTYPE CHECK FAILED` | The product's logo isn't black: use `dark`, or save its black logo to `featured-images/assets/` and set `"logotype"` to it |
+| `LOGOTYPE CHECK FAILED` | The product's logo isn't black, or has no separate icon for the black tile: use `dark` (or, if the brand has a black lockup, save it to `featured-images/assets/` and set `"logotype"` to it) |
 | `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 3+ window rows), or pick a layout that suits fewer facts |
 | `FAIRNESS CHECK FAILED` | An X vs Y article: use a versus layout that shows both products |
 | `LOGO FILE MISSING` | Put the logo file in `featured-images/assets/` and reference it relative to the spec |

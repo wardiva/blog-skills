@@ -84,3 +84,5 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 **8. Logos.** Every named product has its real, current mark (not an anniversary or campaign badge, not a generic parent-company mark when the product has its own), loaded, legible at 350×250, and balanced against the other logos.
 
 **9. Guardrails respected** (design language, section 13).
+
+**10. Decided, never re-opened.** These were tried and rejected by the user; QA never asks for them and a Maker never adds them: `versus/logos`; window auto-sizing; a pointer callout on the timeline; badge logos scaled up to fill their tile; the site mark on a headline layout; a one-brand (`dark`) image for an X vs Y article; a plain grey field behind the prompt layout. FAIL any image that brings one back.
