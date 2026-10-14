@@ -1,7 +1,8 @@
-// Batch planner: shows layout usage for a category and reserves layouts for a batch, so Makers can render in parallel.
+// Batch planner: shows site-wide layout usage and reserves layouts for a batch, so Makers can render in parallel.
+// Layouts don't repeat anywhere on the site until every one has been used; a favourite may come back earlier only with a reason.
 // Usage:
 //   node plan.mjs --brand <brand> --category <cat>                                # usage table + least-used order
-//   node plan.mjs --brand <brand> --category <cat> --reserve <slug>=<mode>[/<variant>][@<topic>] ...
+//   node plan.mjs --brand <brand> --category <cat> --reserve <slug>=<mode>[/<variant>][@<topic>][#<why a repeat makes sense>] ...
 // Reservations are written to the site-wide history, so the renderer's least-used check stays correct when renders run in parallel.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -20,20 +21,21 @@ const ri = args.indexOf('--reserve');
 const reqs = ri >= 0 ? args.slice(ri + 1).filter((a) => !a.startsWith('--')) : [];
 const batchSlugs = new Set(reqs.map((r) => r.split('=')[0]));
 let hist = history.filter((e) => e.final || !batchSlugs.has(e.slug));   // re-planning replaces a slug's old entry; delivered entries always stay
-const usage = () => Object.fromEntries(ALL.map((l) => [l, hist.filter((e) => e.category === category && !e.superseded && layoutOf(e) === l).length]));   // superseded = a delivered design the user rejected and had replaced
+const usage = () => Object.fromEntries(ALL.map((l) => [l, hist.filter((e) => !e.superseded && layoutOf(e) === l).length]));   // site-wide   // superseded = a delivered design the user rejected and had replaced
 const errors = [];
 for (const r of reqs) {
-  const [slug, rest] = r.split('='); const [lay, topic] = (rest || '').split('@');
+  const [slug, rest0] = r.split('='); const [rest, reason = ''] = (rest0 || '').split('#'); const [lay, topic] = (rest || '').split('@');
   const [mode, variant = LAYOUTS[mode]?.[0]] = lay.split('/'); const layout = `${mode}/${variant}`;
   if (!ALL.includes(layout)) { errors.push(`${slug}: unknown layout ${layout}`); continue; }
   if (history.some((e) => e.slug === slug && e.final)) { errors.push(`${slug}: already delivered (final); delivered images can't be re-created`); continue; }
   const u = usage(), min = Math.min(...ALL.filter((l) => !REPEATABLE[l]).map((l) => u[l]));
-  if (!args.includes("--user-pick") && u[layout] > min && !(REPEATABLE[layout] && u[layout] < REPEATABLE[layout])) { errors.push(`${slug}: ${layout} used ${u[layout]}x, least-used are: ${ALL.filter((l) => u[l] === min).join(', ')}`); continue; }
+  const early = REPEATABLE[layout] && u[layout] < REPEATABLE[layout] && reason.trim().length >= 20;
+  if (!args.includes("--user-pick") && u[layout] > min && !early) { errors.push(`${slug}: ${layout} is already used ${u[layout]}x on this site. Unused: ${ALL.filter((l) => u[l] === min).join(', ')}${REPEATABLE[layout] && u[layout] < REPEATABLE[layout] ? ` (a favourite may repeat with #<why no unused layout fits>)` : ''}`); continue; }
   if (topic && hist.some((e) => e.topic === topic && e.mode === mode)) { errors.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
-  hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, at: new Date().toISOString() });
+  hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, ...(reason.trim() ? { repeatReason: reason.trim() } : {}), at: new Date().toISOString() });
 }
 if (errors.length) { console.error('PLAN REFUSED (nothing written):\n  ' + errors.join('\n  ')); process.exit(2); }
 if (reqs.length) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, JSON.stringify(hist, null, 1)); console.log(`Reserved ${reqs.length} layout(s) in ${file}`); }
 const u = usage(); const order = [...ALL].sort((a, b) => u[a] - u[b]);
-console.log(`Layout usage in "${category}" (least-used first; assign in this order, best fit within the lowest tier):`);
+console.log(`Layout usage across the whole site (least-used first; give each article the best fit among the unused):`);
 for (const l of order) console.log(`  ${String(u[l]).padStart(2)}  ${l}`);

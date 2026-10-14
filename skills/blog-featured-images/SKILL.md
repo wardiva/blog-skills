@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge) plus two originals (a receipt for cost articles, a dictionary entry for what-is articles) - 17 modes / 26 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in three approved families plus two originals - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge) plus two originals (a receipt for cost articles, a dictionary entry for what-is articles) - 17 modes / 26 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no layout repeats anywhere on the site (a repeat only with a written reason), writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog Featured Images
@@ -31,7 +31,7 @@ Fifteen visible words, seven per element, no sentences. Whitespace is good. Neve
 
 ### Variety comes from layout, never from palette
 
-Every image in a category uses a different layout, so the blog grid never repeats. All of them share one palette, one type family and one finish, so the grid still reads as one brand.
+Every image on the site uses a different layout, because the reader sees them all together: an illustration comes back only when no unused layout fits the article, and the reason is written down. All of them share one palette, one type family and one finish, so the grid still reads as one brand.
 
 ### Beauty is the gate
 
@@ -54,7 +54,7 @@ Read these before your first image in a session:
 - `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, and the "Never" list).
 - `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
 - `references/agents.md`: the four roles (each one's job, steps, prompt and limits), the fast-batch flow, and the Visual and Fact checklists.
-- `references/taste.md`: the user's taste, distilled from every review note: thirteen principles, each with the image that taught it, and the Self-Critique every image must pass.
+- `references/taste.md`: the user's taste, distilled from every review note: fourteen principles, each with the image that taught it, and the Self-Critique every image must pass.
 - `references/lessons.md`: speed tools, pre-flight checks and gotchas.
 
 ## Report Format (Required)
@@ -109,20 +109,20 @@ Five layouts depend on what logos a brand has. Run `node <skill-dir>/scripts/log
 
 Still look at every icon: a stale anniversary badge (Availity's "25") passes the check.
 
-### 3. What's still unused in this category?
+### 3. What hasn't been used anywhere on the site?
 
-`node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` lists usage, least-used first. Pick the best fit from the lowest tier. Same-topic articles (duplicate URLs such as `…-guide` and `…-guide-2`) never share a mode.
+`node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` lists usage **across the whole site**, least-used first. Give each article the best fit among the unused layouts. Same-topic articles (duplicate URLs such as `…-guide` and `…-guide-2`) never share a mode.
 
-The favourites may repeat before the rotation completes:
+**Never repeat an illustration unless it truly makes sense.** Until every layout has been used, a repeat is allowed only when no unused layout fits the article (a single-product article whose logo rules out `logotype` has only `dark`, for example). Then a favourite may come back, within its limit, with the reason written down: `--reserve <slug>=<layout>#<why no unused layout fits>` (or `"repeatReason"` in the spec). Show every repeat and its reason in the plan.
 
-| Layout | Per category |
+| Layout | Most uses across the site |
 | --- | --- |
 | `versus/slash`, `versus/connect`, `versus/duo` | up to 5 |
 | `dark` | up to 3 |
 | `versus/pills`, `logotype` | up to 2 |
 | Everything else | once, until every layout has been used |
 
-When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+When no unused layout fits an article and repeating wouldn't make sense either, design a new variant in the family (shown to the user first) rather than repeat.
 
 ### 4. Should it be vibrant?
 
@@ -131,7 +131,7 @@ When a category's least-used tier already has one use each, add a new variant be
 | The deep-dunes blue (`"bg": "blue"`) | only `checklist`, `versus/table`, `window`, `before-after/flow` (a big white card) |
 | The black layouts | `dark`, `versus/slash`, `versus/duo` |
 
-**Rule: at most 1 in 3 images per category is vibrant (blue and black together), never neighbours** ("VIBRANT CHECK FAILED", "VIBRANT FIT FAILED").
+**Rule: at most 1 in 3 images per category is vibrant (blue and black together), never neighbours** ("VIBRANT CHECK FAILED"); a layout that can't go on the blue is refused with "VIBRANT FIT FAILED".
 
 ### 5. Which background?
 
@@ -161,12 +161,12 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 
 | Layout | Shows | Best for |
 | --- | --- | --- |
-| `versus/pills` | two facing blue pills (flat cuts at the outer edges, rounded tips a little over half a pill's height apart, a subtle gradient with fine noise) with the logos on **white circles** at the tips, the question below in near-black | X vs Y, only when both products have a logo that sits on white; up to 2 per category |
-| `versus/connect` | centred near-black headline, each brand's **own app icon in its original colours** filling its tile, linked to a VS circle, dot patches | X vs Y, only when both brands have a solid app icon; up to 5 per category |
-| `versus/slash` | black, dot grid, heavy-caps names, every name two-tone, **white + that brand's colour** (never all one colour), italic VS with a glowing streak | X vs Y (vibrant); up to 5 per category |
-| `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant); up to 5 per category |
-| `dark` | black, the product's icon in black (#0A0A0B) on a white tile top-left, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | single-product articles; never X vs Y (vibrant); up to 3 per category |
-| `logotype` | the product's black logo: its icon in white on a black rounded tile beside the black wordmark, large and centred on cream with a faint grid; no other text | single-product articles whose logo is **black** with strong typography; up to 2 per category |
+| `versus/pills` | two facing blue pills (flat cuts at the outer edges, rounded tips a little over half a pill's height apart, a subtle gradient with fine noise) with the logos on **white circles** at the tips, the question below in near-black | X vs Y, only when both products have a logo that sits on white; up to 2 across the site, each repeat with a reason |
+| `versus/connect` | centred near-black headline, each brand's **own app icon in its original colours** filling its tile, linked to a VS circle, dot patches | X vs Y, only when both brands have a solid app icon; up to 5 across the site, each repeat with a reason |
+| `versus/slash` | black, dot grid, heavy-caps names, every name two-tone, **white + that brand's colour** (never all one colour), italic VS with a glowing streak | X vs Y (vibrant); up to 5 across the site, each repeat with a reason |
+| `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant); up to 5 across the site, each repeat with a reason |
+| `dark` | black, the product's icon in black (#0A0A0B) on a white tile top-left, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | single-product articles; never X vs Y (vibrant); up to 3 across the site, each repeat with a reason |
+| `logotype` | the product's black logo: its icon in white on a black rounded tile beside the black wordmark, large and centred on cream with a faint grid; no other text | single-product articles whose logo is **black** with strong typography; up to 2 across the site, each repeat with a reason |
 
 **Gumloop layouts** (user references, approved Oct 2026; they paint their own canvas, `bg` is ignored). Set `"field"` to one of the layout's approved fields (first = default); anything else is refused ("FIELD FIT FAILED"). The black and blue fields count as vibrant. Logos are each brand's full **wordmark** (icon + typography), fetched automatically; a brand without one is typeset in Inter:
 
@@ -226,7 +226,7 @@ Set `"logo": "<domain>"` wherever a product is named; the renderer's free chain 
 - Light fields (`sky`, `paper`, `cream`, `g5`) carry thin guide lines and fine grain (no grain on `cream`); the vibrant blue carries heavy grain in soft rolling bands.
 - One big white UI card or hero. The blue gradient marks only the active/anchor element; inactive things are grey.
 - Real logos in their original colours, balanced in their tiles; logos alone (no name cards) where they're recognisable.
-- Navy headlines on card layouts.
+- Card-layout headlines are semibold 600: black `#0A0A0B` on `focus` and `receipt`, navy `#0E2A5C` on `ranked`, `timeline` and `hub`.
 
 ### Shadows follow the background
 
@@ -234,11 +234,11 @@ None on blue or black. Minimal and tinted to the field on light backgrounds. The
 
 ### White designs sit in a grey frame
 
-A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so it reads as its own block on a white blog page (automatic in `versus/pills` and `versus/connect`).
+A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so it reads as its own block on a white blog page (automatic in `versus/pills`, `versus/connect`, the light Gumloop layouts, `receipt` and `definition`).
 
 ### Headline layouts speak in one voice
 
-Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words: near-black on pills and connect, white on duo and dark. Card layouts keep navy headlines.
+Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words: near-black on pills and connect, white on duo and dark. Card-layout headlines are semibold 600: black `#0A0A0B` on `focus` and `receipt`, navy `#0E2A5C` on `ranked`, `timeline` and `hub`.
 
 ### Never the site mark on a headline layout
 
@@ -259,7 +259,7 @@ Each role's job, steps, prompt template and limits are in `references/agents.md`
 | Role | How many | Does | Never |
 | --- | --- | --- | --- |
 | **Orchestrator** (you) | 1 | Reads the articles, checks logos, plans and reserves layouts, pre-flights, briefs all Makers in one message, starts both QA agents in one message, routes fixes, fixes renderer bugs in the skill, delivers and finalizes | Approves an image |
-| **Makers** | 1 per article, in parallel | Write each spec from the article's own facts for the assigned layout, render it, return the paths plus every fact with its source sentence | Pick a layout; use `--force` |
+| **Makers** | 1 per article (1 per 2–3 when the batch is over 12), in parallel | Write each spec from the article's own facts for the assigned layout, render it, return the paths plus every fact with its source sentence | Pick a layout; use `--force` |
 | **Visual QA** | 1 per batch; 1 per category for 12+ images | Judges looks on the contact sheet and PNGs (Visual checklist) | Checks facts; edits |
 | **Fact QA** | 1 per batch; 1 per ~15 articles | Checks every word and number against the article text (Fact checklist); needs no images, so it runs alongside Visual QA | Judges looks; edits |
 
@@ -274,7 +274,7 @@ An image ships only when **both** QA agents pass it. Failures go back to their o
    node "<skill-dir>/scripts/render.mjs" "featured-images/specs/<slug>.json" --out "featured-images/<slug>"
    ```
    `featured-images/` lives in the user's project folder, never in a temporary or scratch folder. Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… bg=… words=N/15`.
-4. **QA, both at once:** the moment the last Maker returns, build the sheet (`node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out featured-images/qa-sheet.png --highlight <slugs>`), then start **Visual QA and Fact QA in one message**.
+4. **QA, both at once:** the moment the last Maker returns, build the sheet of the whole site (`node <skill-dir>/scripts/sheet.mjs --brand <b> --out featured-images/qa-sheet.png --highlight <slugs>`), then start **Visual QA and Fact QA in one message**.
 5. **Fix** only the failures, in parallel. **Deliver** each image as soon as both QA agents pass it (Report Format above). Ask before uploading anything to a website. Fix renderer problems in the skill itself, and say so in the delivery note.
 6. **Finalize** the delivered images:
    ```bash
@@ -290,7 +290,7 @@ Never work around a refusal with `--force` or another folder.
 | --- | --- |
 | `HEADING CHECK FAILED` | Rewrite the heading from the title's key words |
 | `TEXT CHECK FAILED` | Cut subs that aren't the point, then sentence tails, until ≤15 words and ≤7 per element |
-| `VARIETY CHECK FAILED` | Use one of the layouts it lists (set `mode`, plus `variant` when not `default`) |
+| `VARIETY CHECK FAILED` | That layout is already used on the site: use one of the unused layouts it lists (set `mode`, plus `variant` when not `default`). A favourite may repeat only with a reason (`#reason` when reserving, or `"repeatReason"`) |
 | `BACKGROUND FIT FAILED` | Remove `bg` (or use one it lists) |
 | `BACKGROUND CHECK FAILED` | That background doesn't exist; use `sky`, `paper`, `cream`, `g5` or `blue` |
 | `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black); use a light background or a light layout |
@@ -326,7 +326,7 @@ Before delivering, check for:
 | A figure without its qualifier | Copy "per provider", "up to", "from", "minimum" from the article |
 | Breakdown outside the hero's range | Rows must sit inside the headline figure |
 | More than 15 words or a sentence | Cut to labels |
-| Layout already used in the category | Pick from the least-used tier (favourites up to their limits) |
+| A layout already used anywhere on the site | Pick an unused one; repeat only when none fits, with the reason (favourites within their limits) |
 | Two vibrant images side by side, or more than 1 in 3 | Move one to a light field or a light layout |
 | `dark` on an X vs Y article | Use a versus layout showing both products |
 | Pills with a solid app icon, or connect with a mark on white | Run `logo-check.mjs` and pick the layout both brands pass |

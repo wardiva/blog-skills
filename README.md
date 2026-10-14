@@ -10,7 +10,7 @@ Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
 - is **minimal**: at most 15 words, labels not sentences (enforced)
 - sits on a **background chosen to flatter its illustration** (enforced)
-- **looks different** from every other image in the same category (enforced)
+- **looks different** from every other image on the site; an illustration repeats only when nothing unused fits, with the reason written down (enforced)
 - shows **real, balanced product logos** where products are named
 - is **checked by two independent QA agents** side by side, one for looks (visual appeal is a hard gate) and one for facts
 
@@ -77,7 +77,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 |---|---|
 | `HEADING CHECK FAILED` | The image heading must reuse the blog title's own words |
 | `TEXT CHECK FAILED` | At most 15 words per image and 7 per element (no sentences) |
-| `VARIETY CHECK FAILED` | A layout can't repeat in a category until every layout has been used (the favourites may repeat up to their limits) (history per site in `~/.blog-featured-images/history-<brand>.json`) |
+| `VARIETY CHECK FAILED` | A layout can't repeat anywhere on the site until every layout has been used; a favourite may come back earlier only with a written reason, within its limit |
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
@@ -98,7 +98,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue**, only behind a big white card (blue and black images together on at most 1 in 3 per category).
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
 - **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
-- **One bold blue anchor**, white UI cards, navy headlines on card layouts (near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
+- **One bold blue anchor**, white UI cards, semibold card headlines (black on focus and receipt, navy on the others; near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
 ## Layouts (17 modes, 26 layouts)
@@ -123,12 +123,12 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 
 | Layout | Best for |
 |---|---|
-| `versus/pills` | X vs Y: two facing pills (flat outer cuts, subtle gradient with fine noise) with the logos on white circles, the question below in black; only when both logos work on white; up to 2 per category |
-| `versus/connect` | X vs Y: each brand's own app icon in its original colours, linked to a VS circle, black headline; only when both brands have an app icon (a favourite: may repeat up to 5 times per category) |
-| `versus/slash` | X vs Y on black: bold names, each white + its brand colour, italic VS (a favourite: may repeat up to 5 times per category) |
-| `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: may repeat up to 5 times per category) |
-| `dark` | Single-product articles (review, pricing, features): the product's icon in black on a white tile top-left, its colour as the panel, white logo; up to 3 per category |
-| `logotype` | Single-product articles with a black logo: icon on a black tile beside the wordmark, on cream with a faint grid; up to 2 per category |
+| `versus/pills` | X vs Y: two facing pills (flat outer cuts, subtle gradient with fine noise) with the logos on white circles, the question below in black; only when both logos work on white; up to 2 across the site, each repeat with a reason |
+| `versus/connect` | X vs Y: each brand's own app icon in its original colours, linked to a VS circle, black headline; only when both brands have an app icon (a favourite: may repeat up to 5 times across the site, each repeat with a reason) |
+| `versus/slash` | X vs Y on black: bold names, each white + its brand colour, italic VS (a favourite: may repeat up to 5 times across the site, each repeat with a reason) |
+| `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: may repeat up to 5 times across the site, each repeat with a reason) |
+| `dark` | Single-product articles (review, pricing, features): the product's icon in black on a white tile top-left, its colour as the panel, white logo; up to 3 across the site, each repeat with a reason |
+| `logotype` | Single-product articles with a black logo: icon on a black tile beside the wordmark, on cream with a faint grid; up to 2 across the site, each repeat with a reason |
 
 **Gumloop layouts** (after the user's Gumloop references; each has its own approved fields, set with `"field"`; black and blue fields count as vibrant; logos are each brand's full wordmark):
 
@@ -158,7 +158,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `SKILL.md` | Hard rules, layouts and workflow (Claude reads this first) |
 | `references/approved/` | The finalized reference images: the target look |
 | `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails |
-| `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
+| `references/spec-format.md` | The JSON spec for every layout (snippets show each layout's own fields; `examples/` has complete, renderable specs) |
 | `references/agents.md` | The four roles (job, steps, prompt, limits), the fast-batch flow, the Visual and Fact checklists |
 | `references/taste.md` | The user's taste as principles (each tied to the note that taught it) and the Self-Critique every image passes |
 | `references/lessons.md` | Speed tools, gotchas, pre-flight checks |

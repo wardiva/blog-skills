@@ -20,9 +20,9 @@ Both QA agents start **in the same message** and run side by side.
 **Job:** turn URLs into delivered, finalized images as fast as possible without ever approving an image yourself.
 
 1. **Read all URLs at once:** `node <skill-dir>/scripts/read-articles.mjs <url1> <url2> ... --out <featured-images>/articles`. This writes one `articles/<slug>.md` per URL. Nobody fetches a page again. Note each article's type, core idea, 3–6 hard facts, **category**, **topic** (duplicate URLs share one topic) and the products it names.
-2. **Check logos for logo-dependent layouts:** `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article. Pills and connect go only to a pair where **both** brands pass; logotype only to a product that passes (otherwise `dark`).
+2. **Check logos for logo-dependent layouts:** `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article. Pills, connect and glass go only to a pair where **both** brands pass; tiles when both pass connect (filled tiles) or both pass pills (white tiles); logotype only to a product that passes (otherwise `dark`).
 3. **Plan and reserve in one command:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows usage, least-used first. Pick the best fit from the lowest tier for each article.
-   - All layouts differ, except the favourites up to their limits.
+   - Each layout is used once across the site until every layout has been used: give each article an unused one. Repeat one only when no unused layout fits the article; then reserve it with the reason (`<slug>=<layout>#<why>`), within the favourites' limits, and show the reason in the plan.
    - Same-topic articles use different modes.
    - At most 1 in 3 are vibrant (blue field and black layouts together), never neighbours. The blue only goes on `checklist`, `versus/table`, `window` and `before-after/flow`.
    - Single product → `logotype` or `dark`; X vs Y → a versus layout.
@@ -35,7 +35,7 @@ Both QA agents start **in the same message** and run side by side.
    - For dark and duo, note each brand's colour.
 5. **Brief all Makers in one message, in the background** (template below). Give each one its article files, layout, `bg` decision (blue or leave out), category, topic, slug, brand, and brand colour or logo notes.
 6. **The moment the last Maker returns:**
-   - Build the sheet: `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out <featured-images>/qa-sheet.png --highlight <slugs>`. Use one sheet per category when splitting Visual QA.
+   - Build the sheet: `node <skill-dir>/scripts/sheet.mjs --brand <b> --out <featured-images>/qa-sheet.png --highlight <slugs>` (the whole site, so a repeat anywhere shows). When splitting Visual QA, add `--category <c>` per agent, plus one site-wide sheet.
    - In **one message**, start Visual QA (per sheet) and Fact QA (templates below).
 7. **Route fixes:** merge each image's FAILs from both QA agents into one message to **its own Maker** (SendMessage). When it re-renders, send the image back **only to the QA agent(s) that failed it**. At most 3 rounds; never ship a FAIL silently.
    - If a QA agent asks for something in the "Decided, never re-opened" list (V9), or against an approved rule, overrule it and say so in the fix message.
@@ -71,7 +71,7 @@ For each article below:
 3. Render: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>".
    A text/heading/content check failing: fix the spec within the layout and render again.
    SLASH NAME: mark the coloured part with {{ }} or use the fuller product name.
-   The layout itself refused (VARIETY, PILLS/CONNECT/LOGOTYPE LOGO, FAIRNESS, VIBRANT) or FINAL IMAGE LOCKED: stop and report it.
+   The layout itself refused (VARIETY, PILLS/CONNECT/TILES/GLASS/LOGOTYPE LOGO, FIELD FIT, FAIRNESS, VIBRANT) or FINAL IMAGE LOCKED: stop and report it.
 4. Open master.png and card-350x250.png once and run the Self-Critique in <skill-dir>/references/taste.md (a table, next to two approved images of the same family); fix every "no" before returning: wraps, clipping, a wrong or stale logo, balance, mismatched treatments, a loud pattern.
 Articles: <article file, layout, bg, category, topic, slug, brand, colour/logo notes>
 Return per article, as a list: slug, layout, bg, spec path, master.png path, card path, your Self-Critique table, and every fact on the image
@@ -90,7 +90,7 @@ Keep this context: you may get fix messages for these images; apply them and ren
 You are VISUAL QA for blog featured images. You judge looks only (Fact QA checks the facts). You never edit or render.
 Read <skill-dir>/references/taste.md and <skill-dir>/references/design-language.md, and look at <skill-dir>/references/approved/.
 Run the Self-Critique table in taste.md on every image.
-Inputs: contact sheet <qa-sheet.png> (this batch framed in blue, next to the category's earlier images),
+Inputs: contact sheet <qa-sheet.png> (this batch framed in blue, next to every earlier image on the site),
 master.png and card-350x250.png for each image, and the site history <~/.blog-featured-images/history-<brand>.json>.
 Check every image against the VISUAL CHECKLIST in <skill-dir>/references/agents.md, looking at the actual PNGs.
 Never ask for anything in checklist item V9.
@@ -124,13 +124,13 @@ Keep this context: you may get re-rendered images to re-check.
 
 **V2c. Logotype.** The icon sits in white on a black rounded tile beside the black wordmark (or keeps its own tile), sharp, large and centred on cream; no other text.
 
-**V3. Layout never used twice.** No other image in the category has this layout unless every layout has been used (then it's one of the least-used), except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. Next to every other 350×250 card in the category, no two read as the same skeleton. Same-topic articles use different modes. At most 1 in 3 vibrant, never neighbours.
+**V3. Layout never used twice.** No other image on the site has this layout, unless every layout has been used, or it is a favourite repeated within its limit with a written reason that holds up (no unused layout fits this article). Next to every other 350×250 card, no two read as the same skeleton. Same-topic articles use different modes. At most 1 in 3 vibrant per category, never neighbours.
 
 **V4. Easy to scan.** The topic is clear in 2 seconds at 350×250, with one focal point (card layouts: one bold blue anchor; headline layouts carry it with the headline, logos and colour shapes instead).
 
 **V5. Minimal.** ≤15 words, ≤7 per element, no sentences (`words=N/15`). Nothing filling space.
 
-**V6. Balanced.** Card layouts: headline 56–76px and under ~760px wide; hero at 55–70% of the width, at or slightly above the centre. Headline layouts: headlines auto-size up to ~116px and never overflow their panel. Always: nothing wraps badly, clips or overlaps; every word inside x 210–1390 (except `dark`'s text column at x 120); badges and cursors never touch text.
+**V6. Balanced.** Card layouts: headline 56–76px (receipt up to 84px) and under ~760px wide; hero at 55–70% of the width, at or slightly above the centre. Headline layouts: headlines auto-size up to ~116px and never overflow their panel. Always: nothing wraps badly, clips or overlaps; every word inside x 210–1390 (except `dark`'s text column at x 120); badges and cursors never touch text.
 
 **V7. Logos look right.** Every logo is loaded, legible at 350×250, balanced against the others, and the brand's real current mark (not an anniversary or campaign badge).
 

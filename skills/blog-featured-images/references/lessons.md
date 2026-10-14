@@ -8,7 +8,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 |---|---|---|
 | Read articles | `scripts/read-articles.mjs` (agent-browser, all URLs in parallel, full raw text in seconds) | WebFetch one URL at a time (slow, and it summarises, so facts get lost) |
 | Pick layouts | `scripts/plan.mjs` (usage table, then reserve the whole batch in one command) | Render, get "VARIETY CHECK FAILED", re-plan, render again |
-| Logo-dependent layouts | `scripts/logo-check.mjs <domains>` before reserving pills, connect or logotype | Reserve, let the Maker hit a PILLS / CONNECT / LOGOTYPE refusal, re-plan |
+| Logo-dependent layouts | `scripts/logo-check.mjs <domains>` before reserving pills, connect, glass, tiles or logotype | Reserve, let the Maker hit a PILLS / CONNECT / GLASS / TILES / LOGOTYPE refusal, re-plan |
 | Make images | All Makers started in one message, in the background | Makers one after another |
 | QA | Visual QA on one `scripts/sheet.mjs` contact sheet **and** Fact QA on the specs + articles, started in one message | One QA agent doing looks and facts, or QA opening every image one by one |
 | Fixes | One merged `SendMessage` per Maker; re-check only by the QA agent that failed it | A new agent that has to re-read everything; re-running both QA agents on everything |
@@ -31,7 +31,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 - **Count:** does the layout hold as many items as the article has (a "7 best" article needs 7 hub tiles)?
 - **Names:** will the article's own product names fit? Never abbreviate a name the article doesn't.
 - **Title words:** headline-less layouts (hub, before-after, most versus variants) carry the title's key words, e.g. the hub tile "7 Best ERP".
-- **Logos:** pills needs a logo that sits on white, connect a solid app icon, logotype a black logo with a separate icon. Check with `scripts/logo-check.mjs` while planning, never after rendering.
+- **Logos:** pills needs a logo that sits on white, connect a solid app icon, glass a compact wordmark, tiles two matching tiles (both filled or both white), logotype a black logo with a separate icon. Check with `scripts/logo-check.mjs` while planning, never after rendering.
 - **Renderer bugs are the Orchestrator's job.** Fix the code once so every future image benefits; Makers only change specs.
 
 ## 4. Taste Decides
@@ -52,7 +52,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 
 - One site-wide history per brand counts every render, wherever its folder is.
 - Layout identity (mode + variant) is the rule, and QA does the visual side-by-side (pixel similarity can't tell layouts apart).
-- With 26 layouts, a strict-rotation layout repeats only after all 26 are used; the favourites may repeat sooner, up to their limits. When the least-used tier already has one use each, add a variant **before** briefing Makers.
+- With 26 layouts used site-wide, a layout repeats only after all 26 are used; a favourite may come back sooner only with a written reason, within its limit. When the least-used tier already has one use each, add a variant **before** briefing Makers.
 - **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting for rotation, and can't be re-created. Never delete the history file.
 - An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
 
@@ -63,9 +63,9 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 - **A one-brand image for an X vs Y article** (dark layout) looked like an ad. Comparisons always show both products.
 - **Review rounds:** an interactive review page (before | fixed, Approve / Needs change / Pick A·B, a note per image) made feedback fast; turn each note into a prompt before acting.
 - **Not every QA fix is wanted:** a tighter window, a pointer callout and bigger logo badges were all rejected ("before is better"). When a fix changes the look, show it next to the original first.
-- **The user dislikes `versus/logos`** (removed) and loves `versus/slash`, `versus/connect` and `versus/duo` (each may repeat up to 5 times per category); `versus/pills` may repeat up to 2 times. Single-product articles use `logotype` when the logo is black with strong typography (up to 2 per category), otherwise `dark` (up to 3).
+- **The user dislikes `versus/logos`** (removed) and loves `versus/slash`, `versus/connect` and `versus/duo` (each may repeat up to 5 times across the site, each repeat with a reason); `versus/pills` may repeat up to 2 times. Single-product articles use `logotype` when the logo is black with strong typography (up to 2 across the site, each repeat with a reason), otherwise `dark` (up to 3).
 - **Match the user's references exactly, detail by detail:** the duo and dark layouts drop the site mark (dark shows the product's own icon in `#0A0A0B` on a white tile), dark's text starts at x 120 for balance, and logotype's icon sits on a black tile. Missing one detail from a reference cost a review round each time.
-- **Review fixes that stayed:** the focus card is wide (1120px) with its heading nudged 3px left to look centred; the stat number is a soft blue gradient, not navy; the prompt paints a light-blue gradient field with a strong glow (a plain field looked bland); slash's dot grid stays clear behind the names; an X vs Y table may go on the vibrant blue; one weight, Inter 500 Medium, for all text in pills, connect, duo and dark; the pills headline is all near-black, its logos always sit on white circles, and its shapes copy the reference exactly (flat outer cuts, tips 57% of the height apart, subtle gradient + fine noise; measure the reference's pixels rather than eyeballing) (pills only for brands whose logo works on white, up to 2 per category); the connect headline is all near-black and its tiles are the brands' own app icons in their original colours (connect only when both brands have one); slash names are always two-tone, white + the brand colour ("ADVANCED**MD**"), at their current auto-fit size (the user approved it as is).
+- **Review fixes that stayed:** the focus card is wide (1120px) with its heading nudged 3px left to look centred; the stat number is a soft blue gradient, not navy; the prompt paints a light-blue gradient field with a strong glow (a plain field looked bland); slash's dot grid stays clear behind the names; an X vs Y table may go on the vibrant blue; one weight, Inter 500 Medium, for all text in pills, connect, duo and dark; the pills headline is all near-black, its logos always sit on white circles, and its shapes copy the reference exactly (flat outer cuts, tips 57% of the height apart, subtle gradient + fine noise; measure the reference's pixels rather than eyeballing) (pills only for brands whose logo works on white, up to 2 across the site, each repeat with a reason); the connect headline is all near-black and its tiles are the brands' own app icons in their original colours (connect only when both brands have one); slash names are always two-tone, white + the brand colour ("ADVANCED**MD**"), at their current auto-fit size (the user approved it as is).
 - **Logo chain surprises:** a brand's "icon" can be a stale anniversary badge (Availity) or a pale grey wordmark (Sectra). Check every logo by eye; use the official site icon from the brand's website when needed.
 - **Work in the project folder.** One batch rendered into a temporary scratch folder; delivered images must live in the project's `featured-images/` (finalize also keeps a copy in `~/.blog-featured-images/delivered/`).
 - **Fix the skill, then publish:** renderer fixes made during a batch go into the skill and are pushed, never left as local patches.
@@ -78,9 +78,9 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 
 ## 8. The Gumloop layouts (Oct 2026)
 
-- Six new layouts from the user's Gumloop references: versus/type, versus/tiles, versus/glass, swap, badge, brandline. Approved fields only: type light/blue, tiles blue/black/light, glass light/black, swap light/black, badge light, brandline glow only (the renderer refuses the rest).
-- The user's review notes that stayed: "vs" vertically centred between the names; patterns (dot grids, the tiles ring) kept sparse and faint ("pattern is too much"); the "+" grid is fine as is.
-- Rejected: versus/type on black, badge on the blue field, brandline in any look but the glow field with a black centred headline (the tint and deep navy looks, blue headline ink, the Med Software Hub mark and name, the low headline position). Glass on the blue mesh was approved in round 2.
+- Six layouts were built from the user's Gumloop references (versus/type, versus/tiles, versus/glass, swap, badge, brandline); brandline was later retired, leaving five. Approved fields only: type light/blue, tiles blue/black/light, glass light/black, swap light/black, badge light (the renderer refuses the rest).
+- The user's review notes that stayed: "vs" vertically centred between the names; patterns (dot grids, the tiles ring) kept sparse and faint ("pattern is too much"); the "+" grid is fine as is (later refined: on dark fields it is bright and crisp, only around the edges).
+- Rejected: versus/type on black, badge on the blue field, brandline in any look but the glow field with a black centred headline (the tint and deep navy looks, blue headline ink, the Med Software Hub mark and name, the low headline position). Glass on the blue mesh was approved in round 2, then taken off blue in the approved-templates review (glass is light and black only).
 - Inline `style="background:url("…")"` breaks on the inner double quotes: put data-URI backgrounds in a `<style>` block (the `glBg` helper).
 - A per-image review page (Approve / Disapprove + a note, saved to the page's database) made the decisions fast; read them back with ArtifactData.
 - First test run (6 articles, full Maker + QA flow) fixed in the renderer: swap labels capped inside x 210-1390; the pale-wordmark darkening only touches free-standing pale ink (SAP's white letters stay white); the glass bar stays inside the card; glass sizes both wordmarks by their measured lettering height (type, not icon) and refuses lockups wider than 9:1 ("GLASS LOGO CHECK FAILED"); the vibrant refusal names black layouts too.
@@ -89,7 +89,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 ## 9. Batch-3 review (Oct 2026)
 
 - The user judges variety across EVERY image they have seen, not per category: a layout they recognise from an earlier batch ("this template is already used") is rejected even in another category. Prefer layouts the user hasn't seen recently.
-- versus/tiles (superseded in the approved-templates review): both tiles filled, or both white, never one of each.
+- versus/tiles: the batch-3 rule (filled icons only) was replaced in the approved-templates review by: both tiles filled, or both white, never one of each.
 - When the user asks for a comparison layout on a duplicate-topic article, their request beats the same-topic rule: drop the "topic" and use a versus variant the first article didn't.
 - Single-topic "what is X" articles may use `dark` with `panelIcon` (no product logo, no site mark).
 - Stack: keep it to the title plus one lead line when the lead already carries the figure ("too much text").
@@ -100,6 +100,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 ## 10. Approved-templates review (Oct 2026)
 
 - The user reviewed all 31 approved templates on one page (Keep / Needs change + a note): 24 kept, 7 changed. Every note became a principle in `references/taste.md`, which is now required reading with a Self-Critique for Makers and Visual QA.
-- Changed: focus headline weight matches the other card headlines (600 navy); stat number capped at 150px with a bigger card; receipt headline semibold 84px; swap's "+" grid on black is faint and only frames the edges; tiles both filled or both white; glass off the blue field; brandline retired (a background with only a headline). The glow field and the blue mesh are kept in `references/fields/` for a future illustration.
+- Changed: focus headline weight matches the other card headlines (semibold 600, then black in round 7); stat number capped at 150px with a bigger card; receipt headline semibold 84px; swap's "+" grid on black only frames the edges (made bright and crisp in round 7); tiles both filled or both white; glass off the blue field; brandline retired (a background with only a headline). The glow field and the blue mesh are kept in `references/fields/` for a future illustration.
 - When options were needed (stat, swap, receipt), the orchestrator picked them using taste.md and showed its reasoning; the user can still overrule on the review page.
 - Round 7: the focus headline went black ("not blue"); the swap grid on black was faded to invisible in round 6 when the note meant brighter: now crisp and only around the edges. Read a note in its context and fix by the amount asked (taste 11).
+- Variety is site-wide (Oct 2026): "I don't want you to repeat any illustration, only repeat if it makes actual sense." The renderer and planner count every image on the site; a favourite repeats only with a written reason (`#reason` / `repeatReason`), shown in the plan.

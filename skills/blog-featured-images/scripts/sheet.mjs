@@ -1,5 +1,5 @@
-// Contact sheet of every card in a category (from the site-wide history), so QA reviews ONE image instead of many.
-// Usage: node sheet.mjs --brand <brand> --category <cat> --out <sheet.png> [--highlight slug1,slug2]
+// Contact sheet of every card on the site (or one category), so QA reviews ONE image instead of many and can spot a repeat anywhere.
+// Usage: node sheet.mjs --brand <brand> [--category <cat>] --out <sheet.png> [--highlight slug1,slug2]   (no --category = the whole site)
 // Highlighted slugs (the batch under review) get a blue frame; the rest are the existing images to compare against.
 import fs from 'node:fs';
 import os from 'node:os';
@@ -11,7 +11,7 @@ const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : un
 const brand = (opt('--brand') || 'default').replace(/[^a-z0-9-]/gi, ''), category = opt('--category'), out = opt('--out') || 'sheet.png';
 const hi = new Set((opt('--highlight') || '').split(',').filter(Boolean));
 const file = path.join(process.env.FEATURED_HISTORY_DIR || path.join(os.homedir(), '.blog-featured-images'), `history-${brand}.json`);
-const items = JSON.parse(fs.readFileSync(file, 'utf8')).filter((e) => e.category === category && e.out && fs.existsSync(path.join(e.out, 'card-350x250.png')));
+const items = JSON.parse(fs.readFileSync(file, 'utf8')).filter((e) => (!category || e.category === category) && !e.superseded && e.out && fs.existsSync(path.join(e.out, 'card-350x250.png')));
 items.sort((a, b) => (hi.has(b.slug) - hi.has(a.slug)) || String(a.at).localeCompare(String(b.at)));
 const W = 350, H = 250, LBL = 40, G = 16, COLS = 5, rows = Math.ceil(items.length / COLS);
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);

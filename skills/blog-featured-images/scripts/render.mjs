@@ -324,7 +324,7 @@ function stat() {
   const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${logo(r.logo, 44)}${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
   // a long value auto-shrinks; then the caption hangs right under it and the number+caption block centres on the card
   // (a full-size number keeps the approved positions: value at 230, caption at 470)
-  const vfs = Math.min(spec.valueSize || 150, Math.floor(600 / (String(spec.value).length * 0.6)));   // 150 max: the number never outweighs the card (user)
+  const vfs = Math.min(150, spec.valueSize || 150, Math.floor(600 / (String(spec.value).length * 0.6)));   // 150 max: the number never outweighs the card (user)
   const svTop = vfs < 180 ? Math.round(440 - (vfs + 44 + 50) / 2) : 230, scTop = vfs < 180 ? svTop + vfs + 44 : 470;
   return `<style>
 .sv{position:absolute;left:205px;top:${svTop}px;font-size:${vfs}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;${spec.valueColor === 'navy' ? 'color:#0E2A5C;' : spec.valueColor !== 'blue' ? 'background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:12px;' : ''};white-space:nowrap}
@@ -602,7 +602,7 @@ function logotype() {
   return `${grid}<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:${Math.round(t * 0.32)}px">${tile}<img src="${L.word}" alt="${esc(spec.product || '')}" style="height:${Math.round(hw)}px;width:auto;display:block"></div>`;
 }
 
-// ---- Gumloop-style layouts (user references, Oct 2026) ----
+// ---- Gumloop-style layouts (user references, Oct 2026; brandline is retired, its code kept for a future illustration) ----
 // Comparison: versus/type (big bold names, small "vs", the second name in the accent), versus/tiles (two tilted app tiles over a big
 // "A vs B" headline), versus/glass (wordmark vs wordmark on a frosted bar over a mesh gradient).
 // Content: swap (A, dashed loop arrow, B with a soft glow), badge (logo or title, a big figure in a tinted box, a muted + bold line),
@@ -960,8 +960,8 @@ if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
 // versus/connect: each tile is the brand's own app icon in its original colours, filling the tile edge to edge with its own
 // background colour (user). Both brands need a solid app icon (Brandfetch icon or a local file); otherwise the layout is refused.
 const CONNECT_ICON = {};
-// versus/tiles follows the same rule (user review, batch 3): each tile is the brand's app icon filled with its own brand colour;
-// a brand without one sends the article to another comparison layout ("TILES LOGO CHECK FAILED")
+// versus/tiles: both tiles filled with brand colour when both brands have a filled app icon; otherwise both white (handled after
+// this loop, which refuses a pair that can't match: "TILES LOGO CHECK FAILED")
 if (LAYOUT === 'versus/connect' || LAYOUT === 'versus/tiles') {
   for (const [k, side] of [['left', spec.left], ['right', spec.right]]) {
     const d = side && side.logo;
@@ -973,7 +973,6 @@ if (LAYOUT === 'versus/connect' || LAYOUT === 'versus/tiles') {
     if (buf && await solidTile(buf).catch(() => false)) CONNECT_ICON[k] = `data:image/png;base64,${(await sharp(buf).png().toBuffer()).toString('base64')}`;
     else if (LAYOUT === 'versus/tiles') { CONNECT_ICON.mixed = true; continue; }
     else if (!args.includes('--force')) {
-      if (LAYOUT === 'versus/tiles') await refuse(`TILES LOGO CHECK FAILED: no app icon filled with its own brand colour found for ${side ? side.label : k}${BF_CLIENT ? '' : ' (no Brandfetch client ID set)'}. versus/tiles shows each brand's app icon in its original colours, edge to edge. Use versus/type, versus/glass or another comparison layout, or save the brand's square app icon to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
       await refuse(`CONNECT LOGO CHECK FAILED: no app icon with its own background colour found for ${side ? side.label : k}${BF_CLIENT ? '' : ' (no Brandfetch client ID set)'}. versus/connect shows each brand's app icon in its original colours. Use versus/pills, versus/slash or versus/duo, or save the brand's square app icon to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
     }
   }
@@ -1079,6 +1078,11 @@ for (const e of [...siteHistory, ...ledger].sort((x, y) => String(x.at).localeCo
 const history = [...bySlug.values()].sort((x, y) => String(x.at).localeCompare(String(y.at)));
 // a design the user rejected and had replaced ("superseded") is no longer on the site, so it doesn't count toward rotation
 const prior = history.filter((e) => e.category === category && e.slug !== slug && !e.superseded);
+// layout variety is site-wide: the user sees every image, so a layout counts as used wherever it appeared (user: "don't repeat any
+// illustration, only if it makes actual sense")
+const priorSite = history.filter((e) => e.slug !== slug && !e.superseded);
+// a favourite may come back before the rotation completes only with a written reason (why no unused layout fits this article)
+const repeatReason = String(spec.repeatReason || history.find((e) => e.slug === slug && e.reserved)?.repeatReason || '').trim();
 const force = args.includes('--force');
 // ---- content check: each layout needs enough real content to fill its frame (a sparse window or hub looks unfinished) ----
 const n = (a) => (Array.isArray(a) ? a.length : 0);
@@ -1111,14 +1115,16 @@ if (sameTopic.some((e) => e.mode === MODE) && !force) {
 Same-topic articles must use different compositions. Used for this topic: ${sameTopic.map((e) => e.mode).join(', ')}`);
   process.exit(2);
 }
-const uses = Object.fromEntries(ALL_LAYOUTS.map((l) => [l, prior.filter((e) => layoutOf(e) === l).length]));
+const uses = Object.fromEntries(ALL_LAYOUTS.map((l) => [l, priorSite.filter((e) => layoutOf(e) === l).length]));
 const minUse = Math.min(...ALL_LAYOUTS.filter((l) => !REPEATABLE[l]).map((l) => uses[l]));
-const allowed = ALL_LAYOUTS.filter((l) => (uses[l] === minUse || (REPEATABLE[l] && uses[l] < REPEATABLE[l])) && !sameTopic.some((e) => l.startsWith(e.mode + '/')));
-if (uses[LAYOUT] > minUse && !(REPEATABLE[LAYOUT] && uses[LAYOUT] < REPEATABLE[LAYOUT]) && !force && !args.includes("--user-pick")) {   // --user-pick: the user chose this layout for this article (skips only the rotation rule)
-  const users = prior.filter((e) => layoutOf(e) === LAYOUT).map((e) => e.slug);
-  console.error(`VARIETY CHECK FAILED: layout "${LAYOUT}" is already used in "${category}" by: ${users.join(', ')}.
-A layout may not repeat in a category until every layout has been used there (site-wide history: ${historyFile}).
-Pick one of: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "default")`);
+const allowed = ALL_LAYOUTS.filter((l) => uses[l] === minUse && !sameTopic.some((e) => l.startsWith(e.mode + '/')));
+const earlyRepeat = REPEATABLE[LAYOUT] && uses[LAYOUT] < REPEATABLE[LAYOUT] && repeatReason.length >= 20;
+if (uses[LAYOUT] > minUse && !earlyRepeat && !force && !args.includes("--user-pick")) {   // --user-pick: the user chose this layout for this article (skips only the rotation rule)
+  const users = priorSite.filter((e) => layoutOf(e) === LAYOUT).map((e) => `${e.slug} (${e.category})`);
+  const fav = REPEATABLE[LAYOUT] ? (uses[LAYOUT] >= REPEATABLE[LAYOUT] ? ` It has reached its limit of ${REPEATABLE[LAYOUT]}.` : ' It is a favourite, so it may repeat only with "repeatReason": why no unused layout fits this article (at least 20 characters).') : '';
+  console.error(`VARIETY CHECK FAILED: layout "${LAYOUT}" is already used on this site by: ${users.join(', ')}.${fav}
+Don't repeat an illustration unless it truly makes sense: until every layout has been used, pick an unused one (site-wide history: ${historyFile}).
+Unused layouts: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "default")`);
   process.exit(2);
 }
 // vibrant images (deep-dunes blue, black headline layouts): at most 1 in 3 per category, never two neighbours
@@ -1308,7 +1314,7 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, out: path.resolve(outDir), at: new Date().toISOString() };
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, ...(repeatReason ? { repeatReason } : {}), bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, out: path.resolve(outDir), at: new Date().toISOString() };
 // Parallel renders share these files: take a lock, re-read, then write, so no entry is lost.
 fs.mkdirSync(historyDir, { recursive: true });
 const lock = historyFile + '.lock';

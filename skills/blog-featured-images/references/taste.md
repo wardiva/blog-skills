@@ -29,7 +29,7 @@ Things that play the same role get the same treatment.
 
 Every image in a family uses the same weights, colours and ink, so the blog grid reads as one brand.
 
-- **Focus:** "Make heading font weight consistent with others." Card-layout headlines are all semibold 600, navy, tracked −0.03em; the focus headline was light 300 and stood out.
+- **Focus:** "Make heading font weight consistent with others." Card-layout headlines are all semibold 600, tracked −0.03em; the focus headline was light 300 and stood out.
 - **Headline layouts:** "Use same font weight 500 medium everywhere": every word in pills, connect, duo and dark is Inter 500.
 - **Receipt:** its headline is black, and semibold like the other card headlines.
 - **Headlines are black, not blue.** The user asked for black on receipt, pills, connect and then focus ("use black color for heading not blue"): navy reads as blue next to a blue accent. Blue belongs to the anchor (a selection box, a number, a winning bar), never to headline ink.
@@ -101,6 +101,15 @@ Fifteen words is a ceiling, not a target. "Too much text" (stack): keep the titl
 
 "It doesn't look centred, it should be 2–3px back": the focus heading is nudged 3px left because the selection box makes it look off-centre. The "vs" sits vertically centred between names by eye. Trust the eye at full size and at 350×250.
 
+### 14. Every image is new
+
+The user sees every image together, across categories and batches, so a repeated illustration reads as lazy even in another category.
+
+- **Batch 3:** "This template is already used": a layout recognised from an earlier batch was rejected in a different category.
+- "I don't want you to repeat any illustration, only repeat if it makes actual sense." Layouts now rotate across the whole site, and a favourite comes back only with a written reason.
+
+**Ask:** has the user seen this illustration anywhere before? If yes, is there truly no unused layout that fits this article? Write the reason down, or pick another.
+
 ## Self-Critique (Required)
 
 Makers run this on their own image before returning it; Visual QA runs it on every image. Look at `master.png` and `card-350x250.png`, next to two approved images from the same family. Answer in a table:
@@ -116,7 +125,8 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Bold | Exactly one bold thing; it would stop a scroll (7) |
 | Brands | Real current logos, original colours, no site mark on headline layouts (8) |
 | Restraint | Nothing added that the approved template doesn't have (10) |
-| Headline ink | Headlines black (or white on dark), never blue or navy-blue (3) |
+| New | The layout is unused on the site, or its repeat has a reason that holds up (14) |
+| Headline ink | No blue words in a headline: black on focus, receipt, pills and connect; white on duo and dark; navy only on ranked, timeline and hub (3) |
 
 Any "no" is a fix before the image moves on.
 

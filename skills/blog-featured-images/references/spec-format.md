@@ -6,11 +6,11 @@ You write one JSON file per article, from the article's own facts. Start from th
 |---|---|---|
 | `articleTitle` | yes | The blog post's real title (H1). The image heading must reuse its words, shorter ("HEADING CHECK FAILED" otherwise) |
 | `brand` | no | Brand file in `brands/` (e.g. `"medsoftwarehub"`). Defaults to `default` |
-| `category` | yes | The site's blog category; layouts rotate within it |
+| `category` | yes | The site's blog category, used for the vibrant mix and the site mark (1 in 3, never neighbours). Layout rotation is site-wide |
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They never share a mode |
 | `slug` | yes | Output folder name and history key (unique per article) |
-| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype` |
-| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, and the headline variants `pills`, `connect`, `slash`, `duo`. Mode + variant = one layout |
+| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype`. Gumloop: `swap`, `badge` (plus the versus variants below). Originals: `receipt`, `definition` |
+| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, the headline variants `pills`, `connect`, `slash`, `duo`, and the Gumloop variants `type`, `tiles`, `glass`. Mode + variant = one layout |
 | `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on at most 1 in 3 images (counting the black layouts), only for `checklist`, `versus/table`, `window`, `before-after/flow` |
 | `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns it off on a light field |
 | `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself. When it finds the wrong mark, use a file instead: `"../assets/<file>.png"` (relative to the spec; the official mark saved from the brand's website) |
@@ -19,6 +19,7 @@ You write one JSON file per article, from the article's own facts. Start from th
 | `texture` | no | Thin guide lines at x 210/1390 + a few margin dots. On by default for sky/paper fields and for checklist, ranked, focus, versus, before-after and stack; off where the frame grid is on (never both). `true`/`false` overrides |
 | `cursor` | no | `[x, y]`: one pointer cue aimed at the key fact; never covers text |
 | `bleed` | no | `window` only: the window runs off the bottom and right edge; words stay inside x 210–1390 |
+| `repeatReason` | only for a repeat | Why no unused layout fits this article, when a favourite comes back before every layout has been used (at least 20 characters). Usually set by the orchestrator when reserving (`#reason`); without it a repeat is refused ("VARIETY CHECK FAILED") |
 | `craft`, `series` | no | Opt-in site mark + mono series tag (`"craft": true, "series": "Pricing"`). At most 1 in 3 images per category, never neighbours |
 
 **Text budget: 15 visible words per image, max 7 per element, no sentences** (renderer-enforced). Bullets up to ~32 characters, labels up to ~18, headlines up to ~24. If a line wraps in the render, shorten it.
@@ -133,7 +134,7 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 { "mode": "versus", "variant": "pills", "headline": "Dynamics 365 or\nAcumatica?",
   "left": { "label": "Dynamics 365", "logo": "microsoft.com" }, "right": { "label": "Acumatica", "logo": "acumatica.com" } }
 ```
-- The headline is all near-black (no `{{ }}` blue). Each logo sits on a white circle, so both products need a mark that works on white: a product whose only logo is a solid app tile (e.g. NetSuite) is refused ("PILLS LOGO CHECK FAILED"); use another versus layout. May repeat up to 2 times per category.
+- The headline is all near-black (no `{{ }}` blue). Each logo sits on a white circle, so both products need a mark that works on white: a product whose only logo is a solid app tile (e.g. NetSuite) is refused ("PILLS LOGO CHECK FAILED"); use another versus layout. May repeat up to 2 times across the site, each repeat with a reason.
 
 ## Versus connect (`"mode": "versus", "variant": "connect"`)
 ```json
@@ -161,7 +162,7 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 ```json
 { "mode": "dark", "tag": "ERP review", "headline": "Sage Intacct\nReview", "product": "Sage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
 ```
-- The layout for articles about **one product** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category. An X vs Y title is refused ("FAIRNESS CHECK FAILED").
+- The layout for articles about **one product** (review, pricing, features, "is X worth it"); may repeat up to 3 times across the site, each repeat with a reason. An X vs Y title is refused ("FAIRNESS CHECK FAILED").
 - `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). `panelLogo` is the product's domain (or `"../assets/<file>.png"`); it fills both spots automatically: white on the panel, and black `#0A0A0B` on the white tile top-left (the site mark is never shown). `product` is the name shown under the mark.
 
 - A topic article with no single product (e.g. "What is EMR software") uses `"panelIcon": "ph ph-file-text"` (any Phosphor class) instead of `panelLogo`: black on the white tile top-left, large and white on the panel, in the site blue unless `color` is set. Never the site mark.
@@ -169,13 +170,13 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 ```json
 { "mode": "logotype", "product": "Notion", "logotype": "notion.com" }
 ```
-- Only for a single-product article whose logo is **black** (icon and wordmark) with strong typography; may repeat up to 2 times per category. Coloured logos use `dark`.
+- Only for a single-product article whose logo is **black** (icon and wordmark) with strong typography; may repeat up to 2 times across the site, each repeat with a reason. Coloured logos use `dark`.
 - `logotype`: the product's domain (the renderer fetches its full lockup and keeps the black version) or `"../assets/<file>.png"`. The renderer splits the lockup: the icon goes in white on a black rounded tile beside the wordmark (an icon that is already a tile keeps its own); a logo with no separate icon is refused. No other text appears; the heading rule doesn't apply.
 
 ---
 
 # Gumloop layouts (user references, approved Oct 2026)
-Six layouts after the user's Gumloop references. They paint their own canvas (`bg` is ignored); `"field"` picks the canvas from the layout's approved list (first = default), anything else is refused ("FIELD FIT FAILED"). `black` and `blue` count as vibrant (1 in 3, never neighbours). `light` is white in the grey frame. Logos are each brand's full **wordmark** (icon + typography): the renderer fetches it (Brandfetch `logo`, both themes, darkest ink kept; a white background is keyed out; pale near-white wordmark text is darkened so it reads), or uses `"../assets/<file>.png"`. A brand without a wordmark is typeset in bold Inter. Previews and approved specs: `examples/*.gumloop-*.json`, `references/approved/18-*.webp` to `28-*.webp`.
+Five layouts after the user's Gumloop references. They paint their own canvas (`bg` is ignored); `"field"` picks the canvas from the layout's approved list (first = default), anything else is refused ("FIELD FIT FAILED"). `black` and `blue` count as vibrant (1 in 3, never neighbours). `light` is white in the grey frame. Logos are each brand's full **wordmark** (icon + typography): the renderer fetches it (Brandfetch `logo`, both themes, darkest ink kept; a white background is keyed out; pale near-white wordmark text is darkened so it reads), or uses `"../assets/<file>.png"`. A brand without a wordmark is typeset in bold Inter. Previews and approved specs: `examples/*.gumloop-*.json`, `references/approved/18-*.webp` to `27-*.webp`.
 
 ## Versus type (`"mode": "versus", "variant": "type"`; fields: light, blue)
 ```json
@@ -234,7 +235,7 @@ The user rejected a background with only a headline. The mode is not in `layouts
 The user passed on both twice, so they're not in `layouts.mjs` and the renderer refuses them. Re-enable only if the user asks:
 - split: the canvas split into the two brands' colours (`left.color`, `right.color`), white wordmarks or names, a white "vs" seal; counts as vibrant.
 - duet: two soft brand-tinted halves, each with a white card holding the full-colour wordmark (or the name); light.
-- The user passed on both for NetSuite vs SAP and for Clinisys vs CGM: offer them, don't default to them.
+- The user passed on both for NetSuite vs SAP and for Clinisys vs CGM: don't offer them unless the user asks.
 
 ## Overrides
 - `--user-pick` (render.mjs and plan.mjs): the user chose this layout for this article; skips ONLY the rotation rule. Every other check still runs.

@@ -1,6 +1,6 @@
 # Featured Image Design Language
 
-You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Two families share it: the **card layouts** (sections 3–5) and the **headline layouts** (section 3d). The images in `references/approved/` show the target, and their specs are in `examples/`.
+You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Three families and two originals share it: the **card layouts** (sections 3–5), the **headline layouts** (section 3d), and the **Gumloop layouts** and **originals** (sections 3e and 15). The images in `references/approved/` show the target, and their specs are in `examples/`.
 
 ---
 
@@ -8,7 +8,7 @@ You are judging and making images that will sit side by side in a blog grid for 
 
 1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article, **with its qualifier** ("per provider", "up to", "from", "minimum"). Figures shown together never contradict each other (a breakdown sits inside the headline range).
 2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
-3. **Different every time.** No layout repeats in a category until every layout has been used (except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2), and articles on the same topic never share a mode (see 9).
+3. **Different every time.** A layout is used once across the whole site until every layout has been used: the reader sees every image together. An illustration repeats only when no unused layout fits the article, and a favourite then needs a written reason (within its limit: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2). Articles on the same topic never share a mode (see 9).
 4. **Minimal.** At most 15 words, labels not sentences (see 7).
 5. **Visually appealing.** An image that follows every other rule but doesn't look good **fails** (see 2).
 
@@ -85,20 +85,20 @@ Each of these came from a reference the user shared; every detail below is measu
 
 | Layout | What you see | Best for |
 |---|---|---|
-| `versus/pills` | grey frame, two white panels: on top, two blue pills face each other: each runs off the panel's outer edge (a flat cut, no rounded outer end), the rounded tips sit 112px apart (57% of the 196px pill height, as in the reference), and the surface is a subtle tonal gradient toward the tip with one soft highlight and fine noise (no watercolour blotches); the two logos sit on **white circles** centred in the tips (never a solid app icon); below, the question ("A or B?") all in near-black `#0A0A0B`, no blue words | X vs Y, only when both products have a logo that sits on white ("PILLS LOGO CHECK FAILED" otherwise); may repeat up to 2 times per category |
-| `versus/connect` | grey frame, one white panel: a centred headline all in near-black `#0A0A0B` (no blue words) and a small sparkle divider; two big tiles, each the brand's **own app icon in its original colours, edge to edge with its own background colour** (never a mark on a white tile), linked by thin crossing strands to a white **VS** circle; small dot patches in the top corners | X vs Y, only when both brands have a solid app icon with its own background colour ("CONNECT LOGO CHECK FAILED" otherwise); may repeat up to 5 times per category |
+| `versus/pills` | grey frame, two white panels: on top, two blue pills face each other: each runs off the panel's outer edge (a flat cut, no rounded outer end), the rounded tips sit 112px apart (57% of the 196px pill height, as in the reference), and the surface is a subtle tonal gradient toward the tip with one soft highlight and fine noise (no watercolour blotches); the two logos sit on **white circles** centred in the tips (never a solid app icon); below, the question ("A or B?") all in near-black `#0A0A0B`, no blue words | X vs Y, only when both products have a logo that sits on white ("PILLS LOGO CHECK FAILED" otherwise); may repeat up to 2 times across the site, each repeat with a reason |
+| `versus/connect` | grey frame, one white panel: a centred headline all in near-black `#0A0A0B` (no blue words) and a small sparkle divider; two big tiles, each the brand's **own app icon in its original colours, edge to edge with its own background colour** (never a mark on a white tile), linked by thin crossing strands to a white **VS** circle; small dot patches in the top corners | X vs Y, only when both brands have a solid app icon with its own background colour ("CONNECT LOGO CHECK FAILED" otherwise); may repeat up to 5 times across the site, each repeat with a reason |
 | `versus/slash` | black field with a fine dot grid; the two names in heavy caps, every name is two-tone, **white + that brand's colour** (never all one colour): the first part white, the last part coloured ("CHAT**GPT**", "ADVANCED**MD**", "AI / **CHATBOT**"), at their approved auto-fit size (never enlarged); a big italic **VS** with a glowing diagonal streak | X vs Y (vibrant) |
 | `versus/duo` | black field, a tag pill and a big Medium (500) white headline top-left (no site mark); two watercolour panels below, each in **that brand's own colour** (the subtle blue when the brand has no vivid colour) with the brand's mark turned white and its name. A low-resolution wordmark is replaced by the name in clean white type | X vs Y (vibrant) |
-| `dark` | black field, the **product's own icon on a white rounded tile** top-left (never the site mark), always recoloured to the field's black **#0A0A0B**, a tag pill and a big Medium (500) white name; a watercolour panel in the **product's own colour** with its mark turned white and its name below | **single-product articles** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category (vibrant). Never an X vs Y article |
-| `logotype` | the product's **black** logo, large and centred on the cream field with a faint square grid: its icon in white on a **black rounded tile** (slightly taller than the wordmark) beside the black wordmark; an icon that is already a filled tile keeps its own. No other text: the logo's typography is the image | single-product articles whose logo is black with strong typography; may repeat up to 2 times per category. The renderer checks the logo is black ("LOGOTYPE CHECK FAILED") |
+| `dark` | black field, the **product's own icon on a white rounded tile** top-left (never the site mark), always recoloured to the field's black **#0A0A0B**, a tag pill and a big Medium (500) white name; a watercolour panel in the **product's own colour** with its mark turned white and its name below | **single-product articles** (review, pricing, features, "is X worth it"); may repeat up to 3 times across the site, each repeat with a reason (vibrant). Never an X vs Y article |
+| `logotype` | the product's **black** logo, large and centred on the cream field with a faint square grid: its icon in white on a **black rounded tile** (slightly taller than the wordmark) beside the black wordmark; an icon that is already a filled tile keeps its own. No other text: the logo's typography is the image | single-product articles whose logo is black with strong typography; may repeat up to 2 times across the site, each repeat with a reason. The renderer checks the logo is black ("LOGOTYPE CHECK FAILED") |
 
 - **Type:** one weight, Inter **500 Medium**, for every text element (headline, VS, tag pill, panel names) in `versus/pills`, `versus/connect`, `versus/duo` and `dark`; headlines tracked −0.035em. Only `versus/slash` keeps its heavy Poppins caps.
 - **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. **Headlines carry no blue words:** near-black `#0A0A0B` on the white layouts (pills, connect), white on the black ones (duo, dark); `{{ }}` only colours part of each name in `versus/slash`.
 - **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
 - **Black fields** (`dark`, `versus/slash`, `versus/duo`) count as vibrant (see 3).
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` and `duo` use it for the panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
-- **Single-product articles:** `logotype` when the product's logo is black with strong typography (up to 2 per category), otherwise `dark` (up to 3 per category). X vs Y articles use a versus layout.
-- **Six ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`. **`slash`, `connect` and `duo` are favourites: each may repeat up to 5 times per category; `pills` up to 2 times** (the rotation lets them through). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
+- **Single-product articles:** `logotype` when the product's logo is black with strong typography (up to 2 across the site, each repeat with a reason), otherwise `dark` (up to 3 across the site, each repeat with a reason). X vs Y articles use a versus layout.
+- **Nine ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`, `type`, `tiles`, `glass`. **`slash`, `connect` and `duo` are favourites: each may repeat up to 5 times across the site, each repeat with a reason; `pills` up to 2 times** (and only when no unused layout fits). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
 - These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390, except `dark`: its text column starts at x 120 for balance with the panel, and its 7:5 crop shifts left to match.
 
 ## 3e. Gumloop Layouts and the Originals
@@ -117,7 +117,7 @@ Two more sets came from the user's references and reviews (Oct 2026). Their tabl
 |---|---|
 | Canvas | 1600×900 master. All key content inside **x 210–1390** so the 7:5, 2:1 and 16:9 crops keep it |
 | Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines are all semibold 600, tracking −0.03em; `focus` and `receipt` headlines are black `#0A0A0B` (the user: "black, not blue"), the others navy `#0E2A5C`; the focus key phrase stays white on its blue box. **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
-| Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines navy `#0E2A5C`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
+| Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; card headlines navy `#0E2A5C` on ranked, timeline and hub, black `#0A0A0B` on focus and receipt; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` for the one anchor and active states; sky `#27ACF2` for carets and legend dots |
 | States | **Blue = active/anchor:** checked boxes, progress bar, winning bar, highlighted row, selection box, current timeline dot. **Grey = inactive:** unchecked boxes, other bars, skeletons, empty dots |
 | Cards | White, radius 20–30px, minimal tinted shadow (see 3c), real text from the article |
@@ -148,7 +148,7 @@ Two layouts that share a skeleton (block arrangement) read as the same image at 
 | window | full app window: list pane + detail pane | vendor lists, pricing tables |
 
 - The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; how-to: before-after, timeline, stack, checklist). Use that range to avoid repeats.
-- **When adding a layout:** squint at its 350×250 card next to every other layout. If two share a skeleton, redesign one. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+- **When adding a layout:** squint at its 350×250 card next to every other layout. If two share a skeleton, redesign one. When no unused layout fits an article and a repeat wouldn't make sense, design a new variant (shown to the user first) rather than repeat.
 
 **VS badge:** a focal blue-gradient circle with a white "VS" and a white ring. On overlap cards it sits on the bottom of the seam; on the table it sits where the header line crosses the column line, with no glow. It never touches text.
 
@@ -195,7 +195,7 @@ A calm image still needs one thing that grabs the eye and a structure that holds
 ## 9. Variety Is Enforced, Not Hoped For
 
 1. **One site-wide history per brand** at `~/.blog-featured-images/history-<brand>.json` records every render, wherever its output folder is.
-2. **Strict rotation:** in a category, only the least-used layouts are allowed ("VARIETY CHECK FAILED" lists them), except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2.
+2. **Site-wide rotation:** only layouts unused anywhere on the site are allowed ("VARIETY CHECK FAILED" lists them). A favourite may come back early only with a written reason (`#reason` when reserving, or `"repeatReason"` in the spec), within its limit: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2.
 3. **Same topic** (e.g. duplicate URLs `…-guide` and `…-guide-2`): never the same mode, and different facts or angles.
 4. Never `--force` unless the user explicitly asks, and never render into another folder to dodge a check.
 5. **Delivered images are permanent.** After delivery, `scripts/finalize.mjs` marks them final in the site history and the folder ledger (`featured-images/.featured-ledger.json`) and copies them to `~/.blog-featured-images/delivered/<brand>/<slug>/`. Their files stay in `featured-images/<slug>/` (in the project, never a scratch folder), they keep counting for rotation forever, and the renderer refuses to re-create or overwrite them ("FINAL IMAGE LOCKED"). A new article always gets its own slug and folder.
@@ -224,8 +224,8 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 | Role | Size (on the 1600×900 master) |
 |---|---|
-| Headline | 56–76px in card layouts (up to ~110px in headline layouts), never wider than its panel; auto-sizes down, never up |
-| Hero number (stat) | up to 210px |
+| Headline | 56–76px in card layouts (receipt: semibold, up to 84px), up to ~116px in headline layouts, never wider than its panel; auto-sizes down, never up |
+| Hero number (stat) | up to 150px (the card grew to match; never outweighs it) |
 | Section labels | about 50px / 500, muted |
 | Card headings | 32–36px |
 | Primary rows / bullets | 32–36px outside app mockups |
@@ -244,7 +244,7 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ## 13. Never
 
-- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash` and `versus/duo`, and black ink only for the pills and connect headlines (`#0A0A0B`), `logotype` and `dark`'s top-left icon.
+- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash`, `versus/duo` and the approved black fields of `versus/tiles`, `versus/glass` and `swap`; black ink for headlines (`#0A0A0B` on pills, connect, focus, receipt and the light Gumloop layouts), `logotype` and `dark`'s top-left icon; never blue words in a headline.
 - **Logos:** never a tiny logo in a big tile, an app icon shrunk inside a white tile, or invented or warped logos.
 - **Layouts:** never two layouts with the same skeleton; never anything added to fill space; a white design always has the grey frame; never the site mark on a headline layout; never a one-brand image for an X vs Y article.
 - **Details:** no heavy shadows, small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos or neon.
