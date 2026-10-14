@@ -1,89 +1,195 @@
-# Three-agent workflow (required)
+# Agent workflow (required)
 
-Every featured-image request runs with three roles. One agent never both makes and approves an image.
+Every featured-image request runs with **four roles**. An agent never both makes and approves an image: Makers make, the two QA agents judge, and the Orchestrator only plans, routes and delivers. An image ships only when **both** QA agents pass it.
 
-| Role | Who | Does | Never does |
-|---|---|---|---|
-| **Orchestrator** | The main Claude running this skill | Reads the articles and the site history, plans the batch (layout per article, which ones go on blue), starts the Makers and the QA agent, loops fixes, delivers | Approve images itself |
-| **Maker** | Subagents, several in parallel | Writes the spec from the article file's facts, renders it, returns paths + facts used | Choose its own layout, use `--force`, render into another folder to dodge a check |
-| **QA** | A separate subagent, fresh context | Checks every image against the checklist below and returns PASS or FAIL with exact fixes | Edit specs or render |
+## Roles at a glance
 
-## Fast batch flow (default; the user's rule is "work fast")
+| Role | How many | Starts when | Reads | Returns | Never |
+|---|---|---|---|---|---|
+| **Orchestrator** | 1: the main Claude running this skill | The user sends URLs | Articles, site history, logo checks | The plan, the briefs, the delivery | Approves an image itself; skips a QA; lets a Maker pick its own layout |
+| **Maker** | 1 per article (1 per 2–3 when the batch is over 12), all in parallel | The plan is reserved | Its article files, `spec-format.md`, `approved/` | Spec + render paths + the facts used, each with its source sentence | Picks or changes its layout; uses `--force`; renders into another folder; judges its own image as final |
+| **Visual QA** | 1 per batch; 1 per category when a batch has 12+ images | The last Maker returns and the contact sheet exists | Contact sheet, master/card PNGs, `design-language.md`, `approved/` | PASS/FAIL per image + exact visual fixes | Checks facts; edits; renders |
+| **Fact QA** | 1 per batch; 1 per ~15 articles in big batches | The last Maker returns (it needs no images, so it never waits for the sheet) | Specs, article files, Makers' fact lists | PASS/FAIL per image + exact fact fixes | Judges looks; edits; renders; fetches the web |
 
-1. **Read all URLs in parallel, once** (Orchestrator):
-   `node <skill-dir>/scripts/read-articles.mjs <url1> <url2> ... --out <featured-images>/articles`
-   It writes one `articles/<slug>.md` per URL (H1, headings, paragraphs, lists, tables) using agent-browser and your existing Chrome. Nobody fetches a page again; Makers and QA read these files.
-2. **Plan and reserve all layouts in one command** (Orchestrator):
-   `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` prints layout usage, least-used first. Pick the best-fitting layout per article from the lowest tier (all different; different modes per topic). Choose at most 1 in 3 vibrant (the blue field and the black layouts together); the blue only for `checklist`, `versus/table`, `window`, `before-after/flow`; never two neighbours. Then reserve them all:
-   `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c> --reserve <slug>=<mode>[/<variant>][@<topic>] ...`
-3. **Pre-flight before briefing:** does the layout hold as many items as the article has? Will the article's product names fit? Does a headline-less layout (hub, before-after, versus) carry the title's key words? Fix the renderer first if not.
-   **Logos decide some layouts:** run `node <skill-dir>/scripts/logo-check.mjs <domain> <domain> ...` for every product named in an X vs Y or single-product article, and only reserve `versus/pills` / `versus/connect` when both brands pass, `logotype` when the product passes (else `dark`). This avoids Makers hitting PILLS / CONNECT / LOGOTYPE refusals.
-4. **Makers in parallel:** one Maker per article (or per 2–3), all started in one message, in the background, each with its article file, layout, slug and `bg` decision.
-5. **One QA pass:** `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out <featured-images>/qa-sheet.png --highlight <slug1,slug2,...>`, then **one** QA agent with the sheet, the master.png paths, specs and article files.
-6. **Fix only the failures, in parallel:** send each FAIL's fixes to its Maker (SendMessage). QA re-checks only those. Up to 3 rounds; never ship a FAIL silently.
-7. **Deliver** the QA-passed images as one contact sheet, with layouts and the facts used.
-8. **Finalize** them right after delivery: `node <skill-dir>/scripts/finalize.mjs --brand <b> <slug> ...`. They become permanent: stored, counted for rotation forever, and never re-created ("FINAL IMAGE LOCKED").
+Both QA agents start **in the same message** and run side by side.
 
-**Speed rules:** never fetch an article twice, never run Makers one after another, never open images one by one when the sheet shows them, give agents only the files they need, and report progress in one line per step.
+---
 
-## Maker prompt (template)
+## Orchestrator (you)
 
+**Job:** turn URLs into delivered, finalized images as fast as possible without ever approving an image yourself.
+
+1. **Read all URLs at once:** `node <skill-dir>/scripts/read-articles.mjs <url1> <url2> ... --out <featured-images>/articles`. This writes one `articles/<slug>.md` per URL. Nobody fetches a page again. Note each article's type, core idea, 3–6 hard facts, **category**, **topic** (duplicate URLs share one topic) and the products it names.
+2. **Check logos for logo-dependent layouts:** `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article. Pills and connect go only to a pair where **both** brands pass; logotype only to a product that passes (otherwise `dark`).
+3. **Plan and reserve in one command:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows usage, least-used first. Pick the best fit from the lowest tier for each article.
+   - All layouts differ, except the favourites up to their limits.
+   - Same-topic articles use different modes.
+   - At most 1 in 3 are vibrant (blue field and black layouts together), never neighbours. The blue only goes on `checklist`, `versus/table`, `window` and `before-after/flow`.
+   - Single product → `logotype` or `dark`; X vs Y → a versus layout.
+
+   Then reserve them all: `plan.mjs ... --reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan when doing more than 3 images.
+4. **Pre-flight** (fix the renderer before briefing, never after):
+   - Does the layout hold the article's item count?
+   - Do the product names fit?
+   - Does a headline-less layout carry the title's key words?
+   - For dark and duo, note each brand's colour.
+5. **Brief all Makers in one message, in the background** (template below). Give each one its article files, layout, `bg` decision (blue or leave out), category, topic, slug, brand, and brand colour or logo notes.
+6. **The moment the last Maker returns:**
+   - Build the sheet: `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out <featured-images>/qa-sheet.png --highlight <slugs>`. Use one sheet per category when splitting Visual QA.
+   - In **one message**, start Visual QA (per sheet) and Fact QA (templates below).
+7. **Route fixes:** merge each image's FAILs from both QA agents into one message to **its own Maker** (SendMessage). When it re-renders, send the image back **only to the QA agent(s) that failed it**. At most 3 rounds; never ship a FAIL silently.
+   - If a QA agent asks for something in the "Decided, never re-opened" list (V9), or against an approved rule, overrule it and say so in the fix message.
+   - Fix renderer bugs in the skill yourself, so every future image benefits, and push the fix.
+8. **Deliver** images as soon as both QA agents pass them: one contact sheet with each layout and the facts used. Ask before uploading anything to a website.
+9. **Finalize** right after delivery: `node <skill-dir>/scripts/finalize.mjs --brand <b> <slug> ...`.
+10. **Style feedback** ("I don't like it", a new reference): render 2–3 options side by side and let the user pick before changing the skill.
+
+**Progress:** one line per step. Never sit idle while agents run; prepare the next step (sheet, QA briefs).
+
+---
+
+## Maker
+
+**Job:** make the assigned images, true to their articles and visually right on the first try.
+
+**Prompt (template):**
 ```
-You are the MAKER for blog featured images. Use the blog-featured-images skill at <skill-dir>.
-Read SKILL.md, references/spec-format.md (the section for your layout) and look at references/approved/.
+You are a MAKER for blog featured images. Use the blog-featured-images skill at <skill-dir>.
+Read SKILL.md, references/spec-format.md (only the sections for your layouts) and look at references/approved/.
+Your role: you make images; two independent QA agents judge them. Never pick or change a layout, never use --force,
+never render outside <featured-images>/<slug>, never fetch the article URL.
 For each article below:
-1. Read <featured-images>/articles/<slug>.md (already fetched; don't fetch the URL). Use only its own facts, in its own wording.
-2. Write <featured-images>/specs/<slug>.json for the ASSIGNED layout. Set articleTitle, brand, category, topic, slug.
-   - At most 15 words, max 7 per element, labels not sentences, no fact twice, nothing added to fill space.
-   - Keep each figure's qualifier (per provider, up to, from, minimum). An X vs Y article shows both products.
-   - "logo": "<official domain>" on every named product. Hub: logos only.
-   - bg: leave it out (the renderer picks the best light field), unless the plan says "blue".
-3. Render: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>". Never use --force.
-   If a check fails, fix the spec within the assigned layout; if the layout itself is refused, or you see FINAL IMAGE LOCKED, stop and report it.
-4. Open master.png and card-350x250.png; fix wraps, clipping or anything that doesn't look good.
-Articles: <list: article file, layout, bg decision, category, topic, slug, brand>
-Return per article: slug, layout, bg, spec path, master.png path, card path, and the facts used (each with the sentence it came from).
+1. Read <featured-images>/articles/<slug>.md. Use only its own facts, in its own wording.
+2. Write <featured-images>/specs/<slug>.json for the ASSIGNED layout (articleTitle, brand, category, topic, slug always).
+   - The heading uses the blog title's own words, shorter. At most 15 words, max 7 per element, labels not sentences,
+     no fact twice, nothing added to fill space.
+   - Every figure keeps its qualifier (per provider, up to, from, minimum); figures shown together never contradict.
+     An X vs Y article shows both products.
+   - "logo": "<official domain>" on every named product (hub: logos only). dark/duo: "color" = the brand's own colour.
+   - bg: leave it out unless your brief says "blue". Headline layouts: no {{ }} (no blue words).
+3. Render: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>".
+   A text/heading/content check failing: fix the spec within the layout and render again.
+   The layout itself refused (VARIETY, PILLS/CONNECT/LOGOTYPE LOGO, FAIRNESS, VIBRANT) or FINAL IMAGE LOCKED: stop and report it.
+4. Open master.png and card-350x250.png once: fix wraps, clipping, a wrong or stale logo, anything that clearly looks off.
+Articles: <article file, layout, bg, category, topic, slug, brand, colour/logo notes>
+Return per article, as a list: slug, layout, bg, spec path, master.png path, card path, and every fact on the image
+with the exact article sentence it came from.
+Keep this context: you may get fix messages for these images; apply them and render again, then report the same way.
 ```
 
-## QA prompt (template)
+---
 
+## Visual QA
+
+**Job:** judge how every image looks, strictly, as a design director next to `references/approved/`.
+
+**Prompt (template):**
 ```
-You are the QA reviewer for blog featured images. Be strict: you pass nothing that breaks a rule, and nothing that doesn't look good.
-You do not edit or render anything. You judge.
-Read <skill-dir>/references/design-language.md and compare against <skill-dir>/references/approved/.
-Inputs: the contact sheet <qa-sheet.png> (batch images framed in blue), the batch's master.png and card paths, specs, article files
-<featured-images>/articles/<slug>.md, and the site history <~/.blog-featured-images/history-<brand>.json>. Don't fetch the web.
-Check every image against the QA checklist in references/agents.md, looking at the actual PNGs.
-Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact fix
+You are VISUAL QA for blog featured images. You judge looks only (Fact QA checks the facts). You never edit or render.
+Read <skill-dir>/references/design-language.md and look at <skill-dir>/references/approved/.
+Inputs: contact sheet <qa-sheet.png> (this batch framed in blue, next to the category's earlier images),
+master.png and card-350x250.png for each image, and the site history <~/.blog-featured-images/history-<brand>.json>.
+Check every image against the VISUAL CHECKLIST in <skill-dir>/references/agents.md, looking at the actual PNGs.
+Never ask for anything in checklist item V9.
+Return per image: PASS, or FAIL with the item broken and the exact fix
 (e.g. "cut bullet 3", "hub on g5 is too much blue: remove bg", "layout window/default repeats emr-cost-vendor-prices: use stat/default").
+Keep this context: you may get re-rendered images to re-check.
 ```
 
-## QA checklist
+### Visual checklist
 
-**1. Visually appealing (hard gate).** Would a design director ship it next to `references/approved/`? FAIL:
+**V1. Visually appealing (hard gate).** Would a design director ship it next to `references/approved/`? FAIL:
 - too much blue (a blue-heavy illustration on a blue-ish field)
 - unbalanced logos (a big tile around a tiny logo, an app icon shrunk inside a white tile), or logo + name cards where logos alone would do
 - weak figure/ground (grey bars on `paper`, a hero that melts into the field)
 - uneven sizes, gaps or arrows; a small, pale, floating composition
 
-**2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
+**V2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
-**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`). Every text element is Inter 500 Medium (slash: Poppins caps); the pills and connect headlines are all near-black; the pills run off the outer edges with flat cuts, tips ~112px apart, a subtle gradient with fine noise, and both logos sit on white circles; both connect tiles are the brands' own app icons in their original colours, edge to edge, and current (not an anniversary badge); duo has a white headline and two panels in each brand's own colour (the subtle blue when it has none) with white marks; dark has a white headline with no blue words; blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390 (`dark`'s text column starts at x 120, and its top-left tile is the product's own icon in #0A0A0B black, not the site mark).
+**V2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`).
+- **Type and colour:** every text element is Inter 500 Medium (slash: Poppins caps). The pills and connect headlines are all near-black.
+- **Pills:** the pills run off the outer edges with flat cuts, tips ~112px apart, with a subtle gradient and fine noise. Both logos sit on white circles.
+- **Connect:** both tiles are the brands' own app icons in their original colours, edge to edge, and current (not an anniversary badge).
+- **Duo:** a white headline and two panels in each brand's own colour (the subtle blue when it has none) with white marks.
+- **Dark:** a white headline with no blue words. The text column starts at x 120, and the top-left tile is the product's own icon in #0A0A0B black, not the site mark.
+- **All:** blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390 (except `dark`'s text column).
 
-**2c. Logotype.** The article is about one product and its logo is black (icon and wordmark) with strong typography; the icon sits in white on a black rounded tile beside the wordmark (or keeps its own tile), sharp, large and centred on cream; no other text; at most 2 per category (coloured logos use `dark`).
+**V2c. Logotype.** The icon sits in white on a black rounded tile beside the black wordmark (or keeps its own tile), sharp, large and centred on cream; no other text.
 
-**3. Layout never used twice.** No other image in the category has this layout unless every layout has been used (then it's one of the least-used), except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. Next to every other 350×250 card in the category, no two read as the same skeleton. Same-topic articles use different modes.
+**V3. Layout never used twice.** No other image in the category has this layout unless every layout has been used (then it's one of the least-used), except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2. Next to every other 350×250 card in the category, no two read as the same skeleton. Same-topic articles use different modes. At most 1 in 3 vibrant, never neighbours.
 
-**4. Easy to scan.** The topic is clear in 2 seconds at 350×250, with one focal point (card layouts: one bold blue anchor; headline layouts carry it with the headline, logos and colour shapes instead).
+**V4. Easy to scan.** The topic is clear in 2 seconds at 350×250, with one focal point (card layouts: one bold blue anchor; headline layouts carry it with the headline, logos and colour shapes instead).
 
-**5. Minimal.** ≤15 words, ≤7 per element, no sentences (`words=N/15`). No secondary line that isn't the point, no fact twice, nothing filling space.
+**V5. Minimal.** ≤15 words, ≤7 per element, no sentences (`words=N/15`). Nothing filling space.
 
-**6. Balanced.** Card layouts: headline 56–76px and under ~760px wide; hero at 55–70% of the width, at or slightly above the centre. Headline layouts: headlines auto-size up to ~116px and never overflow their panel. Always: nothing wraps badly, clips or overlaps; every word inside x 210–1390 (except `dark`'s text column at x 120); badges and cursors never touch text.
+**V6. Balanced.** Card layouts: headline 56–76px and under ~760px wide; hero at 55–70% of the width, at or slightly above the centre. Headline layouts: headlines auto-size up to ~116px and never overflow their panel. Always: nothing wraps badly, clips or overlaps; every word inside x 210–1390 (except `dark`'s text column at x 120); badges and cursors never touch text.
 
-**7. True to the article.** The heading mirrors the blog title's own words; every number and name appears in the article **with its qualifier** (per provider, up to, from, minimum); figures shown together don't contradict each other. An X vs Y image shows both products.
+**V7. Logos look right.** Every logo is loaded, legible at 350×250, balanced against the others, and the brand's real current mark (not an anniversary or campaign badge).
 
-**8. Logos.** Every named product has its real, current mark (not an anniversary or campaign badge, not a generic parent-company mark when the product has its own), loaded, legible at 350×250, and balanced against the other logos.
+**V8. Guardrails respected** (design language, section 13).
 
-**9. Guardrails respected** (design language, section 13).
+**V9. Decided, never re-opened.** These were tried and rejected by the user; QA never asks for them and a Maker never adds them:
+- `versus/logos`
+- window auto-sizing
+- a pointer callout on the timeline
+- badge logos scaled up to fill their tile
+- the site mark on a headline layout
+- a one-brand (`dark`) image for an X vs Y article
+- a plain grey field behind the prompt layout
+- blue words in any headline-layout headline
+- a solid app icon in a pills circle
+- a mark on a white tile in connect
+- rounded outer pill ends or watercolour blotches on the pills
+- any text weight other than Inter 500 Medium in pills, connect, duo or dark
 
-**10. Decided, never re-opened.** These were tried and rejected by the user; QA never asks for them and a Maker never adds them: `versus/logos`; window auto-sizing; a pointer callout on the timeline; badge logos scaled up to fill their tile; the site mark on a headline layout; a one-brand (`dark`) image for an X vs Y article; a plain grey field behind the prompt layout; blue words in any headline-layout headline; a solid app icon in a pills circle; a mark on a white tile in connect; rounded outer pill ends or watercolour blotches on the pills; any text weight other than Inter 500 Medium in pills, connect, duo or dark. FAIL any image that brings one back.
+FAIL any image that brings one back.
+
+---
+
+## Fact QA
+
+**Job:** prove every word and number on every image is true to its article. It needs no images, so it is fast. It runs while Visual QA looks.
+
+**Prompt (template):**
+```
+You are FACT QA for blog featured images. You check facts only (Visual QA judges looks). You never edit, render or fetch the web.
+Inputs per image: the spec <featured-images>/specs/<slug>.json, the article <featured-images>/articles/<slug>.md,
+and the Maker's fact list (each fact with its source sentence).
+Check every spec against the FACT CHECKLIST in <skill-dir>/references/agents.md, reading the article text itself
+(never trust the Maker's quote without finding it).
+Return per image: PASS, or FAIL with the item broken, the exact wrong text, the article sentence that proves it,
+and the exact fix (e.g. "'$140/mo' -> '$140/mo per provider'", "heading drops 'Practice Size': use 'EMR Cost by Practice Size'").
+Keep this context: you may get corrected specs to re-check.
+```
+
+### Fact checklist
+
+**F1. Heading mirrors the title.** The headline (or a headline-less layout's labels) uses the blog title's own words and meaning, shorter: subject and angle kept, the year and filler dropped, at least 75% of its key words from the title, no creative rewording.
+
+**F2. Every figure is in the article, with its qualifier.** Each number appears in the article with the same unit and qualifier ("per provider", "per user/month", "up to", "from", "minimum", "starting at"). A figure without its qualifier is wrong.
+
+**F3. No contradictions.** Figures shown together agree: a breakdown sits inside the headline range, a ranking matches the article's order, and units match within one card.
+
+**F4. Names are exact.** Product, company and plan names are spelled as in the article. Nothing is abbreviated that the article doesn't abbreviate, and no generic parent name replaces a product name (or the reverse).
+
+**F5. Nothing invented.** No sample patients, drugs, prices, steps or claims that aren't in the article. Labels are the article's own words or a faithful shortening.
+
+**F6. The right layout family for the article.** An X vs Y article shows both products with their own logos (domains match the products). A single-product article uses `dark` or `logotype`. A "best X" hub shows the article's own list, in its count.
+
+**F7. The text budget holds.** ≤15 words, ≤7 per element, no sentences, no fact twice.
+
+---
+
+## Fix loop and speed rules
+
+- **One message per Maker per round:** both QA agents' fixes for an image are merged before sending.
+- **Re-check only what failed, only by who failed it:** a visual fix goes back to Visual QA alone, a fact fix to Fact QA alone. An image that changed text visibly goes to both.
+- **Up to 3 rounds.** Deliver every image the moment both QA agents pass it; don't hold the batch for the slowest image.
+- **Never:**
+  - fetch an article twice
+  - run Makers one after another
+  - start the QA agents in separate turns
+  - open images one by one when the sheet shows them
+  - give an agent files it doesn't need
+- **Reuse agents** (SendMessage) instead of starting new ones that would have to re-read everything.
+- **Big batches (10+):** if the user asks for a workflow, `pipeline(articles, maker, factQA)` checks each article's facts as soon as its Maker finishes; Visual QA still judges the whole sheet together.

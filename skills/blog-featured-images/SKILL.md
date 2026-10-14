@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) - 13 modes / 19 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) - 13 modes / 19 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog featured images
@@ -11,7 +11,7 @@ Read these before your first image in a session:
 - `references/approved/`: the finalized images (card layouts and headline layouts). This is the target look.
 - `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails).
 - `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
-- `references/agents.md`: the three-agent fast-batch workflow, Maker and QA prompts, QA checklist.
+- `references/agents.md`: the four roles (each one's job, steps, prompt and limits), the fast-batch flow, and the Visual and Fact checklists.
 - `references/lessons.md`: speed tools, pre-flight checks and gotchas.
 
 ## The target look
@@ -72,12 +72,13 @@ Read these before your first image in a session:
 
 The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants). **Favourites repeat:** `versus/slash`, `versus/connect` and `versus/duo` may each be used up to 5 times per category, `versus/pills` up to 2 times, `dark` (single-product articles) up to 3 times, and `logotype` (single product with a black logo) up to 2 times instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
-## Three agents, always
-Full prompts and the QA checklist are in `references/agents.md`.
-- **Orchestrator (you):** read the articles, check the logos (`logo-check.mjs`), plan and reserve a distinct least-used layout per article (and which ones go on blue), fix renderer issues, start the Makers and the QA agent, loop fixes, deliver. You don't approve images yourself.
-- **Makers (subagents, in parallel):** write each spec from the article file and render it, with the assigned layout. Never `--force`.
-- **QA (separate subagent):** judges every image on one contact sheet and returns PASS or FAIL with exact fixes.
-- Failed images go back to their Maker, then to QA again, for up to 3 rounds. Only QA-passed images are delivered.
+## Four roles, always
+Each role's job, steps, prompt template and limits are in `references/agents.md`; follow them exactly. An agent never both makes and approves an image.
+- **Orchestrator (you, 1):** read the articles, check the logos (`logo-check.mjs`), plan and reserve a distinct least-used layout per article (and which ones go vibrant), pre-flight, brief all Makers in one message, start both QA agents in one message, route fixes, fix renderer bugs in the skill, deliver and finalize. You never approve an image yourself.
+- **Makers (1 per article, in parallel):** write each spec from the article's own facts for the assigned layout, render it, and return the paths plus every fact with its source sentence. Never pick a layout, never `--force`.
+- **Visual QA (1 per batch, 1 per category for 12+ images):** judges looks on the contact sheet and PNGs (Visual checklist). Never checks facts or edits.
+- **Fact QA (1 per batch, 1 per ~15 articles):** checks every word and number against the article text (Fact checklist). It needs no images, so it starts with Visual QA and runs alongside it. Never judges looks or edits.
+- An image ships only when **both** QA agents pass it. Failures go back to their own Maker (both QA agents' fixes merged), and are re-checked only by the QA agent that failed them, for up to 3 rounds.
 
 ## Workflow (fast batch mode)
 1. **Read:** `node <skill-dir>/scripts/read-articles.mjs <url> <url> ... --out featured-images/articles` reads every URL in parallel into `articles/<slug>.md`. Note each article's type, core idea, 3–6 hard facts, **category** and **topic** (duplicate URLs such as `…-guide` and `…-guide-2` share one topic).
@@ -89,14 +90,14 @@ Full prompts and the QA checklist are in `references/agents.md`.
    ```
    `featured-images/` lives in the user's project folder, never in a temporary or scratch folder. Fix renderer problems in the skill itself, then say so in the delivery note.
    Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… bg=… words=N/15`.
-4. **QA:** `node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out featured-images/qa-sheet.png --highlight <slugs>`, then one QA agent.
-5. **Fix** only the failures, in parallel. **Deliver** the QA-passed images as a contact sheet with each layout and the facts used. Ask before uploading anything to a website.
+4. **QA, both at once:** the moment the last Maker returns, build the sheet (`node <skill-dir>/scripts/sheet.mjs --brand <b> --category <c> --out featured-images/qa-sheet.png --highlight <slugs>`), then start **Visual QA and Fact QA in one message** (prompts in `references/agents.md`).
+5. **Fix** only the failures, in parallel (one merged message per Maker; re-check only by the QA agent that failed it). **Deliver** each image as soon as both QA agents pass it, as a contact sheet with each layout and the facts used. Ask before uploading anything to a website.
 6. **Finalize** the delivered images so they are stored permanently and can never be re-created:
    ```bash
    node "<skill-dir>/scripts/finalize.mjs" --brand <b> <slug> <slug> ...
    ```
    It also copies each image and its spec to `~/.blog-featured-images/delivered/<brand>/<slug>/`. `--list` shows every delivered image.
-7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick. Never bring back anything listed as rejected in `references/agents.md` (QA checklist, item 10).
+7. **Style changes:** for any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick. Never bring back anything listed as rejected in `references/agents.md` (Visual checklist, V9).
 
 **When the renderer refuses** (never work around it with `--force` or another folder):
 | Message | Fix |

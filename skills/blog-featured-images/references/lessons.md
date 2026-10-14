@@ -10,8 +10,8 @@ Read this before every batch.
 | Pick layouts | `scripts/plan.mjs` (usage table, then reserve the whole batch in one command) | Render, get "VARIETY CHECK FAILED", re-plan, render again |
 | Logo-dependent layouts | `scripts/logo-check.mjs <domains>` before reserving pills, connect or logotype | Reserve, let the Maker hit a PILLS / CONNECT / LOGOTYPE refusal, re-plan |
 | Make images | All Makers started in one message, in the background | Makers one after another |
-| QA | One QA agent on one `scripts/sheet.mjs` contact sheet | QA opening every image one by one |
-| Fixes | `SendMessage` to the same Maker or QA agent | A new agent that has to re-read everything |
+| QA | Visual QA on one `scripts/sheet.mjs` contact sheet **and** Fact QA on the specs + articles, started in one message | One QA agent doing looks and facts, or QA opening every image one by one |
+| Fixes | One merged `SendMessage` per Maker; re-check only by the QA agent that failed it | A new agent that has to re-read everything; re-running both QA agents on everything |
 | Big batches (10+) | If the user asks for a workflow: `pipeline(articles, maker, qa)` so each article reaches QA as soon as it's rendered | Waiting for every Maker before QA starts |
 
 - Never sit idle while agents run; prepare the next step. Deliver each image as soon as it passes. One-line progress updates.
@@ -58,7 +58,7 @@ Read this before every batch.
 
 ## 6. First real batch (17 articles)
 
-- **Qualifiers got dropped:** "$140/mo minimum" lost "per provider", "96% collection rate" lost "up to". Copy the article's qualifier with the figure.
+- **Qualifiers got dropped:** "$140/mo minimum" lost "per provider", "96% collection rate" lost "up to". Copy the article's qualifier with the figure. This is why facts have their own QA agent: a fact error hides easily behind a good-looking image.
 - **A breakdown contradicted its hero** ("4–9%" hero, "3–6%" row). Rows must sit inside the hero's range.
 - **A one-brand image for an X vs Y article** (dark layout) looked like an ad. Comparisons always show both products.
 - **Review rounds:** an interactive review page (before | fixed, Approve / Needs change / Pick A·B, a note per image) made feedback fast; turn each note into a prompt before acting.

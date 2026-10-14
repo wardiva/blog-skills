@@ -12,7 +12,7 @@ Every image:
 - sits on a **background chosen to flatter its illustration** (enforced)
 - **looks different** from every other image in the same category (enforced)
 - shows **real, balanced product logos** where products are named
-- is **checked by an independent QA agent**, with visual appeal as a hard gate
+- is **checked by two independent QA agents** side by side, one for looks (visual appeal is a hard gate) and one for facts
 
 ---
 
@@ -60,12 +60,16 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 
 ## How it works
 
-**Three agents, in one fast batch:**
+**Four roles, in one fast batch** (an agent never both makes and approves an image):
 
 1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), checks which logo-dependent layouts each brand can use (`logo-check.mjs`), picks the least-used layout per article and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
 2. **Makers** (parallel subagents): write each spec from the article's facts and render it.
-3. **QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no reused layout, 2-second scan, minimal text, balanced, true to the article, clean logos. Failures go back to their Maker; only images that pass are delivered.
-4. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting for layout rotation, and can never be re-created or overwritten.
+3. **Visual QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no reused layout, 2-second scan, minimal, balanced, clean logos.
+4. **Fact QA** (an independent subagent, running at the same time): checks every word and number against the article text: the heading mirrors the title, every figure keeps its qualifier, nothing contradicts or is invented.
+
+Failures go back to their own Maker and are re-checked only by the QA agent that failed them; an image is delivered only when both pass.
+
+5. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting for layout rotation, and can never be re-created or overwritten.
 
 **Built-in checks** (the renderer refuses to finish):
 
@@ -135,7 +139,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `references/approved/` | The finalized reference images: the target look |
 | `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails |
 | `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
-| `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |
+| `references/agents.md` | The four roles (job, steps, prompt, limits), the fast-batch flow, the Visual and Fact checklists |
 | `references/lessons.md` | Speed tools, gotchas, pre-flight checks, taste |
 | `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `logo-check.mjs` (which logo-dependent layouts each brand can use), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
 | `examples/` | Approved specs for every layout |
