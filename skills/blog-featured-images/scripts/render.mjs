@@ -483,15 +483,14 @@ ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.
 
 // "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
 function cbDark() {
-  const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 620), d = spec.panelLogo;
-  const white = spec.panelLogoUrl || (d ? `https://cdn.simpleicons.org/${slugOfDomain(d)}/ffffff` : '');
+  const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 620), d = spec.panelLogoUrl || spec.panelLogo;
   return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${cbMark()}
 <div style="position:absolute;left:210px;bottom:110px;width:620px">
 ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
-<div class="cbh" style="position:static;font-size:${fs}px;color:#fff">${cbHl(spec.headline)}</div></div>
+<div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline)}</div></div>
 <div style="position:absolute;left:860px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden">
 <svg width="712" height="844" style="position:absolute;inset:0"><defs>${wcDefs('dk', P, 5, [0, 0, 1, 1])}</defs><rect width="712" height="844" fill="url(#dkg)" filter="url(#dkf)"/></svg>
-${white ? `<img src="${white}" alt="" style="position:absolute;left:50%;top:50%;width:330px;max-height:260px;object-fit:contain;transform:translate(-50%,-50%)" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">${cbTile(d, 220, 248, 316, 0.22).replace('class="ct" style="', 'class="ct" style="display:none;')}` : ''}</div>`;
+<div style="position:absolute;inset:0;display:grid;place-items:center">${d ? whiteMark(d, spec.product || '', 190) : ''}</div></div>${WM_CSS}${WHITE_MARK_JS}`;
 }
 
 
@@ -538,6 +537,22 @@ function cbVersusSlash() {
 <div style="position:absolute;left:870px;width:520px;top:450px;transform:translateY(-50%);text-align:center;font:800 ${fs}px/1.02 Poppins,Inter,sans-serif;color:#fff;text-transform:uppercase;letter-spacing:-.01em">${name(R.label, rc)}</div>`;
 }
 
+// shared: turn panel marks white (used by versus/duo and dark)
+const WHITE_MARK_JS = `<script>
+// turn each panel mark white: estimate the background from the corners, keep the ink as alpha
+function duoWhite(img){if(img.dataset.done)return;img.dataset.done=1;try{const w=img.naturalWidth,h=img.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(img,0,0);
+const id=x.getImageData(0,0,w,h),d=id.data,px=(a,b)=>(b*w+a)*4,cs=[[1,1],[w-2,1],[1,h-2],[w-2,h-2]].map(([a,b])=>d.subarray(px(a,b),px(a,b)+4));
+const opaque=cs.every((p)=>p[3]>200),bg=opaque?[0,1,2].map((k)=>cs.reduce((s,p)=>s+p[k],0)/4):null;
+for(let i=0;i<d.length;i+=4){let a=d[i+3]/255;if(bg){const dist=(Math.hypot(d[i]-bg[0],d[i+1]-bg[1],d[i+2]-bg[2])-45)/110;a=Math.max(0,Math.min(1,dist))*a;}else{const lum=(d[i]+d[i+1]+d[i+2])/765;a=a*(lum>0.92?0:1);}
+d[i]=d[i+1]=d[i+2]=255;d[i+3]=Math.round(a*255);}
+x.putImageData(id,0,0);let x0=w,y0=h,x1=-1,y1=-1;for(let b=0;b<h;b++)for(let a=0;a<w;a++)if(d[(b*w+a)*4+3]>40){if(a<x0)x0=a;if(a>x1)x1=a;if(b<y0)y0=b;if(b>y1)y1=b;}
+if(x1<0){img.src=c.toDataURL('image/png');return;}const cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');o.width=cw;o.height=ch;o.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);img.src=o.toDataURL('image/png');
+if(cw/ch>2.2&&cw<300){const box=img.closest('.wm');box.style.display='none';const nm=box.nextElementSibling;if(nm){nm.style.fontSize='88px';nm.style.fontWeight='700';nm.style.letterSpacing='-.03em';}return;}
+if(cw/ch>2.2){const box=img.closest('.wm');box.style.width='380px';img.style.maxWidth='380px';img.style.width='360px';img.style.height='auto';img.style.maxHeight='120px';const nm=box.nextElementSibling;if(nm)nm.style.display='none';}}catch(e){}}
+document.querySelectorAll('img[data-white]').forEach((im)=>{const go=()=>duoWhite(im);if(im.complete&&im.naturalWidth)go();else im.addEventListener('load',go,{once:true});});
+</script>`;
+const WM_CSS = `<style>.wm .lg{background:transparent!important;box-shadow:none!important;padding:0!important;width:auto!important;height:110px!important;overflow:visible}.wm .lg img{width:auto;max-width:200px;height:110px;object-fit:contain}.wm .lg.full{border-radius:0}</style>`;
+const whiteMark = (d, label, size = 110) => `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px"><span class="wm" style="width:200px;height:${size + 10}px;display:grid;place-items:center">${logo(d, size, label).replace('<img ', '<img data-white="1" ')}</span><b style="font-size:46px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(label)}</b></div>`;
 // "versus/duo" (user reference, Chatbase "Zendesk and Zendesk Sunshine"): black field, tag pill and a big light-weight white
 // headline top-left (no site mark); two watercolour panels below, each in that brand's own colour (or the subtle blue),
 // carrying the brand's mark in white plus its name. The mark is turned white in the page: background removed, ink kept as alpha.
@@ -556,19 +571,7 @@ function cbVersusDuo() {
 ${spec.tag ? `<div style="position:absolute;left:96px;top:90px;display:inline-flex;align-items:center;gap:14px;padding:14px 28px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px"><i style="width:14px;height:14px;border-radius:50%;background:#F472B6;display:block"></i>${esc(spec.tag)}</div>` : ''}
 <div class="cbh" style="left:96px;top:${spec.tag ? 190 : 110}px;width:1180px;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(head).replace(/class="bt"/g, 'style="color:#fff"')}</div>
 ${panel(L, 0, 28)}${panel(R, 1, 816)}
-<script>
-// turn each panel mark white: estimate the background from the corners, keep the ink as alpha
-function duoWhite(img){if(img.dataset.done)return;img.dataset.done=1;try{const w=img.naturalWidth,h=img.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(img,0,0);
-const id=x.getImageData(0,0,w,h),d=id.data,px=(a,b)=>(b*w+a)*4,cs=[[1,1],[w-2,1],[1,h-2],[w-2,h-2]].map(([a,b])=>d.subarray(px(a,b),px(a,b)+4));
-const opaque=cs.every((p)=>p[3]>200),bg=opaque?[0,1,2].map((k)=>cs.reduce((s,p)=>s+p[k],0)/4):null;
-for(let i=0;i<d.length;i+=4){let a=d[i+3]/255;if(bg){const dist=Math.hypot(d[i]-bg[0],d[i+1]-bg[1],d[i+2]-bg[2])/160;a=Math.min(1,dist)*a;}else{const lum=(d[i]+d[i+1]+d[i+2])/765;a=a*(lum>0.92?0:1);}
-d[i]=d[i+1]=d[i+2]=255;d[i+3]=Math.round(a*255);}
-x.putImageData(id,0,0);let x0=w,y0=h,x1=-1,y1=-1;for(let b=0;b<h;b++)for(let a=0;a<w;a++)if(d[(b*w+a)*4+3]>40){if(a<x0)x0=a;if(a>x1)x1=a;if(b<y0)y0=b;if(b>y1)y1=b;}
-if(x1<0){img.src=c.toDataURL('image/png');return;}const cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');o.width=cw;o.height=ch;o.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);img.src=o.toDataURL('image/png');
-if(cw/ch>2.2&&cw<300){const box=img.closest('.wm');box.style.display='none';const nm=box.nextElementSibling;if(nm){nm.style.fontSize='88px';nm.style.fontWeight='700';nm.style.letterSpacing='-.03em';}return;}
-if(cw/ch>2.2){const box=img.closest('.wm');box.style.width='380px';img.style.maxWidth='380px';img.style.width='360px';img.style.height='auto';img.style.maxHeight='120px';const nm=box.nextElementSibling;if(nm)nm.style.display='none';}}catch(e){}}
-document.querySelectorAll('img[data-white]').forEach((im)=>{const go=()=>duoWhite(im);if(im.complete&&im.naturalWidth)go();else im.addEventListener('load',go,{once:true});});
-</script>`;
+${WHITE_MARK_JS}`;
 }
 
 const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark };

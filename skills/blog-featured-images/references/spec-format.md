@@ -154,9 +154,10 @@ Five layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo` and
 ```
 - Each side's `color` is that brand's own colour (taken from its website or logo); leave it out for the subtle blue. The logo is turned white automatically; a small wordmark is replaced by the name.
 
-## Dark (`"mode": "dark"`; black, counts as vibrant)
+## Dark (`"mode": "dark"`; single-product articles; black, counts as vibrant)
 ```json
-{ "mode": "dark", "tag": "ERP comparison", "headline": "Odoo vs\nSage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
+{ "mode": "dark", "tag": "ERP review", "headline": "Sage Intacct
+Review", "product": "Sage Intacct", "color": "#00C247", "panelLogo": "sage.com" }
 ```
-- For single-brand articles only (reviews, pricing, "is X worth it"); an X vs Y title is refused ("FAIRNESS CHECK FAILED").
-- `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). The panel logo is shown in white (Simple Icons); set `panelLogoUrl` for a brand Simple Icons lacks.
+- The layout for articles about **one product** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category. An X vs Y title is refused ("FAIRNESS CHECK FAILED").
+- `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). `panelLogo` is the product's domain (or `"../assets/<file>.png"`); its mark is turned white automatically. `product` is the name shown under the mark.

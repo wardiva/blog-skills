@@ -66,9 +66,9 @@ Read these before your first image in a session:
 | `versus/connect` | centred headline, two logo tiles linked to a VS circle, dot patches | X vs Y |
 | `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
 | `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant) |
-| `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand, never X vs Y (vibrant) |
+| `dark` | black, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | **the layout for single-product articles** (review, pricing, features, "is X worth it"); never X vs Y (vibrant; may repeat up to 3 times per category) |
 
-The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants). **Favourites repeat:** `versus/slash`, `versus/connect` and `versus/duo` may each be used up to 5 times per category instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants). **Favourites repeat:** `versus/slash`, `versus/connect` and `versus/duo` may each be used up to 5 times per category, and `dark` (single-product articles) up to 3 times instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
 ## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.

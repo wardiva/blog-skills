@@ -116,7 +116,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `versus/connect` | X vs Y: two logo tiles linked to a VS circle (a favourite: may repeat up to 5 times per category) |
 | `versus/slash` | X vs Y on black: bold names, italic VS (a favourite: may repeat up to 5 times per category) |
 | `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: may repeat up to 5 times per category) |
-| `dark` | One vivid brand (never X vs Y), its colour as the panel |
+| `dark` | Single-product articles (review, pricing, features): the product's colour as the panel, white logo; up to 3 per category |
 
 ## Add your own site
 
