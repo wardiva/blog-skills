@@ -4,7 +4,7 @@
 //   brand : colour overrides (default: brands/default.json). See brands/_template.json
 //   out   : output folder (default: ./featured-images/<slug>)
 // Writes master.png (1600x900), 7x5.webp (theme crop), 16x9-1200.webp (social), card-350x250.png (check size), page.html
-import { LAYOUTS } from './layouts.mjs';
+import { LAYOUTS, REPEATABLE } from './layouts.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -71,7 +71,6 @@ const ink=(p)=>p[3]>40&&!(p[0]>232&&p[1]>232&&p[2]>232);const cs=[[2,2],[w-3,2],
 if(cs.every((p)=>p[3]>200&&ink(p))){sp.classList.add('full');return;}
 let x0=w,y0=h,x1=-1,y1=-1;for(let b=0;b<h;b++)for(let a=0;a<w;a++)if(ink(at(a,b))){if(a<x0)x0=a;if(a>x1)x1=a;if(b<y0)y0=b;if(b>y1)y1=b;}
 if(x1<0){sp.classList.add('full');return;}let ink2=0,tot=0,lum=0,sat=0;for(let b=y0;b<=y1;b+=2)for(let a=x0;a<=x1;a+=2){tot++;const p=at(a,b);if(ink(p)){ink2++;const mx=Math.max(p[0],p[1],p[2]),mn=Math.min(p[0],p[1],p[2]);lum+=(p[0]+p[1]+p[2])/3;sat+=mx?(mx-mn)/mx:0;}}
-const ar=(x1-x0+1)/(y1-y0+1),big=sp.offsetWidth>=90;if(big&&ar>0.8&&ar<1.25&&ink2/tot>0.6)sp.classList.add('badge');
 const pale=ink2&&sat/ink2<0.15&&lum/ink2>125;const m=Math.round(Math.max(x1-x0,y1-y0)*0.03),cw=x1-x0+1+2*m,ch=y1-y0+1+2*m,o=document.createElement('canvas');o.width=cw;o.height=ch;const ox=o.getContext('2d');
 ox.drawImage(cv,x0,y0,x1-x0+1,y1-y0+1,m,m,x1-x0+1,y1-y0+1);if(pale){const id=ox.getImageData(0,0,cw,ch),q=id.data;for(let k=0;k<q.length;k+=4){for(let c=0;c<3;c++)q[k+c]=Math.round(255*Math.pow(q[k+c]/255,3));}ox.putImageData(id,0,0);}img.src=o.toDataURL('image/png');}catch(e){sp.classList.add('full');}}</script>`;
 const logo = (d, size = 48, label = '') => {
@@ -81,7 +80,7 @@ const logo = (d, size = 48, label = '') => {
 };
 const LOGO_CSS = `.lg{display:inline-grid;place-items:center;flex:none;border-radius:14px;overflow:hidden;box-sizing:border-box}.lg img{width:100%;height:100%;object-fit:contain;display:block}
 .lg-color{background:#fff;padding:7px;box-shadow:0 0 0 1px rgba(20,26,38,.08)}
-.lg.badge{overflow:visible!important}.lg.badge img{transform:scale(1.38)}
+
 .lg.full{padding:0}.lg.full img{border-radius:inherit}.lg.lgx{font-weight:600;color:#5D6675;background:#EEF2F7}
 .lg-mono{background:#F1F3F6;padding:9px}.lg-mono img{filter:grayscale(1) contrast(1.15);opacity:.8;mix-blend-mode:multiply}
 .lg-tint{background:#E3F0FD;padding:9px}.lg-tint img{filter:grayscale(1) contrast(1.2);mix-blend-mode:luminosity;opacity:.75}`;
@@ -215,7 +214,7 @@ function prompt() {
   const rows = spec.panel.rows.map((r, i) => `<div class="pr" style="opacity:${[1, 0.72, 0.48][i] ?? 0.35}"><i class="ph ph-file-text"></i><div><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></div></div>`).join('');
   const chips = spec.chips.map((t) => `<span class="chip"><i></i>${esc(t)}</span>`).join('');
   return `<style>
-body{background:linear-gradient(160deg,#EEF6FE 0%,#DCEEFC 50%,#CDE6FB 100%)}
+</style><div style="position:absolute;inset:0;background:${spec.field !== 'soft' ? 'linear-gradient(180deg,#F7FBFF 0%,#EAF5FE 38%,#A9DCFB 78%,#7CC8F8 100%)' : 'linear-gradient(160deg,#EEF6FE 0%,#D6EAFC 50%,#BFDDFA 100%)'}"></div><style>
 body:before{background:radial-gradient(45% 55% at 50% 85%,rgba(39,172,242,.38),transparent 70%),radial-gradient(35% 45% at 5% 10%,rgba(255,180,150,.18),transparent 70%)}
 .panel{position:absolute;left:210px;top:-20px;width:1180px;height:810px;border-radius:0 0 48px 48px;background:linear-gradient(180deg,#FFFFFF 35%,#D9ECFC 100%);box-shadow:0 30px 60px rgba(30,60,110,.10)}
 .plbl{position:absolute;left:290px;top:66px;font-size:26px;font-weight:500;color:#8A93A5;letter-spacing:.01em}
@@ -259,10 +258,7 @@ function stack() {
 // "window" (Granola app-window shots): a whole macOS-style window, list pane + detail pane, real text.
 function appwin() {
   const W = spec.window || {}, L = spec.list, D = spec.detail;
-  // the window fits its content: left = header + rows, right = question + heading + points. A short window is centred, never
-  // left with an empty bottom half; bleed only when the content is tall enough to reach the edge.
-  const nr = Math.min(L.rows.length, 5), leftH = 66 + 182 + (L.sub ? 30 : 0) + nr * 72 + 40, rightH = 66 + 40 + 48 + 96 + (D.points || []).length * 43 + 40;
-  const H = Math.max(leftH, rightH, 440), BLEED = spec.bleed && H >= 640, WT = BLEED ? 150 : Math.round((900 - H) / 2);
+  const BLEED = !!spec.bleed, H = 720, WT = BLEED ? 150 : 95;
   const rows = L.rows.slice(0, 5).map((r, i) => `<div class="wr${i === L.highlight ? " wh" : ""}">${r.logo ? logo(r.logo, 46) : r.icon ? `<span class="wav"><i class="${esc(r.icon)}" aria-hidden="true"></i></span>` : `<span class="wav">${esc((r.title || '?').trim()[0])}</span>`}<div><b>${esc(r.title)}</b><span>${esc(r.sub || '')}</span></div><em>${esc(r.meta || '')}</em></div>`).join('');
   return `<style>
 .win{position:absolute;left:${BLEED ? 230 : 210}px;top:${WT}px;width:${BLEED ? 1300 : 1180}px;height:${BLEED ? 820 : H}px;border-radius:24px;background:#fff;overflow:hidden;box-shadow:0 40px 80px rgba(30,60,110,.18),0 0 0 1px rgba(20,26,38,.06)}
@@ -288,7 +284,7 @@ function appwin() {
 // "timeline": steps on a track, steps up to the highlight filled, a callout card on the highlighted step.
 function timeline() {
   const n = spec.steps.length, h = spec.highlight ?? n - 1, x = (i) => 270 + i * (1060 / (n - 1));
-  const cw = spec.callout.text ? 440 : Math.max(240, String(spec.callout.title).length * 22 + 80), cx = Math.min(Math.max(x(h) - cw / 2, 210), 1390 - cw);
+  const cw = 440, cx = Math.min(Math.max(x(h) - cw / 2, 210), 1390 - cw);
   const steps = spec.steps.map((s, i) => `<div class="ts${i < h ? ' done' : ''}${i === h ? ' on' : ''}" style="left:${x(i)}px"><b>${esc(s.label)}</b><i></i><span>${esc(s.sub || '')}</span></div>`).join('');
   return `<style>
 .th{position:absolute;left:210px;top:150px;font-size:58px;font-weight:600;letter-spacing:-.03em;color:#0E2A5C}
@@ -301,9 +297,8 @@ function timeline() {
 .ts span{margin-top:18px;font-size:21px;color:#9AA3B2;white-space:nowrap}
 .ts.done i{background:#0A5FD8;border-color:#0A5FD8}.ts.done b{color:#141A26}
 .ts.on i{width:46px;height:46px;margin-top:14px;background:#0A5FD8;border-color:#fff;box-shadow:0 0 0 8px rgba(10,95,216,.18)}.ts.on b{color:#0A5FD8;font-weight:600}
-.tc{position:absolute;left:${cx}px;bottom:${900 - 548}px;width:${cw}px;text-align:${spec.callout.text ? 'left' : 'center'};background:#fff;border-radius:20px;padding:24px 30px;box-shadow:0 24px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
-.tc:after{content:'';position:absolute;left:${x(h) - cx - 12}px;bottom:-11px;width:24px;height:24px;background:#fff;transform:rotate(45deg);border-radius:4px}
-.tc b{display:block;font-size:${spec.callout.text ? 30 : 40}px;font-weight:600;color:#0A5FD8;letter-spacing:-.02em}.tc span{display:block;margin-top:8px;font-size:22px;line-height:1.35;color:#7F8794}
+.tc{position:absolute;left:${cx}px;top:360px;width:${cw}px;background:#fff;border-radius:20px;padding:26px 30px;box-shadow:0 24px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05)}
+.tc b{display:block;font-size:30px;font-weight:600;color:#141A26}.tc span{display:block;margin-top:8px;font-size:22px;line-height:1.35;color:#7F8794}
 </style>
 <div class="th">${esc(spec.headline)}</div><div class="tsb">${esc(spec.sub || '')}</div>
 <div class="tt"></div><div class="tf"></div>${steps}
@@ -337,7 +332,7 @@ function stat() {
   const max = Math.max(...spec.card.rows.map((r) => r.pct || 1));
   const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${logo(r.logo, 40)}${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
   return `<style>
-.sv{position:absolute;left:205px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;white-space:nowrap}
+.sv{position:absolute;left:205px;top:230px;font-size:${Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)))}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;${spec.valueColor === 'navy' ? 'color:#0E2A5C;' : spec.valueColor !== 'blue' ? 'background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:12px;' : ''};white-space:nowrap}
 .sc{position:absolute;left:212px;top:470px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
 .ss{position:absolute;left:212px;top:620px;width:600px;font-size:26px;line-height:1.4;color:#7F8794}
 .scard{position:absolute;right:210px;top:250px;width:max-content;min-width:430px;max-width:490px;box-sizing:border-box;background:#fff;border-radius:24px;padding:42px 44px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
@@ -426,11 +421,11 @@ function focus() {
   const real = rows.slice(0, 3).map((r, i) => `<div class="fr${i === hi ? ' on' : ''}"><b>${esc(r.name)}</b><i><i style="width:${Math.max(8, Math.round(((r.pct || 1) / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
   const ghosts = [62, 44, 30].map((w) => `<div class="fr gh"><b><s style="width:70px"></s></b><i><i style="width:${w}%"></i></i><em><s style="width:80px"></s></em></div>`).join('');
   return `<style>
-.fh{position:absolute;left:50%;top:172px;transform:translateX(-50%);width:1120px;text-align:center;font-size:64px;font-weight:300;line-height:1.12;letter-spacing:-.035em;color:#3D4A5C}
-.sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 14px;font-weight:400;${ANCHOR}}
+.fh{position:absolute;left:50%;top:176px;transform:translateX(calc(-50% - 3px));width:1120px;text-align:center;font-size:64px;font-weight:300;line-height:1.12;letter-spacing:-.035em;color:#3D4A5C}
+.sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 4px;font-weight:400;${ANCHOR}}
 .sel i{position:absolute;width:16px;height:16px;background:#3B86F0}
 .sel .h1{left:-20px;top:-20px}.sel .h2{right:-20px;top:-20px}.sel .h3{left:-20px;bottom:-20px}.sel .h4{right:-20px;bottom:-20px}
-.fc{position:absolute;left:50%;top:372px;transform:translateX(-50%);width:900px;height:620px;padding:42px 52px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
+.fc{position:absolute;left:50%;top:330px;transform:translateX(-50%);width:900px;height:620px;padding:42px 52px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
 .fct{display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:22px;font-weight:500;color:#7F8794}.fct s{display:block;height:10px;width:90px;border-radius:5px;background:#EEF0F4;margin-left:auto}
 .fr{display:grid;grid-template-columns:150px 1fr 240px;align-items:center;gap:16px;padding:14px 0}
 .fr b{font-size:32px;font-weight:500;color:#141A26;white-space:nowrap}.fr em{font-style:normal;font-size:30px;color:#5D6675;text-align:right;white-space:nowrap}
@@ -502,7 +497,7 @@ ${white ? `<img src="${white}" alt="" style="position:absolute;left:50%;top:50%;
 // "versus/connect": centred headline with a gradient phrase, a divider
 // with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 function cbVersusConnect() {
-  const L = spec.left, R = spec.right, head = spec.headline || `{{${L.label} vs}}\n${R.label}`, fs = cbFs(head, 104, 1060);   // 1060: a long first line stays clear of the corner dot patches
+  const L = spec.left, R = spec.right, head = spec.headline || `{{${L.label} vs}}\n${R.label}`, fs = cbFs(head, 104, 900);   // bold display type runs wide: 900 keeps a long first line clear of the corner dot patches
   const S = 240, cy = 620, lx = 330, rx = 1270, cr = 74;
   const dots = (x0) => { let d = ''; for (let r = 0; r < 6; r++) for (let c = 0; c < 8; c++) d += `<circle cx="${x0 + c * 22}" cy="${70 + r * 22}" r="2.6"/>`; return d; };
   const wave = (x1, x2, a, ph) => { const k = (x2 - x1) * 0.42; return `M${x1} ${cy} C ${x1 + k} ${cy - a * ph}, ${x2 - k} ${cy + a * ph}, ${x2} ${cy}`; };   // one long gentle S per strand; the pair crosses mid-way
@@ -533,7 +528,7 @@ function cbVersusSlash() {
   const lc = L.color || '#3D5BFF', rc = R.color || '#2BB673';
   return `<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,800;1,800&display=swap" rel="stylesheet">
 <div style="position:absolute;inset:0;background:#050507"></div>
-<div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.22) 1.4px,transparent 1.9px);background-size:26px 26px;-webkit-mask-image:radial-gradient(75% 85% at 50% 50%,rgba(0,0,0,.25),#000)"></div>
+<div style="position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.22) 1.4px,transparent 1.9px);background-size:26px 26px;-webkit-mask-image:radial-gradient(62% 70% at 50% 50%,transparent 38%,#000 100%);mask-image:radial-gradient(62% 70% at 50% 50%,transparent 38%,#000 100%)"></div>
 <svg width="1600" height="900" style="position:absolute;inset:0"><defs><linearGradient id="sl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7B4DFF" stop-opacity="0"/><stop offset=".5" stop-color="#8F6BFF"/><stop offset="1" stop-color="#3D5BFF" stop-opacity="0"/></linearGradient>
 <filter id="gl"><feGaussianBlur stdDeviation="6"/></filter></defs>
 <line x1="880" y1="250" x2="720" y2="650" stroke="url(#sl)" stroke-width="10" filter="url(#gl)"/><line x1="880" y1="250" x2="720" y2="650" stroke="url(#sl)" stroke-width="3"/></svg>
@@ -608,7 +603,7 @@ const force = args.includes('--force');
 // ---- content check: each layout needs enough real content to fill its frame (a sparse window or hub looks unfinished) ----
 const n = (a) => (Array.isArray(a) ? a.length : 0);
 const thin = {
-  window: () => n(spec.list?.rows) < 3 && n(spec.detail?.points) < 2 && 'window needs 3+ list rows, or 2+ rows plus 2+ detail points',
+  window: () => n(spec.list?.rows) < 2 && 'window needs 2+ list rows',
   hub: () => n(spec.cards) < 6 && 'hub needs 6–7 products',
   ranked: () => n(spec.rows) < 3 && 'ranked needs 3+ rows',
   checklist: () => n(spec.items) < 3 && 'checklist needs 3+ items',
@@ -637,9 +632,9 @@ Same-topic articles must use different compositions. Used for this topic: ${same
   process.exit(2);
 }
 const uses = Object.fromEntries(ALL_LAYOUTS.map((l) => [l, prior.filter((e) => layoutOf(e) === l).length]));
-const minUse = Math.min(...Object.values(uses));
-const allowed = ALL_LAYOUTS.filter((l) => uses[l] === minUse && !sameTopic.some((e) => l.startsWith(e.mode + '/')));
-if (uses[LAYOUT] > minUse && !force) {
+const minUse = Math.min(...ALL_LAYOUTS.filter((l) => !REPEATABLE[l]).map((l) => uses[l]));
+const allowed = ALL_LAYOUTS.filter((l) => (uses[l] === minUse || (REPEATABLE[l] && uses[l] < REPEATABLE[l])) && !sameTopic.some((e) => l.startsWith(e.mode + '/')));
+if (uses[LAYOUT] > minUse && !(REPEATABLE[LAYOUT] && uses[LAYOUT] < REPEATABLE[LAYOUT]) && !force) {
   const users = prior.filter((e) => layoutOf(e) === LAYOUT).map((e) => e.slug);
   console.error(`VARIETY CHECK FAILED: layout "${LAYOUT}" is already used in "${category}" by: ${users.join(', ')}.
 A layout may not repeat in a category until every layout has been used there (site-wide history: ${historyFile}).

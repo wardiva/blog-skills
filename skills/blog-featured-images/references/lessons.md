@@ -50,7 +50,7 @@ Read this before every batch.
 
 - One site-wide history per brand counts every render, wherever its folder is.
 - Layout identity (mode + variant) is the rule, and QA does the visual side-by-side (pixel similarity can't tell layouts apart).
-- With 18 layouts, a category repeats after 18 images. When the least-used tier already has one use each, add a variant **before** briefing Makers.
+- With 17 layouts, a category repeats after about 17 images (more with the repeatable favourites). When the least-used tier already has one use each, add a variant **before** briefing Makers.
 - **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting for rotation, and can't be re-created. Never delete the history file.
 - An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
 
@@ -59,7 +59,9 @@ Read this before every batch.
 - **Qualifiers got dropped:** "$140/mo minimum" lost "per provider", "96% collection rate" lost "up to". Copy the article's qualifier with the figure.
 - **A breakdown contradicted its hero** ("4–9%" hero, "3–6%" row). Rows must sit inside the hero's range.
 - **A one-brand image for an X vs Y article** (dark layout) looked like an ad. Comparisons always show both products.
-- **Thin specs left empty frames** (a window with 2 rows). The renderer now refuses thin specs and sizes the window to its content.
+- **Review rounds:** an interactive review page (before | fixed, Approve / Needs change / Pick A·B, a note per image) made feedback fast; turn each note into a prompt before acting.
+- **Not every QA fix is wanted:** a tighter window, a pointer callout and bigger logo badges were all rejected ("before is better"). When a fix changes the look, show it next to the original first.
+- **The user dislikes `versus/logos`** (removed) and loves `versus/slash` and `versus/connect` (may repeat up to 5 times per category).
 - **Logo chain surprises:** a brand's "icon" can be a stale anniversary badge (Availity) or a pale grey wordmark (Sectra). Check every logo by eye; use the official site icon from the brand's website when needed.
 - **Work in the project folder.** One batch rendered into a temporary scratch folder; delivered images must live in the project's `featured-images/` (finalize also keeps a copy in `~/.blog-featured-images/delivered/`).
 - **Fix the skill, then publish:** renderer fixes made during a batch go into the skill and are pushed, never left as local patches.

@@ -51,11 +51,11 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 | ranked | sky, g5 | grey bars need colour behind them |
 | focus | sky, g5 | skeleton rows need colour behind them |
 | window | sky, g5 | a big white app window |
-| versus | sky, cream | logo tiles, table or tilted cards |
+| versus | sky, cream | a table or tilted cards |
 | hub | cream, paper | a big blue tile needs a neutral field |
 | timeline | cream, sky | a thin track and callout on a calm warm field |
-| stat | paper, cream | the giant number brings the colour |
-| prompt | paper, sky | its panel and bar are cool blue, so the field is cool too |
+| stat | paper, cream | the giant number brings the colour (a soft blue gradient by default; `"valueColor": "navy"` or `"blue"` to change it) |
+| prompt | its own | paints its own light-blue field with a strong blue glow at the bottom (`"field": "soft"` for a softer gradient) |
 
 - Cool greys never sit on cream; on cream the guide lines turn warm and the blue margin dots are hidden (automatic).
 - Always check at 350×250 next to the neighbours: the hero separates cleanly, and the field never fights the illustration's colours.
@@ -91,7 +91,7 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 - **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
 - **Black fields** (`dark`, `versus/slash`) count as vibrant (see 3).
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` uses it for its panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
-- **Six ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `logos`, `pills`, `connect`, `slash`. An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
+- **Five ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`. **`slash` and `connect` are favourites: each may repeat up to 5 times per category** (the rotation lets them through). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
 - These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390.
 
 ---
@@ -122,7 +122,6 @@ Two layouts that share a skeleton (block arrangement) read as the same image at 
 | before-after/flow | muted icon card → hand-drawn arrow → lifted blue-icon card, legend | "old way → new way" |
 | versus/overlap | two tilted, overlapping cards (−3° / +3°) with a VS badge on the seam | X vs Y |
 | versus/table | one comparison table card, VS badge where the header line crosses the column line | X vs Y with 2–3 dimensions |
-| versus/logos | two large logo tiles on an edge-to-edge hatched band, VS badge, one fact chip each | X vs Y, one contrast |
 | hub | blue centre tile with 6–7 **logo tiles (logos only)** and hand-drawn arrows | "best X" lists, integrations |
 | focus | centred headline with the key phrase in a blue selection box; UI card with skeleton rows bleeding off the bottom | one key idea with 2–3 values |
 | stat | giant number left, breakdown card right | one headline number |
@@ -147,11 +146,11 @@ Calm is good; bland is not.
 1. **One bold anchor:** exactly one high-contrast element (selection box, VS badge, blue tile, big blue number, highlighted row). Never two, never none.
 2. **One hero at 55–70% of the width**, everything else secondary. The hero's mass sits at or slightly above the canvas centre.
 3. **Structure tied to the frame:** the guide lines, the frame grid (stat, ranked, timeline, window by default; `"frame": false` turns it off), an edge-to-edge band, or a card bleeding off an edge. Nothing just floats.
-4. **Bleed for big UI:** windows and panels may run off the bottom or right edge (`"bleed": true`), but every word stays inside x 210–1390. A card is never left with empty white: the window sizes to its content and only bleeds when it is tall enough.
+4. **Bleed for big UI:** windows and panels may run off the bottom or right edge (`"bleed": true`), but every word stays inside x 210–1390. A bleeding card is cut just after its content.
 5. **Hard alignment:** connectors hit centres, selection handles sit on the corners, gaps are even.
 6. **At most one interaction cue:** a cursor (`"cursor": [x, y]`) pointing at the key fact, never covering text.
 7. **Scale contrast:** one very large element against small labels.
-8. **Enough content:** each layout needs enough real facts to fill its frame (window 3+ rows, hub 6+ products, ranked/checklist/timeline 3+, stat card 2+). The renderer refuses thinner specs ("CONTENT CHECK FAILED").
+8. **Enough content:** each layout needs enough real facts to fill its frame (window 2+ rows, hub 6+ products, ranked/checklist/timeline 3+, stat card 2+). The renderer refuses thinner specs ("CONTENT CHECK FAILED").
 
 ---
 
@@ -173,7 +172,7 @@ Calm is good; bland is not.
 - **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` → Simple Icons → Brandfetch icon (used as an app tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped.
 - **Brandfetch client ID:** free at brandfetch.com/developers. Keep it **local** (`~/.blog-featured-images/config.json` or `BRANDFETCH_CLIENT_ID`); never commit it.
 - **Style:** original colours (`"logoStyle": "color"`, the default) in white tiles; one style per image. `mono` and `tint` exist for when colour logos would compete with the anchor.
-- **Balance:** see 2. Solid round or square badges fill their tile; pale grey marks are darkened automatically so they read.
+- **Balance:** see 2. Pale grey marks are darkened automatically so they read.
 - **Right mark:** check each logo is the brand's real current mark (not an anniversary or campaign badge). If the chain finds the wrong one, save the official mark from the brand's own website (its site icon or logo) to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`; the renderer embeds it.
 
 ---

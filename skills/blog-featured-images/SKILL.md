@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (mostly X vs Y - facing pills, connected logos, black slash, black + brand colour) - 12 modes / 18 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (mostly X vs Y - facing pills, connected logos, black slash, black + brand colour) - 12 modes / 17 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Three agents (orchestrator, makers, independent QA) work in a fast parallel batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog featured images
@@ -29,7 +29,7 @@ Read these before your first image in a session:
 3. **Easy to understand:** one idea, one focal point, visual first (icon, logo, number, arrow, bars). Check it at 350×250.
 4. **Minimal (enforced):** at most **15 visible words**, max 7 per element, no sentences ("TEXT CHECK FAILED"). Secondary lines only when they are the story. Never fill space.
 5. **Different every time (enforced):** a layout (mode + variant) never repeats in a category until all have been used; same-topic articles never share a mode ("VARIETY CHECK FAILED"). A site-wide history per brand records every render.
-6. **Logos where products are named:** `"logo": "<domain>"`; the renderer's free chain finds it, fits badges to their tile and darkens pale grey marks. **Check every logo is the brand's real current mark** (not a campaign or anniversary badge). If it isn't, save the official mark from the brand's own website to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`.
+6. **Logos where products are named:** `"logo": "<domain>"`; the renderer's free chain finds it and darkens pale grey marks. **Check every logo is the brand's real current mark** (not a campaign or anniversary badge). If it isn't, save the official mark from the brand's own website to `featured-images/assets/` and use `"logo": "../assets/<file>.png"`.
 7. **Background fits the illustration (enforced):** leave `bg` out and the renderer picks the layout's best light background; anything outside the layout's fit list is refused ("BACKGROUND FIT FAILED"). Blue-heavy illustrations get a neutral field.
 8. **Vibrant + subtle mix (enforced):** the deep-dunes blue (`"bg": "blue"`, only for `checklist`, `versus/table`, `window`, `before-after/flow`) and the black layouts (`dark`, `versus/slash`) together appear on about 1 in 3 images per category, never neighbours ("VIBRANT CHECK FAILED", "VIBRANT FIT FAILED").
 9. **Visual appeal is a hard gate:** an image that passes every check but doesn't look good fails QA (blue dosage, logo balance, logos only, figure/ground, balance).
@@ -39,7 +39,7 @@ Read these before your first image in a session:
 13. **Delivered images are permanent (enforced):** once QA passes and the user has the images, finalize them (`scripts/finalize.mjs`). A finalized image keeps its files in `featured-images/<slug>/`, stays in the site history and the folder ledger forever (it keeps counting for layout rotation), and is never re-created or overwritten ("FINAL IMAGE LOCKED"). Redo one only when the user explicitly asks.
 14. **Enough content, fair comparisons (enforced):** each layout needs enough real content to fill its frame ("CONTENT CHECK FAILED"), and an X vs Y article always shows both products ("FAIRNESS CHECK FAILED": `dark` is for single-brand articles).
 
-## Layouts: 12 modes, 18 layouts
+## Layouts: 12 modes, 17 layouts
 
 **Card layouts** (light fields, white UI cards):
 | Layout | Shows | Best for | Light bg (best first) | On blue? |
@@ -48,7 +48,6 @@ Read these before your first image in a session:
 | `before-after/flow` | icon card → arrow → lifted icon card | "old way → new way" | g5, sky | **yes** |
 | `versus/overlap` | tilted overlapping cards + VS badge | X vs Y | sky, cream | no |
 | `versus/table` | one comparison table + VS badge | X vs Y, 2–3 dimensions | sky, cream | **yes** |
-| `versus/logos` | two big logo tiles + one fact chip each | X vs Y, one contrast | sky, cream | no |
 | `hub` | blue centre tile + 6–7 logo tiles (logos only) | "best X" lists | cream, paper | no |
 | `focus` | key phrase in a blue selection box + skeleton card | one idea, 2–3 values | sky, g5 | no |
 | `stat` | giant number + breakdown card | one headline number | paper, cream | no |
@@ -68,7 +67,7 @@ Read these before your first image in a session:
 | `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
 | `dark` | black, tag pill, white headline, brand-colour panel with the white logo | one vivid brand, never X vs Y (vibrant) |
 
-The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants plus `dark`). Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: five versus variants). **Favourites repeat:** `versus/slash` and `versus/connect` may each be used up to 5 times per category instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
 ## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.

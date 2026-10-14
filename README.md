@@ -88,16 +88,16 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
 - **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
 - **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
-- **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, badges and app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
+- **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (12 modes, 18 layouts)
+## Layouts (12 modes, 17 layouts)
 
 **Card layouts:**
 
 | Mode | Variants | Best for | On the vibrant blue |
 |---|---|---|---|
 | `before-after` | `default`, `flow` | How-to, migration, "old way → new way" | `flow` only |
-| `versus` | `overlap`, `table`, `logos` | X vs Y | `table` only |
+| `versus` | `overlap`, `table` | X vs Y | `table` only |
 | `hub` | default | "Best X" lists (6–7 product logos, logos only) | no |
 | `focus` | default | One key idea with 2–3 values | no |
 | `stat` | default | One headline number | no |
@@ -113,8 +113,8 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | Layout | Best for |
 |---|---|
 | `versus/pills` | X vs Y: two facing pills with the logos, the question below |
-| `versus/connect` | X vs Y: two logo tiles linked to a VS circle |
-| `versus/slash` | X vs Y on black: bold names, italic VS |
+| `versus/connect` | X vs Y: two logo tiles linked to a VS circle (a favourite: may repeat up to 5 times per category) |
+| `versus/slash` | X vs Y on black: bold names, italic VS (a favourite: may repeat up to 5 times per category) |
 | `dark` | One vivid brand (never X vs Y), its colour as the panel |
 
 ## Add your own site

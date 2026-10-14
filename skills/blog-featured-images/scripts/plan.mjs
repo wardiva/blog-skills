@@ -6,7 +6,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { LAYOUTS } from './layouts.mjs';
+import { LAYOUTS, REPEATABLE } from './layouts.mjs';
 
 const ALL = Object.keys(LAYOUTS).flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
 const args = process.argv.slice(2);
@@ -27,8 +27,8 @@ for (const r of reqs) {
   const [mode, variant = LAYOUTS[mode]?.[0]] = lay.split('/'); const layout = `${mode}/${variant}`;
   if (!ALL.includes(layout)) { errors.push(`${slug}: unknown layout ${layout}`); continue; }
   if (history.some((e) => e.slug === slug && e.final)) { errors.push(`${slug}: already delivered (final); delivered images can't be re-created`); continue; }
-  const u = usage(), min = Math.min(...Object.values(u));
-  if (u[layout] > min) { errors.push(`${slug}: ${layout} used ${u[layout]}x, least-used are: ${ALL.filter((l) => u[l] === min).join(', ')}`); continue; }
+  const u = usage(), min = Math.min(...ALL.filter((l) => !REPEATABLE[l]).map((l) => u[l]));
+  if (u[layout] > min && !(REPEATABLE[layout] && u[layout] < REPEATABLE[layout])) { errors.push(`${slug}: ${layout} used ${u[layout]}x, least-used are: ${ALL.filter((l) => u[l] === min).join(', ')}`); continue; }
   if (topic && hist.some((e) => e.topic === topic && e.mode === mode)) { errors.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
   hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, at: new Date().toISOString() });
 }
