@@ -8,6 +8,7 @@ Read this before every batch.
 |---|---|---|
 | Read articles | `scripts/read-articles.mjs` (agent-browser, all URLs in parallel, full raw text in seconds) | WebFetch one URL at a time (slow, and it summarises, so facts get lost) |
 | Pick layouts | `scripts/plan.mjs` (usage table, then reserve the whole batch in one command) | Render, get "VARIETY CHECK FAILED", re-plan, render again |
+| Logo-dependent layouts | `scripts/logo-check.mjs <domains>` before reserving pills, connect or logotype | Reserve, let the Maker hit a PILLS / CONNECT / LOGOTYPE refusal, re-plan |
 | Make images | All Makers started in one message, in the background | Makers one after another |
 | QA | One QA agent on one `scripts/sheet.mjs` contact sheet | QA opening every image one by one |
 | Fixes | `SendMessage` to the same Maker or QA agent | A new agent that has to re-read everything |
@@ -30,6 +31,7 @@ Read this before every batch.
 - **Count:** does the layout hold as many items as the article has (a "7 best" article needs 7 hub tiles)?
 - **Names:** will the article's own product names fit? Never abbreviate a name the article doesn't.
 - **Title words:** headline-less layouts (hub, before-after, most versus variants) carry the title's key words, e.g. the hub tile "7 Best ERP".
+- **Logos:** pills needs a logo that sits on white, connect a solid app icon, logotype a black logo with a separate icon. Check with `scripts/logo-check.mjs` while planning, never after rendering.
 - **Renderer bugs are the Orchestrator's job.** Fix the code once so every future image benefits; Makers only change specs.
 
 ## 4. Taste

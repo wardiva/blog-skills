@@ -653,7 +653,20 @@ async function splitLockup(buf) {
   return { icon: uri(out), tile, word: uri(word), aspect: wm.width / wm.height };
 }
 // refuse after sharp's worker threads settle: an immediate process.exit can crash Node on Windows (exit 127 instead of 2)
-const refuse = async (msg) => { console.error(msg); await new Promise((r) => setTimeout(r, 200)); process.exit(2); };
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
+// logo fetches for the pre-render checks: retry network errors, rate limits and 5xx (a real 404 is an answer, not a failure)
+const fetchRetry = async (url) => {
+  for (let i = 0; ; i++) {
+    try {
+      const r = await fetch(url, { headers: { 'user-agent': UA } });
+      if ((r.status === 429 || r.status >= 500) && i < 3) throw new Error(String(r.status));
+      return r;
+    } catch (e) { if (i >= 3) throw e; await new Promise((res) => setTimeout(res, 400 * (i + 1))); }
+  }
+};
+// exit only after sharp's worker threads settle: an immediate process.exit can crash Node on Windows
+const settleExit = async (code) => { await new Promise((r) => setTimeout(r, 200)); process.exit(code); };
+const refuse = async (msg) => { console.error(msg); await settleExit(2); };
 // logotype: fetch the product's full logo lockup (both Brandfetch themes, or a local file), keep the version whose ink is black
 let LOGOTYPE = null;
 if (MODE === 'logotype') {
@@ -676,7 +689,7 @@ if (MODE === 'logotype') {
   for (const [kind, src] of sources) {
     try {
       const buf = kind === 'file' ? fs.readFileSync(src.startsWith('file:') ? fileURLToPath(src) : path.resolve(path.dirname(specFile), src))
-        : Buffer.from(await (await fetch(src, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' } })).arrayBuffer());
+        : Buffer.from(await (await fetchRetry(src)).arrayBuffer());
       const ink = await inkOf(buf); tried.push(ink);
       if (ink && ink.lum < 90 && ink.sat < 0.25 && ink.colour < 0.06) {
         LOGOTYPE = (await splitLockup(buf)) || (args.includes('--force') ? { lockup: `data:image/png;base64,${(await sharp(buf).trim().png().toBuffer()).toString('base64')}` } : null);
@@ -691,7 +704,6 @@ if (MODE === 'logotype') {
 }
 // versus/pills: each logo sits on a white circle, so both products need a mark that works on white. Resolve the logo chain the
 // way the page does; a product whose only logo is a solid app tile (e.g. NetSuite's dark square) is refused.
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
 const solidTile = async (buf) => {   // an app icon that fills its square: opaque, non-white corners
   const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const W = info.width, H = info.height, at = (x, y) => data.subarray((y * W + x) * 4, (y * W + x) * 4 + 4);
@@ -706,7 +718,7 @@ if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
         let buf;
         if (url.startsWith('data:')) buf = Buffer.from(url.split(',')[1], 'base64');
         else {
-          const r = await fetch(url, { headers: { 'user-agent': UA } });
+          const r = await fetchRetry(url);
           if (!r.ok) continue;
           buf = Buffer.from(await r.arrayBuffer());
         }
@@ -728,7 +740,7 @@ if (LAYOUT === 'versus/connect') {
     let buf = null;
     try {
       if (d && localLogo(d)) buf = Buffer.from(localLogo(d).split(',')[1], 'base64');
-      else if (d && BF_CLIENT) { const r = await fetch(bf(d, 'icon', '404'), { headers: { 'user-agent': UA } }); if (r.ok) buf = Buffer.from(await r.arrayBuffer()); }
+      else if (d && BF_CLIENT) { const r = await fetchRetry(bf(d, 'icon', '404')); if (r.ok) buf = Buffer.from(await r.arrayBuffer()); }
     } catch { buf = null; }
     if (buf && await solidTile(buf).catch(() => false)) CONNECT_ICON[k] = `data:image/png;base64,${(await sharp(buf).png().toBuffer()).toString('base64')}`;
     else if (!args.includes('--force')) {
@@ -736,6 +748,8 @@ if (LAYOUT === 'versus/connect') {
     }
   }
 }
+// --check-only: stop after the logo checks (used by logo-check.mjs while planning; nothing is rendered or recorded)
+if (args.includes('--check-only')) { console.log('CHECKS PASSED'); await settleExit(0); }
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo'].includes(LAYOUT);
 const VIVID = MODE === 'dark' || ['versus/slash', 'versus/duo'].includes(LAYOUT);   // black fields count as vibrant (1 in 3, never neighbours)
 Object.assign(BG_FIT, { dark: ['paper'], logotype: ['cream'] });

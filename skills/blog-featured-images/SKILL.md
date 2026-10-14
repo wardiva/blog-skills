@@ -74,7 +74,7 @@ The same article type can use several layouts (cost: focus, stat, prompt, window
 
 ## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.
-- **Orchestrator (you):** read the articles, plan and reserve a distinct least-used layout per article (and which ones go on blue), fix renderer issues, start the Makers and the QA agent, loop fixes, deliver. You don't approve images yourself.
+- **Orchestrator (you):** read the articles, check the logos (`logo-check.mjs`), plan and reserve a distinct least-used layout per article (and which ones go on blue), fix renderer issues, start the Makers and the QA agent, loop fixes, deliver. You don't approve images yourself.
 - **Makers (subagents, in parallel):** write each spec from the article file and render it, with the assigned layout. Never `--force`.
 - **QA (separate subagent):** judges every image on one contact sheet and returns PASS or FAIL with exact fixes.
 - Failed images go back to their Maker, then to QA again, for up to 3 rounds. Only QA-passed images are delivered.
@@ -82,6 +82,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
 ## Workflow (fast batch mode)
 1. **Read:** `node <skill-dir>/scripts/read-articles.mjs <url> <url> ... --out featured-images/articles` reads every URL in parallel into `articles/<slug>.md`. Note each article's type, core idea, 3–6 hard facts, **category** and **topic** (duplicate URLs such as `…-guide` and `…-guide-2` share one topic).
 2. **Plan:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows layout usage. Pick the best fit from the least-used tier for each article, choose which go vibrant (at most 1 in 3, blue and black layouts together, only blue-fit layouts on the blue, never neighbours), then reserve all at once: `--reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan when doing more than 3 images.
+   **Before reserving a logo-dependent layout**, run `node <skill-dir>/scripts/logo-check.mjs <domain> <domain> ...` for every product in an X vs Y or single-product article. It uses the renderer's own checks and prints which layouts each brand can use: `pills` (a logo that sits on white), `connect` (a solid app icon), `logotype` (a black logo with a separate icon). An X vs Y pair gets pills or connect only when **both** brands pass; a single product gets `logotype` only when it passes, otherwise `dark`. Still look at the icons: a stale badge passes the check.
 3. **Spec + render (Makers, in parallel):** one `specs/<slug>.json` each (always `articleTitle`, `brand`, `category`, `slug`, `topic` when shared, `logo` on named products), then:
    ```bash
    node "<skill-dir>/scripts/render.mjs" "featured-images/specs/<slug>.json" --out "featured-images/<slug>"

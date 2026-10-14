@@ -62,7 +62,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 
 **Three agents, in one fast batch:**
 
-1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), picks the least-used layout per article and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
+1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), checks which logo-dependent layouts each brand can use (`logo-check.mjs`), picks the least-used layout per article and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
 2. **Makers** (parallel subagents): write each spec from the article's facts and render it.
 3. **QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no reused layout, 2-second scan, minimal text, balanced, true to the article, clean logos. Failures go back to their Maker; only images that pass are delivered.
 4. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting for layout rotation, and can never be re-created or overwritten.
@@ -137,7 +137,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
 | `references/agents.md` | Three-agent flow, Maker and QA prompts, QA checklist |
 | `references/lessons.md` | Speed tools, gotchas, pre-flight checks, taste |
-| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `sheet.mjs`, `finalize.mjs` (locks delivered images) |
+| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `logo-check.mjs` (which logo-dependent layouts each brand can use), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
 | `examples/` | Approved specs for every layout |
 
 ## Troubleshooting
