@@ -221,15 +221,39 @@ The user rejected a background with only a headline. The mode is not in `layouts
 ```json
 { "mode": "receipt", "headline": "Dermatology\nEMR Cost", "title": "Per provider / month",
   "rows": [ { "name": "Nextech", "value": "$300–$399" }, { "name": "eClinicalWorks", "value": "$499–$599" } ],
-  "total": { "label": "Typical", "value": "$250–$900" } }
+  "total": { "label": "Typical", "value": "$250–$900" }, "place": "bottom" }
 ```
-- Headline left (heading rule; semibold 600 black, at most 84px so the receipt stays the hero), a tilted white receipt with a zigzag tear on the right. The bold blue `total` reads as the receipt's summary, so every row must sit INSIDE the total's range (Fact QA F3). Row type auto-fits the longest row. `title` carries the unit.
+- Headline left (heading rule; semibold 600 black, at most 84px so the receipt stays the hero), a tilted white receipt with a zigzag tear on the right. The bold blue `total` reads as the receipt's summary, so every row must sit INSIDE the total's range (Fact QA F3). Row type auto-fits the longest row. `title` carries the unit. `"place": "bottom"` sets the headline on the total line (the user's pick in batch 4; centred felt off), and `"top"` aligns it with the receipt's top.
 
 ## Definition (`"mode": "definition"`; approved) — "what is X" articles
 ```json
 { "mode": "definition", "term": "EMR Software", "label": "electronic medical record", "definition": "Digital version of a patient's paper chart" }
 ```
 - A dictionary entry on ruled lines (white in the grey frame): `term` (heading rule), `label` = the full form, a blue rule, a numbered one-line `definition` (≤ 7 words, the article's own words). The text is snapped onto the rules. No icon, no logo.
+
+## Shortlist (`"mode": "shortlist"`; approved batch 4) — "best X" lists
+```json
+{ "mode": "shortlist", "headline": "Best Standalone\nE-Prescribing", "icon": "ph-fill ph-prescription",
+  "items": [ { "name": "DrFirst Rcopia" }, { "name": "DoseSpot" }, { "name": "RXNT" } ] }
+```
+- A tilted notepad on the LEFT (mirrored so it never echoes the receipt), the black semibold headline on the right (heading rule). 3–8 `items` in the article's own order and spelling, numbered 01, 02…; the optional `icon` (Phosphor) sits on a blue sticker fully ON the pad (never over its edge) and is the one blue anchor. Optional `title` = a mono caption at the top of the pad. Item `logo`s only if every item has a clean real mark (taste 2). The "+" grid is under the pad, at the edges only.
+
+## Lineup (`"mode": "lineup"`; approved batch 4) — "best X" lists
+```json
+{ "mode": "lineup", "glass": "bar", "cards": [ { "name": "eClinicalWorks", "logo": "../assets/eclinicalworks-folder-mark.png" }, { "name": "DrChrono", "logo": "../assets/drchrono-folder-mark.png" } ] }
+```
+- The user's reference: one centred row of square white logo tiles (gap ~38% of a tile, logo ~70% of its tile) on a frosted glass bar over the glow field. No headline (no heading check). 3–6 `cards`, logos only, every mark the same treatment (open marks on white, trimmed to the same size; never an app tile shrunk into a tile). `"glass": "tiles"` (each tile frosted) exists but wasn't picked. Never set `watermark`: the user asked to delete the faint shape behind the row.
+
+## Versus frost (`"mode": "versus", "variant": "frost"`; field: light; approved batch 4)
+```json
+{ "mode": "versus", "variant": "frost", "left": { "label": "Practice Fusion", "logo": "../assets/practicefusion-mark.png" }, "right": { "label": "athenahealth", "logo": "athenahealth.com" } }
+```
+- Two 340px frosted-glass tiles on the light mesh, a glass "vs" disc between them, each `label` under its tile in black. No headline. Each mark must be transparent (a mark with its own white box shows as a white rectangle on glass: cut it from the official transparent lockup) and balanced against its partner by eye (the Practice Fusion cube needed ~60% of the tile width to match the athenahealth sprout). The blue mesh (`"field": "blue"`) was disapproved.
+
+## Retired in batch 4
+- `folder` (an app folder of logo tiles): "I like the background, the glass effect and the logos, but not the layout". Its pieces live on in `lineup`.
+- `versus/scale` (a balance scale holding both logos): "looks like a law illustration, the concept is so bad". No clip-art metaphors.
+- Both stay in render.mjs for reference, but they're not in `layouts.mjs`, so they can't be planned.
 
 ## Versus split / duet (built, out of the rotation)
 The user passed on both twice, so they're not in `layouts.mjs` and the renderer refuses them. Re-enable only if the user asks:

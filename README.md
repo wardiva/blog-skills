@@ -101,7 +101,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **One bold blue anchor**, white UI cards, semibold card headlines (black on focus and receipt, navy on the others; near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (17 modes, 26 layouts)
+## Layouts (19 modes, 29 layouts)
 
 **Card layouts:**
 
@@ -140,12 +140,15 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `swap` | Switch, migration, "old way → new way": old → dashed loop arrow → new | light, black |
 | `badge` | Cost and stat articles: the key figure in a tinted rounded box | light |
 
-**Originals** (light, white in the grey frame):
+**Originals** (light):
 
 | Layout | Best for |
 |---|---|
 | `receipt` | Cost and pricing articles: a big headline and a tilted receipt listing the article's prices with a bold total |
 | `definition` | "What is X" articles: a dictionary entry with the term, its full form and a one-line definition |
+| `shortlist` | "Best X" lists: a tilted notepad of the article's picks, numbered, with a blue icon sticker, and the headline on the right |
+| `lineup` | "Best X" lists: one row of logo tiles on a frosted glass bar over a soft blue glow |
+| `versus/frost` | X vs Y: two big frosted-glass logo tiles on a light mesh gradient, a glass "vs" disc, the names below |
 
 ## Add your own site
 

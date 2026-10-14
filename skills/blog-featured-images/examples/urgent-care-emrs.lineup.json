@@ -1,0 +1,30 @@
+{
+  "articleTitle": "7 Best EMRs for Urgent Care Clinics in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "7-best-emrs-for-urgent-care-clinics-in-2026",
+  "mode": "lineup",
+  "glass": "bar",
+  "cards": [
+    {
+      "name": "eClinicalWorks",
+      "logo": "../assets/eclinicalworks-folder-mark.png"
+    },
+    {
+      "name": "DrChrono",
+      "logo": "../assets/drchrono-folder-mark.png"
+    },
+    {
+      "name": "athenahealth",
+      "logo": "../assets/athenahealth-folder-mark.png"
+    },
+    {
+      "name": "AdvancedMD",
+      "logo": "../assets/advancedmd-folder-mark.png"
+    },
+    {
+      "name": "Tebra",
+      "logo": "../assets/tebra-folder-mark.png"
+    }
+  ]
+}

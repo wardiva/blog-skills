@@ -107,6 +107,7 @@ The user sees every image together, across categories and batches, so a repeated
 
 - **Batch 3:** "This template is already used": a layout recognised from an earlier batch was rejected in a different category.
 - "I don't want you to repeat any illustration, only repeat if it makes actual sense." Layouts now rotate across the whole site, and a favourite comes back only with a written reason.
+- **Batch 4:** a second pills image came back with a written reason and was still rejected: "this template is already being used". Treat any illustration the user has seen as used up; build a new one before reaching for a favourite.
 
 **Ask:** has the user seen this illustration anywhere before? If yes, is there truly no unused layout that fits this article? Write the reason down, or pick another.
 

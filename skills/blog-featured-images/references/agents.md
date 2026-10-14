@@ -156,6 +156,8 @@ Keep this context: you may get re-rendered images to re-check.
 - a stat number that outweighs its breakdown card
 - busy patterns on the Gumloop layouts: dot grids and the tiles ring stay sparse and faint
 - `versus/rows` in any field (the user disapproved it); `versus/split` or `versus/duet` unless the user asks for them
+- `folder`, `versus/scale` or any clip-art metaphor (a scale, a gavel, a trophy); a watermark shape behind the `lineup` row; `versus/frost` on the blue mesh
+- a second image in a layout the user has already seen, even a favourite with a written reason ("this template is already being used")
 - a slash name in one colour (white is always part of it), or slash names made bigger than their auto-fit size
 
 FAIL any image that brings one back.

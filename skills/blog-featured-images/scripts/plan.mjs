@@ -31,7 +31,7 @@ for (const r of reqs) {
   const u = usage(), min = Math.min(...ALL.filter((l) => !REPEATABLE[l]).map((l) => u[l]));
   const early = REPEATABLE[layout] && u[layout] < REPEATABLE[layout] && reason.trim().length >= 20;
   if (!args.includes("--user-pick") && u[layout] > min && !early) { errors.push(`${slug}: ${layout} is already used ${u[layout]}x on this site. Unused: ${ALL.filter((l) => u[l] === min).join(', ')}${REPEATABLE[layout] && u[layout] < REPEATABLE[layout] ? ` (a favourite may repeat with #<why no unused layout fits>)` : ''}`); continue; }
-  if (topic && hist.some((e) => e.topic === topic && e.mode === mode)) { errors.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
+  if (topic && hist.some((e) => !e.superseded && e.topic === topic && e.mode === mode)) { errors.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
   hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, ...(reason.trim() ? { repeatReason: reason.trim() } : {}), at: new Date().toISOString() });
 }
 if (errors.length) { console.error('PLAN REFUSED (nothing written):\n  ' + errors.join('\n  ')); process.exit(2); }
