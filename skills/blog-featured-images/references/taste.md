@@ -13,6 +13,8 @@ Every image is a conversation between two masses: a number and its card, a headl
 - **Dark:** "Left padding is too much, so the visual balance is off." The text column moved from x 210 to x 120, picked from three options.
 - **Logotype:** "Without the tile, visual balance looks off." A bare icon next to a wordmark felt weightless; the black tile gives it mass.
 
+- **Connect:** "Decrease the font size of the heading so it comes in one line, because 2 lines look visually off." A short pair like "Waystar vs Availity" reads as one phrase; split over two big lines it outweighed the tiles. It now sits on one line, centred above the divider.
+
 **Ask:** what is the heaviest thing in the image, and should it be? Squint: does one side of the canvas feel emptier or heavier than the other?
 
 ### 2. Sameness within an image

@@ -138,10 +138,10 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 
 ## Versus connect (`"mode": "versus", "variant": "connect"`)
 ```json
-{ "mode": "versus", "variant": "connect", "headline": "NetSuite vs\nSage Intacct",
+{ "mode": "versus", "variant": "connect", "headline": "NetSuite vs Sage Intacct",
   "left": { "label": "NetSuite", "logo": "netsuite.com" }, "right": { "label": "Sage Intacct", "logo": "sage.com" } }
 ```
-- The headline is all near-black (no `{{ }}` blue). Each tile is the brand's own app icon in its original colours, filling the tile: the renderer fetches it (Brandfetch icon, so a client ID is needed) or uses a local square icon. A brand without a solid app icon (e.g. SAP, Microsoft, athenahealth) is refused ("CONNECT LOGO CHECK FAILED"); use another versus layout. Check the icon is the brand's current one (Availity's is a stale "25" anniversary badge).
+- The headline is all near-black (no `{{ }}` blue) and sits on one line, sized to fit and centred above the divider; a `\n` in it is ignored. Only a pair too long to read on one line (under 72px) breaks onto two. Each tile is the brand's own app icon in its original colours, filling the tile: the renderer fetches it (Brandfetch icon, so a client ID is needed) or uses a local square icon. A brand without a solid app icon (e.g. SAP, Microsoft, athenahealth) is refused ("CONNECT LOGO CHECK FAILED"); use another versus layout. Check the icon is the brand's current one (Availity's is a stale "25" anniversary badge).
 
 ## Versus slash (`"mode": "versus", "variant": "slash"`; black, counts as vibrant)
 ```json

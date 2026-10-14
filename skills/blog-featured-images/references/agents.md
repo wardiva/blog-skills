@@ -117,7 +117,7 @@ Keep this context: you may get re-rendered images to re-check.
 - **Type and colour:** every text element is Inter 500 Medium (slash: Poppins caps). The pills and connect headlines are all near-black.
 - **Slash:** each name is two-tone, white first and the brand's colour on the last part; never all one colour, never an awkward mid-word split; names keep their approved auto-fit size.
 - **Pills:** the pills run off the outer edges with flat cuts, tips ~112px apart, with a subtle gradient and fine noise. Both logos sit on white circles.
-- **Connect:** both tiles are the brands' own app icons in their original colours, edge to edge, and current (not an anniversary badge).
+- **Connect:** the headline sits on one line (two only for a very long pair); both tiles are the brands' own app icons in their original colours, edge to edge, and current (not an anniversary badge).
 - **Duo:** a white headline and two panels in each brand's own colour (the subtle blue when it has none) with white marks.
 - **Dark:** a white headline with no blue words. The text column starts at x 120, and the top-left tile is the product's own icon in #0A0A0B black, not the site mark.
 - **All:** blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390 (except `dark`'s text column).

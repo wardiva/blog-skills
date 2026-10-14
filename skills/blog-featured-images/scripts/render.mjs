@@ -504,7 +504,12 @@ ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;paddin
 // "versus/connect": centred near-black headline, a divider with a sparkle, two tiles that are each brand's own app icon (original colours, edge to edge) linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 // with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 function cbVersusConnect() {
-  const L = spec.left, R = spec.right, head = spec.headline || `${L.label} vs\n${R.label}`, fs = cbFs(head, 104, 900);   // 900 keeps a long first line clear of the corner dot patches
+  // the headline sits on ONE line (user: "2 lines looks visually off"), centred above the divider; only a pair too long to read
+  // on one line (under 72px) breaks onto two, which then sits at the top and stays clear of the corner dot patches (900 wide)
+  const L = spec.left, R = spec.right, head0 = spec.headline || `${L.label} vs ${R.label}`, one = head0.replace(/\s*\n\s*/g, ' ');
+  const fs1 = cbFs(one, 96, 1200), single = fs1 >= 72;
+  const head = single ? one : (head0.includes('\n') ? head0 : `${L.label} vs\n${R.label}`), fs = single ? fs1 : cbFs(head, 104, 900);
+  const hTop = Math.round(245 - (single ? 1 : 2) * fs * 0.51);   // centred above the divider either way
   const S = 240, cy = 620, lx = 330, rx = 1270, cr = 74;
   const dots = (x0) => { let d = ''; for (let r = 0; r < 6; r++) for (let c = 0; c < 8; c++) d += `<circle cx="${x0 + c * 22}" cy="${70 + r * 22}" r="2.6"/>`; return d; };
   const wave = (x1, x2, a, ph) => { const k = (x2 - x1) * 0.42; return `M${x1} ${cy} C ${x1 + k} ${cy - a * ph}, ${x2 - k} ${cy + a * ph}, ${x2} ${cy}`; };   // one long gentle S per strand; the pair crosses mid-way
@@ -521,7 +526,7 @@ ${cbFramed(`<div style="position:absolute;inset:0;background:radial-gradient(60%
 <g fill="#fff" stroke="#9DB8F2" stroke-width="2.5"><circle cx="${le}" cy="${cy}" r="8"/><circle cx="${re}" cy="${cy}" r="8"/></g>
 <g stroke="#9DB8F2" stroke-width="2"><line x1="590" y1="372" x2="770" y2="372"/><line x1="830" y1="372" x2="1010" y2="372"/></g>
 <path d="M800 356 C802 368 804 370 816 372 C804 374 802 376 800 388 C798 376 796 374 784 372 C796 370 798 368 800 356Z" fill="#2F6BFF"/></svg>
-<div class="cbh" style="left:0;right:0;top:118px;text-align:center;font-size:${fs}px">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div>
+<div class="cbh" style="left:0;right:0;top:${hTop}px;text-align:center;font-size:${fs}px${single ? ';white-space:nowrap' : ''}">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div>
 ${iconTile('left', L, lx - S / 2, cy - S / 2)}${iconTile('right', R, rx - S / 2, cy - S / 2)}
 <div style="position:absolute;left:${800 - cr}px;top:${cy - cr}px;width:${cr * 2}px;height:${cr * 2}px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 12px 30px rgba(47,90,200,.16),0 0 0 1px rgba(47,90,200,.08)"><b class="bt2" style="font-size:46px;font-weight:500;letter-spacing:-.03em">VS</b></div>`)}`;
 }
