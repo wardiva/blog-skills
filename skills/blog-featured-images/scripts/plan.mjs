@@ -1,41 +1,43 @@
-// Batch planner: shows site-wide layout usage and reserves layouts for a batch, so Makers can render in parallel.
-// Layouts don't repeat anywhere on the site until every one has been used; a favourite may come back earlier only with a reason.
+// Batch planner: shows which layouts are free for a category and reserves layouts for a batch, so Makers can render in parallel.
+// The user's rule: a layout not used yet is free for any article it suits (first in line); a used layout can't be used again in the
+// same category, only in a different one. Usage = site history + the user's record (references/used-layouts.json), see usage.mjs.
 // Usage:
-//   node plan.mjs --brand <brand> --category <cat>                                # usage table + least-used order
-//   node plan.mjs --brand <brand> --category <cat> --reserve <slug>=<mode>[/<variant>][@<topic>][#<why a repeat makes sense>] ...
-// Reservations are written to the site-wide history, so the renderer's least-used check stays correct when renders run in parallel.
+//   node plan.mjs --brand <brand> --category <cat>                                # free layouts for this category
+//   node plan.mjs --brand <brand> --category <cat> --reserve <slug>=<mode>[/<variant>][@<topic>] ...
+// Reservations are written to the site-wide history, so the renderer's check stays correct when renders run in parallel.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { LAYOUTS, REPEATABLE } from './layouts.mjs';
+import { LAYOUTS } from './layouts.mjs';
+import { ALL_LAYOUTS as ALL, usage, blocked, freeFor } from './usage.mjs';
 
-const ALL = Object.keys(LAYOUTS).flatMap((m) => LAYOUTS[m].map((v) => `${m}/${v}`));
 const args = process.argv.slice(2);
 const opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
 const brand = (opt('--brand') || 'default').replace(/[^a-z0-9-]/gi, ''), category = opt('--category');
 if (!category) { console.error('Usage: node plan.mjs --brand <brand> --category <cat> [--reserve slug=mode/variant@topic ...]'); process.exit(1); }
 const file = path.join(process.env.FEATURED_HISTORY_DIR || path.join(os.homedir(), '.blog-featured-images'), `history-${brand}.json`);
 const history = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
-const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default'])[0]}`;
 const ri = args.indexOf('--reserve');
 const reqs = ri >= 0 ? args.slice(ri + 1).filter((a) => !a.startsWith('--')) : [];
 const batchSlugs = new Set(reqs.map((r) => r.split('=')[0]));
 let hist = history.filter((e) => e.final || !batchSlugs.has(e.slug));   // re-planning replaces a slug's old entry; delivered entries always stay
-const usage = () => Object.fromEntries(ALL.map((l) => [l, hist.filter((e) => !e.superseded && layoutOf(e) === l).length]));   // site-wide   // superseded = a delivered design the user rejected and had replaced
+const live = () => hist.filter((e) => !e.superseded);   // superseded = a delivered design the user rejected and had replaced
 const errors = [];
 for (const r of reqs) {
-  const [slug, rest0] = r.split('='); const [rest, reason = ''] = (rest0 || '').split('#'); const [lay, topic] = (rest || '').split('@');
+  if (r.includes('#')) { errors.push(`${r}: the "#reason" suffix is gone; a used layout can't repeat in its category (only --user-pick skips that)`); continue; }
+  const [slug, rest] = r.split('='); const [lay, topic] = (rest || '').split('@');
   const [mode, variant = LAYOUTS[mode]?.[0]] = lay.split('/'); const layout = `${mode}/${variant}`;
   if (!ALL.includes(layout)) { errors.push(`${slug}: unknown layout ${layout}`); continue; }
   if (history.some((e) => e.slug === slug && e.final)) { errors.push(`${slug}: already delivered (final); delivered images can't be re-created`); continue; }
-  const u = usage(), min = Math.min(...ALL.filter((l) => !REPEATABLE[l]).map((l) => u[l]));
-  const early = REPEATABLE[layout] && u[layout] < REPEATABLE[layout] && reason.trim().length >= 20;
-  if (!args.includes("--user-pick") && u[layout] > min && !early) { errors.push(`${slug}: ${layout} is already used ${u[layout]}x on this site. Unused: ${ALL.filter((l) => u[l] === min).join(', ')}${REPEATABLE[layout] && u[layout] < REPEATABLE[layout] ? ` (a favourite may repeat with #<why no unused layout fits>)` : ''}`); continue; }
-  if (topic && hist.some((e) => !e.superseded && e.topic === topic && e.mode === mode)) { errors.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
-  hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, ...(reason.trim() ? { repeatReason: reason.trim() } : {}), at: new Date().toISOString() });
+  const why = args.includes('--user-pick') ? null : blocked(usage(live()), layout, category);
+  if (why) { const f = freeFor(usage(live()), category); errors.push(`${slug}: ${why} Not used yet: ${f.fresh.join(', ') || 'none'}. Used only in other categories: ${f.elsewhere.join(', ') || 'none'}`); continue; }
+  if (topic && live().some((e) => e.topic === topic && e.mode === mode)) { errors.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
+  hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, at: new Date().toISOString() });
 }
 if (errors.length) { console.error('PLAN REFUSED (nothing written):\n  ' + errors.join('\n  ')); process.exit(2); }
 if (reqs.length) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, JSON.stringify(hist, null, 1)); console.log(`Reserved ${reqs.length} layout(s) in ${file}`); }
-const u = usage(); const order = [...ALL].sort((a, b) => u[a] - u[b]);
-console.log(`Layout usage across the whole site (least-used first; give each article the best fit among the unused):`);
-for (const l of order) console.log(`  ${String(u[l]).padStart(2)}  ${l}`);
+const u = usage(live()), f = freeFor(u, category);
+console.log(`Layouts for "${category}" (give each article the best fit; not-used-yet layouts go first):`);
+console.log(`  Not used yet (first in line): ${f.fresh.join(', ') || 'none'}`);
+console.log(`  Used only in other categories: ${f.elsewhere.join(', ') || 'none'}`);
+console.log(`  Not again in "${category}": ${ALL.filter((l) => blocked(u, l, category)).join(', ') || 'none'}`);

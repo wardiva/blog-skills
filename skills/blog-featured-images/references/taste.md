@@ -13,6 +13,8 @@ Every image is a conversation between two masses: a number and its card, a headl
 - **Dark:** "Left padding is too much, so the visual balance is off." The text column moved from x 210 to x 120, picked from three options.
 - **Logotype:** "Without the tile, visual balance looks off." A bare icon next to a wordmark felt weightless; the black tile gives it mass.
 
+- **Versus frost** (approved review): "the icons are too big and this is why visual balance off, improve". The marks went from 60% to 48% of each glass tile; 44% was also tried and looked lost in the tile. A logo fills its tile only as much as the tile's size allows.
+
 - **Connect:** "Decrease the font size of the heading so it comes in one line, because 2 lines look visually off." A short pair like "Waystar vs Availity" reads as one phrase; split over two big lines it outweighed the tiles. It now sits on one line, centred above the divider.
 
 **Ask:** what is the heaviest thing in the image, and should it be? Squint: does one side of the canvas feel emptier or heavier than the other?
@@ -45,7 +47,7 @@ Dot grids, "+" grids and rings add texture. They are faint, and they frame the c
 
 - **Dynamics 365 vs Acumatica (slash):** "The pattern should not be in all area": the dot grid is masked clear behind the names.
 - **Tiles:** "Pattern is too much": the ring and dots stay sparse and faint.
-- **Swap on black:** "Pattern is too dark, light it, and it shouldn't be in the whole image." On a black field "too dark" meant dim and murky, so the marks became **brighter and crisper**, and only around the edges. Fading them instead made them "literally not visible".
+- **Swap on black:** "Pattern is too dark, light it, and it shouldn't be in the whole image." On a black field "too dark" meant dim and murky, so the marks became **brighter and crisper**, and only around the edges. Fading them instead made them "literally not visible". (The black swap itself was later deleted in the approved review; swap is light only now. The lesson about patterns on dark fields stays.)
 
 **Ask:** is the pattern crisp where it shows, and clear behind the content? If you notice it before the content, it's too strong; if you can't find it, it's gone, which is just as wrong.
 
@@ -63,8 +65,9 @@ A beautiful field still needs a real illustration on it: a card, a figure, logos
 The background exists to lift the hero off the page, and each layout has the fields that do that.
 
 - **Hub:** a big blue tile on blue melts; it goes on cream.
-- **The vibrant blue** only carries a big white card; a floating tile or a blue-heavy illustration on it becomes one flat blob.
+- **The vibrant blue** (the card field) only carries a big white card; a floating card tile or a blue-heavy illustration on it becomes one flat blob. The Gumloop tiles on their own blue field are the approved exception (image 20).
 - **Prompt:** "Both backgrounds are making this bland": it paints its own light-blue gradient with a glow.
+- **Approved review (Oct 2026), "Delete" on four field pairings:** the checklist on a light field, `versus/type` on blue, `versus/tiles` on black and `swap` on black. Each field was fine elsewhere; the pairing wasn't. The checklist is now blue only, type and swap are light only, and tiles is blue or light.
 
 **Ask:** does the hero separate cleanly from the field at 350×250?
 
@@ -106,13 +109,14 @@ Fifteen words is a ceiling, not a target. "Too much text" (stack): keep the titl
 
 ### 14. Every image is new
 
-The user sees every image together, across categories and batches, so a repeated illustration reads as lazy even in another category.
+The user sees every image together, across categories and batches, so a layout used twice in one category reads as lazy. A layout not used yet goes first; a used one may come back only in a different category (the current rule, last bullet).
 
-- **Batch 3:** "This template is already used": a layout recognised from an earlier batch was rejected in a different category.
-- "I don't want you to repeat any illustration, only repeat if it makes actual sense." Layouts now rotate across the whole site, and a favourite comes back only with a written reason.
-- **Batch 4:** a second pills image came back with a written reason and was still rejected: "this template is already being used". Treat any illustration the user has seen as used up; build a new one before reaching for a favourite.
+- **Batch 3:** "This template is already used": a layout recognised from an earlier batch was rejected in a different category (history, from before the per-category rule).
+- "I don't want you to repeat any illustration, only repeat if it makes actual sense." (History: this made layouts rotate across the whole site, with a favourite allowed back only with a written reason. Replaced below.)
+- **Batch 4:** a second pills image came back with a written reason and was still rejected: "this template is already being used". A written reason didn't make a repeat welcome.
+- **Template Usage (Oct 2026), the current rule:** "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." A layout not used yet anywhere is free for any article it suits and goes first; a used layout never comes back in the same category, only in a different one. There is no repeat with a reason any more. The user marks what is used on the Template Usage page (`references/used-layouts.json`), and that record is the truth over the history, since the user knows what is live; pills stays at "max 2 times" across the site.
 
-**Ask:** has the user seen this illustration anywhere before? If yes, is there truly no unused layout that fits this article? Write the reason down, or pick another.
+**Ask:** is this layout already used in this category? Then pick another. Is there a layout not used yet anywhere that suits the article? Then it goes first.
 
 ## Self-Critique (Required)
 
@@ -129,7 +133,7 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Bold | Exactly one bold thing; it would stop a scroll (7) |
 | Brands | Real current logos, original colours, no site mark on headline layouts (8) |
 | Restraint | Nothing added that the approved template doesn't have (10) |
-| New | The layout is unused on the site, or its repeat has a reason that holds up (14) |
+| New | Not used in this category; layouts not used yet anywhere come first (14) |
 | Headline ink | Headlines black `#0A0A0B` (white on dark fields), never blue or navy, no blue words (3) |
 
 Any "no" is a fix before the image moves on.

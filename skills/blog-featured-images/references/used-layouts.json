@@ -1,0 +1,175 @@
+{
+ "_note": "The user's record of which layouts are used on the site, kept on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q, collection \"usage\"). For every layout listed here it is the truth as of recordedAt (an older history image the user marked not used never went live); images delivered after recordedAt are added on top. A layout not used yet is free for any article it suits and goes first; a used layout cannot be used again in a category listed here, only in a different one. scripts/usage.mjs applies it.",
+ "source": "The user's own selections on the Template Usage page (all 30 layouts, Save all & finish).",
+ "recordedAt": "2026-10-14T19:46:04.294Z",
+ "updatedAt": "2026-10-15",
+ "layouts": {
+  "badge/default": {
+   "status": "used",
+   "cats": [
+    "compliance-and-analytics-software"
+   ]
+  },
+  "before-after/default": {
+   "status": "unused",
+   "cats": []
+  },
+  "before-after/flow": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "checklist/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "dark/default": {
+   "status": "unused",
+   "cats": []
+  },
+  "definition/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "focus/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "hub/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software",
+    "compliance-and-analytics-software"
+   ]
+  },
+  "lineup/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "logotype/default": {
+   "status": "unused",
+   "cats": []
+  },
+  "prompt/default": {
+   "status": "unused",
+   "cats": []
+  },
+  "ranked/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "receipt/default": {
+   "status": "used",
+   "cats": [
+    "uncategorized"
+   ]
+  },
+  "shortlist/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "stack/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "stat/default": {
+   "status": "used",
+   "cats": [
+    "medical-billing"
+   ]
+  },
+  "swap/default": {
+   "status": "unused",
+   "cats": []
+  },
+  "timeline/default": {
+   "status": "used",
+   "cats": [
+    "uncategorized"
+   ]
+  },
+  "versus/bento": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "versus/connect": {
+   "status": "used",
+   "cats": [
+    "clinical-software",
+    "medical-billing"
+   ]
+  },
+  "versus/duo": {
+   "status": "used",
+   "cats": [
+    "hospital-and-lab-software"
+   ]
+  },
+  "versus/frost": {
+   "status": "unused",
+   "cats": []
+  },
+  "versus/glass": {
+   "status": "used",
+   "cats": [
+    "hospital-and-lab-software"
+   ]
+  },
+  "versus/overlap": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "versus/pills": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "versus/slash": {
+   "status": "used",
+   "cats": [
+    "clinical-software",
+    "medical-billing"
+   ]
+  },
+  "versus/table": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "versus/tiles": {
+   "status": "unused",
+   "cats": []
+  },
+  "versus/type": {
+   "status": "unused",
+   "cats": []
+  },
+  "window/default": {
+   "status": "used",
+   "cats": [
+    "specialty-software"
+   ]
+  }
+ }
+}

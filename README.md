@@ -10,7 +10,7 @@ Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
 - is **minimal**: at most 15 words, labels not sentences (enforced)
 - sits on a **background chosen to flatter its illustration** (enforced)
-- **looks different** from every other image on the site; an illustration repeats only when nothing unused fits, with the reason written down (enforced)
+- **looks different**: a layout not used yet goes first, and a used layout never comes back in the same category, only in a different one (enforced)
 - shows **real, balanced product logos** where products are named
 - is **checked by two independent QA agents** side by side, one for looks (visual appeal is a hard gate) and one for facts
 
@@ -62,14 +62,14 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 
 **Four roles, in one fast batch** (an agent never both makes and approves an image):
 
-1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), checks which logo-dependent layouts each brand can use (`logo-check.mjs`), picks the least-used layout per article and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
+1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), checks which logo-dependent layouts each brand can use (`logo-check.mjs`), picks the best free layout per article (not used yet first, then used only in other categories) and which ones go on the vibrant blue, and reserves them all (`plan.mjs`).
 2. **Makers** (parallel subagents): write each spec from the article's facts and render it.
-3. **Visual QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no reused layout, 2-second scan, minimal, balanced, clean logos.
+3. **Visual QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, background fits, no layout reused in a category, 2-second scan, minimal, balanced, clean logos.
 4. **Fact QA** (an independent subagent, running at the same time): checks every word and number against the article text: the heading mirrors the title, every figure keeps its qualifier, nothing contradicts or is invented.
 
 Failures go back to their own Maker and are re-checked only by the QA agent that failed them; an image is delivered only when both pass.
 
-5. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting for layout rotation, and can never be re-created or overwritten.
+5. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting as used in their category, and can never be re-created or overwritten.
 
 **Built-in checks** (the renderer refuses to finish):
 
@@ -77,7 +77,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 |---|---|
 | `HEADING CHECK FAILED` | The image heading must reuse the blog title's own words |
 | `TEXT CHECK FAILED` | At most 15 words per image and 7 per element (no sentences) |
-| `VARIETY CHECK FAILED` | A layout can't repeat anywhere on the site until every layout has been used; a favourite may come back earlier only with a written reason, within its limit |
+| `VARIETY CHECK FAILED` | A layout is used once per category: one not used yet goes first, a used one is free only in a different category; favourites have a site-wide cap (slash, connect, duo 5; dark 3; pills, logotype 2) |
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
@@ -86,6 +86,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `PILLS LOGO CHECK FAILED` | `versus/pills` needs logos that sit on white; a brand with only a solid app icon uses another versus layout |
 | `LOGOTYPE CHECK FAILED` | `logotype` needs a black logo with a separate icon; coloured logos use `dark` |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
+| `CHECKLIST FIELD FAILED` | The checklist goes on the vibrant blue only (the renderer sets it) |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 | `FIELD FIT FAILED` | A Gumloop layout only takes its approved fields |
 | `TILES LOGO CHECK FAILED` / `GLASS LOGO CHECK FAILED` | `versus/tiles` needs two tiles that match (both filled or both white); `versus/glass` needs wordmarks that fit the bar |
@@ -95,7 +96,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `FAIRNESS CHECK FAILED` | An X vs Y article always shows both products |
 
 **The look:**
-- **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue**, only behind a big white card (blue and black images together on at most 1 in 3 per category).
+- **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue**, only behind a big white card (the Gumloop tiles have their own blue field) (blue and black images together on at most 1 in 3 per category).
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
 - **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
 - **One bold blue anchor**, white UI cards, black headlines (semibold on card layouts; white on dark fields; Inter Medium on headline layouts), a hero at 55–70% of the width.
@@ -114,7 +115,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `stat` | default | One headline number | no |
 | `ranked` | default | Rankings by a real metric | no |
 | `timeline` | default | Processes, implementation | no |
-| `checklist` | default | How to choose, requirements | yes |
+| `checklist` | default | How to choose, requirements | blue only |
 | `prompt` | default | Cost, pricing, FAQ | no |
 | `stack` | default | One key rule | no |
 | `window` | default | Vendor lists, pricing tables | yes |
@@ -123,21 +124,21 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 
 | Layout | Best for |
 |---|---|
-| `versus/pills` | X vs Y: two facing pills (flat outer cuts, subtle gradient with fine noise) with the logos on white circles, the question below in black; only when both logos work on white; up to 2 across the site, each repeat with a reason |
-| `versus/connect` | X vs Y: each brand's own app icon in its original colours, linked to a VS circle, black headline; only when both brands have an app icon (a favourite: may repeat up to 5 times across the site, each repeat with a reason) |
-| `versus/slash` | X vs Y on black: bold names, each white + its brand colour, italic VS (a favourite: may repeat up to 5 times across the site, each repeat with a reason) |
-| `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: may repeat up to 5 times across the site, each repeat with a reason) |
-| `dark` | Single-product articles (review, pricing, features): the product's icon in black on a white tile top-left, its colour as the panel, white logo; up to 3 across the site, each repeat with a reason |
-| `logotype` | Single-product articles with a black logo: icon on a black tile beside the wordmark, on cream with a faint grid; up to 2 across the site, each repeat with a reason |
+| `versus/pills` | X vs Y: two facing pills (flat outer cuts, subtle gradient with fine noise) with the logos on white circles, the question below in black; only when both logos work on white; once per category, at most 2 across the site |
+| `versus/connect` | X vs Y: each brand's own app icon in its original colours, linked to a VS circle, black headline; only when both brands have an app icon (a favourite: once per category, at most 5 across the site) |
+| `versus/slash` | X vs Y on black: bold names, each white + its brand colour, italic VS (a favourite: once per category, at most 5 across the site) |
+| `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: once per category, at most 5 across the site) |
+| `dark` | Single-product articles (review, pricing, features): the product's icon in black on a white tile top-left, its colour as the panel, white logo; once per category, at most 3 across the site |
+| `logotype` | Single-product articles with a black logo: icon on a black tile beside the wordmark, on cream with a faint grid; once per category, at most 2 across the site |
 
 **Gumloop layouts** (after the user's Gumloop references; each has its own approved fields, set with `"field"`; black and blue fields count as vibrant; logos are each brand's full wordmark):
 
 | Layout | Best for | Fields |
 |---|---|---|
-| `versus/type` | X vs Y as big bold names with a small centred "vs" on a faint "+" grid | light, blue |
-| `versus/tiles` | X vs Y with two tilted tiles, both filled with brand colour or both white, above the headline | blue, black, light |
+| `versus/type` | X vs Y as big bold names with a small centred "vs" on a faint "+" grid | light |
+| `versus/tiles` | X vs Y with two tilted tiles, both filled with brand colour or both white, above the headline | blue, light |
 | `versus/glass` | X vs Y with both full wordmarks on a frosted glass bar over a mesh gradient | light, black |
-| `swap` | Switch, migration, "old way → new way": old → dashed loop arrow → new | light, black |
+| `swap` | Switch, migration, "old way → new way": old → dashed loop arrow → new | light |
 | `badge` | Cost and stat articles: the key figure in a tinted rounded box | light |
 
 **Originals** (built from the user's reviews):
@@ -168,7 +169,8 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `references/lessons.md` | What each batch and review taught, speed tools, gotchas, pre-flight checks |
 | `references/checks.md` | Every renderer check and the feedback behind it, plus the regression test |
 | `references/inspiration.md` | Every reference the user shared and what was taken from it |
-| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `logo-check.mjs` (which logo-dependent layouts each brand can use), `test-examples.mjs` (regression test; `--refresh` rebuilds the approved images), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
+| `references/used-layouts.json` | The user's own record of which layouts are used and in which categories, kept on a Template Usage page; for every layout it lists it overrides the history as of its `recordedAt` |
+| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `usage.mjs` (the shared usage rule: the user's record plus newer history), `logo-check.mjs` (which logo-dependent layouts each brand can use), `test-examples.mjs` (regression test; `--refresh` rebuilds the approved images), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
 | `examples/` | Approved specs for every layout |
 | `assets/` | Logo files a few examples use |
 
@@ -178,7 +180,7 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 |---|---|
 | Chrome not found | Set `CHROME` to your Chrome or Edge executable |
 | `TEXT CHECK FAILED` | Cut secondary lines first, then shorten phrases to labels |
-| `VARIETY CHECK FAILED` | Use one of the listed layouts. Run `plan.mjs` to see usage; if every layout is used, add a variant |
+| `VARIETY CHECK FAILED` | The layout is already used in this category: use one of the listed layouts (not used yet first). Run `plan.mjs` to see what's free; if nothing fits, add a variant |
 | `BACKGROUND FIT FAILED` / `VIBRANT FIT FAILED` | Remove `bg` from the spec; the renderer picks the best background |
 | Logos are broken or low-res | Add a Brandfetch client ID and check your connection (logos load at render time) |
 | An article URL fails to load | The reader retries once; run it again or paste the article text |

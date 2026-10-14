@@ -22,10 +22,10 @@ Both QA agents start **in the same message** and run side by side.
 0. **Know the user's taste first:** read `references/taste.md`, `references/lessons.md`, `references/checks.md` and `references/inspiration.md`. Every rule there came from the user's own feedback; don't make them repeat it.
 1. **Read all URLs at once:** `node <skill-dir>/scripts/read-articles.mjs <url1> <url2> ... --out <featured-images>/articles`. This writes one `articles/<slug>.md` per URL. Nobody fetches a page again. Note each article's type, core idea, 3–6 hard facts, **category**, **topic** (duplicate URLs share one topic) and the products it names.
 2. **Check logos for logo-dependent layouts:** `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article. Pills, connect and glass go only to a pair where **both** brands pass; tiles when both pass connect (filled tiles) or both pass pills (white tiles); logotype only to a product that passes (otherwise `dark`).
-3. **Plan and reserve in one command:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows usage, least-used first. Pick the best fit from the lowest tier for each article.
-   - Each layout is used once across the site until every layout has been used: give each article an unused one. Repeat one only when no unused layout fits the article; then reserve it with the reason (`<slug>=<layout>#<why>`), within the favourites' limits, and show the reason in the plan.
+3. **Plan and reserve in one command:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` prints three lists: "Not used yet (first in line)", "Used only in other categories" and "Not again in <category>". Usage comes from the user's record, `references/used-layouts.json`, and the site history: the user's record is the truth for every layout it lists, as of its `recordedAt` (a history image for a layout marked "Not used yet" never went live and doesn't count); images delivered or reserved after `recordedAt` are added on top, and a layout it doesn't list falls back to the history (sync the record first if the user updated the Template Usage page: SKILL.md, Workflow step 2).
+   - The user's rule: "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." Give each article the best fit from the not-used-yet list first, then from the layouts used only in other categories. A layout already used in this category is refused; there is no repeat with a reason. Favourites also keep their site-wide caps (slash, connect, duo 5; dark 3; pills and logotype 2).
    - Same-topic articles use different modes.
-   - At most 1 in 3 are vibrant (blue field and black layouts together), never neighbours. The blue only goes on `checklist`, `versus/table`, `window` and `before-after/flow`.
+   - At most 1 in 3 are vibrant (blue field and black layouts together), never neighbours. The card blue (`"bg": "blue"`) only goes on `checklist` (always blue), `versus/table`, `window` and `before-after/flow`; the Gumloop `versus/tiles` paints its own approved blue field (its default).
    - Single product → `logotype` or `dark`; X vs Y → a versus layout.
 
    Then reserve them all: `plan.mjs ... --reserve <slug>=<mode>[/<variant>][@<topic>] ...`. Show the plan when doing more than 3 images.
@@ -36,7 +36,7 @@ Both QA agents start **in the same message** and run side by side.
    - For dark and duo, note each brand's colour.
 5. **Brief all Makers in one message, in the background** (template below). Give each one its article files, layout, `bg` decision (blue or leave out), category, topic, slug, brand, and brand colour or logo notes.
 6. **The moment the last Maker returns:**
-   - Build the sheet: `node <skill-dir>/scripts/sheet.mjs --brand <b> --out <featured-images>/qa-sheet.png --highlight <slugs>` (the whole site, so a repeat anywhere shows). When splitting Visual QA, add `--category <c>` per agent, plus one site-wide sheet.
+   - Build the sheet: `node <skill-dir>/scripts/sheet.mjs --brand <b> --out <featured-images>/qa-sheet.png --highlight <slugs>` (the whole site: the user sees every image together, so a look-alike anywhere shows, even though the refusal is per category). When splitting Visual QA, add `--category <c>` per agent, plus one site-wide sheet.
    - In **one message**, start Visual QA (per sheet) and Fact QA (templates below).
 7. **Route fixes:** merge each image's FAILs from both QA agents into one message to **its own Maker** (SendMessage). When it re-renders, send the image back **only to the QA agent(s) that failed it**. At most 3 rounds; never ship a FAIL silently.
    - If a QA agent asks for something in the "Decided, never re-opened" list (V9), or against an approved rule, overrule it and say so in the fix message.
@@ -73,7 +73,7 @@ For each article below:
 3. Render: node "<skill-dir>/scripts/render.mjs" <spec> --out "<featured-images>/<slug>".
    A text/heading/content check failing: fix the spec within the layout and render again.
    SLASH NAME: mark the coloured part with {{ }} or use the fuller product name.
-   The layout itself refused (VARIETY, PILLS/CONNECT/TILES/GLASS/LOGOTYPE LOGO, FIELD FIT, FAIRNESS, VIBRANT) or FINAL IMAGE LOCKED: stop and report it.
+   The layout itself refused (VARIETY, PILLS/CONNECT/TILES/GLASS/LOGOTYPE LOGO, FIELD FIT, CHECKLIST FIELD, FAIRNESS, VIBRANT) or FINAL IMAGE LOCKED: stop and report it.
 4. Open master.png and card-350x250.png once and run the Self-Critique in <skill-dir>/references/taste.md (a table, next to two approved images of the same family); fix every "no" before returning: wraps, clipping, a wrong or stale logo, balance, mismatched treatments, a loud pattern.
 Articles: <article file, layout, bg, category, topic, slug, brand, colour/logo notes>
 Return per article, as a list: slug, layout, bg, spec path, master.png path, card path, your Self-Critique table, and every fact on the image
@@ -97,7 +97,7 @@ master.png and card-350x250.png for each image, and the site history <~/.blog-fe
 Check every image against the VISUAL CHECKLIST in <skill-dir>/references/agents.md, looking at the actual PNGs.
 Never ask for anything in checklist item V9.
 Return per image: PASS, or FAIL with the item broken and the exact fix
-(e.g. "cut bullet 3", "hub on g5 is too much blue: remove bg", "layout window/default repeats emr-cost-vendor-prices: use stat/default").
+(e.g. "cut bullet 3", "hub on g5 is too much blue: remove bg", "layout window/default is already used in this category by emr-cost-vendor-prices: use stat/default").
 Keep this context: you may get re-rendered images to re-check.
 ```
 
@@ -113,7 +113,7 @@ Keep this context: you may get re-rendered images to re-check.
 - a pattern you notice before the content, or one covering the whole canvas
 - a background with only a headline (no real illustration)
 
-**V2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
+**V2. Background fits.** The field flatters the illustration (the layout's fit list). On the card blue (`"bg": "blue"`): only checklist, versus/table, window or before-after/flow, with no drop shadows; the Gumloop `versus/tiles` paints its own approved blue field (its default), which is approved. The checklist is blue only (its light field was deleted in review). On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
 **V2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`).
 - **Type and colour:** every text element is Inter 500 Medium (slash: Poppins caps). The pills and connect headlines are all black.
@@ -126,7 +126,7 @@ Keep this context: you may get re-rendered images to re-check.
 
 **V2c. Logotype.** The icon sits in white on a black rounded tile beside the black wordmark (or keeps its own tile), sharp, large and centred on cream; no other text.
 
-**V3. Layout never used twice.** No other image on the site has this layout, unless every layout has been used, or it is a favourite repeated within its limit with a written reason that holds up (no unused layout fits this article). Next to every other 350×250 card, no two read as the same skeleton. Same-topic articles use different modes. At most 1 in 3 vibrant per category, never neighbours.
+**V3. Layout once per category.** No other image in this category has this layout, and a favourite stays within its site-wide cap. A layout not used yet anywhere is preferred over one used in another category. Next to every other 350×250 card on the site, no two read as the same skeleton. Same-topic articles use different modes. At most 1 in 3 vibrant per category, never neighbours.
 
 **V4. Easy to scan.** The topic is clear in 2 seconds at 350×250, with one focal point (card layouts: one bold blue anchor; headline layouts carry it with the headline, logos and colour shapes instead).
 
@@ -151,7 +151,8 @@ Keep this context: you may get re-rendered images to re-check.
 - a mark on a white tile in connect
 - rounded outer pill ends or watercolour blotches on the pills
 - any text weight other than Inter 500 Medium in pills, connect, duo or dark
-- versus/type on the black field, badge on the blue field, or versus/glass on the blue field (Gumloop layouts)
+- versus/type on the black or blue field, versus/tiles on black, swap on black, badge on the blue field, or versus/glass on the blue field (Gumloop layouts; type on blue, tiles on black and swap on black were deleted in the approved review)
+- the checklist on a light field (deleted in the approved review: it goes on the blue only)
 - `brandline`, or any background carrying only a headline
 - one filled tile next to one white tile in versus/tiles
 - a "+" grid or dot grid that covers the whole canvas on a dark field, or one faded until it disappears
@@ -159,7 +160,7 @@ Keep this context: you may get re-rendered images to re-check.
 - busy patterns on the Gumloop layouts: dot grids and the tiles ring stay sparse and faint
 - `versus/rows` in any field (the user disapproved it); `versus/chat`, `versus/scale` (clip-art metaphor) and `folder`; `versus/split` or `versus/duet` unless the user asks for them
 - `folder`, `versus/scale` or any clip-art metaphor (a scale, a gavel, a trophy); a watermark shape behind the `lineup` row; `versus/frost` on the blue mesh; `versus/bento` on black (any finish) or with a pattern behind the light grid
-- a second image in a layout the user has already seen, even a favourite with a written reason ("this template is already being used")
+- a second image in a layout already used in the same category ("this template is already being used"); a written reason no longer allows it
 - a slash name in one colour (white is always part of it), or slash names made bigger than their auto-fit size
 
 FAIL any image that brings one back.

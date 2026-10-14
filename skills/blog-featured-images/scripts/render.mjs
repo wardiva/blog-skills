@@ -1,10 +1,11 @@
 // blog-featured-images renderer: one article spec -> a featured image in the approved design language.
 // Usage: node render.mjs <spec.json> [--brand <brand.json>] [--out <dir>]
-//   spec  : article content + "mode" (before/after default, versus, prompt, hub). See references/spec-format.md
+//   spec  : article content + "mode" (19 modes / 30 layouts, listed in layouts.mjs). See references/spec-format.md
 //   brand : colour overrides (default: brands/default.json). See brands/_template.json
 //   out   : output folder (default: ./featured-images/<slug>)
 // Writes master.png (1600x900), 7x5.webp (theme crop), 16x9-1200.webp (social), card-350x250.png (check size), page.html
-import { LAYOUTS, REPEATABLE } from './layouts.mjs';
+import { LAYOUTS } from './layouts.mjs';
+import { usage as usageOf, blocked, freeFor } from './usage.mjs';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -619,9 +620,10 @@ function logotype() {
 // "field": "light" (white in the grey frame), "black" or "blue" (deep dunes); black and blue count as vibrant.
 // Logos are the brand's full wordmark (icon + typography) where it has one; a brand without one is typeset in Inter.
 // Fields the user approved per layout (review, Oct 2026), default first. Anything else is refused ("FIELD FIT FAILED").
+// Deleted in the approved review (Oct 2026): type on blue, tiles on black, swap on black.
 // Rejected: badge on blue, glass on blue, versus/type on black (asked for once in batch 4, then "different layout"), versus/frost on the blue mesh,
 // versus/bento on black (light won). brandline, chat and rows are retired (not in layouts.mjs).
-const GL_FIELD_FIT = { 'versus/bento': ['light'], 'versus/chat': ['black'], 'versus/frost': ['light'], 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
+const GL_FIELD_FIT = { 'versus/bento': ['light'], 'versus/chat': ['black'], 'versus/frost': ['light'], 'versus/rows': ['light', 'black'], 'versus/type': ['light'], 'versus/tiles': ['blue', 'light'], 'versus/glass': ['light', 'black'], swap: ['light'], badge: ['light'], brandline: ['light'] };
 const GL_FIT = GL_FIELD_FIT[spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode];
 const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
 if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--force')) {
@@ -886,7 +888,8 @@ ${pan(LX)}${pan(RX)}<circle cx="${LX}" cy="${BY}" r="11" fill="${ink}"/><circle 
 
 // versus/frost (Oct 2026): the user's liked pieces together: two big frosted-glass logo tiles ("I like how you have used logos with
 // these glass bgs, we can utilize them with any other bg") on the approved mesh gradient that was waiting for an illustration, a glass
-// "vs" disc between them and each brand's name under its tile. No headline (like versus/glass). Fields: light or blue mesh.
+// "vs" disc between them and each brand's name under its tile. No headline (like versus/glass). Light mesh only.
+// Marks fill 48% of the tile (was 60%: "the icons are too big and this is why visual balance off", approved review).
 function glFrost() {
   const L = spec.left, R = spec.right, blue = GL_FIELD === 'blue', T = 340;
   const mesh = blue
@@ -894,15 +897,15 @@ function glFrost() {
     : `<rect width='1600' height='900' fill='#EEF5FF'/><g filter='url(#b)'><circle cx='160' cy='200' r='420' fill='#9CC6FF'/><circle cx='1480' cy='760' r='420' fill='#BFE6FF'/><circle cx='1300' cy='140' r='300' fill='#E4E8FF'/><circle cx='420' cy='820' r='300' fill='#DCEBFF'/></g>`;
   const glass = `background:rgba(255,255,255,${blue ? 0.7 : 0.55});backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.95),0 24px 60px rgba(${blue ? '8,30,110,.30' : '30,80,170,.16'})`;
   const ink = blue ? '#FFFFFF' : '#0A0A0B', top = 450 - T / 2 - 40;
-  const side = (s, cx) => `<div class="ct" style="left:${cx - T / 2}px;top:${top}px;width:${T}px;height:${T}px;border-radius:72px;${glass}">${logo(s.logo, Math.round(T * 0.6), s.label)}</div>
+  const side = (s, cx) => `<div class="ct" style="left:${cx - T / 2}px;top:${top}px;width:${T}px;height:${T}px;border-radius:72px;${glass}">${logo(s.logo, Math.round(T * 0.48), s.label)}</div>
 <div style="position:absolute;left:${cx - 300}px;width:600px;top:${top + T + 34}px;text-align:center;font-size:50px;font-weight:600;letter-spacing:-.03em;color:${ink};white-space:nowrap">${esc(s.label)}</div>`;
   return `${CB_CSS}<style>.fr .lg{box-shadow:none;background:transparent;padding:0}.fr .lg:not(.full){border-radius:0;overflow:visible}</style>${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:${blue ? 0.7 : 0.35}`)}
 <div class="fr">${side(L, 530)}${side(R, 1070)}
 <div style="position:absolute;left:735px;top:${top + T / 2 - 65}px;width:130px;height:130px;border-radius:50%;display:grid;place-items:center;${glass}"><b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.separator || 'vs')}</b></div></div>${WHITE_MARK_JS}`;
 }
 
-// versus/bento (Oct 2026): a dark bento grid like a product page: per brand a big name cell, an icon cell and a fact cell (the
-// article's own fact); a blue "vs" disc on the seam is the one blue anchor. Black field. For pairs whose logos can't match.
+// versus/bento (Oct 2026): a bento grid like a product page: per brand a big name cell, an icon cell and a fact cell (the
+// article's own fact); a blue "vs" disc on the seam is the one blue anchor. Light field only (black lost). For pairs whose logos can't match.
 function glBento() {
   // "finish": "flat" (solid dark cells, the first version), "glass" (frosted cells on the black mesh glow), "lift" (dark cells with a
   // soft top highlight, bigger names, icons in thin rings) or "light" (light cells in the grey frame; needs "field": "light")
@@ -964,7 +967,7 @@ if (heading !== undefined && !args.includes('--force')) {
   }
 }
 // ---- variety (forceful): every render is recorded in ONE site-wide history (per brand), wherever its output folder is.
-// A layout (mode + variant) never repeats in a category until every layout has been used there; same-topic articles never share a mode.
+// A layout (mode + variant) is used once per category (layouts not used anywhere go first; see usage.mjs); same-topic articles never share a mode.
 const MODE = spec.mode || 'before-after';
 const ALL_MODES = Object.keys(LAYOUTS);
 if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: ${ALL_MODES.join(', ')}`); process.exit(1); }
@@ -1204,6 +1207,14 @@ if (GL_LAYOUTS.includes(LAYOUT)) {
 if (args.includes('--check-only')) { console.log('CHECKS PASSED'); await settleExit(0); }
 Object.assign(BG_FIT, { dark: ['paper'], logotype: ['cream'] });
 const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m, l[0]]));
+// The checklist on a light field was deleted in the approved review (Oct 2026): a checklist goes on the vibrant blue only.
+if (MODE === 'checklist') {
+  if (spec.bg && spec.bg !== 'blue' && !args.includes('--force')) {
+    console.error(`CHECKLIST FIELD FAILED: the checklist on a light field was deleted in review; it goes on the vibrant "blue" only. Remove "bg".`);
+    process.exit(2);
+  }
+  spec.bg = 'blue';
+}
 const BGS = ['sky', 'paper', 'cream', 'g5'];
 const BG_OK = [...BGS, 'blue'];
 if (spec.bg && !BG_OK.includes(spec.bg)) {
@@ -1226,8 +1237,6 @@ const prior = history.filter((e) => e.category === category && e.slug !== slug &
 // layout variety is site-wide: the user sees every image, so a layout counts as used wherever it appeared (user: "don't repeat any
 // illustration, only if it makes actual sense")
 const priorSite = history.filter((e) => e.slug !== slug && !e.superseded);
-// a favourite may come back before the rotation completes only with a written reason (why no unused layout fits this article)
-const repeatReason = String(spec.repeatReason || history.find((e) => e.slug === slug && e.reserved)?.repeatReason || '').trim();
 const force = args.includes('--force');
 // ---- content check: each layout needs enough real content to fill its frame (a sparse window or hub looks unfinished) ----
 const n = (a) => (Array.isArray(a) ? a.length : 0);
@@ -1263,16 +1272,16 @@ if (sameTopic.some((e) => e.mode === MODE) && !force) {
 Same-topic articles must use different compositions. Used for this topic: ${sameTopic.map((e) => e.mode).join(', ')}`);
   process.exit(2);
 }
-const uses = Object.fromEntries(ALL_LAYOUTS.map((l) => [l, priorSite.filter((e) => layoutOf(e) === l).length]));
-const minUse = Math.min(...ALL_LAYOUTS.filter((l) => !REPEATABLE[l]).map((l) => uses[l]));
-const allowed = ALL_LAYOUTS.filter((l) => uses[l] === minUse && !sameTopic.some((e) => l.startsWith(e.mode + '/')));
-const earlyRepeat = REPEATABLE[LAYOUT] && uses[LAYOUT] < REPEATABLE[LAYOUT] && repeatReason.length >= 20;
-if (uses[LAYOUT] > minUse && !earlyRepeat && !force && !args.includes("--user-pick")) {   // --user-pick: the user chose this layout for this article (skips only the rotation rule)
-  const users = priorSite.filter((e) => layoutOf(e) === LAYOUT).map((e) => `${e.slug} (${e.category})`);
-  const fav = REPEATABLE[LAYOUT] ? (uses[LAYOUT] >= REPEATABLE[LAYOUT] ? ` It has reached its limit of ${REPEATABLE[LAYOUT]}.` : ' It is a favourite, so it may repeat only with "repeatReason": why no unused layout fits this article (at least 20 characters).') : '';
-  console.error(`VARIETY CHECK FAILED: layout "${LAYOUT}" is already used on this site by: ${users.join(', ')}.${fav}
-Don't repeat an illustration unless it truly makes sense: until every layout has been used, pick an unused one (site-wide history: ${historyFile}).
-Unused layouts: ${allowed.join(', ')}  (set "mode", and "variant" when it is not "default")`);
+// Layout usage (the user's rule, Oct 2026): a layout not used yet is free for any article it suits; a used layout can't be used again
+// in the same category, only in a different one. Usage = site history + the user's record (references/used-layouts.json), see usage.mjs.
+const USE = usageOf(priorSite);
+const usedHere = force || args.includes('--user-pick') ? null : blocked(USE, LAYOUT, category);   // --user-pick: the user chose this layout for this article
+if (usedHere) {
+  const free = freeFor(USE, category);
+  console.error(`VARIETY CHECK FAILED: ${usedHere}
+Not used yet (first in line): ${free.fresh.join(', ') || 'none'}
+Used only in other categories (free here): ${free.elsewhere.join(', ') || 'none'}
+(set "mode", and "variant" when it is not "default")`);
   process.exit(2);
 }
 // vibrant images (deep-dunes blue, black headline layouts): at most 1 in 3 per category, never two neighbours
@@ -1280,7 +1289,7 @@ if ((spec.bg === 'blue' || VIVID) && !force) {
   const lastTwo = prior.filter((e) => !e.reserved).slice(-2);
   if (lastTwo.some((e) => e.vibrant || e.bg === 'blue')) {
     console.error(`VIBRANT CHECK FAILED: a recent "${category}" image already uses a vibrant field (the deep-dunes blue or a black layout) (${lastTwo.filter((e) => e.vibrant || e.bg === 'blue').map((e) => e.slug).join(', ')}).
-Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. Use a light background (sky, paper, cream, g5) for this one.`);
+Mix vibrant with subtle: at most 1 in 3 images, never on neighbours. ${MODE === 'checklist' ? 'A checklist is blue only, so pick another layout for this article.' : 'Use a light background (sky, paper, cream, g5) for this one.'}`);
     process.exit(2);
   }
 }
@@ -1462,7 +1471,7 @@ await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x25
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, ...(repeatReason ? { repeatReason } : {}), bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, out: path.resolve(outDir), at: new Date().toISOString() };
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: BG, series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, out: path.resolve(outDir), at: new Date().toISOString() };
 // Parallel renders share these files: take a lock, re-read, then write, so no entry is lost.
 fs.mkdirSync(historyDir, { recursive: true });
 const lock = historyFile + '.lock';
