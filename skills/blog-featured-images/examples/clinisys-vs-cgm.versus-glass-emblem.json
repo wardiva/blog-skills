@@ -1,0 +1,16 @@
+{
+  "articleTitle": "Clinisys vs CompuGroup Medical: Which LIS Fits Hospital Labs",
+  "brand": "medsoftwarehub",
+  "category": "hospital-and-lab-software",
+  "slug": "clinisys-vs-compugroup-medical-which-lis-fits-hospital-labs",
+  "mode": "versus",
+  "variant": "glass",
+  "left": {
+    "label": "Clinisys",
+    "logo": "clinisys.com"
+  },
+  "right": {
+    "label": "CompuGroup Medical",
+    "logo": "../assets/cgm-icon.png"
+  }
+}

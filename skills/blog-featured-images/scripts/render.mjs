@@ -104,6 +104,10 @@ function versus() {
   if (spec.variant === 'split') return glSplit();
   if (spec.variant === 'duet') return glDuet();
   if (spec.variant === 'rows') return glRows();
+  if (spec.variant === 'scale') return glScale();
+  if (spec.variant === 'frost') return glFrost();
+  if (spec.variant === 'bento') return glBento();
+  if (spec.variant === 'chat') return glChat();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'table') {
@@ -610,8 +614,8 @@ function logotype() {
 // "field": "light" (white in the grey frame), "black" or "blue" (deep dunes); black and blue count as vibrant.
 // Logos are the brand's full wordmark (icon + typography) where it has one; a brand without one is typeset in Inter.
 // Fields the user approved per layout (review, Oct 2026), default first. Anything else is refused ("FIELD FIT FAILED").
-// Rejected: versus/type on black, badge on blue, brandline in any colour but the site blue.
-const GL_FIELD_FIT = { 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
+// Rejected: badge on blue, brandline in any colour but the site blue. versus/type on black was rejected in the first review, then requested by the user in batch 4.
+const GL_FIELD_FIT = { 'versus/bento': ['light', 'black'], 'versus/chat': ['black'], 'versus/frost': ['light', 'blue'], 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue', 'black'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
 const GL_FIT = GL_FIELD_FIT[spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode];
 const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
 if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--force')) {
@@ -658,7 +662,9 @@ function glType() {
   const name = (t, st) => `<span style="font-size:${fs}px;font-weight:700;letter-spacing:-.045em;line-height:1.08;white-space:nowrap;${st}">${esc(t)}</span>`;
   const vs = `<span style="font-size:${Math.round(fs * 0.48)}px;font-weight:400;letter-spacing:-.01em;color:${P.ink};opacity:.85">${esc(sep)}</span>`;
   const flow = stacked ? `flex-direction:column;align-items:center;gap:${Math.round(fs * 0.1)}px` : `align-items:center;gap:${Math.round(fs * 0.5)}px`;
-  return glCanvas(`<div style="position:absolute;left:210px;right:210px;top:0;bottom:0;display:flex;justify-content:center;${stacked ? 'flex-direction:column;align-items:center' : 'align-items:center'}"><div style="display:flex;${flow}">${name(L.label, `color:${P.ink}`)}${vs}${name(R.label, acc)}</div></div>`, 'plus');
+  // optional soft blue glow behind the names on black ("glow": true)
+  const glowBg = spec.glow && GL_FIELD === 'black' ? '<div style="position:absolute;left:50%;top:' + (stacked ? 60 : 50) + '%;width:1180px;height:560px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(47,123,255,.34),transparent);filter:blur(24px)"></div>' : '';
+  return glCanvas(`${glowBg}<div style="position:absolute;left:210px;right:210px;top:0;bottom:0;display:flex;justify-content:center;${stacked ? 'flex-direction:column;align-items:center' : 'align-items:center'}"><div style="display:flex;${flow}">${name(L.label, `color:${P.ink}`)}${vs}${name(R.label, acc)}</div></div>`, 'plus');
 }
 
 function glTiles() {
@@ -678,7 +684,9 @@ function glGlass() {
   const L = spec.left, R = spec.right;
   // balance (test round 3): match the LETTERING height of the two wordmarks (the type, not the icon: AdvancedMD's hummingbird is
   // twice its type), inside the ~790px the bar leaves after its padding, gaps and "vs", so the group stays centred in the bar
-  const wm = (s) => WORDMARK[s.logo || ''] || { aspect: String(s.label).length * 0.6, text: 0.72 };
+  // a near-square emblem with the name inside (e.g. CGM's sphere) is sized as an emblem, not as lettering: its letters are only ~half
+  // its height, so it stands ~1.35x as tall as the wordmark (batch 4: tiny at lettering height, too heavy at 1.8x)
+  const wm = (s) => { const w = WORDMARK[s.logo || ''] || { aspect: String(s.label).length * 0.6, text: 0.72 }; return w.aspect < 1.6 ? { ...w, text: 0.7 } : w; };
   const t = Math.min(96, 790 / (wm(L).aspect / wm(L).text + wm(R).aspect / wm(R).text), 150 * wm(L).text, 150 * wm(R).text);
   const hL = t / wm(L).text, hR = t / wm(R).text, H = Math.max(hL, hR);
   const areaL = wm(L).aspect * hL * hL, areaR = wm(R).aspect * hR * hR;
@@ -712,7 +720,7 @@ function glBadge() {
   // the note never runs wider than the value box (it would compete with the figure): its type shrinks to fit
   const valueW = String(spec.value).length * 0.6 * vfs + 128, noteChars = String(N.muted || '').length + String(N.strong || '').length + 1;
   const nfs = Math.max(40, Math.min(72, Math.floor((valueW * 0.92) / (noteChars * 0.55))));
-  const note = N.muted || N.strong || N.logo ? `<div style="display:flex;align-items:center;gap:26px;font-size:${N.logo ? 72 : nfs}px;line-height:1"><span style="color:${P.mute};font-weight:400;letter-spacing:-.02em">${esc(N.muted || '')}</span>${N.logo ? glMark({ logo: N.logo, label: N.strong || '' }, 30000, 460, 100, dark ? '1' : '') : `<b style="font-weight:700;letter-spacing:-.045em;color:${P.ink}">${esc(N.strong || '')}</b>`}</div>` : '';
+  const note = N.muted || N.strong || N.logo ? `<div style="display:flex;align-items:center;gap:26px;font-size:${N.logo ? 72 : nfs}px;line-height:1"><span style="color:${P.mute};font-weight:400;letter-spacing:-.02em">${esc(N.muted || '')}</span>${N.logo ? glMark({ logo: N.logo, label: N.strong || '' }, 30000, 460, 100, dark ? '1' : '') : N.strong ? `<b style="font-weight:700;letter-spacing:-.045em;color:${P.ink}">${esc(N.strong)}</b>` : ''}</div>` : '';   // no empty <b>: it would take the gap and push a muted-only note off centre
   return glCanvas(`<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:68px">
 ${top}<div style="padding:22px 64px 30px;border-radius:44px;background:${box.bg};border:3px solid ${box.bd};font-size:${vfs}px;font-weight:600;letter-spacing:-.02em;line-height:1.1;color:${box.tx};white-space:nowrap">${esc(spec.value)}</div>${note}</div>`, 'dots');
 }
@@ -758,8 +766,8 @@ function receipt() {
   const rfs = Math.min(36, Math.floor(430 / (Math.max(1, ...rows.map((r) => String(r.name).length + String(r.value).length)) * 0.56)));
   const zig = Array.from({ length: 21 }, (_, i) => `${i * 24},${i % 2 ? 0 : 18}`).join(' ');
   return `${CB_CSS}${glBg('background:#F4F1EA')}${glDots('rgba(90,70,40,.09)', 30, 1.3)}
-<div class="cbh" style="left:210px;width:560px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.08;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
-<div style="position:absolute;left:800px;top:50%;width:590px;transform:translateY(-50%) rotate(3deg)">
+<div class="cbh" style="left:210px;width:${(spec.receiptX || 800) - 240}px;${spec.place === 'top' ? 'top:236px' : spec.place === 'bottom' ? 'bottom:296px' : 'top:50%;transform:translateY(-50%)'};font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.08;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
+<div style="position:absolute;left:${spec.receiptX || 800}px;top:50%;width:${1390 - (spec.receiptX || 800)}px;transform:translateY(-50%) rotate(3deg)">
 <div style="background:#fff;padding:56px 52px 40px;box-shadow:0 30px 60px rgba(90,70,40,.10)">
 ${spec.title ? `<div style="font-family:${MONO};font-size:26px;letter-spacing:.08em;text-transform:uppercase;color:#7F8794;text-align:center">${esc(spec.title)}</div><div style="border-top:2px dashed #D9D4CA;margin:26px 0"></div>` : ''}
 ${rows.map((r) => `<div style="display:flex;align-items:baseline;gap:14px;font-size:${rfs}px;color:#3D4A5C;margin:0 0 24px"><span style="white-space:nowrap">${esc(r.name)}</span><i style="flex:1;min-width:48px;border-bottom:2px dotted #D9D4CA;transform:translateY(-6px)"></i><b style="font-weight:600;color:#141A26;white-space:nowrap">${esc(r.value)}</b></div>`).join('')}
@@ -799,14 +807,141 @@ ${s.fact ? `<span style="padding:10px 24px;border-radius:999px;font-size:30px;fo
 <div style="position:absolute;left:752px;top:${top + H + gap / 2 - 48}px;width:96px;height:96px;border-radius:50%;background:${dark ? '#fff' : '#0A0A0B'};display:grid;place-items:center;box-shadow:0 0 0 8px ${dark ? '#0A0A0B' : '#fff'}"><b style="font-size:38px;font-weight:600;letter-spacing:-.02em;color:${dark ? '#0A0A0B' : '#fff'}">${esc(spec.separator || 'vs')}</b></div>`, 'none');
 }
 
-const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, brandline: glBrandline, receipt, definition };
+// folder ("best X" lists, Oct 2026): an app folder of the products' logos on white tiles (logos only), frosted, on the approved glow
+// field (kept from the retired brandline for a real illustration); the headline on the left in black. 4-9 products.
+function folder() {
+  const items = (spec.cards || []).filter((c) => c.logo).slice(0, 9), n = items.length;
+  const cols = n <= 4 ? 2 : 3, rows = Math.ceil(n / cols), T = 136, G = 34, PAD = 54;
+  const FW = cols * T + (cols - 1) * G + 2 * PAD, FH = rows * T + (rows - 1) * G + 2 * PAD;
+  const fs = glFs(spec.headline, 96, 560, 0.55), lab = spec.label ? 34 + 30 : 0;
+  const fx = 1390 - FW, fy = Math.round(450 - (FH + lab) / 2);
+  const tiles = items.map((c) => `<div class="fdt">${logo(c.logo, 92, c.name)}</div>`).join('');
+  return `${CB_CSS}<style>.fdt{width:${T}px;height:${T}px;border-radius:34px;background:#fff;display:grid;place-items:center;box-shadow:0 12px 26px rgba(20,50,120,.10),0 0 0 1px rgba(20,26,38,.04)}
+.fdt .lg{box-shadow:none;background:transparent;padding:0}.fdt .lg:not(.full){border-radius:0;overflow:visible}.fdt:has(.lg.full){background:transparent}.fdt .lg.full{width:${T}px!important;height:${T}px!important;border-radius:34px}</style>
+${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}
+<div class="cbf" style="background-image:radial-gradient(circle,rgba(10,58,140,.10) 1.2px,transparent 1.8px);background-size:22px 22px;${GL_EDGE_MASK}"></div>
+<div class="cbh" style="left:210px;width:560px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.06;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
+<div style="position:absolute;left:${fx}px;top:${fy}px;width:${FW}px;height:${FH}px;box-sizing:border-box;padding:${PAD}px;border-radius:${Math.round(T * 0.7)}px;background:rgba(255,255,255,.46);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 30px 70px rgba(30,80,170,.16);display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:${G}px">${tiles}</div>
+${spec.label ? `<div style="position:absolute;left:${fx}px;width:${FW}px;top:${fy + FH + 30}px;text-align:center;font-size:34px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.label)}</div>` : ''}${WHITE_MARK_JS}`;
+}
+// shortlist ("best X" lists, Oct 2026): a tilted white notepad on the LEFT (mirrored so it never echoes receipt), the headline on the right; punched top band, a faint
+// margin rule) listing the products on ruled lines with mono numbers; an optional Phosphor "icon" on a blue sticker tile at the pad's
+// top-right corner is the one blue anchor. The "+" grid only frames the edges (taste 4).
+function shortlist() {
+  const items = (spec.items || []).slice(0, 8), fs = glFs(spec.headline, 88, 510, 0.55);
+  const longest = Math.max(...items.map((i) => String(i.name || i).length)), rfs = Math.min(40, Math.floor(330 / (longest * 0.56)));
+  const holes = Array.from({ length: 9 }, () => '<i style="width:18px;height:18px;border-radius:50%;background:#F2F2F3;box-shadow:inset 0 2px 3px rgba(20,26,38,.18)"></i>').join('');
+  const row = (it, k) => `<div style="height:66px;display:flex;align-items:center;gap:26px;border-bottom:2px solid #E8ECF2"><b style="font-family:${MONO};font-size:24px;font-weight:500;color:#9AA3B2;width:44px;flex:none">${String(k + 1).padStart(2, '0')}</b><span style="font-size:${rfs}px;font-weight:500;letter-spacing:-.02em;color:#141A26;white-space:nowrap">${esc(it.name || it)}</span>${it.logo ? `<span style="margin-left:auto">${logo(it.logo, 44, it.name)}</span>` : ''}</div>`;
+  return glCanvas(`${glPlus('rgba(20,26,38,.20)', 180, 70, 45, GL_EDGE_MASK)}<div class="cbh" style="left:880px;width:510px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.06;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
+<div style="position:absolute;left:230px;top:50%;width:520px;transform:translateY(-50%) rotate(3deg);background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 30px 64px rgba(20,40,90,.13),0 0 0 1px rgba(20,26,38,.05)">
+<div style="height:44px;background:#EEF1F6;display:flex;align-items:center;justify-content:space-around;padding:0 30px">${holes}</div>
+<div style="position:relative;padding:22px 40px 34px 40px"><i style="position:absolute;left:92px;top:0;bottom:0;width:2px;background:rgba(10,95,216,.18)"></i>
+${spec.title ? `<div style="height:86px;display:flex;align-items:center;gap:22px;border-bottom:2px solid #E8ECF2">${spec.title ? `<span style="font-family:${MONO};font-size:24px;letter-spacing:.08em;text-transform:uppercase;color:#7F8794">${esc(spec.title)}</span>` : ''}</div>` : ''}
+${items.map(row).join('')}</div>${spec.icon ? `<div style="position:absolute;right:34px;bottom:40px;width:104px;height:104px;border-radius:30px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;transform:rotate(8deg);box-shadow:0 14px 28px rgba(10,95,216,.26)"><i class="${esc(spec.icon)}" style="font-size:58px;color:#fff"></i></div>` : ''}</div>`, 'none');
+}
+
+// lineup ("best X" lists, user reference Oct 2026): one centred row of square logo tiles, evenly spaced (gap ~38% of a tile, logo ~70%
+// of its tile, measured from the reference), a big faint watermark icon behind the row, on the approved glow field. No headline (the
+// reference has none). "glass": "bar" (white tiles on one frosted bar, default) or "tiles" (each tile frosted glass). 3-6 products.
+function lineup() {
+  const items = (spec.cards || []).filter((c) => c.logo).slice(0, 6), n = items.length, bar = spec.glass !== 'tiles';
+  const budget = bar ? 1096 : 1176, T = Math.min(180, Math.floor(budget / (n + (n - 1) * 0.38))), G = Math.round(T * 0.38), PAD = Math.round(T * 0.26);
+  const tile = (c) => `<div style="width:${T}px;height:${T}px;border-radius:${Math.round(T * 0.09)}px;display:grid;place-items:center;flex:none;${bar ? 'background:#fff;box-shadow:0 10px 24px rgba(20,50,120,.10)' : 'background:rgba(255,255,255,.55);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.95),0 18px 40px rgba(30,80,170,.14)'}">${logo(c.logo, Math.round(T * 0.7), c.name)}</div>`;
+  const row = items.map(tile).join('');
+  const mark = spec.watermark ? `<i class="${esc(spec.watermark)}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-8deg);font-size:640px;line-height:1;color:rgba(10,58,140,.07)"></i>` : '';
+  return `${CB_CSS}<style>.lu .lg{box-shadow:none;background:transparent;padding:0}.lu .lg:not(.full){border-radius:0;overflow:visible}</style>
+${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}
+<div class="cbf" style="background-image:radial-gradient(circle,rgba(10,58,140,.10) 1.2px,transparent 1.8px);background-size:22px 22px;${GL_EDGE_MASK}"></div>${mark}
+<div class="lu" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:${G}px;${bar ? `padding:${PAD}px;border-radius:${Math.round(T * 0.3)}px;background:rgba(255,255,255,.42);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 30px 70px rgba(30,80,170,.16)` : ''}">${row}</div>${WHITE_MARK_JS}`;
+}
+// versus/scale (Oct 2026): a level balance scale holding each brand's logo tile on its pan: a fair "which fits" comparison. The black
+// headline sits on top; the pivot is the one blue anchor. Light (white in the grey frame, "+" grid at the edges) or the glow field.
+function glScale() {
+  const L = spec.left, R = spec.right, glow = spec.field === 'glow', ink = '#141A26';
+  const head = spec.headline || `${L.label} vs ${R.label}`, fs = glFs(head, 84, 1180, 0.55);
+  const BY = 390, LX = 510, RX = 1090, PY = 700, T = 196;
+  const pan = (x) => `<path d="M${x - 150} ${PY} Q ${x} ${PY + 50} ${x + 150} ${PY}" fill="none" stroke="${ink}" stroke-width="8" stroke-linecap="round"/><path d="M${x} ${BY} L ${x - 140} ${PY - 2} M${x} ${BY} L ${x + 140} ${PY - 2}" stroke="${ink}" stroke-width="3" opacity=".55"/>`;
+  const svg = `<svg width="1600" height="900" style="position:absolute;inset:0;overflow:visible">
+<rect x="${LX - 40}" y="${BY - 7}" width="${RX - LX + 80}" height="14" rx="7" fill="${ink}"/>
+<rect x="793" y="${BY}" width="14" height="${780 - BY}" rx="7" fill="${ink}"/><rect x="680" y="772" width="240" height="20" rx="10" fill="${ink}"/>
+${pan(LX)}${pan(RX)}<circle cx="${LX}" cy="${BY}" r="11" fill="${ink}"/><circle cx="${RX}" cy="${BY}" r="11" fill="${ink}"/>
+<defs><linearGradient id="pv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B86F0"/><stop offset="1" stop-color="#0A5FD8"/></linearGradient></defs>
+<circle cx="800" cy="${BY}" r="30" fill="url(#pv)"/><circle cx="800" cy="${BY}" r="10" fill="#fff"/></svg>`;
+  const tile = (s, x) => `<div class="ct" style="left:${x - T / 2}px;top:${PY - T - 8}px;width:${T}px;height:${T}px;border-radius:44px;background:#fff;box-shadow:0 16px 34px rgba(20,40,90,.12),0 0 0 1px rgba(20,26,38,.05)">${logo(s.logo, Math.round(T * 0.7), s.label)}</div>`;
+  const headline = `<div class="cbh" style="left:0;right:0;top:${Math.round(210 - fs * 1.1)}px;text-align:center;font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.08;color:#0A0A0B">${esc(head).replace(/\n/g, '<br>')}</div>`;
+  const inner = `<style>.sc .lg{box-shadow:none;background:transparent;padding:0}</style><div class="sc">${headline}${svg}${tile(L, LX)}${tile(R, RX)}</div>`;
+  if (glow) return `${CB_CSS}${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}<div class="cbf" style="background-image:radial-gradient(circle,rgba(10,58,140,.10) 1.2px,transparent 1.8px);background-size:22px 22px;${GL_EDGE_MASK}"></div>${inner}${WHITE_MARK_JS}`;
+  return glCanvas(`${glPlus('rgba(20,26,38,.20)', 180, 70, 45, GL_EDGE_MASK)}${inner}`, 'none');
+}
+
+// versus/frost (Oct 2026): the user's liked pieces together: two big frosted-glass logo tiles ("I like how you have used logos with
+// these glass bgs, we can utilize them with any other bg") on the approved mesh gradient that was waiting for an illustration, a glass
+// "vs" disc between them and each brand's name under its tile. No headline (like versus/glass). Fields: light or blue mesh.
+function glFrost() {
+  const L = spec.left, R = spec.right, blue = GL_FIELD === 'blue', T = 340;
+  const mesh = blue
+    ? `<rect width='1600' height='900' fill='#2C68E6'/><g filter='url(#b)'><circle cx='180' cy='160' r='420' fill='#0A1E70'/><circle cx='1450' cy='120' r='380' fill='#7CC8F8'/><circle cx='900' cy='820' r='420' fill='#1638B0'/><circle cx='1300' cy='760' r='300' fill='#A9DCFB'/><circle cx='620' cy='420' r='260' fill='#3D80F2'/></g>`
+    : `<rect width='1600' height='900' fill='#EEF5FF'/><g filter='url(#b)'><circle cx='160' cy='200' r='420' fill='#9CC6FF'/><circle cx='1480' cy='760' r='420' fill='#BFE6FF'/><circle cx='1300' cy='140' r='300' fill='#E4E8FF'/><circle cx='420' cy='820' r='300' fill='#DCEBFF'/></g>`;
+  const glass = `background:rgba(255,255,255,${blue ? 0.7 : 0.55});backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 0 0 2px rgba(255,255,255,.95),0 24px 60px rgba(${blue ? '8,30,110,.30' : '30,80,170,.16'})`;
+  const ink = blue ? '#FFFFFF' : '#0A0A0B', top = 450 - T / 2 - 40;
+  const side = (s, cx) => `<div class="ct" style="left:${cx - T / 2}px;top:${top}px;width:${T}px;height:${T}px;border-radius:72px;${glass}">${logo(s.logo, Math.round(T * 0.6), s.label)}</div>
+<div style="position:absolute;left:${cx - 300}px;width:600px;top:${top + T + 34}px;text-align:center;font-size:50px;font-weight:600;letter-spacing:-.03em;color:${ink};white-space:nowrap">${esc(s.label)}</div>`;
+  return `${CB_CSS}<style>.fr .lg{box-shadow:none;background:transparent;padding:0}.fr .lg:not(.full){border-radius:0;overflow:visible}</style>${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:${blue ? 0.7 : 0.35}`)}
+<div class="fr">${side(L, 530)}${side(R, 1070)}
+<div style="position:absolute;left:735px;top:${top + T / 2 - 65}px;width:130px;height:130px;border-radius:50%;display:grid;place-items:center;${glass}"><b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.separator || 'vs')}</b></div></div>${WHITE_MARK_JS}`;
+}
+
+// versus/bento (Oct 2026): a dark bento grid like a product page: per brand a big name cell, an icon cell and a fact cell (the
+// article's own fact); a blue "vs" disc on the seam is the one blue anchor. Black field. For pairs whose logos can't match.
+function glBento() {
+  // "finish": "flat" (solid dark cells, the first version), "glass" (frosted cells on the black mesh glow), "lift" (dark cells with a
+  // soft top highlight, bigger names, icons in thin rings) or "light" (light cells in the grey frame; needs "field": "light")
+  const L = spec.left, R = spec.right, W = 560, G = 40, x0 = 800 - W - G / 2, top = 175, H1 = 290, H2 = 220, IC = 140;   // icon cells narrow, fact cells wide (QA: a 3-line fact cell looked crammed)
+  const fin = spec.finish || 'flat', light = GL_FIELD === 'light';
+  // both names share one size and both facts share one size (taste 2: parallel elements, one treatment)
+  const NF = Math.min(fin === 'lift' ? 104 : 88, Math.floor((W - 96) / (Math.max(String(L.label).length, String(R.label).length) * 0.56)));
+  // the longer fact fits in two lines (QA: three ragged lines looked crammed next to a one-line partner)
+  const FF = Math.min(38, Math.floor((W - IC - G - 76) * 2 / (Math.max(String(L.fact || '').length, String(R.fact || '').length) * 0.7)));
+  // a fact of 4+ words keeps its first two and its last two words together, so it sets as two even lines
+  const tie = (t) => { const w = t.split(' '); return w.length >= 4 ? [w.slice(0, 2).join('\u00a0'), ...w.slice(2, -2), w.slice(-2).join('\u00a0')].join(' ') : t.replace(/ (\S+)$/, '\u00a0$1'); };
+  const C = light ? { cell: 'background:#F3F4F6;box-shadow:inset 0 0 0 2px rgba(20,26,38,.05)', ink: '#0A0A0B', fact: '#3D4A5C', tag: '#5D6675', ring: '#0A0A0B' }
+    : fin === 'glass' ? { cell: 'background:rgba(255,255,255,.07);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.16)', ink: '#fff', fact: '#E3E6EC', tag: '#A9AEB8', ring: '#0A0A0B' }
+    : fin === 'lift' ? { cell: 'background:linear-gradient(180deg,#1D1D23,#121216);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.10),inset 0 0 0 1.5px rgba(255,255,255,.05)', ink: '#fff', fact: '#D7DAE0', tag: '#8A8F98', ring: '#0A0A0B' }
+    : { cell: 'background:#141418;box-shadow:inset 0 0 0 2px rgba(255,255,255,.06)', ink: '#fff', fact: '#D7DAE0', tag: '#8A8F98', ring: '#0A0A0B' };
+  const cell = (x, y, w, h, inner) => `<div style="position:absolute;left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-radius:34px;overflow:hidden;${C.cell}">${inner}</div>`;
+  const icon = (s) => fin === 'lift'
+    ? `<div style="position:absolute;left:50%;top:50%;width:118px;height:118px;transform:translate(-50%,-50%);border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,.16);display:grid;place-items:center"><i class="${esc(s.icon || 'ph ph-cloud')}" style="font-size:72px;color:#fff"></i></div>`
+    : `<i class="${esc(s.icon || 'ph ph-cloud')}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:96px;color:${C.ink};opacity:.92"></i>`;
+  const side = (s, x) => cell(x, top, W, H1, `<b style="position:absolute;left:48px;bottom:40px;font-size:${NF}px;font-weight:600;letter-spacing:-.04em;line-height:1;color:${C.ink};white-space:nowrap">${esc(s.label)}</b>${s.tag ? `<span style="position:absolute;left:48px;top:40px;font-family:${MONO};font-size:26px;letter-spacing:.08em;text-transform:uppercase;color:${C.tag}">${esc(s.tag)}</span>` : ''}`)
+    + cell(x, top + H1 + G, IC, H2, icon(s))
+    + cell(x + IC + G, top + H1 + G, W - IC - G, H2, `<span style="position:absolute;left:40px;right:36px;top:50%;transform:translateY(-50%);font-size:${FF}px;font-weight:500;letter-spacing:-.02em;line-height:1.2;color:${C.fact}">${tie(esc(s.fact || '').replace(/-/g, '\u2011'))}</span>`);   // no hyphen breaks, no word left alone
+  const vs = `<div style="position:absolute;left:${800 - 58}px;top:${top + H1 / 2 - 58}px;width:116px;height:116px;border-radius:50%;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 0 0 12px ${light ? '#fff' : fin === 'glass' ? 'rgba(10,10,11,.0)' : '#0A0A0B'}${fin === 'glass' ? ',0 12px 40px rgba(47,123,255,.45)' : ''}"><b style="font-size:44px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(spec.separator || 'vs')}</b></div>`;
+  if (fin === 'glass' && !light) {
+    const mesh = `<rect width='1600' height='900' fill='#0A0A0B'/><g filter='url(#b)'><circle cx='240' cy='240' r='360' fill='#1D4ED8' fill-opacity='.75'/><circle cx='1380' cy='700' r='380' fill='#2F7BFF' fill-opacity='.55'/><circle cx='1180' cy='120' r='220' fill='#7CC8F8' fill-opacity='.35'/></g>`;
+    return `${CB_CSS}${glBg(`background:${svgBg(mesh, 110)} center/cover`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.7`)}${side(L, x0)}${side(R, x0 + W + G)}${vs}${WHITE_MARK_JS}`;
+  }
+  // light: no pattern (user, batch 4: "delete pattern from bg, it looks overwhelming here"): the grid of cells is texture enough
+  return glCanvas(`${side(L, x0)}${side(R, x0 + W + G)}${vs}`, light ? 'none' : 'plus');
+}
+// versus/chat (Oct 2026): a dark-mode message thread: the article's question in a blue bubble on the right, a typing indicator,
+// then one grey reply bubble per brand with its fact. A real interface, no metaphor. Black field.
+function glChat() {
+  const Q = spec.question || `${spec.left.label} or ${spec.right.label}?`, qfs = Math.min(58, Math.floor(820 / (String(Q).length * 0.52)));
+  const bubble = (txt, me, fs) => `<div style="align-self:${me ? 'flex-end' : 'flex-start'};max-width:880px;padding:26px 40px;border-radius:44px;${me ? 'border-bottom-right-radius:14px;background:linear-gradient(180deg,#3B86F0,#0A5FD8);color:#fff' : 'border-bottom-left-radius:14px;background:#26262B;color:#F2F3F5'};font-size:${fs}px;font-weight:500;letter-spacing:-.02em;line-height:1.2">${txt}</div>`;
+  const reply = (s) => bubble(`<b style="font-weight:700;color:#fff">${esc(s.label)}</b><span style="color:#A9AEB8">&nbsp;·&nbsp;</span>${esc(s.fact || '')}`, false, 44);
+  const dots = `<div style="align-self:flex-start;padding:24px 30px;border-radius:40px;border-bottom-left-radius:14px;background:#26262B;display:flex;gap:12px">${[0.9, 0.6, 0.35].map((o) => `<i style="width:16px;height:16px;border-radius:50%;background:#fff;opacity:${o}"></i>`).join('')}</div>`;
+  return glCanvas(`<div style="position:absolute;left:250px;right:250px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;gap:26px">
+${bubble(esc(Q), true, qfs)}${spec.typing === false ? '' : dots}${reply(spec.left)}${reply(spec.right)}</div>`, 'plus');
+}
+
+const modes = { lineup, folder, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, brandline: glBrandline, receipt, definition };
 
 
 // ---- heading must mirror the blog title: same key words, same meaning, just shorter ----
 const STOP = new Set('a an the and or of for to in on at by with your you our is are be how what why when which who vs versus its it this that from into without about best top guide per 2024 2025 2026 2027'.split(' '));
 const stem = (w) => w.endsWith('sses') ? w.slice(0, -2) : w.endsWith('ss') ? w : w.length > 4 && /(ches|shes|xes|zes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w;
 const words = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9+ ]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w)).map(stem);
-const HEADING = { dark: spec.headline, versus: ['pills', 'connect', 'duo', 'tiles'].includes(spec.variant) ? spec.headline : undefined, brandline: spec.headline, receipt: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
+const HEADING = { dark: spec.headline, versus: ['pills', 'connect', 'duo', 'tiles', 'scale'].includes(spec.variant) ? spec.headline : undefined, brandline: spec.headline, receipt: spec.headline, folder: spec.headline, lineup: spec.headline, shortlist: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
 const heading = HEADING[spec.mode || 'before-after'];
 if (heading !== undefined && !args.includes('--force')) {
   if (!spec.articleTitle) { console.error('HEADING CHECK FAILED: add "articleTitle" (the blog post\'s real title) to the spec. The image heading must reuse its words.'); process.exit(3); }
@@ -988,11 +1123,11 @@ if (LAYOUT === 'versus/slash' && !args.includes('--force')) {
   for (const side of [spec.left, spec.right]) if (side && !slashSplit(side.label))
     await refuse(`SLASH NAME CHECK FAILED: "${side.label}" can't be shown in two colours (white + the brand colour) without guessing. Mark the coloured part with {{ }} (e.g. "Acu{{matica}}"), or use the article's fuller product name (e.g. "SAP Business One"). Some of the name must stay white.`);
 }
-const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'swap/default', 'badge/default', 'brandline/default', 'versus/split', 'versus/duet', 'receipt/default', 'definition/default', 'versus/rows'];
+const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'swap/default', 'badge/default', 'brandline/default', 'versus/split', 'versus/duet', 'receipt/default', 'definition/default', 'versus/rows', 'folder/default', 'shortlist/default', 'lineup/default', 'versus/scale', 'lineup/default', 'versus/scale', 'versus/frost', 'versus/bento', 'versus/chat'];
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', ...GL_LAYOUTS].includes(LAYOUT);
 // black fields count as vibrant (1 in 3, never neighbours), and so do the Gumloop layouts on the black or blue field;
 // versus/split's two saturated brand-colour halves are vibrant too; duet, receipt and definition are light
-const LIGHT_ONLY = ['versus/duet', 'receipt/default', 'definition/default', 'brandline/default'];
+const LIGHT_ONLY = ['versus/duet', 'receipt/default', 'definition/default', 'brandline/default', 'folder/default', 'shortlist/default'];
 const VIVID = MODE === 'dark' || ['versus/slash', 'versus/duo', 'versus/split'].includes(LAYOUT) || (GL_LAYOUTS.includes(LAYOUT) && !LIGHT_ONLY.includes(LAYOUT) && LAYOUT !== 'versus/split' && GL_FIELD !== 'light');
 // Gumloop layouts: fetch each brand's full wordmark (icon + typography) before rendering. Both Brandfetch themes are tried and the
 // darkest-ink version kept (recoloured white on dark fields in the page); a white background is keyed out; a solid tile is not a
@@ -1094,6 +1229,9 @@ const thin = {
   timeline: () => n(spec.steps) < 3 && 'timeline needs 3+ steps',
   stat: () => n(spec.card?.rows) < 2 && 'stat card needs 2+ rows',
   focus: () => n(spec.rows) < 2 && 'focus needs 2+ rows',
+  folder: () => n((spec.cards || []).filter((c) => c.logo)) < 4 && 'folder needs 4-9 products with logos',
+  shortlist: () => n(spec.items) < 3 && 'shortlist needs 3+ items',
+  lineup: () => n((spec.cards || []).filter((c) => c.logo)) < 3 && 'lineup needs 3-6 products with logos',
 }[MODE]?.();
 if (thin && !force) { console.error(`CONTENT CHECK FAILED: ${thin}. Use the article's facts to fill it, or pick a layout that suits fewer facts.`); process.exit(2); }
 // ---- comparison fairness: an "X vs Y" article shows both products (dark features one brand, so it is for single-brand articles) ----
@@ -1109,7 +1247,7 @@ Delivered images are permanent and can't be re-created or overwritten. Use a new
   process.exit(2);
 }
 const topic = spec.topic || null;
-const sameTopic = topic ? history.filter((e) => e.topic === topic && e.slug !== slug) : [];
+const sameTopic = topic ? history.filter((e) => e.topic === topic && e.slug !== slug && !e.superseded) : [];
 if (sameTopic.some((e) => e.mode === MODE) && !force) {
   console.error(`VARIETY CHECK FAILED: another article on topic "${topic}" (${sameTopic.filter((e) => e.mode === MODE).map((e) => e.slug).join(', ')}) already uses mode "${MODE}".
 Same-topic articles must use different compositions. Used for this topic: ${sameTopic.map((e) => e.mode).join(', ')}`);

@@ -1,0 +1,16 @@
+{
+  "articleTitle": "Practice Fusion vs athenahealth: Which EHR Fits Small Practices",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "practice-fusion-vs-athenahealth-which-ehr-fits-small-practices",
+  "mode": "versus",
+  "variant": "frost",
+  "left": {
+    "label": "Practice Fusion",
+    "logo": "../assets/practicefusion-mark.png"
+  },
+  "right": {
+    "label": "athenahealth",
+    "logo": "athenahealth.com"
+  }
+}

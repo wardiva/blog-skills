@@ -1,6 +1,6 @@
 # Featured Image Design Language
 
-You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Three families and two originals share it: the **card layouts** (sections 3–5), the **headline layouts** (section 3d), and the **Gumloop layouts** and **originals** (sections 3e and 15). The images in `references/approved/` show the target, and their specs are in `examples/`.
+You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Three families and the originals share it: the **card layouts** (sections 3–5), the **headline layouts** (section 3d), and the **Gumloop layouts** and **originals** (sections 3e and 15). The images in `references/approved/` show the target, and their specs are in `examples/`.
 
 ---
 
@@ -107,7 +107,8 @@ Two more sets came from the user's references and reviews (Oct 2026). Their tabl
 
 - **Gumloop** (`versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`): each takes only its approved `"field"` ("FIELD FIT FAILED" otherwise); the black and blue fields count as vibrant. Logos are each brand's full wordmark. The "vs" sits vertically centred between the names; dot grids and the tiles ring stay sparse and faint, and a "+" grid on a dark field is bright and crisp but only around the edges, clear behind the content. Never `versus/type` on black, `badge` on blue or `versus/glass` on blue. `versus/tiles`: both tiles filled or both white, never one of each ("TILES LOGO CHECK FAILED"); `versus/glass` needs wordmarks that fit the bar ("GLASS LOGO CHECK FAILED"). `brandline` is retired (a background with only a headline); its glow field waits for a real illustration.
 - **Originals** (`receipt`, `definition`; light only, white in the grey frame): `receipt` for cost articles, its headline near-black `#0A0A0B` (the user's request), every row inside the bold blue total's range; `definition` for "what is X" articles, a one-line definition (≤ 7 words) in the article's own words.
-- **Out of the rotation:** `versus/split` and `versus/duet` (the user passed on both twice); `versus/rows` (rejected).
+- **Originals from batch 4** (all approved): `shortlist` (a tilted notepad of the article's picks, black headline on the right; "wow love it"), `lineup` (one centred row of white logo tiles on a frosted glass bar over the glow field; no headline, no watermark), `versus/frost` (two frosted-glass logo tiles on the light mesh, a glass "vs" disc; the blue mesh was disapproved), `versus/bento` (a light bento grid with a name, icon and fact cell per brand, no pattern; for pairs whose logos can't match).
+- **Out of the rotation:** `versus/split` and `versus/duet` (the user passed on both twice); `versus/rows` (rejected); `folder` ("not the layout"); `versus/scale` ("looks like a law illustration": no clip-art metaphors); `versus/chat` (not picked).
 
 ---
 

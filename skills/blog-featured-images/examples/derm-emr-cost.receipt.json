@@ -1,23 +1,24 @@
 {
- "articleTitle": "How Much Does Dermatology EMR Software Cost in 2026",
- "brand": "medsoftwarehub",
- "category": "uncategorized",
- "slug": "how-much-does-dermatology-emr-software-cost-in-2026-example",
- "mode": "receipt",
- "headline": "Dermatology\nEMR Cost",
- "title": "Per provider / month",
- "rows": [
-  {
-   "name": "Nextech",
-   "value": "$300–$399"
+  "articleTitle": "How Much Does Dermatology EMR Software Cost in 2026",
+  "brand": "medsoftwarehub",
+  "category": "uncategorized",
+  "slug": "how-much-does-dermatology-emr-software-cost-in-2026",
+  "mode": "receipt",
+  "headline": "Dermatology\nEMR Cost",
+  "title": "Per provider / month",
+  "rows": [
+    {
+      "name": "Nextech",
+      "value": "$300–$399"
+    },
+    {
+      "name": "eClinicalWorks",
+      "value": "$499–$599"
+    }
+  ],
+  "total": {
+    "label": "Typical",
+    "value": "$250–$900"
   },
-  {
-   "name": "eClinicalWorks",
-   "value": "$499–$599"
-  }
- ],
- "total": {
-  "label": "Typical",
-  "value": "$250–$900"
- }
+  "place": "bottom"
 }
