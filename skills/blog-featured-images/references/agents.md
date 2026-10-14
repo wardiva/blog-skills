@@ -19,6 +19,7 @@ Both QA agents start **in the same message** and run side by side.
 
 **Job:** turn URLs into delivered, finalized images as fast as possible without ever approving an image yourself.
 
+0. **Know the user's taste first:** read `references/taste.md`, `references/lessons.md`, `references/checks.md` and `references/inspiration.md`. Every rule there came from the user's own feedback; don't make them repeat it.
 1. **Read all URLs at once:** `node <skill-dir>/scripts/read-articles.mjs <url1> <url2> ... --out <featured-images>/articles`. This writes one `articles/<slug>.md` per URL. Nobody fetches a page again. Note each article's type, core idea, 3–6 hard facts, **category**, **topic** (duplicate URLs share one topic) and the products it names.
 2. **Check logos for logo-dependent layouts:** `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article. Pills, connect and glass go only to a pair where **both** brands pass; tiles when both pass connect (filled tiles) or both pass pills (white tiles); logotype only to a product that passes (otherwise `dark`).
 3. **Plan and reserve in one command:** `node <skill-dir>/scripts/plan.mjs --brand <b> --category <c>` shows usage, least-used first. Pick the best fit from the lowest tier for each article.
@@ -42,7 +43,8 @@ Both QA agents start **in the same message** and run side by side.
    - Fix renderer bugs in the skill yourself, so every future image benefits, and push the fix.
 8. **Deliver** images as soon as both QA agents pass them: one contact sheet with each layout and the facts used. Ask before uploading anything to a website.
 9. **Finalize** right after delivery: `node <skill-dir>/scripts/finalize.mjs --brand <b> <slug> ...`.
-10. **Style feedback** ("I don't like it", a new reference): render 2–3 options side by side and let the user pick before changing the skill.
+10. **Style feedback** ("I don't like it", a new reference): log a new reference in `references/inspiration.md` first, then render 2–3 options side by side and let the user pick before changing the skill.
+11. **Learn from every note** (SKILL.md, "Keep Learning"): prompt, taste principle, lesson, renderer check where measurable, refreshed references (`scripts/test-examples.mjs --refresh`), push. A newly approved image always gets an example spec in `examples/` and a line in `references/approved/sources.json`, so it can never go stale. Tell Makers and QA about any new rule before their next image.
 
 **Progress:** one line per step. Never sit idle while agents run; prepare the next step (sheet, QA briefs).
 
@@ -55,7 +57,7 @@ Both QA agents start **in the same message** and run side by side.
 **Prompt (template):**
 ```
 You are a MAKER for blog featured images. Use the blog-featured-images skill at <skill-dir>.
-Read SKILL.md, references/spec-format.md (only the sections for your layouts) and look at references/approved/.
+Read SKILL.md, references/taste.md, references/checks.md, references/inspiration.md, references/spec-format.md (only the sections for your layouts) and look at references/approved/.
 Your role: you make images; two independent QA agents judge them. Never pick or change a layout, never use --force,
 never render outside <featured-images>/<slug>, never fetch the article URL.
 For each article below:
@@ -88,7 +90,7 @@ Keep this context: you may get fix messages for these images; apply them and ren
 **Prompt (template):**
 ```
 You are VISUAL QA for blog featured images. You judge looks only (Fact QA checks the facts). You never edit or render.
-Read <skill-dir>/references/taste.md and <skill-dir>/references/design-language.md, and look at <skill-dir>/references/approved/.
+Read <skill-dir>/references/taste.md, <skill-dir>/references/checks.md, <skill-dir>/references/inspiration.md and <skill-dir>/references/design-language.md, and look at <skill-dir>/references/approved/.
 Run the Self-Critique table in taste.md on every image.
 Inputs: contact sheet <qa-sheet.png> (this batch framed in blue, next to every earlier image on the site),
 master.png and card-350x250.png for each image, and the site history <~/.blog-featured-images/history-<brand>.json>.
@@ -114,7 +116,7 @@ Keep this context: you may get re-rendered images to re-check.
 **V2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
 **V2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`).
-- **Type and colour:** every text element is Inter 500 Medium (slash: Poppins caps). The pills and connect headlines are all near-black.
+- **Type and colour:** every text element is Inter 500 Medium (slash: Poppins caps). The pills and connect headlines are all black.
 - **Slash:** each name is two-tone, white first and the brand's colour on the last part; never all one colour, never an awkward mid-word split; names keep their approved auto-fit size.
 - **Pills:** the pills run off the outer edges with flat cuts, tips ~112px apart, with a subtle gradient and fine noise. Both logos sit on white circles.
 - **Connect:** the headline sits on one line (two only for a very long pair); both tiles are the brands' own app icons in their original colours, edge to edge, and current (not an anniversary badge).
@@ -155,7 +157,7 @@ Keep this context: you may get re-rendered images to re-check.
 - a "+" grid or dot grid that covers the whole canvas on a dark field, or one faded until it disappears
 - a stat number that outweighs its breakdown card
 - busy patterns on the Gumloop layouts: dot grids and the tiles ring stay sparse and faint
-- `versus/rows` in any field (the user disapproved it); `versus/split` or `versus/duet` unless the user asks for them
+- `versus/rows` in any field (the user disapproved it); `versus/chat`, `versus/scale` (clip-art metaphor) and `folder`; `versus/split` or `versus/duet` unless the user asks for them
 - `folder`, `versus/scale` or any clip-art metaphor (a scale, a gavel, a trophy); a watermark shape behind the `lineup` row; `versus/frost` on the blue mesh; `versus/bento` on black (any finish) or with a pattern behind the light grid
 - a second image in a layout the user has already seen, even a favourite with a written reason ("this template is already being used")
 - a slash name in one colour (white is always part of it), or slash names made bigger than their auto-fit size

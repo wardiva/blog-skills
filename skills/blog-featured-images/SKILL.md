@@ -50,12 +50,14 @@ When the user shares a reference, every detail is the rule: the tile behind an i
 Once the user has an image, it is finalized and can never be re-created or overwritten. Its layout keeps counting for rotation.
 
 Read these before your first image in a session:
-- `references/approved/`: the finalized images, the target look.
+- `references/approved/`: the finalized images, the target look. `references/approved/sources.json` names the example spec behind each one; `scripts/test-examples.mjs --refresh` rebuilds them all with the current rules.
 - `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, and the "Never" list).
 - `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
 - `references/agents.md`: the four roles (each one's job, steps, prompt and limits), the fast-batch flow, and the Visual and Fact checklists.
 - `references/taste.md`: the user's taste, distilled from every review note: fourteen principles, each with the image that taught it, and the Self-Critique every image must pass.
-- `references/lessons.md`: speed tools, pre-flight checks and gotchas.
+- `references/lessons.md`: what each batch and review round taught, speed tools, pre-flight checks and gotchas.
+- `references/checks.md`: every check the renderer runs and the feedback behind it, plus the regression test.
+- `references/inspiration.md`: every reference the user shared, what was taken and what was rejected.
 
 ## Report Format (Required)
 
@@ -161,8 +163,8 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 
 | Layout | Shows | Best for |
 | --- | --- | --- |
-| `versus/pills` | two facing blue pills (flat cuts at the outer edges, rounded tips a little over half a pill's height apart, a subtle gradient with fine noise) with the logos on **white circles** at the tips, the question below in near-black | X vs Y, only when both products have a logo that sits on white; up to 2 across the site, each repeat with a reason |
-| `versus/connect` | a centred near-black headline **on one line** (two lines only when a pair is too long to read on one), each brand's **own app icon in its original colours** filling its tile, linked to a VS circle, dot patches | X vs Y, only when both brands have a solid app icon; up to 5 across the site, each repeat with a reason |
+| `versus/pills` | two facing blue pills (flat cuts at the outer edges, rounded tips a little over half a pill's height apart, a subtle gradient with fine noise) with the logos on **white circles** at the tips, the question below in black | X vs Y, only when both products have a logo that sits on white; up to 2 across the site, each repeat with a reason |
+| `versus/connect` | a centred black headline **on one line** (two lines only when a pair is too long to read on one), each brand's **own app icon in its original colours** filling its tile, linked to a VS circle, dot patches | X vs Y, only when both brands have a solid app icon; up to 5 across the site, each repeat with a reason |
 | `versus/slash` | black, dot grid, heavy-caps names, every name two-tone, **white + that brand's colour** (never all one colour), italic VS with a glowing streak | X vs Y (vibrant); up to 5 across the site, each repeat with a reason |
 | `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant); up to 5 across the site, each repeat with a reason |
 | `dark` | black, the product's icon in black (#0A0A0B) on a white tile top-left, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | single-product articles; never X vs Y (vibrant); up to 3 across the site, each repeat with a reason |
@@ -184,7 +186,7 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 
 | Layout | Shows | Best for |
 | --- | --- | --- |
-| `receipt` | a big near-black headline on the left, a tilted white receipt with a zigzag tear on the right: the article's rows and a bold blue total | cost and pricing articles; every row sits inside the total's range; the headline sits on the total line (`"place": "bottom"`) |
+| `receipt` | a big black headline on the left (semibold, at most 84px), a tilted white receipt with a zigzag tear on the right: the article's rows and a bold blue total | cost and pricing articles; every row sits inside the total's range; the headline sits on the total line (`"place": "bottom"`) |
 | `definition` | a dictionary entry on ruled lines: the term, its full form, a blue rule and a numbered one-line definition in the article's own words | "what is X" articles |
 | `shortlist` | a tilted white notepad on the left (punched top band, margin rule, numbered names on ruled lines, a blue icon sticker on the pad) and the black headline on the right | "best X" lists, the article's own picks in its order ("wow love it", batch 4) |
 | `lineup` | one centred row of square white logo tiles on a frosted glass bar over the glow field; no headline, no watermark (the user's own reference) | "best X" lists with 3–6 real logos |
@@ -242,7 +244,7 @@ A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so 
 
 ### Headline layouts speak in one voice
 
-Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words: near-black on pills and connect, white on duo and dark. Card-layout headlines are semibold 600 and black.
+Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words: black on pills and connect, white on duo and dark. Card-layout headlines are semibold 600 and black.
 
 ### Never the site mark on a headline layout
 
@@ -255,6 +257,21 @@ Once QA passes and the user has the images, finalize them (`scripts/finalize.mjs
 ### Show options, don't argue
 
 For any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick. Never bring back anything listed as rejected in `references/agents.md` (Visual checklist, V9).
+
+## Keep Learning (Required)
+
+The user's goal is images made without their guidance, and never having to repeat feedback. Everything they say is a lesson: a note, a reference, "this is right", "this is wrong", "love it", "disgusting". Treat each one the same way, in this order, before the next image:
+
+1. **Prompt:** rewrite it as a clear prompt, show it, then act on it.
+2. **Principle:** add it to `references/taste.md` with the user's words quoted and the image named (as evidence under an existing principle, or a new one). Praise is evidence too: what they love is a rule to keep.
+3. **Lesson:** add what happened to `references/lessons.md`.
+4. **Check:** if it can be measured (a size, a colour, a count, a match), make the renderer enforce it and list it in `references/checks.md`, so it can't come back.
+5. **Generalise:** when the same correction comes twice, apply it to the whole family (black headlines went from one layout to all).
+6. **Reference:** a shared inspiration goes into `references/inspiration.md` (what was taken, what was rejected) before building.
+7. **Refresh and test:** `node <skill-dir>/scripts/test-examples.mjs --refresh` rebuilds every approved image with the new rule; compare old and new and fix any unintended change.
+8. **Publish:** update every file that mentions the rule, then push (see `references/checks.md` and the publishing notes in `references/lessons.md`).
+
+A lesson that lives only in a conversation is a lesson lost: the next session, and every agent, only knows what is written in these files.
 
 ## Four Roles, Always
 
@@ -280,7 +297,8 @@ An image ships only when **both** QA agents pass it. Failures go back to their o
    `featured-images/` lives in the user's project folder, never in a temporary or scratch folder. Outputs: `master.png` (1600×900), `16x9-1200.webp` (social/OG), `7x5.webp` (theme crop), `card-350x250.png` (size check). Every render prints `layout=… bg=… words=N/15`.
 4. **QA, both at once:** the moment the last Maker returns, build the sheet of the whole site (`node <skill-dir>/scripts/sheet.mjs --brand <b> --out featured-images/qa-sheet.png --highlight <slugs>`), then start **Visual QA and Fact QA in one message**.
 5. **Fix** only the failures, in parallel. **Deliver** each image as soon as both QA agents pass it (Report Format above). Ask before uploading anything to a website. Fix renderer problems in the skill itself, and say so in the delivery note.
-6. **Finalize** the delivered images:
+6. **After any change to the skill**, run `node <skill-dir>/scripts/test-examples.mjs` (and `--refresh` when an approved look changed) before pushing.
+7. **Finalize** the delivered images:
    ```bash
    node "<skill-dir>/scripts/finalize.mjs" --brand <b> <slug> <slug> ...
    ```

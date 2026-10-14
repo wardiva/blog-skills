@@ -1,0 +1,30 @@
+{
+ "articleTitle": "AdvancedMD vs athenahealth for Multi-Location Practices (2026)",
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "topic": "advancedmd-vs-athenahealth",
+ "slug": "advancedmd-vs-athenahealth-for-multi-location-practices-2026",
+ "mode": "versus",
+ "variant": "table",
+ "dimensions": [
+  "Pricing",
+  "Starts from"
+ ],
+ "left": {
+  "label": "AdvancedMD",
+  "logo": "advancedmd.com",
+  "items": [
+   "Per provider",
+   "$429/month"
+  ]
+ },
+ "right": {
+  "label": "athenahealth",
+  "logo": "athenahealth.com",
+  "items": [
+   "% of collections",
+   "$140/provider/mo"
+  ]
+ },
+ "bg": "blue"
+}

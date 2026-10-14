@@ -331,7 +331,7 @@ function stat() {
   const vfs = Math.min(150, spec.valueSize || 150, Math.floor(600 / (String(spec.value).length * 0.6)));   // 150 max: the number never outweighs the card (user)
   const svTop = vfs < 180 ? Math.round(440 - (vfs + 44 + 50) / 2) : 230, scTop = vfs < 180 ? svTop + vfs + 44 : 470;
   return `<style>
-.sv{position:absolute;left:205px;top:${svTop}px;font-size:${vfs}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;${spec.valueColor === 'navy' ? 'color:#0E2A5C;' : spec.valueColor !== 'blue' ? 'background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:12px;' : ''};white-space:nowrap}
+.sv{position:absolute;left:205px;top:${svTop}px;font-size:${vfs}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;${['navy', 'black'].includes(spec.valueColor) ? 'color:#0E2A5C;' : spec.valueColor !== 'blue' ? 'background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:12px;' : ''};white-space:nowrap}
 .sc{position:absolute;left:212px;top:${scTop}px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
 .ss{position:absolute;left:212px;top:620px;width:600px;font-size:26px;line-height:1.4;color:#7F8794}
 .scard{position:absolute;right:210px;top:450px;transform:translateY(-50%);width:max-content;min-width:560px;max-width:640px;box-sizing:border-box;background:#fff;border-radius:26px;padding:50px 52px 26px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
@@ -619,8 +619,9 @@ function logotype() {
 // "field": "light" (white in the grey frame), "black" or "blue" (deep dunes); black and blue count as vibrant.
 // Logos are the brand's full wordmark (icon + typography) where it has one; a brand without one is typeset in Inter.
 // Fields the user approved per layout (review, Oct 2026), default first. Anything else is refused ("FIELD FIT FAILED").
-// Rejected: badge on blue, brandline in any colour but the site blue. versus/type on black was rejected in the first review, then requested by the user in batch 4.
-const GL_FIELD_FIT = { 'versus/bento': ['light', 'black'], 'versus/chat': ['black'], 'versus/frost': ['light', 'blue'], 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue', 'black'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
+// Rejected: badge on blue, glass on blue, versus/type on black (asked for once in batch 4, then "different layout"), versus/frost on the blue mesh,
+// versus/bento on black (light won). brandline, chat and rows are retired (not in layouts.mjs).
+const GL_FIELD_FIT = { 'versus/bento': ['light'], 'versus/chat': ['black'], 'versus/frost': ['light'], 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
 const GL_FIT = GL_FIELD_FIT[spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode];
 const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
 if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--force')) {
@@ -646,9 +647,11 @@ const glCanvas = (inner, pattern = 'plus') => {
   return `${CB_CSS}${glBg(`background:${P.bg}`)}${GL_FIELD === 'blue' ? glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85`) : ''}${pat}${inner}${WHITE_MARK_JS}`;
 };
 // a wordmark sized by visual area so two marks of different shapes balance; data-white recolours it (white on dark fields)
-const glMark = (side, area, maxW, maxH, recolour = '') => {
+// the type size a label gets on its own (glMark); swap passes the smaller of its two labels so both sides always match
+const glTextFs = (label, maxW, maxH) => { const t = glBreak(label); return Math.min(t.includes('\n') ? 112 : maxH * 0.86, Math.floor(maxW / (Math.max(...t.split('\n').map((l) => l.length)) * 0.56))); };
+const glMark = (side, area, maxW, maxH, recolour = '', fsShared = 0) => {
   const W = WORDMARK[side.logo || ''], P = glPal();
-  if (!W) { const t = glBreak(side.label), fs = Math.min(t.includes('\n') ? 112 : maxH * 0.86, Math.floor(maxW / (Math.max(...t.split('\n').map((l) => l.length)) * 0.56))); return `<span style="font-size:${Math.round(fs)}px;font-weight:700;letter-spacing:-.045em;line-height:1.02;text-align:center;white-space:nowrap;color:${recolour && recolour !== '1' ? recolour : recolour ? '#fff' : P.ink}">${esc(t).replace(/\n/g, '<br>')}</span>`; }
+  if (!W) { const t = glBreak(side.label), fs = fsShared || glTextFs(side.label, maxW, maxH); return `<span style="font-size:${Math.round(fs)}px;font-weight:700;letter-spacing:-.045em;line-height:1.02;text-align:center;white-space:nowrap;color:${recolour && recolour !== '1' ? recolour : recolour ? '#fff' : P.ink}">${esc(t).replace(/\n/g, '<br>')}</span>`; }
   let h = Math.sqrt(area / W.aspect), w = W.aspect * h;
   if (w > maxW) { w = maxW; h = w / W.aspect; }
   if (h > maxH) { h = maxH; w = h * W.aspect; }
@@ -708,7 +711,9 @@ ${glMark(L, areaL, 790, hL + 0.5)}<span style="font-size:92px;font-weight:300;co
 function glSwap() {
   const L = spec.left, R = spec.right, P = glPal(), dark = GL_FIELD !== 'light', rc = dark ? '1' : '';
   const glow = R.color ? `rgba(${[1, 3, 5].map((i) => parseInt(R.color.slice(i, i + 2), 16)).join(',')},${dark ? 0.45 : 0.22})` : P.glow;
-  const item = (d, cx) => `<div style="position:absolute;left:${cx - 300}px;width:600px;top:470px;height:240px;display:grid;place-items:center">${glMark(d, 48000, 440, 150, rc)}</div>`;
+  // both text labels share one size (user taste: parallel things get the same treatment); 520 wide keeps them inside x 210-1390
+  const fsShared = !WORDMARK[L.logo || ''] && !WORDMARK[R.logo || ''] ? Math.min(glTextFs(L.label, 520, 150), glTextFs(R.label, 520, 150)) : 0;
+  const item = (d, cx) => `<div style="position:absolute;left:${cx - 300}px;width:600px;top:470px;height:240px;display:grid;place-items:center">${glMark(d, 48000, 520, 150, rc, fsShared)}</div>`;
   const arrow = `<svg width="1600" height="900" style="position:absolute;inset:0;overflow:visible"><defs><marker id="ah" viewBox="0 0 12 12" refX="6" refY="6" markerWidth="5.4" markerHeight="5.4" orient="auto"><path d="M1 1 L11 6 L1 11 C3.5 7.5 3.5 4.5 1 1Z" fill="${P.ink}"/></marker></defs>
 <path d="M596 452 C 622 384, 690 352, 742 364 C 800 378, 806 452, 764 458 C 718 465, 714 388, 776 340 C 850 284, 972 296, 1030 418" fill="none" stroke="${P.ink}" stroke-width="9" stroke-linecap="round" stroke-dasharray="20 17" marker-end="url(#ah)"/></svg>`;
   return glCanvas(`<div style="position:absolute;left:${1130 - 380}px;top:${575 - 330}px;width:760px;height:660px;border-radius:50%;background:radial-gradient(closest-side,${glow},transparent);filter:blur(16px)"></div>

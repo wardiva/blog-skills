@@ -4,7 +4,7 @@ Turn blog article URLs into **premium, article-specific featured images** (1600Ã
 
 ![Example featured images](assets/examples.webp)
 
-*A selection from the finalized reference set: card layouts (top), the six headline layouts (middle) and the Gumloop layouts (bottom). The same images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
+*A selection from the finalized reference set: card layouts (top), the six headline layouts (middle), and Gumloop layouts with the newest originals (bottom). The same images ship in `references/approved/`, and the renderer's defaults reproduce this look.*
 
 Every image:
 - **mirrors the blog title** and uses **only the article's own facts**
@@ -159,14 +159,16 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 
 | Path | Contents |
 |---|---|
-| `SKILL.md` | Hard rules, layouts and workflow (Claude reads this first) |
-| `references/approved/` | The finalized reference images: the target look |
+| `SKILL.md` | Hard rules, layouts and workflow (Claude reads this first); the required "Keep Learning" loop |
+| `references/approved/` | The finalized reference images: the target look; `sources.json` names the example spec behind each |
 | `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails |
 | `references/spec-format.md` | The JSON spec for every layout (snippets show each layout's own fields; `examples/` has complete, renderable specs) |
 | `references/agents.md` | The four roles (job, steps, prompt, limits), the fast-batch flow, the Visual and Fact checklists |
 | `references/taste.md` | The user's taste as principles (each tied to the note that taught it) and the Self-Critique every image passes |
-| `references/lessons.md` | Speed tools, gotchas, pre-flight checks |
-| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `logo-check.mjs` (which logo-dependent layouts each brand can use), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
+| `references/lessons.md` | What each batch and review taught, speed tools, gotchas, pre-flight checks |
+| `references/checks.md` | Every renderer check and the feedback behind it, plus the regression test |
+| `references/inspiration.md` | Every reference the user shared and what was taken from it |
+| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `logo-check.mjs` (which logo-dependent layouts each brand can use), `test-examples.mjs` (regression test; `--refresh` rebuilds the approved images), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
 | `examples/` | Approved specs for every layout |
 | `assets/` | Logo files a few examples use |
 

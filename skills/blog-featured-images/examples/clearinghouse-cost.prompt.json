@@ -1,0 +1,28 @@
+{
+ "articleTitle": "How Much Does a Medical Claims Clearinghouse Cost in 2026",
+ "brand": "medsoftwarehub",
+ "category": "medical-billing",
+ "topic": "clearinghouse-cost",
+ "slug": "how-much-does-a-medical-claims-clearinghouse-cost-in-2026",
+ "mode": "prompt",
+ "headline": "Claims Clearinghouse Cost",
+ "placeholder": "Pricing model",
+ "chips": [],
+ "panel": {
+  "label": "",
+  "rows": [
+   {
+    "title": "Free tier",
+    "sub": "$0"
+   },
+   {
+    "title": "Subscription",
+    "sub": "$200–$800/mo"
+   },
+   {
+    "title": "Per claim",
+    "sub": "$0.10–$0.50"
+   }
+  ]
+ }
+}

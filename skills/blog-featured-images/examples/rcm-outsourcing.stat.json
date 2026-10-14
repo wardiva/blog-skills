@@ -1,0 +1,26 @@
+{
+ "articleTitle": "Is Outsourcing RCM Worth It for Small Practices in 2026",
+ "brand": "medsoftwarehub",
+ "category": "medical-billing",
+ "slug": "is-outsourcing-rcm-worth-it-for-small-practices-in-2026",
+ "mode": "stat",
+ "value": "4–9%",
+ "caption": "of net collections for outsourcing RCM",
+ "card": {
+  "heading": "",
+  "highlight": null,
+  "rows": [
+   {
+    "name": "Solo Provider",
+    "value": "5–8%",
+    "pct": 8
+   },
+   {
+    "name": "Small Group Practice",
+    "value": "4–7%",
+    "pct": 7
+   }
+  ]
+ },
+ "bg": "paper"
+}

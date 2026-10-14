@@ -9,8 +9,8 @@ You write one JSON file per article, from the article's own facts. Start from th
 | `category` | yes | The site's blog category, used for the vibrant mix and the site mark (1 in 3, never neighbours). Layout rotation is site-wide |
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They never share a mode |
 | `slug` | yes | Output folder name and history key (unique per article) |
-| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype`. Gumloop: `swap`, `badge` (plus the versus variants below). Originals: `receipt`, `definition` |
-| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, the headline variants `pills`, `connect`, `slash`, `duo`, and the Gumloop variants `type`, `tiles`, `glass`. Mode + variant = one layout |
+| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype`. Gumloop: `swap`, `badge` (plus the versus variants below). Originals: `receipt`, `definition`, `shortlist`, `lineup` |
+| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, the headline variants `pills`, `connect`, `slash`, `duo`, the Gumloop variants `type`, `tiles`, `glass`, and the originals `frost`, `bento`. Mode + variant = one layout |
 | `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on at most 1 in 3 images (counting the black layouts), only for `checklist`, `versus/table`, `window`, `before-after/flow` |
 | `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns it off on a light field |
 | `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself. When it finds the wrong mark, use a file instead: `"../assets/<file>.png"` (relative to the spec; the official mark saved from the brand's website) |
@@ -73,7 +73,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
   "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "logo": "microsoft.com", "value": "$48,000/yr", "pct": 48000 },
                                                  { "name": "Acumatica", "logo": "acumatica.com", "value": "$6,396/yr", "pct": 6396 } ] } }
 ```
-- `value` up to ~8 characters (auto-sized, at most 150px so it never outweighs the card), in a soft blue gradient (`"valueColor": "navy"` or `"blue"` to change it). Card `rows`: 2–4, all in the same unit, and inside the hero's range (a row outside it reads as an error). `card.highlight` picks the blue row; `null` when no row is the hero's subject.
+- `value` up to ~8 characters (auto-sized, at most 150px so it never outweighs the card), in a soft blue gradient (`"valueColor": "black"` or `"blue"` to change it). Card `rows`: 2–4, all in the same unit, and inside the hero's range (a row outside it reads as an error). `card.highlight` picks the blue row; `null` when no row is the hero's subject.
 
 ## Ranked (`"mode": "ranked"`; rankings by a real metric)
 ```json
@@ -127,21 +127,21 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
 ---
 
 # Headline layouts
-Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark` and `logotype`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically, and none shows the site mark. All their text is Inter 500 Medium (`versus/slash` names: Poppins caps); nothing to set. In every `headline`, `\n` breaks the line; headlines carry no blue words (near-black on the white layouts, white on the black ones), so don't use `{{ }}` there (it only colours the `versus/slash` names). Keep headlines to the title's own words.
+Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark` and `logotype`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically, and none shows the site mark. All their text is Inter 500 Medium (`versus/slash` names: Poppins caps); nothing to set. In every `headline`, `\n` breaks the line; headlines carry no blue words (black on the white layouts, white on the black ones), so don't use `{{ }}` there (it only colours the `versus/slash` names). Keep headlines to the title's own words.
 
 ## Versus pills (`"mode": "versus", "variant": "pills"`)
 ```json
 { "mode": "versus", "variant": "pills", "headline": "Dynamics 365 or\nAcumatica?",
   "left": { "label": "Dynamics 365", "logo": "microsoft.com" }, "right": { "label": "Acumatica", "logo": "acumatica.com" } }
 ```
-- The headline is all near-black (no `{{ }}` blue). Each logo sits on a white circle, so both products need a mark that works on white: a product whose only logo is a solid app tile (e.g. NetSuite) is refused ("PILLS LOGO CHECK FAILED"); use another versus layout. May repeat up to 2 times across the site, each repeat with a reason.
+- The headline is all black (no `{{ }}` blue). Each logo sits on a white circle, so both products need a mark that works on white: a product whose only logo is a solid app tile (e.g. NetSuite) is refused ("PILLS LOGO CHECK FAILED"); use another versus layout. May repeat up to 2 times across the site, each repeat with a reason.
 
 ## Versus connect (`"mode": "versus", "variant": "connect"`)
 ```json
 { "mode": "versus", "variant": "connect", "headline": "NetSuite vs Sage Intacct",
   "left": { "label": "NetSuite", "logo": "netsuite.com" }, "right": { "label": "Sage Intacct", "logo": "sage.com" } }
 ```
-- The headline is all near-black (no `{{ }}` blue) and sits on one line, sized to fit and centred above the divider; a `\n` in it is ignored. Only a pair too long to read on one line (under 72px) breaks onto two. Each tile is the brand's own app icon in its original colours, filling the tile: the renderer fetches it (Brandfetch icon, so a client ID is needed) or uses a local square icon. A brand without a solid app icon (e.g. SAP, Microsoft, athenahealth) is refused ("CONNECT LOGO CHECK FAILED"); use another versus layout. Check the icon is the brand's current one (Availity's is a stale "25" anniversary badge).
+- The headline is all black (no `{{ }}` blue) and sits on one line, sized to fit and centred above the divider; a `\n` in it is ignored. Only a pair too long to read on one line (under 72px) breaks onto two. Each tile is the brand's own app icon in its original colours, filling the tile: the renderer fetches it (Brandfetch icon, so a client ID is needed) or uses a local square icon. A brand without a solid app icon (e.g. SAP, Microsoft, athenahealth) is refused ("CONNECT LOGO CHECK FAILED"); use another versus layout. Check the icon is the brand's current one (Availity's is a stale "25" anniversary badge).
 
 ## Versus slash (`"mode": "versus", "variant": "slash"`; black, counts as vibrant)
 ```json

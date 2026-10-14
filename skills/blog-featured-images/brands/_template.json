@@ -6,7 +6,7 @@
  "labelBefore": "#7C7468",
  "labelAfter": "darker brand shade for the right/after label",
  "legendAfter": "brand shade for the second legend item",
- "headline": "very dark brand shade for big headlines",
+ "headline": "#0A0A0B",
  "markUrl": "optional: URL of the site's own square icon (e.g. its apple-touch-icon), used by the site mark",
  "markName": "optional: the site name shown next to the mark"
 }

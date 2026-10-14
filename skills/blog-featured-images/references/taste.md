@@ -23,6 +23,7 @@ Things that play the same role get the same treatment.
 
 - **Tiles:** "Either both logo backgrounds white, or both with the logo colour." Never one filled tile and one white tile; the renderer enforces it.
 - **Slash:** both names are two-tone, white + brand colour, never one name in a single colour.
+- **Swap:** the two text labels share one size ("Outsourced RCM" had drifted smaller than "In-house billing"; the regression caught it).
 - **Pills / connect:** both logos sit on white circles (pills) or are both full app icons (connect).
 
 **Ask:** are any two parallel elements styled differently? Fix the odd one out, or pick a layout where they can match.
@@ -135,7 +136,4 @@ Any "no" is a fix before the image moves on.
 
 ## How to Keep Learning
 
-Every note the user gives becomes three things, in this order:
-1. A prompt, shown to the user, then the fix.
-2. A principle in this file, with the note quoted and the image named. If it fits an existing principle, add it as evidence there.
-3. Where it can be measured (a size cap, a pattern opacity, a matching rule), a renderer check, so it can't regress.
+Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named), a lesson, a renderer check where it can be measured, a generalisation when the same correction comes twice, the inspiration log for references, refreshed approved images, and a push.

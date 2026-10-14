@@ -1,0 +1,28 @@
+{
+ "articleTitle": "How to Switch EMR Vendors Without Losing Patient Data",
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "slug": "how-to-switch-emr-vendors-without-losing-patient-data",
+ "mode": "timeline",
+ "headline": "Switch EMR Vendors Without Losing Data",
+ "steps": [
+  {
+   "label": "Extract"
+  },
+  {
+   "label": "Validate"
+  },
+  {
+   "label": "Parallel run"
+  },
+  {
+   "label": "Go-live"
+  }
+ ],
+ "highlight": 2,
+ "callout": {
+  "title": "6–12 months",
+  "text": "Legacy read-only"
+ },
+ "bg": "cream"
+}
