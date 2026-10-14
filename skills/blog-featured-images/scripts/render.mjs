@@ -467,14 +467,18 @@ const cbTile = (d, S, x, y, round = 0.22, label = '') => `<div class="ct" style=
 const cbFramed = (inner, right = 28) => `<div class="cbf" style="background:#F2F2F3"></div><div style="position:absolute;left:28px;top:28px;right:${right}px;bottom:28px;border-radius:28px;background:#fff;overflow:hidden"><div style="position:absolute;left:-28px;top:-28px;width:1600px;height:900px">${inner}</div></div>`;
 
 // "versus/pills": grey canvas, two white panels; two blue pills face each other with the logos at the tips; the question below
+// pills surface (user reference): a smooth tonal gradient toward the tip, one soft highlight and fine noise; no watercolour blotches
+const pillDefs = (id, P, flip) => `<linearGradient id="${id}g" x1="${flip ? 1 : 0}" y1="0" x2="${flip ? 0 : 1}" y2="0"><stop offset="0" stop-color="${P.dark}"/><stop offset=".6" stop-color="${P.stops[1]}"/><stop offset="1" stop-color="${P.stops[2]}"/></linearGradient>
+<radialGradient id="${id}h" cx="${flip ? 0.32 : 0.68}" cy=".18" r=".5"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<filter id="${id}n" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="4" stitchTiles="stitch"/><feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 -.17"/><feComposite in2="SourceGraphic" operator="in"/></filter>`;
 function cbVersusPills() {
-  const L = spec.left, R = spec.right, P = cbPal(spec.color), Pr = { ...P, stops: [...P.stops].reverse() };
+  const L = spec.left, R = spec.right, P = cbPal(spec.color);   // as measured on the user's reference: pills bleed off the outer edges (flat cuts), 196px tall, rounded tips 112px apart (57% of the height); logos centred in the tips
   const head = spec.headline || `${L.label} or\n${R.label}?`, fs = cbFs(head, 108, 1300);   // the headline is all near-black, no blue phrase (user)
   return `${CB_CSS}<div class="cbf" style="background:#F2F2F3"></div>
 <div style="position:absolute;left:28px;right:28px;top:28px;height:380px;border-radius:28px;background:#fff;overflow:hidden">
-<svg width="1544" height="380" style="position:absolute;inset:0"><defs>${wcDefs('va', Pr, 6, [0, 0, 1, 0])}${wcDefs('vb', P, 11, [0, 0, 1, 0])}</defs>
-<rect x="-60" y="80" width="760" height="210" rx="105" fill="url(#vag)" filter="url(#vaf)"/><rect x="844" y="80" width="760" height="210" rx="105" fill="url(#vbg)" filter="url(#vbf)"/></svg>
-${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.5, R.label)}</div>
+<svg width="1544" height="380" style="position:absolute;inset:0"><defs>${pillDefs('va', P, false)}${pillDefs('vb', P, true)}</defs>
+${[['va', -240], ['vb', 828]].map(([k, x]) => ['g', 'h'].map((f) => `<rect x="${x}" y="92" width="956" height="196" rx="98" fill="url(#${k}${f})"/>`).join('') + `<rect x="${x}" y="92" width="956" height="196" rx="98" fill="#fff" filter="url(#${k}n)"/>`).join('')}</svg>
+${cbTile(L.logo, 140, 548, 120, 0.5, L.label)}${cbTile(R.logo, 140, 856, 120, 0.5, R.label)}</div>
 <div style="position:absolute;left:28px;right:28px;top:436px;bottom:28px;border-radius:28px;background:#fff;display:grid;place-items:center">
 <div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div></div>`;
 }
