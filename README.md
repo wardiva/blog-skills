@@ -118,7 +118,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `versus/slash` | X vs Y on black: bold names, italic VS (a favourite: may repeat up to 5 times per category) |
 | `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: may repeat up to 5 times per category) |
 | `dark` | Single-product articles (review, pricing, features): the product's colour as the panel, white logo; up to 3 per category |
-| `logotype` | Single-product articles with a black logo: the full lockup on cream with a faint grid; up to 2 per category |
+| `logotype` | Single-product articles with a black logo: icon on a black tile beside the wordmark, on cream with a faint grid; up to 2 per category |
 
 ## Add your own site
 

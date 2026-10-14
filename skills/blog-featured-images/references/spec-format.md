@@ -167,4 +167,4 @@ Review", "product": "Sage Intacct", "color": "#00C247", "panelLogo": "sage.com" 
 { "mode": "logotype", "product": "Notion", "logotype": "notion.com" }
 ```
 - Only for a single-product article whose logo is **black** (icon and wordmark) with strong typography; may repeat up to 2 times per category. Coloured logos use `dark`.
-- `logotype`: the product's domain (the renderer fetches its full lockup and keeps the black version) or `"../assets/<file>.png"`. No other text appears; the heading rule doesn't apply.
+- `logotype`: the product's domain (the renderer fetches its full lockup and keeps the black version) or `"../assets/<file>.png"`. The renderer splits the lockup: the icon goes in white on a black rounded tile beside the wordmark (an icon that is already a tile keeps its own); a logo with no separate icon is refused. No other text appears; the heading rule doesn't apply.

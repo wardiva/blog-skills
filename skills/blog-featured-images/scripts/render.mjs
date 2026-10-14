@@ -484,8 +484,8 @@ ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.
 // "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
 function cbDark() {
   const P = cbPal(spec.color || '#2A74FB'), fs = cbFs(spec.headline, 112, 620), d = spec.panelLogoUrl || spec.panelLogo;
-  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${cbMark()}
-<div style="position:absolute;left:210px;bottom:110px;width:620px">
+  return `${CB_CSS}<div class="cbf" style="background:#0A0A0B"></div>${cbMark().replace('class="cbm"', 'class="cbm" style="left:120px"')}
+<div style="position:absolute;left:120px;bottom:110px;width:620px">
 ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px;margin-bottom:36px"><i style="width:14px;height:14px;border-radius:50%;background:${P.stops[2]};display:block"></i>${esc(spec.tag)}</div>` : ''}
 <div class="cbh" style="position:static;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(spec.headline)}</div></div>
 <div style="position:absolute;left:860px;top:28px;right:28px;bottom:28px;border-radius:28px;overflow:hidden">
@@ -578,9 +578,13 @@ ${WHITE_MARK_JS}`;
 // the cream field with a faint square grid. No other text: the logo's own typography is the image. Only for black logos with strong
 // typography ("LOGOTYPE CHECK FAILED" otherwise); single-product articles with a coloured logo use "dark".
 function logotype() {
-  return `<style>.lgt-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(60,50,40,.10) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(60,50,40,.10) 1.5px,transparent 1.5px);background-size:120px 120px;background-position:-20px -10px}
-.lgt-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:1120px;max-height:380px;width:auto;height:auto}</style>
-<div class="lgt-grid"></div><img class="lgt-logo" src="${LOGOTYPE}" alt="${esc(spec.product || '')}">`;
+  const L = LOGOTYPE, grid = `<style>.lgt-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(60,50,40,.10) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(60,50,40,.10) 1.5px,transparent 1.5px);background-size:120px 120px;background-position:-20px -10px}</style><div class="lgt-grid"></div>`;
+  if (L.lockup) return `${grid}<img src="${L.lockup}" alt="${esc(spec.product || '')}" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:1120px;max-height:380px">`;
+  // the icon sits on a black rounded tile slightly taller than the wordmark (an icon that is already a tile keeps its own)
+  const hw = Math.min(240, 1040 / (1.1 * 1.32 + L.aspect)), t = Math.round(hw * 1.1);
+  const tile = L.tile ? `<img src="${L.icon}" alt="" style="height:${t}px;width:auto;display:block">`
+    : `<div style="width:${t}px;height:${t}px;border-radius:${Math.round(t * 0.22)}px;background:#0A0A0A;display:grid;place-items:center"><img src="${L.icon}" alt="" style="max-width:${Math.round(t * 0.62)}px;max-height:${Math.round(t * 0.62)}px;display:block"></div>`;
+  return `${grid}<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:${Math.round(t * 0.32)}px">${tile}<img src="${L.word}" alt="${esc(spec.product || '')}" style="height:${Math.round(hw)}px;width:auto;display:block"></div>`;
 }
 
 const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype };
@@ -623,6 +627,42 @@ const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default']
 //  - g5 lifts a single floating white card with light rising under it
 const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'sky'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
 // Chatbase-style layouts paint their own canvas (white in a grey frame, or black); 'dark' counts as vibrant
+// logotype: split a black lockup into its icon and wordmark at the widest clear gap; a bare icon is turned white for the black tile
+// crop to the visible ink (sharp's trim keeps transparent rows)
+async function inkCrop(buf) {
+  const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  let x0 = info.width, y0 = info.height, x1 = -1, y1 = -1;
+  for (let y = 0; y < info.height; y++) for (let x = 0; x < info.width; x++) if (data[(y * info.width + x) * 4 + 3] > 20) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  return x1 < 0 ? buf : sharp(buf).extract({ left: x0, top: y0, width: x1 - x0 + 1, height: y1 - y0 + 1 }).png().toBuffer();
+}
+async function splitLockup(buf) {
+  const src = await sharp(buf).trim().ensureAlpha().png().toBuffer();
+  const { data, info } = await sharp(src).raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height, ink = (i) => data[i + 3] > 60 && (data[i] + data[i + 1] + data[i + 2]) / 3 < 160;
+  const col = Array.from({ length: W }, (_, x) => { let n = 0; for (let y = 0; y < H; y++) if (ink((y * W + x) * 4)) n++; return n; });
+  let best = null;
+  for (let x = 0; x < W;) {
+    if (col[x]) { x++; continue; }
+    let e = x; while (e < W && !col[e]) e++;
+    if (x > W * 0.06 && x < W * 0.45 && e - x >= W * 0.02 && (!best || e - x > best[1] - best[0])) best = [x, e];
+    x = e;
+  }
+  if (!best) return null;
+  const icon = await inkCrop(await sharp(src).extract({ left: 0, top: 0, width: best[0], height: H }).png().toBuffer());
+  const word = await inkCrop(await sharp(src).extract({ left: best[1], top: 0, width: W - best[1], height: H }).png().toBuffer());
+  const im = await sharp(icon).raw().toBuffer({ resolveWithObject: true }), d = im.data;
+  let op = 0, dark = 0;
+  for (let i = 0; i < d.length; i += 4) if (d[i + 3] > 60) { op++; if ((d[i] + d[i + 1] + d[i + 2]) / 3 < 160) dark++; }
+  const px = d.length / 4, tile = op / px > 0.8 && dark / px > 0.08;
+  let out = icon;
+  if (!tile) {
+    const o = Buffer.from(d);
+    for (let i = 0; i < o.length; i += 4) { const k = (o[i + 3] / 255) * Math.max(0, Math.min(1, (180 - (o[i] + o[i + 1] + o[i + 2]) / 3) / 130)); o[i] = o[i + 1] = o[i + 2] = 255; o[i + 3] = Math.round(k * 255); }
+    out = await inkCrop(await sharp(o, { raw: im.info }).png().toBuffer());
+  }
+  const uri = (b) => `data:image/png;base64,${b.toString('base64')}`, wm = await sharp(word).metadata();
+  return { icon: uri(out), tile, word: uri(word), aspect: wm.width / wm.height };
+}
 // logotype: fetch the product's full logo lockup (both Brandfetch themes, or a local file), keep the version whose ink is black
 let LOGOTYPE = null;
 if (MODE === 'logotype') {
@@ -647,7 +687,11 @@ if (MODE === 'logotype') {
       const buf = kind === 'file' ? fs.readFileSync(src.startsWith('file:') ? fileURLToPath(src) : path.resolve(path.dirname(specFile), src))
         : Buffer.from(await (await fetch(src, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' } })).arrayBuffer());
       const ink = await inkOf(buf); tried.push(ink);
-      if (ink && ink.lum < 90 && ink.sat < 0.25 && ink.colour < 0.06) { LOGOTYPE = `data:image/png;base64,${(await sharp(buf).trim().png().toBuffer()).toString('base64')}`; break; }
+      if (ink && ink.lum < 90 && ink.sat < 0.25 && ink.colour < 0.06) {
+        LOGOTYPE = (await splitLockup(buf)) || (args.includes('--force') ? { lockup: `data:image/png;base64,${(await sharp(buf).trim().png().toBuffer()).toString('base64')}` } : null);
+        if (!LOGOTYPE) { console.error(`LOGOTYPE CHECK FAILED: the logo for "${ref}" has no separate icon to put on the black tile. Use "dark" for this product.`); process.exit(2); }
+        break;
+      }
     } catch { tried.push(null); }
   }
   if (!LOGOTYPE && !args.includes('--force')) {
@@ -899,7 +943,8 @@ execFileSync(findChrome(), ['--headless=new', '--disable-gpu', '--hide-scrollbar
 fs.rmSync(PROFILE, { recursive: true, force: true });
 const master = await sharp(raw).png().toBuffer();
 fs.writeFileSync(path.join(outDir, 'master.png'), master);
-const crop75 = await sharp(master).extract({ left: 170, top: 0, width: 1260, height: 900 }).toBuffer();
+// dark's text column starts at x 120, so its 7:5 crop shifts left (x 100–1360 keeps the text and the panel's name)
+const crop75 = await sharp(master).extract({ left: MODE === 'dark' ? 100 : 170, top: 0, width: 1260, height: 900 }).toBuffer();
 await sharp(crop75).resize(350, 250).png().toFile(path.join(outDir, 'card-350x250.png'));
 await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));

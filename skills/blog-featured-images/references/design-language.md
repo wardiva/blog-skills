@@ -87,7 +87,7 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 | `versus/slash` | black field with a fine dot grid; the two names in heavy caps (a coloured part each); a big italic **VS** with a glowing diagonal streak | X vs Y (vibrant) |
 | `versus/duo` | black field, a tag pill and a big light-weight white headline top-left (no site mark); two watercolour panels below, each in **that brand's own colour** (the subtle blue when the brand has no vivid colour) with the brand's mark turned white and its name. A low-resolution wordmark is replaced by the name in clean white type | X vs Y (vibrant) |
 | `dark` | black field, site mark, a tag pill and a big medium-weight white name; a watercolour panel in the **product's own colour** with its mark turned white and its name below | **single-product articles** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category (vibrant). Never an X vs Y article |
-| `logotype` | the product's full **black** logo lockup (icon + wordmark) large and centred on the cream field with a faint square grid; no other text, the logo's typography is the image | single-product articles whose logo is black with strong typography; may repeat up to 2 times per category. The renderer checks the logo is black ("LOGOTYPE CHECK FAILED") |
+| `logotype` | the product's **black** logo, large and centred on the cream field with a faint square grid: its icon in white on a **black rounded tile** (slightly taller than the wordmark) beside the black wordmark; an icon that is already a filled tile keeps its own. No other text: the logo's typography is the image | single-product articles whose logo is black with strong typography; may repeat up to 2 times per category. The renderer checks the logo is black ("LOGOTYPE CHECK FAILED") |
 
 - **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Headline key phrases use `{{ }}` and render in the same blue.
 - **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
@@ -95,7 +95,7 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` and `duo` use it for the panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
 - **Single-product articles:** `logotype` when the product's logo is black with strong typography (up to 2 per category), otherwise `dark` (up to 3 per category). X vs Y articles use a versus layout.
 - **Six ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`. **`slash`, `connect` and `duo` are favourites: each may repeat up to 5 times per category** (the rotation lets them through). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
-- These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390.
+- These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390, except `dark`: its text column starts at x 120 for balance with the panel, and its 7:5 crop shifts left to match.
 
 ---
 
