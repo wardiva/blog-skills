@@ -230,7 +230,7 @@ Set `"logo": "<domain>"` wherever a product is named; the renderer's free chain 
 - Light fields (`sky`, `paper`, `cream`, `g5`) carry thin guide lines and fine grain (no grain on `cream`); the vibrant blue carries heavy grain in soft rolling bands.
 - One big white UI card or hero. The blue gradient marks only the active/anchor element; inactive things are grey.
 - Real logos in their original colours, balanced in their tiles; logos alone (no name cards) where they're recognisable.
-- Card-layout headlines are semibold 600: black `#0A0A0B` on `focus` and `receipt`, navy `#0E2A5C` on `ranked`, `timeline` and `hub`.
+- Card-layout headlines are semibold 600 and black `#0A0A0B` (the brand file's `headline` colour; medsoftwarehub and the default brand use black).
 
 ### Shadows follow the background
 
@@ -242,7 +242,7 @@ A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so 
 
 ### Headline layouts speak in one voice
 
-Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words: near-black on pills and connect, white on duo and dark. Card-layout headlines are semibold 600: black `#0A0A0B` on `focus` and `receipt`, navy `#0E2A5C` on `ranked`, `timeline` and `hub`.
+Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words: near-black on pills and connect, white on duo and dark. Card-layout headlines are semibold 600 and black.
 
 ### Never the site mark on a headline layout
 
@@ -344,6 +344,6 @@ Before delivering, check for:
 | One element outweighs its partner (a giant number, a heavy headline) | Rebalance until both read as one composition (taste 1) |
 | Two parallel elements styled differently (one filled tile, one white) | Give them one treatment, or pick a layout where they can match (taste 2) |
 | A pattern you notice before the content, one covering the whole canvas, or one you can't find | Crisp, only around the edges, clear behind the content (taste 4) |
-| A blue or navy headline where the user asked for black | Black `#0A0A0B` (taste 3) |
+| A blue or navy headline | Black `#0A0A0B` (taste 3) |
 | A background with only a headline | Add a real illustration or use another layout (taste 5) |
 | Self-Critique not run | Run it (`references/taste.md`) and fix every "no" |

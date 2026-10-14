@@ -32,7 +32,7 @@ Every image in a family uses the same weights, colours and ink, so the blog grid
 - **Focus:** "Make heading font weight consistent with others." Card-layout headlines are all semibold 600, tracked −0.03em; the focus headline was light 300 and stood out.
 - **Headline layouts:** "Use same font weight 500 medium everywhere": every word in pills, connect, duo and dark is Inter 500.
 - **Receipt:** its headline is black, and semibold like the other card headlines.
-- **Headlines are black, not blue.** The user asked for black on receipt, pills, connect and then focus ("use black color for heading not blue"): navy reads as blue next to a blue accent. Blue belongs to the anchor (a selection box, a number, a winning bar), never to headline ink.
+- **Headlines are black, not blue.** The user asked for black on receipt, pills, connect, focus and then ranked ("the heading color should be black"): navy reads as blue next to a blue accent. Every headline is now black (white on dark fields); blue belongs to the anchor (a selection box, a number, a winning bar), never to headline ink. When the user corrects the same thing twice, apply it to the whole family instead of waiting for the next note.
 
 **Ask:** put the image next to two approved ones from its family. Does any text look lighter, heavier or a different colour?
 
@@ -127,7 +127,7 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Brands | Real current logos, original colours, no site mark on headline layouts (8) |
 | Restraint | Nothing added that the approved template doesn't have (10) |
 | New | The layout is unused on the site, or its repeat has a reason that holds up (14) |
-| Headline ink | No blue words in a headline: black on focus, receipt, pills and connect; white on duo and dark; navy only on ranked, timeline and hub (3) |
+| Headline ink | Headlines black `#0A0A0B` (white on dark fields), never blue or navy, no blue words (3) |
 
 Any "no" is a fix before the image moves on.
 

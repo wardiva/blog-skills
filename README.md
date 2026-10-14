@@ -98,7 +98,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **Backgrounds:** light `sky`, `paper`, `cream`, `g5`, each picked to flatter its illustration (e.g. a big blue tile gets a neutral field, grey bars get sky), plus the vibrant **"deep dunes" blue**, only behind a big white card (blue and black images together on at most 1 in 3 per category).
 - **Grain:** heavy on the blue, fine on `sky`, `paper` and `g5`; `cream` stays clean, with no grain.
 - **Shadows follow the background:** none on the blue or black, minimal and tinted on light fields.
-- **One bold blue anchor**, white UI cards, semibold card headlines (black on focus and receipt, navy on the others; near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
+- **One bold blue anchor**, white UI cards, black headlines (semibold on card layouts; white on dark fields; Inter Medium on headline layouts), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
 ## Layouts (19 modes, 30 layouts)

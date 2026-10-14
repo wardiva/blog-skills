@@ -117,8 +117,8 @@ Two more sets came from the user's references and reviews (Oct 2026). Their tabl
 | Ingredient | Spec |
 |---|---|
 | Canvas | 1600×900 master. All key content inside **x 210–1390** so the 7:5, 2:1 and 16:9 crops keep it |
-| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines are all semibold 600, tracking −0.03em; `focus` and `receipt` headlines are black `#0A0A0B` (the user: "black, not blue"), the others navy `#0E2A5C`; the focus key phrase stays white on its blue box. **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
-| Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; card headlines navy `#0E2A5C` on ranked, timeline and hub, black `#0A0A0B` on focus and receipt; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
+| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines are all semibold 600, tracking −0.03em; every card headline is black `#0A0A0B` (the user asked four times: "black, not blue"); the focus key phrase stays white on its blue box. **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
+| Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines black `#0A0A0B` (the brand's `headline` colour); left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` for the one anchor and active states; sky `#27ACF2` for carets and legend dots |
 | States | **Blue = active/anchor:** checked boxes, progress bar, winning bar, highlighted row, selection box, current timeline dot. **Grey = inactive:** unchecked boxes, other bars, skeletons, empty dots |
 | Cards | White, radius 20–30px, minimal tinted shadow (see 3c), real text from the article |

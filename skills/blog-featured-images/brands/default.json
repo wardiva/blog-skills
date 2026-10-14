@@ -1,10 +1,10 @@
 {
- "name": "Default blue (approved Med Software Hub look)",
- "accentLight": "#3B86F0",
- "accent": "#0A5FD8",
- "sky": "#27ACF2",
- "labelBefore": "#7C7468",
- "labelAfter": "#2C5FAE",
- "legendAfter": "#2C7BD8",
- "headline": "#0E2A5C"
+  "name": "Default blue (approved Med Software Hub look)",
+  "accentLight": "#3B86F0",
+  "accent": "#0A5FD8",
+  "sky": "#27ACF2",
+  "labelBefore": "#7C7468",
+  "labelAfter": "#2C5FAE",
+  "legendAfter": "#2C7BD8",
+  "headline": "#0A0A0B"
 }
