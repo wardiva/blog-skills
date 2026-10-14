@@ -1,10 +1,10 @@
-# Featured image design language
+# Featured Image Design Language
 
-The approved look for blog featured images. **This file is the rulebook.** Two families share it: the **card layouts** (sections 3–5) and the **headline layouts** (section 3d). The images in `references/approved/` show the target, and their specs are in `examples/`.
+You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Two families share it: the **card layouts** (sections 3–5) and the **headline layouts** (section 3d). The images in `references/approved/` show the target, and their specs are in `examples/`.
 
 ---
 
-## 1. The non-negotiable rules
+## 1. The Non-Negotiables
 
 1. **Relatable to the article.** Read the whole article first. Show its core idea with its **own facts** (numbers, names, steps, comparisons) in its own wording. Never invent a figure, an abbreviation or a generic stock concept. Every number on the image appears in the article, **with its qualifier** ("per provider", "up to", "from", "minimum"). Figures shown together never contradict each other (a breakdown sits inside the headline range).
 2. **Understood in 2 seconds** at 350×250 (blog-card size). One idea, one focal point, short real words. Prefer a visual (icon, logo, number, arrow, bars) over a text-only card.
@@ -14,9 +14,9 @@ The approved look for blog featured images. **This file is the rulebook.** Two f
 
 ---
 
-## 2. Visual appeal is a hard gate
+## 2. Visual Appeal Is a Hard Gate
 
-Judge every image like a design director, ideally with a taste skill (impeccable / ui-ux-pro-max) in mind, at full size and at 350×250:
+Passing every check is not enough. Judge every image like a design director, ideally with a taste skill (impeccable / ui-ux-pro-max) in mind, at full size and at 350×250:
 
 1. **Blue dosage.** A big blue mass in the illustration (the hub's blue tile, a giant blue number, a blue selection box) needs a **neutral** field (`cream`, `paper`), never `g5` or the vibrant blue. A grey-heavy illustration needs some colour behind it (`sky`).
 2. **Logo balance.** A logo fills **about 60–70% of its tile**. A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**. Wide wordmarks (SAP, Sage) fill about 65–75% of the tile's width.
@@ -26,7 +26,9 @@ Judge every image like a design director, ideally with a taste skill (impeccable
 
 ---
 
-## 3. Backgrounds
+## 3. Backgrounds Flatter the Illustration
+
+The field is never decoration: it exists to lift the hero off the page.
 
 | Kind | `bg` | Look |
 |---|---|---|
@@ -40,7 +42,7 @@ Judge every image like a design director, ideally with a taste skill (impeccable
 - **Vibrant images** (the deep-dunes blue and the black headline layouts) appear on at most 1 in 3 images per category, never on neighbours ("VIBRANT CHECK FAILED").
 - Only these five backgrounds exist ("BACKGROUND CHECK FAILED" for any other name).
 
-### 3a. Background fit: the background must flatter the illustration
+### 3a. Background fit: every layout has its own list
 Each layout lists only the backgrounds that suit its illustration, best first. Neighbours alternate within that list. A `bg` outside it is refused ("BACKGROUND FIT FAILED").
 
 | Layout | Fits (best first) | Why |
@@ -60,7 +62,7 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 - Cool greys never sit on cream; on cream the guide lines turn warm and the blue margin dots are hidden (automatic).
 - Always check at 350×250 next to the neighbours: the hero separates cleanly, and the field never fights the illustration's colours.
 
-### 3b. Vibrant fit: only a big white card goes on the blue
+### 3b. Only a big white card goes on the blue
 
 | On blue? | Layouts |
 |---|---|
@@ -69,7 +71,7 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 
 The renderer refuses the rest ("VIBRANT FIT FAILED"). On blue, text on the field turns white, and the frame grid, margin dots and all drop shadows are off.
 
-### 3c. Shadows follow the background
+### 3c. Shadows follow the background, never the mood
 - **Vibrant blue and black fields: no drop shadows.** Cards, tiles, icons and the cursor sit flat on the field.
 - **Light backgrounds: minimal shadows, tinted to the field:** cool on `sky`/`g5`, warm on `cream`, neutral on `paper`. Short and soft (opacity at most 8%), just enough to lift the card.
 - 1px edge lines are card edges, not shadows; they stay on light fields.
@@ -77,8 +79,8 @@ The renderer refuses the rest ("VIBRANT FIT FAILED"). On blue, text on the field
 
 ---
 
-## 3d. Headline layouts
-Bold names or a big, tight headline carry the image, with colour in a few clean shapes. Four are for X vs Y and two for single-product articles. **None shows the site mark.**
+## 3d. Headline Layouts: Copy the Reference Exactly
+Each of these came from a reference the user shared; every detail below is measured, not approximated. Bold names or a big, tight headline carry the image, with colour in a few clean shapes. Four are for X vs Y and two for single-product articles. **None shows the site mark.**
 
 | Layout | What you see | Best for |
 |---|---|---|
@@ -100,7 +102,7 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 
 ---
 
-## 4. Fixed ingredients (they make every image one family)
+## 4. Fixed Ingredients Make One Family
 
 | Ingredient | Spec |
 |---|---|
@@ -116,7 +118,7 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 
 ---
 
-## 5. Card layouts and their skeletons
+## 5. Every Card Layout Owns Its Skeleton
 
 Two layouts that share a skeleton (block arrangement) read as the same image at thumbnail size, so each owns a distinct one. **Layout = mode + variant**; background, colours, bleed and text don't make a new layout.
 
@@ -143,9 +145,9 @@ Two layouts that share a skeleton (block arrangement) read as the same image at 
 
 ---
 
-## 6. Balance and anti-bland
+## 6. Calm Is Good; Bland Is Not
 
-Calm is good; bland is not.
+A calm image still needs one thing that grabs the eye and a structure that holds it.
 
 1. **One bold anchor:** exactly one high-contrast element (selection box, VS badge, blue tile, big blue number, highlighted row). Never two, never none.
 2. **One hero at 55–70% of the width**, everything else secondary. The hero's mass sits at or slightly above the canvas centre.
@@ -158,7 +160,7 @@ Calm is good; bland is not.
 
 ---
 
-## 7. Minimal rule and text budget
+## 7. Fifteen Words, Never More
 
 - **Hard cap: 15 visible words per image, max 7 per text element, no sentences.** The renderer refuses more ("TEXT CHECK FAILED") and prints `words=N/15`. Logos and the site mark don't count.
 - **One idea, carried by the fewest facts that prove it:** usually 3–4 rows or 2–3 bullets. Never show a fact twice.
@@ -170,7 +172,7 @@ Calm is good; bland is not.
 
 ---
 
-## 8. Logos
+## 8. Logos Are the Brand's Real, Current Mark
 
 - **Where:** wherever a real product is named: hub tiles, versus sides and table headers, window rows, ranked rows, stat rows. Never decorative.
 - **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` → Simple Icons → Brandfetch icon (used as an app tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped.
@@ -181,7 +183,7 @@ Calm is good; bland is not.
 
 ---
 
-## 9. Variety enforcement
+## 9. Variety Is Enforced, Not Hoped For
 
 1. **One site-wide history per brand** at `~/.blog-featured-images/history-<brand>.json` records every render, wherever its output folder is.
 2. **Strict rotation:** in a category, only the least-used layouts are allowed ("VARIETY CHECK FAILED" lists them), except the repeatable favourites, up to their limits: `versus/pills` 2, `versus/slash`, `versus/connect` and `versus/duo` 5, `dark` 3, `logotype` 2.
@@ -191,7 +193,7 @@ Calm is good; bland is not.
 
 ---
 
-## 10. Heading rule: mirror the blog title
+## 10. The Heading Mirrors the Blog Title
 
 The heading uses **the blog title's own words and meaning, just shorter**. No creative rewording.
 
@@ -209,7 +211,7 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ---
 
-## 11. Typography balance
+## 11. One Dominant Line of Type
 
 | Role | Size (on the 1600×900 master) |
 |---|---|
@@ -225,19 +227,19 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ---
 
-## 12. Site mark (optional, some images only)
+## 12. The Site Mark Is Rare
 
 `"craft": true` + `"series": "Pricing"` adds the site's mark and a mono series tag (`PRICING`, `COMPARISON`, `GUIDE`). Use it only in a natural empty slot (above a centred headline, under a centred group), on **at most 1 in 3 images per category, never on neighbours** ("SERIES CHECK FAILED"). It doesn't count toward the word budget. The craft kit also switches labels to mono caps and ink to near-black; it is opt-in.
 
 ---
 
-## 13. Guardrails
+## 13. Never
 
 - **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash` and `versus/duo`, and black ink only for the pills and connect headlines (`#0A0A0B`), `logotype` and `dark`'s top-left icon.
 - **Logos:** never a tiny logo in a big tile, an app icon shrunk inside a white tile, or invented or warped logos.
 - **Layouts:** never two layouts with the same skeleton; never anything added to fill space; a white design always has the grey frame; never the site mark on a headline layout; never a one-brand image for an X vs Y article.
 - **Details:** no heavy shadows, small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos or neon.
 
-## 14. Inspiration
+## 14. Borrow Principles, Never Ornaments
 
 Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments: variety comes from layout, never from palette or type.

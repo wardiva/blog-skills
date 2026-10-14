@@ -1,6 +1,6 @@
-# Spec format
+# Spec Format
 
-One JSON file per article. Top-level fields shared by all layouts:
+You write one JSON file per article, from the article's own facts. Start from the closest spec in `examples/` (complete and renderable); the snippets below show only each layout's own fields. Top-level fields shared by all layouts:
 
 | Field | Required | Meaning |
 |---|---|---|

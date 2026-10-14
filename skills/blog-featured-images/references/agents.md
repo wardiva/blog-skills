@@ -129,7 +129,7 @@ Keep this context: you may get re-rendered images to re-check.
 
 **V7. Logos look right.** Every logo is loaded, legible at 350×250, balanced against the others, and the brand's real current mark (not an anniversary or campaign badge).
 
-**V8. Guardrails respected** (design language, section 13).
+**V8. Guardrails respected** (design language, section 13, "Never").
 
 **V9. Decided, never re-opened.** These were tried and rejected by the user; QA never asks for them and a Maker never adds them:
 - `versus/logos`

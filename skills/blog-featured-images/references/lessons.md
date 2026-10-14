@@ -1,8 +1,8 @@
-# Lessons learned
+# Lessons Learned
 
-Read this before every batch.
+Read this before every batch. Each lesson cost a real batch or a review round; you don't have to pay for it again.
 
-## 1. Speed (the top priority)
+## 1. Speed Is the Top Priority
 
 | Job | Fast way | Slow way (don't) |
 |---|---|---|
@@ -17,7 +17,7 @@ Read this before every batch.
 - Never sit idle while agents run; prepare the next step. Deliver each image as soon as it passes. One-line progress updates.
 - Give agents only what they need: the article file, the spec-format section for their layout, the approved images.
 
-## 2. Tool gotchas
+## 2. Tool Gotchas
 
 - Long Python or JS inside a bash heredoc breaks on quotes. Write a script file and run it.
 - Paths with spaces: never pass them through a shell. Call `node <tool>.js` directly or use an env var such as `AGENT_BROWSER_EXECUTABLE_PATH`.
@@ -26,7 +26,7 @@ Read this before every batch.
 - Brandfetch's logo CDN needs a client ID, must be hotlinked, and blocks the "HeadlessChrome" user agent (the renderer sends a normal one). Some brands (NetSuite, SAP, Sage, Epicor) have no symbol, only an icon; the chain handles it.
 - A message sent to an agent just as it finishes may be dropped. If no reply comes, send it again.
 
-## 3. Pre-flight before briefing Makers
+## 3. Pre-Flight Before Briefing Makers
 
 - **Count:** does the layout hold as many items as the article has (a "7 best" article needs 7 hub tiles)?
 - **Names:** will the article's own product names fit? Never abbreviate a name the article doesn't.
@@ -34,7 +34,7 @@ Read this before every batch.
 - **Logos:** pills needs a logo that sits on white, connect a solid app icon, logotype a black logo with a separate icon. Check with `scripts/logo-check.mjs` while planning, never after rendering.
 - **Renderer bugs are the Orchestrator's job.** Fix the code once so every future image benefits; Makers only change specs.
 
-## 4. Taste
+## 4. Taste Decides
 
 - **Visual appeal decides.** An image that passes every check can still fail. Judge it with a taste skill (impeccable) before sending.
 - **Pair the background with the illustration:** grey-heavy → `sky`; a floating white card → `g5`; a big blue mass (hub tile) → `cream`/`paper`; an app window → `sky`; a thin timeline → `cream`.
@@ -48,7 +48,7 @@ Read this before every batch.
 - When asked whether an image reflects the article, answer with a table mapping every element on the image to the sentence it came from.
 - Approved rules win over QA suggestions that break them; say so in the fix message.
 
-## 5. Variety must be structural
+## 5. Variety Must Be Structural
 
 - One site-wide history per brand counts every render, wherever its folder is.
 - Layout identity (mode + variant) is the rule, and QA does the visual side-by-side (pixel similarity can't tell layouts apart).
@@ -56,7 +56,7 @@ Read this before every batch.
 - **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting for rotation, and can't be re-created. Never delete the history file.
 - An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
 
-## 6. First real batch (17 articles)
+## 6. What the First Real Batch Taught (17 Articles)
 
 - **Qualifiers got dropped:** "$140/mo minimum" lost "per provider", "96% collection rate" lost "up to". Copy the article's qualifier with the figure. This is why facts have their own QA agent: a fact error hides easily behind a good-looking image.
 - **A breakdown contradicted its hero** ("4–9%" hero, "3–6%" row). Rows must sit inside the hero's range.
@@ -70,7 +70,7 @@ Read this before every batch.
 - **Work in the project folder.** One batch rendered into a temporary scratch folder; delivered images must live in the project's `featured-images/` (finalize also keeps a copy in `~/.blog-featured-images/delivered/`).
 - **Fix the skill, then publish:** renderer fixes made during a batch go into the skill and are pushed, never left as local patches.
 
-## 7. Facts
+## 7. Facts Come From the Raw Text
 
 - Use the article's own wording for names and numbers; QA compares every value against the article file.
 - Raw article text (agent-browser) beats a summary (WebFetch) for checking facts.
