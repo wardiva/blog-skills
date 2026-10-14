@@ -416,7 +416,7 @@ function focus() {
   const real = rows.slice(0, 3).map((r, i) => `<div class="fr${i === hi ? ' on' : ''}"><b>${esc(r.name)}</b><i><i style="width:${Math.max(8, Math.round(((r.pct || 1) / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
   const ghosts = [62, 44, 30].map((w) => `<div class="fr gh"><b><s style="width:70px"></s></b><i><i style="width:${w}%"></i></i><em><s style="width:80px"></s></em></div>`).join('');
   return `<style>
-.fh{position:absolute;left:50%;top:176px;transform:translateX(calc(-50% - 3px));width:1120px;text-align:center;font-size:64px;font-weight:600;line-height:1.12;letter-spacing:-.03em;color:#0E2A5C}
+.fh{position:absolute;left:50%;top:176px;transform:translateX(calc(-50% - 3px));width:1120px;text-align:center;font-size:64px;font-weight:600;line-height:1.12;letter-spacing:-.03em;color:#0A0A0B}
 .sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 4px;font-weight:600;${ANCHOR}}
 .sel i{position:absolute;width:16px;height:16px;background:#3B86F0}
 .sel .h1{left:-20px;top:-20px}.sel .h2{right:-20px;top:-20px}.sel .h3{left:-20px;bottom:-20px}.sel .h4{right:-20px;bottom:-20px}
@@ -621,12 +621,13 @@ if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--fo
 // patterns stay faint (user: "pattern is too much"): the dot grid is sparse and light; the "+" grid is approved as is
 const glPal = () => ({
   light: { bg: '#FFFFFF', ink: '#0A0A0B', mute: '#8A8F98', mark: 'rgba(20,26,38,.20)', dot: 'rgba(20,26,38,.10)', acc: 'linear-gradient(180deg,#3B86F0,#0A5FD8)', glow: 'rgba(47,123,255,.20)' },
-  black: { bg: '#0A0A0B', ink: '#FFFFFF', mute: '#8A8F98', mark: 'rgba(255,255,255,.16)', dot: 'rgba(255,255,255,.08)', acc: 'linear-gradient(180deg,#7DBBFF,#2F7BFF)', glow: 'rgba(47,123,255,.42)' },
+  black: { bg: '#0A0A0B', ink: '#FFFFFF', mute: '#8A8F98', mark: 'rgba(255,255,255,.38)', dot: 'rgba(255,255,255,.08)', acc: 'linear-gradient(180deg,#7DBBFF,#2F7BFF)', glow: 'rgba(47,123,255,.42)' },
   blue: { bg: `${BLUE_GLOW} center/cover`, ink: '#FFFFFF', mute: 'rgba(255,255,255,.72)', mark: 'rgba(255,255,255,.30)', dot: 'rgba(255,255,255,.13)', acc: 'linear-gradient(180deg,#FFFFFF,#BFE0FF)', glow: 'rgba(255,255,255,.26)' },
 })[GL_FIELD];
 const glPlus = (c, step = 180, ox = 70, oy = 45, mask = '') => { let p = ''; for (let y = oy; y < 900; y += step) for (let x = ox; x < 1600; x += step) p += `M${x - 8} ${y}h16M${x} ${y - 8}v16`; return `<svg width="1600" height="900" style="position:absolute;inset:0;${mask}"><path d="${p}" stroke="${c}" stroke-width="2"/></svg>`; };
-// on dark fields the grid is faint and only frames the edges (user: "too dark, shouldn't be in the whole image")
-const GL_EDGE_MASK = 'opacity:.5;-webkit-mask-image:radial-gradient(70% 75% at 50% 50%,transparent 45%,#000 100%);mask-image:radial-gradient(70% 75% at 50% 50%,transparent 45%,#000 100%)';
+// on dark fields the grid is bright and crisp, but only around the edges, clear behind the content
+// (user: "too dark, light it, shouldn't be in the whole image"; then "literally not visible" when it was faded instead of brightened)
+const GL_EDGE_MASK = '-webkit-mask-image:radial-gradient(70% 75% at 50% 50%,transparent 35%,#000 100%);mask-image:radial-gradient(70% 75% at 50% 50%,transparent 35%,#000 100%)';
 const glDots = (c, step = 26, r = 1.7) => `<div class="cbf" style="background-image:radial-gradient(circle,${c} ${r}px,transparent ${r + 0.6}px);background-size:${step}px ${step}px;background-position:${step / 2}px ${step / 2}px"></div>`;
 let glN = 0;
 const glBg = (css) => { const k = 'glb' + (++glN); return `<style>.${k}{${css}}</style><div class="cbf ${k}"></div>`; };

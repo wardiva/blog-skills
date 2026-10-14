@@ -32,6 +32,7 @@ Every image in a family uses the same weights, colours and ink, so the blog grid
 - **Focus:** "Make heading font weight consistent with others." Card-layout headlines are all semibold 600, navy, tracked −0.03em; the focus headline was light 300 and stood out.
 - **Headline layouts:** "Use same font weight 500 medium everywhere": every word in pills, connect, duo and dark is Inter 500.
 - **Receipt:** its headline is black, and semibold like the other card headlines.
+- **Headlines are black, not blue.** The user asked for black on receipt, pills, connect and then focus ("use black color for heading not blue"): navy reads as blue next to a blue accent. Blue belongs to the anchor (a selection box, a number, a winning bar), never to headline ink.
 
 **Ask:** put the image next to two approved ones from its family. Does any text look lighter, heavier or a different colour?
 
@@ -41,9 +42,9 @@ Dot grids, "+" grids and rings add texture. They are faint, and they frame the c
 
 - **Dynamics 365 vs Acumatica (slash):** "The pattern should not be in all area": the dot grid is masked clear behind the names.
 - **Tiles:** "Pattern is too much": the ring and dots stay sparse and faint.
-- **Swap on black:** "Pattern is too dark, light it, and it shouldn't be in the whole image": the "+" grid on dark fields is half as strong and only frames the edges.
+- **Swap on black:** "Pattern is too dark, light it, and it shouldn't be in the whole image." On a black field "too dark" meant dim and murky, so the marks became **brighter and crisper**, and only around the edges. Fading them instead made them "literally not visible".
 
-**Ask:** cover the pattern with your thumb. If the image loses nothing, the pattern is right. If you notice the pattern before the content, it's too strong.
+**Ask:** is the pattern crisp where it shows, and clear behind the content? If you notice it before the content, it's too strong; if you can't find it, it's gone, which is just as wrong.
 
 ### 5. A background is not an image
 
@@ -88,11 +89,15 @@ When the user shares a reference, every detail is the rule: tiles behind icons, 
 
 "Before is better" came back three times: auto-sizing the window, a pointer callout on the timeline, logo badges scaled up. A QA fix that changes the look is shown next to the original first, and the user's approved look wins over a checklist suggestion.
 
-### 11. Fewer words, bigger meaning
+### 11. Fix by the amount asked
+
+A note names a direction, not an extreme. "Lighter" means visibly lighter, not gone; "smaller" means smaller, not tiny. Read the words in context (on black, "too dark" meant the marks were dim, so "light it" meant brighter), make the change the note asks for, and compare it with the original. Overcorrecting cost a round: the swap grid went from too dim to invisible.
+
+### 12. Fewer words, bigger meaning
 
 Fifteen words is a ceiling, not a target. "Too much text" (stack): keep the title plus one lead line when the lead already carries the figure.
 
-### 12. Optical, not mathematical
+### 13. Optical, not mathematical
 
 "It doesn't look centred, it should be 2–3px back": the focus heading is nudged 3px left because the selection box makes it look off-centre. The "vs" sits vertically centred between names by eye. Trust the eye at full size and at 350×250.
 
@@ -105,12 +110,13 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Balance | The heaviest element is the one that should be; its partner holds its own (1) |
 | Sameness | Parallel elements share one treatment (2) |
 | Family | Weights, colours and ink match the approved images beside it (3) |
-| Pattern | Faint, framing, never covering the canvas (4) |
+| Pattern | Crisp where it shows, around the edges, clear behind the content (4) |
 | Illustration | Removing the headline still leaves something to look at (5) |
 | Field | The hero separates cleanly from the background at 350×250 (6) |
 | Bold | Exactly one bold thing; it would stop a scroll (7) |
 | Brands | Real current logos, original colours, no site mark on headline layouts (8) |
 | Restraint | Nothing added that the approved template doesn't have (10) |
+| Headline ink | Headlines black (or white on dark), never blue or navy-blue (3) |
 
 Any "no" is a fix before the image moves on.
 

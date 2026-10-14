@@ -152,7 +152,7 @@ Keep this context: you may get re-rendered images to re-check.
 - versus/type on the black field, badge on the blue field, or versus/glass on the blue field (Gumloop layouts)
 - `brandline`, or any background carrying only a headline
 - one filled tile next to one white tile in versus/tiles
-- a "+" grid or dot grid that is strong or covers the whole canvas on a dark field
+- a "+" grid or dot grid that covers the whole canvas on a dark field, or one faded until it disappears
 - a stat number that outweighs its breakdown card
 - busy patterns on the Gumloop layouts: dot grids and the tiles ring stay sparse and faint
 - `versus/rows` in any field (the user disapproved it); `versus/split` or `versus/duet` unless the user asks for them

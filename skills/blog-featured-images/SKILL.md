@@ -54,7 +54,7 @@ Read these before your first image in a session:
 - `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, and the "Never" list).
 - `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
 - `references/agents.md`: the four roles (each one's job, steps, prompt and limits), the fast-batch flow, and the Visual and Fact checklists.
-- `references/taste.md`: the user's taste, distilled from every review note: twelve principles, each with the image that taught it, and the Self-Critique every image must pass.
+- `references/taste.md`: the user's taste, distilled from every review note: thirteen principles, each with the image that taught it, and the Self-Critique every image must pass.
 - `references/lessons.md`: speed tools, pre-flight checks and gotchas.
 
 ## Report Format (Required)
@@ -339,6 +339,7 @@ Before delivering, check for:
 | A rejected idea coming back (V9) | Remove it; the user already said no |
 | One element outweighs its partner (a giant number, a heavy headline) | Rebalance until both read as one composition (taste 1) |
 | Two parallel elements styled differently (one filled tile, one white) | Give them one treatment, or pick a layout where they can match (taste 2) |
-| A pattern you notice before the content, or one covering the whole canvas | Fainter, and only framing the edges (taste 4) |
+| A pattern you notice before the content, one covering the whole canvas, or one you can't find | Crisp, only around the edges, clear behind the content (taste 4) |
+| A blue or navy headline where the user asked for black | Black `#0A0A0B` (taste 3) |
 | A background with only a headline | Add a real illustration or use another layout (taste 5) |
 | Self-Critique not run | Run it (`references/taste.md`) and fix every "no" |
