@@ -496,11 +496,13 @@ ${spec.tag ? `<div style="display:inline-flex;align-items:center;gap:14px;paddin
 // "versus/connect": centred headline with a gradient phrase, a divider
 // with a sparkle, two big logo tiles linked by thin wavy strands to a white VS circle; small dot patches top-left and top-right.
 function cbVersusConnect() {
-  const L = spec.left, R = spec.right, head = spec.headline || `{{${L.label} vs}}\n${R.label}`, fs = cbFs(head, 104, 900);   // bold display type runs wide: 900 keeps a long first line clear of the corner dot patches
+  const L = spec.left, R = spec.right, head = spec.headline || `${L.label} vs\n${R.label}`, fs = cbFs(head, 104, 900);   // 900 keeps a long first line clear of the corner dot patches
   const S = 240, cy = 620, lx = 330, rx = 1270, cr = 74;
   const dots = (x0) => { let d = ''; for (let r = 0; r < 6; r++) for (let c = 0; c < 8; c++) d += `<circle cx="${x0 + c * 22}" cy="${70 + r * 22}" r="2.6"/>`; return d; };
   const wave = (x1, x2, a, ph) => { const k = (x2 - x1) * 0.42; return `M${x1} ${cy} C ${x1 + k} ${cy - a * ph}, ${x2 - k} ${cy + a * ph}, ${x2} ${cy}`; };   // one long gentle S per strand; the pair crosses mid-way
   const le = lx + S / 2 + 10, re = rx - S / 2 - 10;
+  // the headline is all near-black; each tile is the brand's own app icon, edge to edge (falls back to a white tile only under --force)
+  const iconTile = (k, d, x, y) => CONNECT_ICON[k] ? `<div class="ct" style="left:${x}px;top:${y}px;width:${S}px;height:${S}px;border-radius:${Math.round(S * 0.24)}px;box-shadow:0 10px 26px rgba(10,40,120,.12)"><img src="${CONNECT_ICON[k]}" alt="${esc(d.label)}" style="width:100%;height:100%;object-fit:cover;display:block"></div>` : cbTile(d.logo, S, x, y, 0.24, d.label);
   const strands = [wave(le, 800 - cr, 34, 1), wave(le, 800 - cr, 34, -1), wave(800 + cr, re, 34, 1), wave(800 + cr, re, 34, -1)].map((d) => `<path d="${d}"/>`).join('');
   return `${CB_CSS}<style>.bt2{background:linear-gradient(90deg,#1E88F5,#0F6FE0 60%,#2E6BFF);-webkit-background-clip:text;background-clip:text;color:transparent}</style>
 ${cbFramed(`<div style="position:absolute;inset:0;background:radial-gradient(60% 45% at 50% 82%,rgba(47,123,255,.09),transparent 70%)"></div>
@@ -511,8 +513,8 @@ ${cbFramed(`<div style="position:absolute;inset:0;background:radial-gradient(60%
 <g fill="#fff" stroke="#9DB8F2" stroke-width="2.5"><circle cx="${le}" cy="${cy}" r="8"/><circle cx="${re}" cy="${cy}" r="8"/></g>
 <g stroke="#9DB8F2" stroke-width="2"><line x1="590" y1="372" x2="770" y2="372"/><line x1="830" y1="372" x2="1010" y2="372"/></g>
 <path d="M800 356 C802 368 804 370 816 372 C804 374 802 376 800 388 C798 376 796 374 784 372 C796 370 798 368 800 356Z" fill="#2F6BFF"/></svg>
-<div class="cbh" style="left:0;right:0;top:118px;text-align:center;font-size:${fs}px">${cbHl(head).replace(/class="bt"/g, 'class="bt2"')}</div>
-${cbTile(L.logo, S, lx - S / 2, cy - S / 2, 0.24, L.label)}${cbTile(R.logo, S, rx - S / 2, cy - S / 2, 0.24, R.label)}
+<div class="cbh" style="left:0;right:0;top:118px;text-align:center;font-size:${fs}px">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div>
+${iconTile('left', L, lx - S / 2, cy - S / 2)}${iconTile('right', R, rx - S / 2, cy - S / 2)}
 <div style="position:absolute;left:${800 - cr}px;top:${cy - cr}px;width:${cr * 2}px;height:${cr * 2}px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 12px 30px rgba(47,90,200,.16),0 0 0 1px rgba(47,90,200,.08)"><b class="bt2" style="font-size:46px;font-weight:500;letter-spacing:-.03em">VS</b></div>`)}`;
 }
 
@@ -662,6 +664,8 @@ async function splitLockup(buf) {
   const uri = (b) => `data:image/png;base64,${b.toString('base64')}`, wm = await sharp(word).metadata();
   return { icon: uri(out), tile, word: uri(word), aspect: wm.width / wm.height };
 }
+// refuse after sharp's worker threads settle: an immediate process.exit can crash Node on Windows (exit 127 instead of 2)
+const refuse = async (msg) => { console.error(msg); await new Promise((r) => setTimeout(r, 200)); process.exit(2); };
 // logotype: fetch the product's full logo lockup (both Brandfetch themes, or a local file), keep the version whose ink is black
 let LOGOTYPE = null;
 if (MODE === 'logotype') {
@@ -688,24 +692,24 @@ if (MODE === 'logotype') {
       const ink = await inkOf(buf); tried.push(ink);
       if (ink && ink.lum < 90 && ink.sat < 0.25 && ink.colour < 0.06) {
         LOGOTYPE = (await splitLockup(buf)) || (args.includes('--force') ? { lockup: `data:image/png;base64,${(await sharp(buf).trim().png().toBuffer()).toString('base64')}` } : null);
-        if (!LOGOTYPE) { console.error(`LOGOTYPE CHECK FAILED: the logo for "${ref}" has no separate icon to put on the black tile. Use "dark" for this product.`); process.exit(2); }
+        if (!LOGOTYPE) { await refuse(`LOGOTYPE CHECK FAILED: the logo for "${ref}" has no separate icon to put on the black tile. Use "dark" for this product.`); }
         break;
       }
     } catch { tried.push(null); }
   }
   if (!LOGOTYPE && !args.includes('--force')) {
-    console.error(`LOGOTYPE CHECK FAILED: no black logo lockup found for "${ref}". This layout needs a black logo (icon and wordmark). Use "dark" for this product, or save its black logo to featured-images/assets/ and set "logotype": "../assets/<file>.png".`);
-    process.exit(2);
+    await refuse(`LOGOTYPE CHECK FAILED: no black logo lockup found for "${ref}". This layout needs a black logo (icon and wordmark). Use "dark" for this product, or save its black logo to featured-images/assets/ and set "logotype": "../assets/<file>.png".`);
   }
 }
 // versus/pills: each logo sits on a white circle, so both products need a mark that works on white. Resolve the logo chain the
 // way the page does; a product whose only logo is a solid app tile (e.g. NetSuite's dark square) is refused.
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
+const solidTile = async (buf) => {   // an app icon that fills its square: opaque, non-white corners
+  const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height, at = (x, y) => data.subarray((y * W + x) * 4, (y * W + x) * 4 + 4);
+  return [[2, 2], [W - 3, 2], [2, H - 3], [W - 3, H - 3]].every(([x, y]) => { const q = at(x, y); return q[3] > 200 && !(q[0] > 232 && q[1] > 232 && q[2] > 232); });
+};
 if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
-  const solidTile = async (buf) => {
-    const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-    const W = info.width, H = info.height, at = (x, y) => data.subarray((y * W + x) * 4, (y * W + x) * 4 + 4);
-    return [[2, 2], [W - 3, 2], [2, H - 3], [W - 3, H - 3]].every(([x, y]) => { const q = at(x, y); return q[3] > 200 && !(q[0] > 232 && q[1] > 232 && q[2] > 232); });
-  };
   for (const side of [spec.left, spec.right]) {
     if (!side || !side.logo) continue;
     let onWhite = null;
@@ -714,7 +718,7 @@ if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
         let buf;
         if (url.startsWith('data:')) buf = Buffer.from(url.split(',')[1], 'base64');
         else {
-          const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' } });
+          const r = await fetch(url, { headers: { 'user-agent': UA } });
           if (!r.ok) continue;
           buf = Buffer.from(await r.arrayBuffer());
         }
@@ -723,8 +727,24 @@ if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
       } catch { continue; }
     }
     if (onWhite === false) {
-      console.error(`PILLS LOGO CHECK FAILED: ${side.label}'s only logo is a solid app tile, and versus/pills needs a logo on a white circle. Use versus/connect, versus/slash or versus/duo, or save the brand's transparent logo to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
-      process.exit(2);
+      await refuse(`PILLS LOGO CHECK FAILED: ${side.label}'s only logo is a solid app tile, and versus/pills needs a logo on a white circle. Use versus/connect, versus/slash or versus/duo, or save the brand's transparent logo to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
+    }
+  }
+}
+// versus/connect: each tile is the brand's own app icon in its original colours, filling the tile edge to edge with its own
+// background colour (user). Both brands need a solid app icon (Brandfetch icon or a local file); otherwise the layout is refused.
+const CONNECT_ICON = {};
+if (LAYOUT === 'versus/connect') {
+  for (const [k, side] of [['left', spec.left], ['right', spec.right]]) {
+    const d = side && side.logo;
+    let buf = null;
+    try {
+      if (d && localLogo(d)) buf = Buffer.from(localLogo(d).split(',')[1], 'base64');
+      else if (d && BF_CLIENT) { const r = await fetch(bf(d, 'icon', '404'), { headers: { 'user-agent': UA } }); if (r.ok) buf = Buffer.from(await r.arrayBuffer()); }
+    } catch { buf = null; }
+    if (buf && await solidTile(buf).catch(() => false)) CONNECT_ICON[k] = `data:image/png;base64,${(await sharp(buf).png().toBuffer()).toString('base64')}`;
+    else if (!args.includes('--force')) {
+      await refuse(`CONNECT LOGO CHECK FAILED: no app icon with its own background colour found for ${side ? side.label : k}${BF_CLIENT ? '' : ' (no Brandfetch client ID set)'}. versus/connect shows each brand's app icon in its original colours. Use versus/pills, versus/slash or versus/duo, or save the brand's square app icon to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
     }
   }
 }

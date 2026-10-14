@@ -77,6 +77,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
+| `CONNECT LOGO CHECK FAILED` | `versus/connect` needs each brand's own app icon (with its background colour); otherwise use another versus layout |
 | `PILLS LOGO CHECK FAILED` | `versus/pills` needs logos that sit on white; a brand with only a solid app icon uses another versus layout |
 | `LOGOTYPE CHECK FAILED` | `logotype` needs a black logo with a separate icon; coloured logos use `dark` |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
@@ -115,7 +116,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | Layout | Best for |
 |---|---|
 | `versus/pills` | X vs Y: two facing pills with the logos on white circles, the question below in black; only when both logos work on white; up to 2 per category |
-| `versus/connect` | X vs Y: two logo tiles linked to a VS circle (a favourite: may repeat up to 5 times per category) |
+| `versus/connect` | X vs Y: each brand's own app icon in its original colours, linked to a VS circle, black headline; only when both brands have an app icon (a favourite: may repeat up to 5 times per category) |
 | `versus/slash` | X vs Y on black: bold names, italic VS (a favourite: may repeat up to 5 times per category) |
 | `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: may repeat up to 5 times per category) |
 | `dark` | Single-product articles (review, pricing, features): the product's icon in black on a white tile top-left, its colour as the panel, white logo; up to 3 per category |
