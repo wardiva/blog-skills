@@ -67,7 +67,7 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 
 **2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
-**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `dark`). Blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390.
+**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`). Blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390.
 
 **3. Layout never used twice.** No other image in the category has this layout unless every layout has been used (then it's one of the least-used). Next to every other 350×250 card in the category, no two read as the same skeleton. Same-topic articles use different modes.
 

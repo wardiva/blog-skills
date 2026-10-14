@@ -85,13 +85,14 @@ Bold names or a big, tight headline carry the image, with colour in a few clean 
 | `versus/pills` | grey frame, two white panels: on top, two blue pills face each other with the two logos at the tips; below, the question ("A or {{B?}}") | X vs Y |
 | `versus/connect` | grey frame, one white panel: a centred headline with a blue phrase and a small sparkle divider; two big logo tiles linked by thin crossing strands to a white **VS** circle; small dot patches in the top corners | X vs Y |
 | `versus/slash` | black field with a fine dot grid; the two names in heavy caps (a coloured part each); a big italic **VS** with a glowing diagonal streak | X vs Y (vibrant) |
+| `versus/duo` | black field, a tag pill and a big light-weight white headline top-left, site mark top-right; two watercolour panels below, each in **that brand's own colour** (the subtle blue when the brand has no vivid colour) with the brand's mark turned white and its name. A low-resolution wordmark is replaced by the name in clean white type | X vs Y (vibrant) |
 | `dark` | black field, site mark, a tag pill, a white headline; a panel in the **product's own brand colour** with its white logo | one vivid brand: reviews, pricing, "is X worth it" (vibrant). Never an X vs Y article |
 
 - **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. Headline key phrases use `{{ }}` and render in the same blue.
 - **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
-- **Black fields** (`dark`, `versus/slash`) count as vibrant (see 3).
+- **Black fields** (`dark`, `versus/slash`, `versus/duo`) count as vibrant (see 3).
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` uses it for its panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
-- **Five ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`. **`slash` and `connect` are favourites: each may repeat up to 5 times per category** (the rotation lets them through). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
+- **Six ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`. **`slash` and `connect` are favourites: each may repeat up to 5 times per category** (the rotation lets them through). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
 - These layouts paint their own canvas; `bg` is ignored. Headlines follow the heading rule (10). Every word stays inside x 210–1390.
 
 ---

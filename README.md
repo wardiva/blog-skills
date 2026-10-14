@@ -90,7 +90,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 - **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (12 modes, 17 layouts)
+## Layouts (12 modes, 18 layouts)
 
 **Card layouts:**
 
@@ -115,6 +115,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `versus/pills` | X vs Y: two facing pills with the logos, the question below |
 | `versus/connect` | X vs Y: two logo tiles linked to a VS circle (a favourite: may repeat up to 5 times per category) |
 | `versus/slash` | X vs Y on black: bold names, italic VS (a favourite: may repeat up to 5 times per category) |
+| `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos |
 | `dark` | One vivid brand (never X vs Y), its colour as the panel |
 
 ## Add your own site

@@ -10,7 +10,7 @@ One JSON file per article. Top-level fields shared by all layouts:
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They never share a mode |
 | `slug` | yes | Output folder name and history key (unique per article) |
 | `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layout: `dark` |
-| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, and the headline variants `pills`, `connect`, `slash`. Mode + variant = one layout |
+| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, and the headline variants `pills`, `connect`, `slash`, `duo`. Mode + variant = one layout |
 | `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on about 1 in 3 images, only for `checklist`, `versus/table`, `window`, `before-after/flow` |
 | `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns it off on a light field |
 | `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`. The renderer finds the logo itself. When it finds the wrong mark, use a file instead: `"../assets/<file>.png"` (relative to the spec; the official mark saved from the brand's website) |
@@ -126,7 +126,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
 ---
 
 # Headline layouts
-Four layouts: `versus/pills`, `versus/connect`, `versus/slash` and `dark`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
+Five layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo` and `dark`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
 
 ## Versus pills (`"mode": "versus", "variant": "pills"`)
 ```json
@@ -146,6 +146,13 @@ Four layouts: `versus/pills`, `versus/connect`, `versus/slash` and `dark`. They 
   "left": { "label": "Dynamics\n{{365}}", "color": "#3D7BFF" }, "right": { "label": "Acumatica", "color": "#36C5F0" } }
 ```
 - Names in caps; the `{{ }}` part takes that side's `color` (without markup: the last word, or the whole single word). Short names read best (≤ 10 letters per line).
+
+## Versus duo (`"mode": "versus", "variant": "duo"`; black, counts as vibrant)
+```json
+{ "mode": "versus", "variant": "duo", "tag": "Imaging comparison", "headline": "Sectra vs Intelerad\nfor Imaging Centers",
+  "left": { "label": "Sectra", "logo": "sectra.com" }, "right": { "label": "Intelerad", "logo": "intelerad.com", "color": "#7A1233" } }
+```
+- Each side's `color` is that brand's own colour (taken from its website or logo); leave it out for the subtle blue. The logo is turned white automatically; a small wordmark is replaced by the name.
 
 ## Dark (`"mode": "dark"`; black, counts as vibrant)
 ```json

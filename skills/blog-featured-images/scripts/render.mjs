@@ -97,6 +97,7 @@ function versus() {
   if (spec.variant === 'pills') return cbVersusPills();
   if (spec.variant === 'connect') return cbVersusConnect();
   if (spec.variant === 'slash') return cbVersusSlash();
+  if (spec.variant === 'duo') return cbVersusDuo();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'logos') {
@@ -425,9 +426,9 @@ function focus() {
 .sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 4px;font-weight:400;${ANCHOR}}
 .sel i{position:absolute;width:16px;height:16px;background:#3B86F0}
 .sel .h1{left:-20px;top:-20px}.sel .h2{right:-20px;top:-20px}.sel .h3{left:-20px;bottom:-20px}.sel .h4{right:-20px;bottom:-20px}
-.fc{position:absolute;left:50%;top:330px;transform:translateX(-50%);width:900px;height:620px;padding:42px 52px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
+.fc{position:absolute;left:50%;top:330px;transform:translateX(-50%);width:1120px;height:620px;padding:42px 52px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
 .fct{display:flex;align-items:center;gap:12px;margin-bottom:22px;font-size:22px;font-weight:500;color:#7F8794}.fct s{display:block;height:10px;width:90px;border-radius:5px;background:#EEF0F4;margin-left:auto}
-.fr{display:grid;grid-template-columns:150px 1fr 240px;align-items:center;gap:16px;padding:14px 0}
+.fr{display:grid;grid-template-columns:170px 1fr 280px;align-items:center;gap:16px;padding:14px 0}
 .fr b{font-size:32px;font-weight:500;color:#141A26;white-space:nowrap}.fr em{font-style:normal;font-size:30px;color:#5D6675;text-align:right;white-space:nowrap}
 .fr>i{height:18px;border-radius:9px;background:#EEF0F4;overflow:hidden}.fr>i>i{display:block;height:100%;border-radius:7px;background:#C9D3E0}
 .fr.on b{color:#0A5FD8}.fr.on em{color:#0A5FD8;font-weight:600}.fr.on>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
@@ -537,6 +538,39 @@ function cbVersusSlash() {
 <div style="position:absolute;left:870px;width:520px;top:450px;transform:translateY(-50%);text-align:center;font:800 ${fs}px/1.02 Poppins,Inter,sans-serif;color:#fff;text-transform:uppercase;letter-spacing:-.01em">${name(R.label, rc)}</div>`;
 }
 
+// "versus/duo" (user reference, Chatbase "Zendesk and Zendesk Sunshine"): black field, tag pill and a big light-weight white
+// headline top-left, site mark top-right; two watercolour panels below, each in that brand's own colour (or the subtle blue),
+// carrying the brand's mark in white plus its name. The mark is turned white in the page: background removed, ink kept as alpha.
+function cbVersusDuo() {
+  const L = spec.left, R = spec.right, head = spec.headline || `${L.label} vs\n${R.label}`, fs = cbFs(head, 116, 1100);
+  const panel = (d, i, x) => {
+    const P = d.color ? cbPal(d.color) : CB_BLUE;
+    return `<div style="position:absolute;left:${x}px;top:520px;width:756px;height:352px;border-radius:24px;overflow:hidden">
+<svg width="756" height="352" style="position:absolute;inset:0"><defs>${wcDefs('du' + i, P, 5 + i * 6, [0, 0, 1, 1])}</defs><rect width="756" height="352" fill="url(#du${i}g)" filter="url(#du${i}f)"/></svg>
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
+<span class="wm" style="width:200px;height:120px;display:grid;place-items:center">${logo(d.logo, 110, d.label).replace('<img ', '<img data-white="1" ')}</span>
+<b style="font-size:46px;font-weight:600;letter-spacing:-.02em;color:#fff">${esc(d.label)}</b></div></div>`;
+  };
+  return `${CB_CSS}<style>.wm .lg{background:transparent!important;box-shadow:none!important;padding:0!important;width:auto!important;height:110px!important;overflow:visible}.wm .lg img{width:auto;max-width:200px;height:110px;object-fit:contain}.wm .lg.full{border-radius:0}</style>
+<div class="cbf" style="background:#0A0A0B"></div>${cbMark().replace('class="cbm"', 'class="cbm" style="left:auto;right:96px"')}
+${spec.tag ? `<div style="position:absolute;left:96px;top:90px;display:inline-flex;align-items:center;gap:14px;padding:14px 28px;border-radius:999px;border:1.5px solid #2A2A2E;color:#D4D4D8;font-size:30px"><i style="width:14px;height:14px;border-radius:50%;background:#F472B6;display:block"></i>${esc(spec.tag)}</div>` : ''}
+<div class="cbh" style="left:96px;top:${spec.tag ? 190 : 110}px;width:1180px;font-size:${fs}px;font-weight:500;letter-spacing:-.035em;color:#fff">${cbHl(head).replace(/class="bt"/g, 'style="color:#fff"')}</div>
+${panel(L, 0, 28)}${panel(R, 1, 816)}
+<script>
+// turn each panel mark white: estimate the background from the corners, keep the ink as alpha
+function duoWhite(img){if(img.dataset.done)return;img.dataset.done=1;try{const w=img.naturalWidth,h=img.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(img,0,0);
+const id=x.getImageData(0,0,w,h),d=id.data,px=(a,b)=>(b*w+a)*4,cs=[[1,1],[w-2,1],[1,h-2],[w-2,h-2]].map(([a,b])=>d.subarray(px(a,b),px(a,b)+4));
+const opaque=cs.every((p)=>p[3]>200),bg=opaque?[0,1,2].map((k)=>cs.reduce((s,p)=>s+p[k],0)/4):null;
+for(let i=0;i<d.length;i+=4){let a=d[i+3]/255;if(bg){const dist=Math.hypot(d[i]-bg[0],d[i+1]-bg[1],d[i+2]-bg[2])/160;a=Math.min(1,dist)*a;}else{const lum=(d[i]+d[i+1]+d[i+2])/765;a=a*(lum>0.92?0:1);}
+d[i]=d[i+1]=d[i+2]=255;d[i+3]=Math.round(a*255);}
+x.putImageData(id,0,0);let x0=w,y0=h,x1=-1,y1=-1;for(let b=0;b<h;b++)for(let a=0;a<w;a++)if(d[(b*w+a)*4+3]>40){if(a<x0)x0=a;if(a>x1)x1=a;if(b<y0)y0=b;if(b>y1)y1=b;}
+if(x1<0){img.src=c.toDataURL('image/png');return;}const cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');o.width=cw;o.height=ch;o.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);img.src=o.toDataURL('image/png');
+if(cw/ch>2.2&&cw<300){const box=img.closest('.wm');box.style.display='none';const nm=box.nextElementSibling;if(nm){nm.style.fontSize='88px';nm.style.fontWeight='700';nm.style.letterSpacing='-.03em';}return;}
+if(cw/ch>2.2){const box=img.closest('.wm');box.style.width='380px';img.style.maxWidth='380px';img.style.width='360px';img.style.height='auto';img.style.maxHeight='120px';const nm=box.nextElementSibling;if(nm)nm.style.display='none';}}catch(e){}}
+document.querySelectorAll('img[data-white]').forEach((im)=>{const go=()=>duoWhite(im);if(im.complete&&im.naturalWidth)go();else im.addEventListener('load',go,{once:true});});
+</script>`;
+}
+
 const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark };
 
 
@@ -544,7 +578,7 @@ const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist,
 const STOP = new Set('a an the and or of for to in on at by with your you our is are be how what why when which who vs versus its it this that from into without about best top guide per 2024 2025 2026 2027'.split(' '));
 const stem = (w) => w.endsWith('sses') ? w.slice(0, -2) : w.endsWith('ss') ? w : w.length > 4 && /(ches|shes|xes|zes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w;
 const words = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9+ ]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w)).map(stem);
-const HEADING = { dark: spec.headline, versus: ['pills', 'connect'].includes(spec.variant) ? spec.headline : undefined, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
+const HEADING = { dark: spec.headline, versus: ['pills', 'connect', 'duo'].includes(spec.variant) ? spec.headline : undefined, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
 const heading = HEADING[spec.mode || 'before-after'];
 if (heading !== undefined && !args.includes('--force')) {
   if (!spec.articleTitle) { console.error('HEADING CHECK FAILED: add "articleTitle" (the blog post\'s real title) to the spec. The image heading must reuse its words.'); process.exit(3); }
@@ -577,8 +611,8 @@ const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default']
 //  - g5 lifts a single floating white card with light rising under it
 const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'sky'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
 // Chatbase-style layouts paint their own canvas (white in a grey frame, or black); 'dark' counts as vibrant
-const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash'].includes(LAYOUT);
-const VIVID = MODE === 'dark' || LAYOUT === 'versus/slash';   // black fields count as vibrant (1 in 3, never neighbours)
+const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo'].includes(LAYOUT);
+const VIVID = MODE === 'dark' || ['versus/slash', 'versus/duo'].includes(LAYOUT);   // black fields count as vibrant (1 in 3, never neighbours)
 Object.assign(BG_FIT, { dark: ['paper'] });
 const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m, l[0]]));
 const BGS = ['sky', 'paper', 'cream', 'g5'];
