@@ -110,7 +110,7 @@ Keep this context: you may get re-rendered images to re-check.
 
 **V2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`).
 - **Type and colour:** every text element is Inter 500 Medium (slash: Poppins caps). The pills and connect headlines are all near-black.
-- **Slash:** each name is two-tone, white first and the brand's colour on the last part; never all one colour, never an awkward mid-word split.
+- **Slash:** each name is two-tone, white first and the brand's colour on the last part; never all one colour, never an awkward mid-word split; names keep their approved auto-fit size.
 - **Pills:** the pills run off the outer edges with flat cuts, tips ~112px apart, with a subtle gradient and fine noise. Both logos sit on white circles.
 - **Connect:** both tiles are the brands' own app icons in their original colours, edge to edge, and current (not an anniversary badge).
 - **Duo:** a white headline and two panels in each brand's own colour (the subtle blue when it has none) with white marks.
@@ -144,7 +144,7 @@ Keep this context: you may get re-rendered images to re-check.
 - a mark on a white tile in connect
 - rounded outer pill ends or watercolour blotches on the pills
 - any text weight other than Inter 500 Medium in pills, connect, duo or dark
-- a slash name in one colour (white is always part of it)
+- a slash name in one colour (white is always part of it), or slash names made bigger than their auto-fit size
 
 FAIL any image that brings one back.
 
