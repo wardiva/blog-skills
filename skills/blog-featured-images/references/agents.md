@@ -67,7 +67,7 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 
 **2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
-**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`). Every text element is Inter 500 Medium (slash: Poppins caps); blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390 (`dark`'s text column starts at x 120, and its top-left tile is the product's own icon in #0A0A0B black, not the site mark).
+**2b. Headline layouts** (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`). Every text element is Inter 500 Medium (slash: Poppins caps); the pills headline is all near-black and both pills logos sit on white circles; blue shapes are the subtle near-solid blue; a white design sits in the grey frame; black designs count as vibrant; every word stays inside x 210–1390 (`dark`'s text column starts at x 120, and its top-left tile is the product's own icon in #0A0A0B black, not the site mark).
 
 **2c. Logotype.** The article is about one product and its logo is black (icon and wordmark) with strong typography; the icon sits in white on a black rounded tile beside the wordmark (or keeps its own tile), sharp, large and centred on cream; no other text; at most 2 per category (coloured logos use `dark`).
 
@@ -85,4 +85,4 @@ Return per image: PASS or FAIL, and for each FAIL the rule broken and the exact 
 
 **9. Guardrails respected** (design language, section 13).
 
-**10. Decided, never re-opened.** These were tried and rejected by the user; QA never asks for them and a Maker never adds them: `versus/logos`; window auto-sizing; a pointer callout on the timeline; badge logos scaled up to fill their tile; the site mark on a headline layout; a one-brand (`dark`) image for an X vs Y article; a plain grey field behind the prompt layout. FAIL any image that brings one back.
+**10. Decided, never re-opened.** These were tried and rejected by the user; QA never asks for them and a Maker never adds them: `versus/logos`; window auto-sizing; a pointer callout on the timeline; badge logos scaled up to fill their tile; the site mark on a headline layout; a one-brand (`dark`) image for an X vs Y article; a plain grey field behind the prompt layout; blue words in the pills headline; a solid app icon in a pills circle. FAIL any image that brings one back.

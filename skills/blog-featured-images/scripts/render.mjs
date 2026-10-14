@@ -469,14 +469,14 @@ const cbFramed = (inner, right = 28) => `<div class="cbf" style="background:#F2F
 // "versus/pills": grey canvas, two white panels; two blue pills face each other with the logos at the tips; the question below
 function cbVersusPills() {
   const L = spec.left, R = spec.right, P = cbPal(spec.color), Pr = { ...P, stops: [...P.stops].reverse() };
-  const head = spec.headline || `${L.label} or\n{{${R.label}?}}`, fs = cbFs(head, 108, 1300);
+  const head = spec.headline || `${L.label} or\n${R.label}?`, fs = cbFs(head, 108, 1300);   // the headline is all near-black, no blue phrase (user)
   return `${CB_CSS}<div class="cbf" style="background:#F2F2F3"></div>
 <div style="position:absolute;left:28px;right:28px;top:28px;height:380px;border-radius:28px;background:#fff;overflow:hidden">
 <svg width="1544" height="380" style="position:absolute;inset:0"><defs>${wcDefs('va', Pr, 6, [0, 0, 1, 0])}${wcDefs('vb', P, 11, [0, 0, 1, 0])}</defs>
 <rect x="-60" y="80" width="760" height="210" rx="105" fill="url(#vag)" filter="url(#vaf)"/><rect x="844" y="80" width="760" height="210" rx="105" fill="url(#vbg)" filter="url(#vbf)"/></svg>
 ${cbTile(L.logo, 150, 520, 110, 0.5, L.label)}${cbTile(R.logo, 150, 874, 110, 0.5, R.label)}</div>
 <div style="position:absolute;left:28px;right:28px;top:436px;bottom:28px;border-radius:28px;background:#fff;display:grid;place-items:center">
-<div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head)}</div></div>`;
+<div class="cbh" style="position:static;font-size:${fs}px;text-align:center">${cbHl(head).replace(/<span class="bt">([\s\S]*?)<\/span>/g, '$1')}</div></div>`;
 }
 
 // "dark": black field, site mark, tag pill, white headline; right = a panel in the brand colour with the white logo
@@ -696,6 +696,36 @@ if (MODE === 'logotype') {
   if (!LOGOTYPE && !args.includes('--force')) {
     console.error(`LOGOTYPE CHECK FAILED: no black logo lockup found for "${ref}". This layout needs a black logo (icon and wordmark). Use "dark" for this product, or save its black logo to featured-images/assets/ and set "logotype": "../assets/<file>.png".`);
     process.exit(2);
+  }
+}
+// versus/pills: each logo sits on a white circle, so both products need a mark that works on white. Resolve the logo chain the
+// way the page does; a product whose only logo is a solid app tile (e.g. NetSuite's dark square) is refused.
+if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
+  const solidTile = async (buf) => {
+    const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const W = info.width, H = info.height, at = (x, y) => data.subarray((y * W + x) * 4, (y * W + x) * 4 + 4);
+    return [[2, 2], [W - 3, 2], [2, H - 3], [W - 3, H - 3]].every(([x, y]) => { const q = at(x, y); return q[3] > 200 && !(q[0] > 232 && q[1] > 232 && q[2] > 232); });
+  };
+  for (const side of [spec.left, spec.right]) {
+    if (!side || !side.logo) continue;
+    let onWhite = null;
+    for (const [url, kind] of logoChain(side.logo, slugOfDomain(side.logo))) {
+      try {
+        let buf;
+        if (url.startsWith('data:')) buf = Buffer.from(url.split(',')[1], 'base64');
+        else {
+          const r = await fetch(url, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' } });
+          if (!r.ok) continue;
+          buf = Buffer.from(await r.arrayBuffer());
+        }
+        onWhite = kind === 'full' || url.startsWith('data:') ? !(await solidTile(buf)) : true;
+        break;
+      } catch { continue; }
+    }
+    if (onWhite === false) {
+      console.error(`PILLS LOGO CHECK FAILED: ${side.label}'s only logo is a solid app tile, and versus/pills needs a logo on a white circle. Use versus/connect, versus/slash or versus/duo, or save the brand's transparent logo to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
+      process.exit(2);
+    }
   }
 }
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo'].includes(LAYOUT);

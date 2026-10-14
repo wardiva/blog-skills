@@ -130,9 +130,10 @@ Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `da
 
 ## Versus pills (`"mode": "versus", "variant": "pills"`)
 ```json
-{ "mode": "versus", "variant": "pills", "headline": "NetSuite or\n{{SAP Business One?}}",
-  "left": { "label": "NetSuite", "logo": "netsuite.com" }, "right": { "label": "SAP Business One", "logo": "sap.com" } }
+{ "mode": "versus", "variant": "pills", "headline": "Dynamics 365 or\nAcumatica?",
+  "left": { "label": "Dynamics 365", "logo": "microsoft.com" }, "right": { "label": "Acumatica", "logo": "acumatica.com" } }
 ```
+- The headline is all near-black (no `{{ }}` blue). Each logo sits on a white circle, so both products need a mark that works on white: a product whose only logo is a solid app tile (e.g. NetSuite) is refused ("PILLS LOGO CHECK FAILED"); use another versus layout. May repeat up to 2 times per category.
 
 ## Versus connect (`"mode": "versus", "variant": "connect"`)
 ```json

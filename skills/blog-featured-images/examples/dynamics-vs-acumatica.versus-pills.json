@@ -1,0 +1,17 @@
+{
+ "brand": "medsoftwarehub",
+ "category": "clinical-software",
+ "articleTitle": "Microsoft Dynamics 365 vs Acumatica for Growing Businesses (2026)",
+ "slug": "dynamics-vs-acumatica-pills",
+ "mode": "versus",
+ "variant": "pills",
+ "left": {
+  "label": "Dynamics 365",
+  "logo": "microsoft.com"
+ },
+ "right": {
+  "label": "Acumatica",
+  "logo": "acumatica.com"
+ },
+ "headline": "Dynamics 365 or\nAcumatica?"
+}

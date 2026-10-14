@@ -63,14 +63,14 @@ Read these before your first image in a session:
 
 | Layout | Shows | Best for |
 |---|---|---|
-| `versus/pills` | two facing blue pills with the logos at the tips, the question below | X vs Y |
+| `versus/pills` | two facing blue pills with the logos on **white circles** at the tips, the question below in near-black | X vs Y, only when both products have a logo that sits on white ("PILLS LOGO CHECK FAILED" otherwise); may repeat up to 2 times per category |
 | `versus/connect` | centred headline, two logo tiles linked to a VS circle, dot patches | X vs Y |
 | `versus/slash` | black, dot grid, heavy-caps names, italic VS with a glowing streak | X vs Y (vibrant) |
 | `versus/duo` | black, tag pill, big white headline; two watercolour panels in each brand's colour with its white logo | X vs Y (vibrant) |
 | `dark` | black, the product's icon in black (#0A0A0B) on a white tile top-left, tag pill, big white name, a watercolour panel in the product's own colour with its logo in white | **the layout for single-product articles** (review, pricing, features, "is X worth it"); never X vs Y (vibrant; may repeat up to 3 times per category) |
 | `logotype` | the product's black logo: its icon in white on a black rounded tile beside the black wordmark, large and centred on cream with a faint grid; no other text | single-product articles whose logo is **black** with strong typography (may repeat up to 2 times per category) |
 
-The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants). **Favourites repeat:** `versus/slash`, `versus/connect` and `versus/duo` may each be used up to 5 times per category, `dark` (single-product articles) up to 3 times, and `logotype` (single product with a black logo) up to 2 times instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
+The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; X vs Y: six versus variants). **Favourites repeat:** `versus/slash`, `versus/connect` and `versus/duo` may each be used up to 5 times per category, `versus/pills` up to 2 times, `dark` (single-product articles) up to 3 times, and `logotype` (single product with a black logo) up to 2 times instead of waiting for the rotation. Use that range to avoid repeats. When a category's least-used tier already has one use each, add a new variant before briefing Makers.
 
 ## Three agents, always
 Full prompts and the QA checklist are in `references/agents.md`.
@@ -108,6 +108,7 @@ Full prompts and the QA checklist are in `references/agents.md`.
 | `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black); use a light background or a light layout |
 | `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` |
 | `SERIES CHECK FAILED` | Remove `"series"` |
+| `PILLS LOGO CHECK FAILED` | A product's only logo is a solid app tile, which can't sit on the white circle: use `versus/connect`, `versus/slash` or `versus/duo` (or save the brand's transparent logo to `featured-images/assets/`) |
 | `LOGOTYPE CHECK FAILED` | The product's logo isn't black, or has no separate icon for the black tile: use `dark` (or, if the brand has a black lockup, save it to `featured-images/assets/` and set `"logotype"` to it) |
 | `CONTENT CHECK FAILED` | Add the article's facts to fill the layout (e.g. 3+ window rows), or pick a layout that suits fewer facts |
 | `FAIRNESS CHECK FAILED` | An X vs Y article: use a versus layout that shows both products |
