@@ -52,7 +52,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 
 - One site-wide history per brand counts every render, wherever its folder is.
 - Layout identity (mode + variant) is the rule, and QA does the visual side-by-side (pixel similarity can't tell layouts apart).
-- With 27 layouts, a strict-rotation layout repeats only after all 27 are used; the favourites may repeat sooner, up to their limits. When the least-used tier already has one use each, add a variant **before** briefing Makers.
+- With 26 layouts, a strict-rotation layout repeats only after all 26 are used; the favourites may repeat sooner, up to their limits. When the least-used tier already has one use each, add a variant **before** briefing Makers.
 - **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting for rotation, and can't be re-created. Never delete the history file.
 - An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
 
@@ -89,10 +89,16 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 ## 9. Batch-3 review (Oct 2026)
 
 - The user judges variety across EVERY image they have seen, not per category: a layout they recognise from an earlier batch ("this template is already used") is rejected even in another category. Prefer layouts the user hasn't seen recently.
-- versus/tiles: brand-filled app icons only, edge to edge; a mark on a white tile is rejected (renderer refuses it).
+- versus/tiles (superseded in the approved-templates review): both tiles filled, or both white, never one of each.
 - When the user asks for a comparison layout on a duplicate-topic article, their request beats the same-topic rule: drop the "topic" and use a versus variant the first article didn't.
 - Single-topic "what is X" articles may use `dark` with `panelIcon` (no product logo, no site mark).
 - Stack: keep it to the title plus one lead line when the lead already carries the figure ("too much text").
 - Batch-3 round 2: the user LOVES `dark` but only with a real product logo: never on a topic article with an icon ("icon is not looking good"). Save it for single-product articles.
 - Nearly every layout has now been seen by the user; when the least-used set runs dry, build new originals in the same family rather than repeat (Oct 2026: `receipt` and `definition` approved in batch 3; `versus/split` and `versus/duet` built but the user passed on both, so they're out of the rotation (layouts.mjs); `versus/rows` rejected).
 - Batch-3 round 5: the user disapproved `versus/rows` (both fields), `versus/table` and `versus/overlap` for Clinisys vs CompuGroup Medical, then dropped the image ("forget about it"). Don't offer `versus/rows` again unless asked. Receipt headlines are black (#0A0A0B) by the user's request, not navy.
+
+## 10. Approved-templates review (Oct 2026)
+
+- The user reviewed all 31 approved templates on one page (Keep / Needs change + a note): 24 kept, 7 changed. Every note became a principle in `references/taste.md`, which is now required reading with a Self-Critique for Makers and Visual QA.
+- Changed: focus headline weight matches the other card headlines (600 navy); stat number capped at 150px with a bigger card; receipt headline semibold 84px; swap's "+" grid on black is faint and only frames the edges; tiles both filled or both white; glass off the blue field; brandline retired (a background with only a headline). The glow field and the blue mesh are kept in `references/fields/` for a future illustration.
+- When options were needed (stat, swap, receipt), the orchestrator picked them using taste.md and showed its reasoning; the user can still overrule on the review page.

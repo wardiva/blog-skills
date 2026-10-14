@@ -321,19 +321,19 @@ function checklist() {
 // "stat": one giant number from the article, a caption, and a breakdown card.
 function stat() {
   const max = Math.max(...spec.card.rows.map((r) => r.pct || 1));
-  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${logo(r.logo, 40)}${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
+  const rows = spec.card.rows.map((r, i) => `<div class="sr${i === (spec.card.highlight === undefined ? 0 : spec.card.highlight) ? ' a' : ''}"><div><b>${logo(r.logo, 44)}${esc(r.name)}</b><em>${esc(r.value)}</em></div><i><i style="width:${Math.round(((r.pct || 1) / max) * 100)}%"></i></i></div>`).join('');
   // a long value auto-shrinks; then the caption hangs right under it and the number+caption block centres on the card
   // (a full-size number keeps the approved positions: value at 230, caption at 470)
-  const vfs = Math.min(spec.valueSize || 210, Math.floor(690 / (String(spec.value).length * 0.6)));
+  const vfs = Math.min(spec.valueSize || 150, Math.floor(600 / (String(spec.value).length * 0.6)));   // 150 max: the number never outweighs the card (user)
   const svTop = vfs < 180 ? Math.round(440 - (vfs + 44 + 50) / 2) : 230, scTop = vfs < 180 ? svTop + vfs + 44 : 470;
   return `<style>
 .sv{position:absolute;left:205px;top:${svTop}px;font-size:${vfs}px;font-weight:600;letter-spacing:-.055em;line-height:1;color:#0A5FD8;${spec.valueColor === 'navy' ? 'color:#0E2A5C;' : spec.valueColor !== 'blue' ? 'background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:12px;' : ''};white-space:nowrap}
 .sc{position:absolute;left:212px;top:${scTop}px;width:620px;font-size:40px;font-weight:500;line-height:1.25;color:#141A26;letter-spacing:-.015em}
 .ss{position:absolute;left:212px;top:620px;width:600px;font-size:26px;line-height:1.4;color:#7F8794}
-.scard{position:absolute;right:210px;top:250px;width:max-content;min-width:430px;max-width:490px;box-sizing:border-box;background:#fff;border-radius:24px;padding:42px 44px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
-.scard h3{margin:0 0 26px;font-size:28px;font-weight:500;color:#5D6675}
-.sr{margin-bottom:24px}.sr div{display:flex;justify-content:space-between;align-items:baseline;font-size:25px;color:#7F8794}.sr b{font-weight:500;white-space:nowrap;display:flex;align-items:center;margin-right:24px}.sr em{font-style:normal;white-space:nowrap}
-.sr>i{display:block;margin-top:10px;height:12px;border-radius:6px;background:#EEF2F7}.sr>i>i{display:block;height:100%;border-radius:6px;background:#CBD2DC}
+.scard{position:absolute;right:210px;top:450px;transform:translateY(-50%);width:max-content;min-width:560px;max-width:640px;box-sizing:border-box;background:#fff;border-radius:26px;padding:50px 52px 26px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)}
+.scard h3{margin:0 0 30px;font-size:32px;font-weight:500;color:#5D6675}
+.sr{margin-bottom:30px}.sr div{display:flex;justify-content:space-between;align-items:baseline;font-size:30px;color:#7F8794}.sr b{font-weight:500;white-space:nowrap;display:flex;align-items:center;margin-right:24px}.sr em{font-style:normal;white-space:nowrap}
+.sr>i{display:block;margin-top:12px;height:14px;border-radius:7px;background:#EEF2F7}.sr>i>i{display:block;height:100%;border-radius:6px;background:#CBD2DC}
 .sr.a div{color:#141A26}.sr.a>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
 </style>
 <div class="sv">${esc(spec.value)}</div><div class="sc">${esc(spec.caption)}</div><div class="ss">${esc(spec.sub || '')}</div>
@@ -416,8 +416,8 @@ function focus() {
   const real = rows.slice(0, 3).map((r, i) => `<div class="fr${i === hi ? ' on' : ''}"><b>${esc(r.name)}</b><i><i style="width:${Math.max(8, Math.round(((r.pct || 1) / max) * 100))}%"></i></i><em>${esc(r.value)}</em></div>`).join('');
   const ghosts = [62, 44, 30].map((w) => `<div class="fr gh"><b><s style="width:70px"></s></b><i><i style="width:${w}%"></i></i><em><s style="width:80px"></s></em></div>`).join('');
   return `<style>
-.fh{position:absolute;left:50%;top:176px;transform:translateX(calc(-50% - 3px));width:1120px;text-align:center;font-size:64px;font-weight:300;line-height:1.12;letter-spacing:-.035em;color:#3D4A5C}
-.sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 4px;font-weight:400;${ANCHOR}}
+.fh{position:absolute;left:50%;top:176px;transform:translateX(calc(-50% - 3px));width:1120px;text-align:center;font-size:64px;font-weight:600;line-height:1.12;letter-spacing:-.03em;color:#0E2A5C}
+.sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 4px;font-weight:600;${ANCHOR}}
 .sel i{position:absolute;width:16px;height:16px;background:#3B86F0}
 .sel .h1{left:-20px;top:-20px}.sel .h2{right:-20px;top:-20px}.sel .h3{left:-20px;bottom:-20px}.sel .h4{right:-20px;bottom:-20px}
 .fc{position:absolute;left:50%;top:330px;transform:translateX(-50%);width:1120px;height:620px;padding:42px 52px 30px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)}
@@ -611,7 +611,7 @@ function logotype() {
 // Logos are the brand's full wordmark (icon + typography) where it has one; a brand without one is typeset in Inter.
 // Fields the user approved per layout (review, Oct 2026), default first. Anything else is refused ("FIELD FIT FAILED").
 // Rejected: versus/type on black, badge on blue, brandline in any colour but the site blue.
-const GL_FIELD_FIT = { 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black', 'blue'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
+const GL_FIELD_FIT = { 'versus/rows': ['light', 'black'], 'versus/type': ['light', 'blue'], 'versus/tiles': ['blue', 'black', 'light'], 'versus/glass': ['light', 'black'], swap: ['light', 'black'], badge: ['light'], brandline: ['light'] };
 const GL_FIT = GL_FIELD_FIT[spec.mode === 'versus' ? `versus/${spec.variant}` : spec.mode];
 const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
 if (GL_FIT && spec.field && !GL_FIT.includes(spec.field) && !args.includes('--force')) {
@@ -624,12 +624,14 @@ const glPal = () => ({
   black: { bg: '#0A0A0B', ink: '#FFFFFF', mute: '#8A8F98', mark: 'rgba(255,255,255,.16)', dot: 'rgba(255,255,255,.08)', acc: 'linear-gradient(180deg,#7DBBFF,#2F7BFF)', glow: 'rgba(47,123,255,.42)' },
   blue: { bg: `${BLUE_GLOW} center/cover`, ink: '#FFFFFF', mute: 'rgba(255,255,255,.72)', mark: 'rgba(255,255,255,.30)', dot: 'rgba(255,255,255,.13)', acc: 'linear-gradient(180deg,#FFFFFF,#BFE0FF)', glow: 'rgba(255,255,255,.26)' },
 })[GL_FIELD];
-const glPlus = (c, step = 180, ox = 70, oy = 45) => { let p = ''; for (let y = oy; y < 900; y += step) for (let x = ox; x < 1600; x += step) p += `M${x - 8} ${y}h16M${x} ${y - 8}v16`; return `<svg width="1600" height="900" style="position:absolute;inset:0"><path d="${p}" stroke="${c}" stroke-width="2"/></svg>`; };
+const glPlus = (c, step = 180, ox = 70, oy = 45, mask = '') => { let p = ''; for (let y = oy; y < 900; y += step) for (let x = ox; x < 1600; x += step) p += `M${x - 8} ${y}h16M${x} ${y - 8}v16`; return `<svg width="1600" height="900" style="position:absolute;inset:0;${mask}"><path d="${p}" stroke="${c}" stroke-width="2"/></svg>`; };
+// on dark fields the grid is faint and only frames the edges (user: "too dark, shouldn't be in the whole image")
+const GL_EDGE_MASK = 'opacity:.5;-webkit-mask-image:radial-gradient(70% 75% at 50% 50%,transparent 45%,#000 100%);mask-image:radial-gradient(70% 75% at 50% 50%,transparent 45%,#000 100%)';
 const glDots = (c, step = 26, r = 1.7) => `<div class="cbf" style="background-image:radial-gradient(circle,${c} ${r}px,transparent ${r + 0.6}px);background-size:${step}px ${step}px;background-position:${step / 2}px ${step / 2}px"></div>`;
 let glN = 0;
 const glBg = (css) => { const k = 'glb' + (++glN); return `<style>.${k}{${css}}</style><div class="cbf ${k}"></div>`; };
 const glCanvas = (inner, pattern = 'plus') => {
-  const P = glPal(), pat = pattern === 'plus' ? glPlus(P.mark) : pattern === 'dots' ? glDots(P.dot, 36, 1.4) : '';
+  const P = glPal(), pat = pattern === 'plus' ? glPlus(P.mark, 180, 70, 45, GL_FIELD === 'light' ? '' : GL_EDGE_MASK) : pattern === 'dots' ? glDots(P.dot, 36, 1.4) : '';
   if (GL_FIELD === 'light') return `${CB_CSS}${cbFramed(`${pat}${inner}`)}${WHITE_MARK_JS}`;
   return `${CB_CSS}${glBg(`background:${P.bg}`)}${GL_FIELD === 'blue' ? glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85`) : ''}${pat}${inner}${WHITE_MARK_JS}`;
 };
@@ -750,12 +752,12 @@ ${card(L, 480)}${card(R, 1120)}
 // receipt: a big headline on the left and a tilted white receipt on the right (zigzag tear at the bottom) listing the article's
 // figures, with a bold "total" line. For cost and pricing articles.
 function receipt() {
-  const rows = spec.rows || [], T = spec.total || {}, fs = glFs(spec.headline, 104, 560, 0.55);
+  const rows = spec.rows || [], T = spec.total || {}, fs = glFs(spec.headline, 84, 560, 0.55);   // 84 max, semibold: the receipt stays the hero (user)
   // row type fits the longest row (name + leader + value) inside the receipt with even margins
   const rfs = Math.min(36, Math.floor(430 / (Math.max(1, ...rows.map((r) => String(r.name).length + String(r.value).length)) * 0.56)));
   const zig = Array.from({ length: 21 }, (_, i) => `${i * 24},${i % 2 ? 0 : 18}`).join(' ');
   return `${CB_CSS}${glBg('background:#F4F1EA')}${glDots('rgba(90,70,40,.09)', 30, 1.3)}
-<div class="cbh" style="left:210px;width:560px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:700;letter-spacing:-.04em;line-height:1.04;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
+<div class="cbh" style="left:210px;width:560px;top:50%;transform:translateY(-50%);font-size:${fs}px;font-weight:600;letter-spacing:-.03em;line-height:1.08;color:#0A0A0B">${esc(spec.headline).replace(/\n/g, '<br>')}</div>
 <div style="position:absolute;left:800px;top:50%;width:590px;transform:translateY(-50%) rotate(3deg)">
 <div style="background:#fff;padding:56px 52px 40px;box-shadow:0 30px 60px rgba(90,70,40,.10)">
 ${spec.title ? `<div style="font-family:${MONO};font-size:26px;letter-spacing:.08em;text-transform:uppercase;color:#7F8794;text-align:center">${esc(spec.title)}</div><div style="border-top:2px dashed #D9D4CA;margin:26px 0"></div>` : ''}
@@ -929,23 +931,26 @@ const solidTile = async (buf) => {   // an app icon that fills its square: opaqu
   const W = info.width, H = info.height, at = (x, y) => data.subarray((y * W + x) * 4, (y * W + x) * 4 + 4);
   return [[2, 2], [W - 3, 2], [2, H - 3], [W - 3, H - 3]].every(([x, y]) => { const q = at(x, y); return q[3] > 200 && !(q[0] > 232 && q[1] > 232 && q[2] > 232); });
 };
+// true: the brand has a logo that sits on white; false: its only logo is a solid app tile; null: no logo found
+const sitsOnWhite = async (d) => {
+  for (const [url, kind] of logoChain(d, slugOfDomain(d))) {
+    try {
+      let buf;
+      if (url.startsWith('data:')) buf = Buffer.from(url.split(',')[1], 'base64');
+      else {
+        const r = await fetchRetry(url);
+        if (!r.ok) continue;
+        buf = Buffer.from(await r.arrayBuffer());
+      }
+      return kind === 'full' || url.startsWith('data:') ? !(await solidTile(buf)) : true;
+    } catch { continue; }
+  }
+  return null;
+};
 if (LAYOUT === 'versus/pills' && !args.includes('--force')) {
   for (const side of [spec.left, spec.right]) {
     if (!side || !side.logo) continue;
-    let onWhite = null;
-    for (const [url, kind] of logoChain(side.logo, slugOfDomain(side.logo))) {
-      try {
-        let buf;
-        if (url.startsWith('data:')) buf = Buffer.from(url.split(',')[1], 'base64');
-        else {
-          const r = await fetchRetry(url);
-          if (!r.ok) continue;
-          buf = Buffer.from(await r.arrayBuffer());
-        }
-        onWhite = kind === 'full' || url.startsWith('data:') ? !(await solidTile(buf)) : true;
-        break;
-      } catch { continue; }
-    }
+    const onWhite = await sitsOnWhite(side.logo);
     if (onWhite === false) {
       await refuse(`PILLS LOGO CHECK FAILED: ${side.label}'s only logo is a solid app tile, and versus/pills needs a logo on a white circle. Use versus/connect, versus/slash or versus/duo, or save the brand's transparent logo to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
     }
@@ -965,11 +970,19 @@ if (LAYOUT === 'versus/connect' || LAYOUT === 'versus/tiles') {
       else if (d && BF_CLIENT) { const r = await fetchRetry(bf(d, 'icon', '404')); if (r.ok) buf = Buffer.from(await r.arrayBuffer()); }
     } catch { buf = null; }
     if (buf && await solidTile(buf).catch(() => false)) CONNECT_ICON[k] = `data:image/png;base64,${(await sharp(buf).png().toBuffer()).toString('base64')}`;
+    else if (LAYOUT === 'versus/tiles') { CONNECT_ICON.mixed = true; continue; }
     else if (!args.includes('--force')) {
       if (LAYOUT === 'versus/tiles') await refuse(`TILES LOGO CHECK FAILED: no app icon filled with its own brand colour found for ${side ? side.label : k}${BF_CLIENT ? '' : ' (no Brandfetch client ID set)'}. versus/tiles shows each brand's app icon in its original colours, edge to edge. Use versus/type, versus/glass or another comparison layout, or save the brand's square app icon to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
       await refuse(`CONNECT LOGO CHECK FAILED: no app icon with its own background colour found for ${side ? side.label : k}${BF_CLIENT ? '' : ' (no Brandfetch client ID set)'}. versus/connect shows each brand's app icon in its original colours. Use versus/pills, versus/slash or versus/duo, or save the brand's square app icon to featured-images/assets/ and set "logo": "../assets/<file>.png".`);
     }
   }
+}
+// versus/tiles: both tiles share one treatment (user): both filled when both brands have a filled app icon, otherwise both
+// white, which needs both logos to sit on white; a brand whose only logo is a filled tile can't go white, so that pair is refused
+if (LAYOUT === 'versus/tiles' && CONNECT_ICON.mixed) {
+  delete CONNECT_ICON.left; delete CONNECT_ICON.right;
+  if (!args.includes('--force')) for (const side of [spec.left, spec.right]) if (side && side.logo && (await sitsOnWhite(side.logo)) === false)
+    await refuse(`TILES LOGO CHECK FAILED: both tiles must match (both filled with brand colour, or both white). ${side.label}'s only logo is a filled app tile and the other brand has no filled icon, so they can't match. Use versus/connect only if both have app icons, or versus/type, versus/glass, versus/slash or versus/duo.`);
 }
 if (LAYOUT === 'versus/slash' && !args.includes('--force')) {
   for (const side of [spec.left, spec.right]) if (side && !slashSplit(side.label))

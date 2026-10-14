@@ -22,7 +22,8 @@ Passing every check is not enough. Judge every image like a design director, ide
 2. **Logo balance.** A logo fills **about 60–70% of its tile**. A full-bleed app icon (e.g. NetSuite's dark square) **becomes the tile itself**. Wide wordmarks (SAP, Sage) fill about 65–75% of the tile's width.
 3. **Logos speak for themselves.** When products have recognisable logos, show **logos only**, not logo + name cards. The hub does this by default.
 4. **Figure/ground.** The hero separates cleanly from the field: no grey on grey, no white on near-white without a soft shadow.
-5. **Balance.** Even tile sizes, gaps and arrow lengths; the group sits on the optical centre; nothing looks too small or too big next to its neighbours.
+5. **Balance.** Even tile sizes, gaps and arrow lengths; the group sits on the optical centre; nothing looks too small or too big next to its neighbours (a stat number never outweighs its card).
+6. **Taste.** Every principle behind the user's notes, and the Self-Critique every image passes, are in `references/taste.md`.
 
 ---
 
@@ -104,7 +105,7 @@ Each of these came from a reference the user shared; every detail below is measu
 
 Two more sets came from the user's references and reviews (Oct 2026). Their tables are in `SKILL.md`; the rules that keep them right:
 
-- **Gumloop** (`versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`, `brandline`): each takes only its approved `"field"` ("FIELD FIT FAILED" otherwise); the black and blue fields count as vibrant. Logos are each brand's full wordmark. The "vs" sits vertically centred between the names; dot grids and the tiles ring stay sparse and faint. Never `versus/type` on black or `badge` on blue. `versus/tiles` needs both brands' filled app icons ("TILES LOGO CHECK FAILED"), `versus/glass` wordmarks that fit the bar ("GLASS LOGO CHECK FAILED"). `brandline` is the glow field only, a black headline centred vertically, never the site mark or name.
+- **Gumloop** (`versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`): each takes only its approved `"field"` ("FIELD FIT FAILED" otherwise); the black and blue fields count as vibrant. Logos are each brand's full wordmark. The "vs" sits vertically centred between the names; dot grids and the tiles ring stay sparse and faint, and a "+" grid on a dark field is faint and only frames the edges. Never `versus/type` on black, `badge` on blue or `versus/glass` on blue. `versus/tiles`: both tiles filled or both white, never one of each ("TILES LOGO CHECK FAILED"); `versus/glass` needs wordmarks that fit the bar ("GLASS LOGO CHECK FAILED"). `brandline` is retired (a background with only a headline); its glow field waits for a real illustration.
 - **Originals** (`receipt`, `definition`; light only, white in the grey frame): `receipt` for cost articles, its headline near-black `#0A0A0B` (the user's request), every row inside the bold blue total's range; `definition` for "what is X" articles, a one-line definition (≤ 7 words) in the article's own words.
 - **Out of the rotation:** `versus/split` and `versus/duet` (the user passed on both twice); `versus/rows` (rejected).
 
@@ -115,7 +116,7 @@ Two more sets came from the user's references and reviews (Oct 2026). Their tabl
 | Ingredient | Spec |
 |---|---|
 | Canvas | 1600×900 master. All key content inside **x 210–1390** so the 7:5, 2:1 and 16:9 crops keep it |
-| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines weight 600–700, tracking −0.03em (the `focus` headline is light 300 in slate `#3D4A5C`, its key phrase 400 in the selection box). **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
+| Type | **Inter** (Poppins only for the `versus/slash` names; JetBrains Mono only in the opt-in craft kit). Card-layout headlines are all semibold 600 navy `#0E2A5C`, tracking −0.03em, `focus` included (its key phrase too); `receipt`'s headline is semibold 600 in black. **Headline layouts (`versus/pills`, `versus/connect`, `versus/duo`, `dark`): every text element is Inter 500 Medium** (headline, VS, tag pill, panel names), headlines tracked −0.035em |
 | Ink | Text `#141A26`; muted `#7F8794` / `#5D6675`; headlines navy `#0E2A5C`; left/"before" label warm grey `#7C7468`; right/"after" label blue `#2C5FAE` |
 | Accent | Blue gradient `#3B86F0 → #0A5FD8` for the one anchor and active states; sky `#27ACF2` for carets and legend dots |
 | States | **Blue = active/anchor:** checked boxes, progress bar, winning bar, highlighted row, selection box, current timeline dot. **Grey = inactive:** unchecked boxes, other bars, skeletons, empty dots |
@@ -254,4 +255,4 @@ Granola (one colour family, white UI on a bold field, logos-only integrations), 
 
 ## 15. Gumloop layouts (user references, Oct 2026)
 
-Six layouts after the user's Gumloop references: `versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge`, `brandline` (specs in `spec-format.md`). They keep the references' composition, patterns ("+" grid, sparse dot field, crosshair rule) and type scale, in our family: Inter 700 for names, our blue accent, the grey frame on white, the deep-dunes blue and black (both vibrant). Each layout uses only its approved fields (type: light, blue; tiles: blue, black, light; glass: light, black, blue; swap: light, black; badge: light; brandline: the glow field only). Logos are full wordmarks in their own colours on light surfaces and white on dark fields. Keep patterns quiet: the user rejected busy dot grids. `brandline` has a near-black headline centred vertically and never shows the site mark or name.
+Five layouts after the user's Gumloop references: `versus/type`, `versus/tiles`, `versus/glass`, `swap`, `badge` (specs in `spec-format.md`). They keep the references' composition, patterns ("+" grid, sparse dot field) and type scale, in our family: Inter 700 for names, our blue accent, the grey frame on white, the deep-dunes blue and black (both vibrant). Each layout uses only its approved fields (type: light, blue; tiles: blue, black, light; glass: light, black; swap: light, black; badge: light). Logos are full wordmarks in their own colours on light surfaces and white on dark fields. Keep patterns quiet: the user rejected busy dot grids and a full-canvas "+" grid on black. `brandline` was retired: a background with only a headline is not an image.

@@ -72,7 +72,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
   "card": { "heading": "Starting price", "rows": [ { "name": "Dynamics 365", "logo": "microsoft.com", "value": "$48,000/yr", "pct": 48000 },
                                                  { "name": "Acumatica", "logo": "acumatica.com", "value": "$6,396/yr", "pct": 6396 } ] } }
 ```
-- `value` up to ~8 characters (auto-sized), in a soft blue gradient (`"valueColor": "navy"` or `"blue"` to change it). Card `rows`: 2–4, all in the same unit, and inside the hero's range (a row outside it reads as an error). `card.highlight` picks the blue row; `null` when no row is the hero's subject.
+- `value` up to ~8 characters (auto-sized, at most 150px so it never outweighs the card), in a soft blue gradient (`"valueColor": "navy"` or `"blue"` to change it). Card `rows`: 2–4, all in the same unit, and inside the hero's range (a row outside it reads as an error). `card.highlight` picks the blue row; `null` when no row is the hero's subject.
 
 ## Ranked (`"mode": "ranked"`; rankings by a real metric)
 ```json
@@ -188,13 +188,13 @@ Six layouts after the user's Gumloop references. They paint their own canvas (`b
 { "mode": "versus", "variant": "tiles", "field": "blue", "headline": "AdvancedMD vs athenahealth", "sub": "for Multi-Location Practices",
   "left": { "label": "AdvancedMD", "logo": "advancedmd.com" }, "right": { "label": "athenahealth", "logo": "athenahealth.com" } }
 ```
-- Each tile is the brand's **own app icon filled with its brand colour**, edge to edge (user): a mark on a white tile is rejected. Both brands need one (Brandfetch icon or a square app icon in `../assets/`), or the layout is refused ("TILES LOGO CHECK FAILED"): use versus/type or versus/glass instead. `headline` follows the heading rule; `sub` is the title's own angle (optional). Sparse dot field and a faint ring: keep the pattern quiet.
+- Both tiles share one treatment (user): **both filled** with their brand colour when both brands have a filled app icon (Brandfetch icon or a square app icon in `../assets/`), otherwise **both white** with each brand's mark, which needs both logos to sit on white. A pair that can't match (one brand with only a filled tile, the other with no filled icon) is refused ("TILES LOGO CHECK FAILED"): use versus/type, versus/glass, versus/slash or versus/duo. `headline` follows the heading rule; `sub` is the title's own angle (optional). Sparse dot field and a faint ring: keep the pattern quiet.
 
-## Versus glass (`"mode": "versus", "variant": "glass"`; fields: light, black, blue)
+## Versus glass (`"mode": "versus", "variant": "glass"`; fields: light, black)
 ```json
 { "mode": "versus", "variant": "glass", "field": "light", "left": { "label": "athenahealth", "logo": "athenahealth.com" }, "right": { "label": "eClinicalWorks", "logo": "../assets/eclinicalworks-wordmark.png" } }
 ```
-- Both wordmarks in their original colours on a frosted bar over a mesh gradient. Best when both brands have strong wordmarks; check each one reads on the light bar. The blue mesh was approved in round 2.
+- Both wordmarks in their original colours on a frosted bar over a mesh gradient. Best when both brands have strong wordmarks; check each one reads on the light bar. Not on the blue field: the gradient is approved, but not with this illustration.
 - The wordmarks must **name the products**: a parent-brand mark alone (SAP for SAP Business One, Microsoft for Dynamics 365, Sage for Sage Intacct) fails Fact QA, so use another versus layout for those. An ultra-wide lockup (over 9:1, e.g. Oracle NetSuite at ~13:1) is refused ("GLASS LOGO CHECK FAILED"): save a compact lockup to assets or use another versus layout. The renderer measures each wordmark's lettering (type, not icon) and sizes both so their lettering matches, inside the bar.
 
 ## Swap (`"mode": "swap"`; fields: light, black)
@@ -211,11 +211,8 @@ Six layouts after the user's Gumloop references. They paint their own canvas (`b
 - `title` (heading rule applies) or `logo` (a product's wordmark) on top; `value` = the key figure with its unit/qualifier (one figure or range, ≤ ~14 characters); `note` = a muted label + a bold value (or `note.logo`), optional. The figures must agree (F3). `color` tints the box (default blue). Rejected: the blue field.
 - Keep `value` to about 12 characters so it stays the dominant line: abbreviate thousands as K ("$15K–$30K"), and keep the qualifier in `note` ("Solo provider" / "First year").
 
-## Brandline (`"mode": "brandline"`; the glow field only)
-```json
-{ "mode": "brandline", "headline": "What Is\nEMR Software?" }
-```
-- A big two-line `headline` (heading rule; ≤ 7 words, `\n` breaks the line) in near-black #0A0A0B, centred vertically on the left, on a light blue gradient with a soft glow bottom-right, faint dots and the crosshair rule. `logo` (a product's wordmark, original colours) sits top-left only for a single-product article. Never the site mark or site name. No `color`/`look`: the tint and deep navy looks, blue headline ink, other colours and the low headline position were rejected.
+## Brandline (retired)
+The user rejected a background with only a headline. The mode is not in `layouts.mjs`; its glow field waits for a layout with a real illustration.
 
 # Originals (Oct 2026, built after the user had seen every other layout)
 
@@ -225,7 +222,7 @@ Six layouts after the user's Gumloop references. They paint their own canvas (`b
   "rows": [ { "name": "Nextech", "value": "$300–$399" }, { "name": "eClinicalWorks", "value": "$499–$599" } ],
   "total": { "label": "Typical", "value": "$250–$900" } }
 ```
-- Headline left (heading rule), a tilted white receipt with a zigzag tear on the right. The bold blue `total` reads as the receipt's summary, so every row must sit INSIDE the total's range (Fact QA F3). Row type auto-fits the longest row. `title` carries the unit.
+- Headline left (heading rule; semibold 600 black, at most 84px so the receipt stays the hero), a tilted white receipt with a zigzag tear on the right. The bold blue `total` reads as the receipt's summary, so every row must sit INSIDE the total's range (Fact QA F3). Row type auto-fits the longest row. `title` carries the unit.
 
 ## Definition (`"mode": "definition"`; approved) — "what is X" articles
 ```json

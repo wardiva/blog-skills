@@ -1,6 +1,6 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in three families plus two originals: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream), Gumloop-style layouts (bold type vs, tilted app-icon tiles, a frosted wordmark bar, a switch arrow, a figure badge, a brand headline), and two originals (a receipt for costs, a dictionary entry for "what is"). It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in three families plus two originals: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream), Gumloop-style layouts (bold type vs, tilted app-icon tiles, a frosted wordmark bar, a switch arrow, a figure badge), and two originals (a receipt for costs, a dictionary entry for "what is"). It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
@@ -88,7 +88,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 | `FIELD FIT FAILED` | A Gumloop layout only takes its approved fields |
-| `TILES LOGO CHECK FAILED` / `GLASS LOGO CHECK FAILED` | `versus/tiles` needs both brands' filled app icons; `versus/glass` needs wordmarks that fit the bar |
+| `TILES LOGO CHECK FAILED` / `GLASS LOGO CHECK FAILED` | `versus/tiles` needs two tiles that match (both filled or both white); `versus/glass` needs wordmarks that fit the bar |
 | `LOGO FILE MISSING` | A logo file named in the spec isn't in `featured-images/assets/` |
 | `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
 | `CONTENT CHECK FAILED` | Each layout needs enough real facts to fill its frame |
@@ -101,7 +101,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **One bold blue anchor**, white UI cards, navy headlines on card layouts (near-black or white on headline layouts, Inter Medium), a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (18 modes, 27 layouts)
+## Layouts (17 modes, 26 layouts)
 
 **Card layouts:**
 
@@ -135,11 +135,10 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | Layout | Best for | Fields |
 |---|---|---|
 | `versus/type` | X vs Y as big bold names with a small centred "vs" on a faint "+" grid | light, blue |
-| `versus/tiles` | X vs Y with two tilted tiles, each the brand's own filled app icon, above the headline | blue, black, light |
-| `versus/glass` | X vs Y with both full wordmarks on a frosted glass bar over a mesh gradient | light, black, blue |
+| `versus/tiles` | X vs Y with two tilted tiles, both filled with brand colour or both white, above the headline | blue, black, light |
+| `versus/glass` | X vs Y with both full wordmarks on a frosted glass bar over a mesh gradient | light, black |
 | `swap` | Switch, migration, "old way → new way": old → dashed loop arrow → new | light, black |
 | `badge` | Cost and stat articles: the key figure in a tinted rounded box | light |
-| `brandline` | Single-product or general articles: a big near-black headline on a light blue glow | glow |
 
 **Originals** (light, white in the grey frame):
 
@@ -161,7 +160,8 @@ Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours
 | `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails |
 | `references/spec-format.md` | The JSON spec for every layout (every snippet renders as-is) |
 | `references/agents.md` | The four roles (job, steps, prompt, limits), the fast-batch flow, the Visual and Fact checklists |
-| `references/lessons.md` | Speed tools, gotchas, pre-flight checks, taste |
+| `references/taste.md` | The user's taste as principles (each tied to the note that taught it) and the Self-Critique every image passes |
+| `references/lessons.md` | Speed tools, gotchas, pre-flight checks |
 | `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs`, `logo-check.mjs` (which logo-dependent layouts each brand can use), `sheet.mjs`, `finalize.mjs` (locks delivered images) |
 | `examples/` | Approved specs for every layout |
 | `assets/` | Logo files a few examples use |

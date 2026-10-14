@@ -4,9 +4,8 @@
 //   pills    = has a logo that sits on a white circle (not only a solid app tile)
 //   connect  = has a solid app icon with its own background colour (needs a Brandfetch client ID)
 //   logotype = has a black logo lockup with a separate icon (single-product articles)
-//   tiles    = has an app icon filled with its own brand colour (versus/tiles)
 //   glass    = has a wordmark compact enough to read on the glass bar (versus/glass)
-// An X vs Y pair can use pills, connect, tiles or glass only when BOTH brands pass. Check every icon by eye too: a stale badge still passes.
+// An X vs Y pair can use pills, connect or glass only when BOTH brands pass. versus/tiles: both pass connect (filled tiles) or both pass pills (white tiles). Check every icon by eye too: a stale badge still passes.
 import { execFile } from 'child_process';
 import fs from 'fs';
 import os from 'os';
@@ -27,16 +26,15 @@ const run = (spec, name) => new Promise((resolve) => {
 const pool = async (items, n, fn) => { const out = []; let k = 0; await Promise.all(Array.from({ length: n }, async () => { while (k < items.length) { const j = k++; out[j] = await fn(items[j], j); } })); return out; };
 const rows = await pool(domains, 3, async (d, i) => {
   const name = d.split('.')[0], side = { label: name, logo: d };
-  const [pills, connect, logotype, tiles, glass] = await Promise.all([
+  const [pills, connect, logotype, glass] = await Promise.all([
     run({ articleTitle: `${name} vs ${name}`, mode: 'versus', variant: 'pills', left: side, right: side }, `p${i}`),
     run({ articleTitle: `${name} vs ${name}`, mode: 'versus', variant: 'connect', left: side, right: side }, `c${i}`),
     run({ articleTitle: `${name} review`, mode: 'logotype', product: name, logotype: d }, `l${i}`),
-    run({ articleTitle: `${name} vs ${name}`, mode: 'versus', variant: 'tiles', headline: `${name} vs ${name}`, left: side, right: side }, `t${i}`),
     run({ articleTitle: `${name} vs ${name}`, mode: 'versus', variant: 'glass', left: side, right: side }, `g${i}`),
   ]);
-  return { d, pills, connect, logotype, tiles, glass };
+  return { d, pills, connect, logotype, glass };
 });
 fs.rmSync(tmp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
 const yn = (b) => (b ? 'yes' : ' - ');
-console.log('domain'.padEnd(28) + 'pills  connect  logotype  tiles  glass');
-for (const r of rows) console.log(r.d.padEnd(28) + yn(r.pills).padEnd(7) + yn(r.connect).padEnd(9) + yn(r.logotype).padEnd(10) + yn(r.tiles).padEnd(7) + yn(r.glass));
+console.log('domain'.padEnd(28) + 'pills  connect  logotype  glass');
+for (const r of rows) console.log(r.d.padEnd(28) + yn(r.pills).padEnd(7) + yn(r.connect).padEnd(9) + yn(r.logotype).padEnd(10) + yn(r.glass));

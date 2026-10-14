@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge, brand headline) plus two originals (a receipt for cost articles, a dictionary entry for what-is articles) - 18 modes / 27 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
+description: Generate premium, article-specific blog featured images (1600x900 plus crops) in two approved families - card layouts on light grainy fields (plus a vibrant deep-blue field) and Chatbase-style headline layouts (X vs Y - facing pills, connected logos, black slash, black duo panels; single product - black + brand colour, or a black logo on cream) and Gumloop-style layouts (bold type vs, tilted tiles, frosted wordmark bar, switch arrow, figure badge) plus two originals (a receipt for cost articles, a dictionary entry for what-is articles) - 17 modes / 26 layouts. Use when the user asks for a blog featured image, blog thumbnail, article cover, hero image or OG image for a blog post or article URL, or wants featured images for several articles or a whole category. Reads each article, plans the batch so no two related articles share a layout, writes a minimal spec (15 words max) from the article's real facts, adds real product logos, picks a background that flatters each illustration, and renders with headless Chrome (free, no AI image generation). Four roles (orchestrator, parallel makers, and a visual QA and a fact QA running side by side) work in a fast batch; built-in checks block drifting headings, text-heavy images, repeated layouts and backgrounds that don't fit.
 ---
 
 # Blog Featured Images
@@ -37,6 +37,10 @@ Every image in a category uses a different layout, so the blog grid never repeat
 
 An image that passes every check but doesn't look good fails. Judge it like a design director next to `references/approved/`.
 
+### Taste is written down
+
+You are expected to make images the user would approve without asking. `references/taste.md` holds their taste as principles (balance, sameness, quiet patterns, a real illustration on every background…), each tied to the note that taught it. Every image passes its Self-Critique before anyone else sees it, and every new note adds to it.
+
 ### The user's references are exact
 
 When the user shares a reference, every detail is the rule: the tile behind an icon, the padding, the gap between shapes, the weight of a word. Each missed detail cost a review round. Measure the reference's pixels; never eyeball them.
@@ -50,6 +54,7 @@ Read these before your first image in a session:
 - `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, and the "Never" list).
 - `references/spec-format.md`: the JSON spec for every layout. `examples/` holds an approved spec for each.
 - `references/agents.md`: the four roles (each one's job, steps, prompt and limits), the fast-batch flow, and the Visual and Fact checklists.
+- `references/taste.md`: the user's taste, distilled from every review note: twelve principles, each with the image that taught it, and the Self-Critique every image must pass.
 - `references/lessons.md`: speed tools, pre-flight checks and gotchas.
 
 ## Report Format (Required)
@@ -85,21 +90,21 @@ Before reserving any layout, answer these questions in order.
 | Cost or pricing | `focus`, `stat`, `prompt`, `window`, `ranked`, `badge`, `receipt` |
 | How-to or migration | `before-after`, `timeline`, `stack`, `checklist` |
 | "Old way → new way", switch, migration | `before-after/flow`, `swap` |
-| "What is X" | `definition`, `prompt`, `brandline` |
+| "What is X" | `definition`, `prompt` |
 | Process or "how long" | `timeline`, `ranked` |
 
 **Never use `dark` for an X vs Y article.** A one-brand image for a comparison reads like an ad ("FAIRNESS CHECK FAILED").
 
 ### 2. What do the logos allow?
 
-Five layouts depend on what logos a brand has. Run `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article before reserving. It uses the renderer's own checks and prints, per brand, which of `pills`, `connect`, `logotype`, `tiles` and `glass` it can use.
+Five layouts depend on what logos a brand has. Run `node <skill-dir>/scripts/logo-check.mjs <domain> ...` for every product in an X vs Y or single-product article before reserving. It uses the renderer's own checks and prints, per brand, which of `pills`, `connect`, `logotype` and `glass` it can use. Tiles: both brands pass `connect` (filled tiles) or both pass `pills` (white tiles).
 
 | Layout | Needs | Refused with |
 | --- | --- | --- |
 | `versus/pills` | a logo that sits on a white circle (not only a solid app tile) for **both** brands | `PILLS LOGO CHECK FAILED` |
 | `versus/connect` | a solid app icon with its own background colour for **both** brands | `CONNECT LOGO CHECK FAILED` |
 | `logotype` | a black logo with a separate icon | `LOGOTYPE CHECK FAILED` |
-| `versus/tiles` | an app icon filled with its own brand colour for **both** brands | `TILES LOGO CHECK FAILED` |
+| `versus/tiles` | both brands with a filled app icon (both tiles filled), or both with a logo that sits on white (both tiles white); never one of each | `TILES LOGO CHECK FAILED` |
 | `versus/glass` | a wordmark compact enough to read on the glass bar for **both** brands | `GLASS LOGO CHECK FAILED` |
 
 Still look at every icon: a stale anniversary badge (Availity's "25") passes the check.
@@ -132,7 +137,7 @@ When a category's least-used tier already has one use each, add a new variant be
 
 Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`, `paper`, `cream`, `g5`), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. Headline layouts paint their own canvas.
 
-## Layouts: 18 modes, 27 layouts
+## Layouts: 17 modes, 26 layouts
 
 **Card layouts** (light fields, white UI cards):
 
@@ -168,13 +173,12 @@ Leave `bg` out. The renderer picks the layout's best-fitting light field (`sky`,
 | Layout | Shows | Best for | Fields (default first) |
 | --- | --- | --- | --- |
 | `versus/type` | the two names set big and bold, a small centred "vs", the second name in the accent, on a faint "+" grid | X vs Y (names, no logos) | light, blue |
-| `versus/tiles` | two tilted tiles, each the brand's **own app icon filled with its brand colour** (edge to edge, never a mark on white), above a big "A vs B" headline and the title's angle as a subline, sparse dot field, faint ring | X vs Y, only when both brands have a filled app icon ("TILES LOGO CHECK FAILED" otherwise: use type or glass) | blue, black, light |
-| `versus/glass` | both full wordmarks in their own colours on a frosted glass bar over a mesh gradient | X vs Y, brands with strong wordmarks | light, black, blue |
+| `versus/tiles` | two tilted tiles with the brands' logos, above a big "A vs B" headline and the title's angle as a subline, sparse dot field, faint ring. Both tiles share one treatment: **both filled** with their brand colour, or **both white** with the brand's mark | X vs Y; both brands with a filled app icon (both tiles filled), or both with a logo that sits on white (both tiles white); never one of each | blue, black, light |
+| `versus/glass` | both full wordmarks in their own colours on a frosted glass bar over a mesh gradient | X vs Y, brands with strong wordmarks | light, black |
 | `swap` | the old thing → a dashed loop arrow → the new thing with a soft glow, "+" grid | switch, migration, "is X worth it", "old way → new way" | light, black |
 | `badge` | a title (or logo), the key figure in a tinted rounded box, a muted + bold line under it, sparse dots | cost and stat articles | light |
-| `brandline` | a big two-line near-black headline centred vertically on the left, on a light blue gradient with a soft glow, faint dots and a crosshair rule; the product's own wordmark top-left only for a single-product article | single-product or general articles | glow only |
 
-`brandline` never shows the site mark or the site name (the user rejected it): with no single product, the headline stands alone.
+**Retired:** `brandline` (a background with only a headline: "the bg looks good, but not like this with just a title"). Its glow field and the blue mesh behind glass are approved backgrounds waiting for a layout with a real illustration (`references/fields/`).
 
 **Originals** (built after the user had seen every other layout; approved in batch 3; light only, white in the grey frame):
 
@@ -301,7 +305,7 @@ Never work around a refusal with `--force` or another folder.
 | `LOGO FILE MISSING` | Put the logo file in `featured-images/assets/` and reference it relative to the spec |
 | `FIELD FIT FAILED` | That Gumloop layout doesn't use this field: use one it lists, or leave `field` out for its default |
 | `GLASS LOGO CHECK FAILED` | A wordmark is too wide for the glass bar: save a compact lockup (4:1 or narrower) to `featured-images/assets/`, or use another versus layout |
-| `TILES LOGO CHECK FAILED` | A brand has no app icon filled with its own colour: use versus/type, versus/glass or another comparison layout (or save the brand's square app icon to `featured-images/assets/`) |
+| `TILES LOGO CHECK FAILED` | The two tiles can't match: one brand only has a filled app tile and the other has no filled icon. Use `versus/type`, `versus/glass`, `versus/slash` or `versus/duo` |
 | `FINAL IMAGE LOCKED` | That article's image was already delivered and is permanent. Don't re-create it; a new article needs its own slug and folder. Redo it only if the user explicitly asks (`--force`) |
 
 ## Setup
@@ -333,3 +337,8 @@ Before delivering, check for:
 | Stale or campaign logo | Save the brand's current mark to `featured-images/assets/` |
 | Heavy shadow, or any shadow on blue or black | Let the renderer handle shadows |
 | A rejected idea coming back (V9) | Remove it; the user already said no |
+| One element outweighs its partner (a giant number, a heavy headline) | Rebalance until both read as one composition (taste 1) |
+| Two parallel elements styled differently (one filled tile, one white) | Give them one treatment, or pick a layout where they can match (taste 2) |
+| A pattern you notice before the content, or one covering the whole canvas | Fainter, and only framing the edges (taste 4) |
+| A background with only a headline | Add a real illustration or use another layout (taste 5) |
+| Self-Critique not run | Run it (`references/taste.md`) and fix every "no" |

@@ -72,9 +72,9 @@ For each article below:
    A text/heading/content check failing: fix the spec within the layout and render again.
    SLASH NAME: mark the coloured part with {{ }} or use the fuller product name.
    The layout itself refused (VARIETY, PILLS/CONNECT/LOGOTYPE LOGO, FAIRNESS, VIBRANT) or FINAL IMAGE LOCKED: stop and report it.
-4. Open master.png and card-350x250.png once: fix wraps, clipping, a wrong or stale logo, anything that clearly looks off.
+4. Open master.png and card-350x250.png once and run the Self-Critique in <skill-dir>/references/taste.md (a table, next to two approved images of the same family); fix every "no" before returning: wraps, clipping, a wrong or stale logo, balance, mismatched treatments, a loud pattern.
 Articles: <article file, layout, bg, category, topic, slug, brand, colour/logo notes>
-Return per article, as a list: slug, layout, bg, spec path, master.png path, card path, and every fact on the image
+Return per article, as a list: slug, layout, bg, spec path, master.png path, card path, your Self-Critique table, and every fact on the image
 with the exact article sentence it came from.
 Keep this context: you may get fix messages for these images; apply them and render again, then report the same way.
 ```
@@ -88,7 +88,8 @@ Keep this context: you may get fix messages for these images; apply them and ren
 **Prompt (template):**
 ```
 You are VISUAL QA for blog featured images. You judge looks only (Fact QA checks the facts). You never edit or render.
-Read <skill-dir>/references/design-language.md and look at <skill-dir>/references/approved/.
+Read <skill-dir>/references/taste.md and <skill-dir>/references/design-language.md, and look at <skill-dir>/references/approved/.
+Run the Self-Critique table in taste.md on every image.
 Inputs: contact sheet <qa-sheet.png> (this batch framed in blue, next to the category's earlier images),
 master.png and card-350x250.png for each image, and the site history <~/.blog-featured-images/history-<brand>.json>.
 Check every image against the VISUAL CHECKLIST in <skill-dir>/references/agents.md, looking at the actual PNGs.
@@ -105,6 +106,10 @@ Keep this context: you may get re-rendered images to re-check.
 - unbalanced logos (a big tile around a tiny logo, an app icon shrunk inside a white tile), or logo + name cards where logos alone would do
 - weak figure/ground (grey bars on `paper`, a hero that melts into the field)
 - uneven sizes, gaps or arrows; a small, pale, floating composition
+- one element outweighing its partner (a giant number beside a tiny card, a heavy headline beside the illustration)
+- parallel elements treated differently (one filled tile, one white; one name two-tone, one not)
+- a pattern you notice before the content, or one covering the whole canvas
+- a background with only a headline (no real illustration)
 
 **V2. Background fits.** The field flatters the illustration (the layout's fit list). On the vibrant blue: only checklist, versus/table, window or before-after/flow, with no drop shadows. On light fields: minimal, field-tinted shadows; grain on `sky`, `paper`, `g5`, none on `cream`.
 
@@ -144,7 +149,11 @@ Keep this context: you may get re-rendered images to re-check.
 - a mark on a white tile in connect
 - rounded outer pill ends or watercolour blotches on the pills
 - any text weight other than Inter 500 Medium in pills, connect, duo or dark
-- versus/type on the black field, badge on the blue field, or brandline with the site mark/name, blue headline ink, another colour or a low headline (Gumloop layouts)
+- versus/type on the black field, badge on the blue field, or versus/glass on the blue field (Gumloop layouts)
+- `brandline`, or any background carrying only a headline
+- one filled tile next to one white tile in versus/tiles
+- a "+" grid or dot grid that is strong or covers the whole canvas on a dark field
+- a stat number that outweighs its breakdown card
 - busy patterns on the Gumloop layouts: dot grids and the tiles ring stay sparse and faint
 - `versus/rows` in any field (the user disapproved it); `versus/split` or `versus/duet` unless the user asks for them
 - a slash name in one colour (white is always part of it), or slash names made bigger than their auto-fit size
