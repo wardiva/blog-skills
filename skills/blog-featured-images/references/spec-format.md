@@ -9,7 +9,7 @@ One JSON file per article. Top-level fields shared by all layouts:
 | `category` | yes | The site's blog category; layouts rotate within it |
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They never share a mode |
 | `slug` | yes | Output folder name and history key (unique per article) |
-| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layout: `dark` |
+| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype` |
 | `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, and the headline variants `pills`, `connect`, `slash`, `duo`. Mode + variant = one layout |
 | `bg` | no | Leave it out: the renderer picks the layout's best-fitting light background. Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language). Vibrant: `"blue"` on about 1 in 3 images, only for `checklist`, `versus/table`, `window`, `before-after/flow` |
 | `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns it off on a light field |
@@ -126,7 +126,7 @@ The specs in `examples/` are complete, approved examples of every layout. Start 
 ---
 
 # Headline layouts
-Five layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo` and `dark`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
+Six layouts: `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark` and `logotype`. They paint their own canvas (`bg` is ignored); white ones sit in a grey frame automatically. In every `headline`, `{{ }}` marks the key phrase (blue) and `\n` breaks the line. Keep headlines to the title's own words.
 
 ## Versus pills (`"mode": "versus", "variant": "pills"`)
 ```json
@@ -161,3 +161,10 @@ Review", "product": "Sage Intacct", "color": "#00C247", "panelLogo": "sage.com" 
 ```
 - The layout for articles about **one product** (review, pricing, features, "is X worth it"); may repeat up to 3 times per category. An X vs Y title is refused ("FAIRNESS CHECK FAILED").
 - `color`: the product's own brand colour when it's vivid and modern; otherwise leave it out (subtle blue). `panelLogo` is the product's domain (or `"../assets/<file>.png"`); its mark is turned white automatically. `product` is the name shown under the mark.
+
+## Logotype (`"mode": "logotype"`; single product with a black logo)
+```json
+{ "mode": "logotype", "product": "Notion", "logotype": "notion.com" }
+```
+- Only for a single-product article whose logo is **black** (icon and wordmark) with strong typography; may repeat up to 2 times per category. Coloured logos use `dark`.
+- `logotype`: the product's domain (the renderer fetches its full lockup and keeps the black version) or `"../assets/<file>.png"`. No other text appears; the heading rule doesn't apply.

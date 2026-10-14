@@ -77,6 +77,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5` and `blue` exist |
 | `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts) appear on at most 1 in 3 images per category, never on neighbours |
+| `LOGOTYPE CHECK FAILED` | `logotype` needs a black logo lockup; coloured logos use `dark` |
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window and before-after/flow go on the vibrant blue |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
 | `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
@@ -90,7 +91,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 - **One bold blue anchor**, white UI cards, navy headlines, a hero at 55–70% of the width.
 - **Logos:** a free chain (Brandfetch symbol → Iconify → Simple Icons → Brandfetch icon → letter tile), loaded at render time. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (12 modes, 18 layouts)
+## Layouts (13 modes, 19 layouts)
 
 **Card layouts:**
 
@@ -117,6 +118,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 | `versus/slash` | X vs Y on black: bold names, italic VS (a favourite: may repeat up to 5 times per category) |
 | `versus/duo` | X vs Y on black: two panels in each brand's colour with white logos (a favourite: may repeat up to 5 times per category) |
 | `dark` | Single-product articles (review, pricing, features): the product's colour as the panel, white logo; up to 3 per category |
+| `logotype` | Single-product articles with a black logo: the full lockup on cream with a faint grid; up to 2 per category |
 
 ## Add your own site
 

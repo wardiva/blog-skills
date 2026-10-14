@@ -574,7 +574,16 @@ ${panel(L, 0, 28)}${panel(R, 1, 816)}
 ${WHITE_MARK_JS}`;
 }
 
-const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark };
+// "logotype" (user reference: the Grok lockup): a single product's full BLACK logo lockup (icon + wordmark), large and centred on
+// the cream field with a faint square grid. No other text: the logo's own typography is the image. Only for black logos with strong
+// typography ("LOGOTYPE CHECK FAILED" otherwise); single-product articles with a coloured logo use "dark".
+function logotype() {
+  return `<style>.lgt-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(60,50,40,.10) 1.5px,transparent 1.5px),linear-gradient(90deg,rgba(60,50,40,.10) 1.5px,transparent 1.5px);background-size:120px 120px;background-position:-20px -10px}
+.lgt-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:1120px;max-height:380px;width:auto;height:auto}</style>
+<div class="lgt-grid"></div><img class="lgt-logo" src="${LOGOTYPE}" alt="${esc(spec.product || '')}">`;
+}
+
+const modes = { versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype };
 
 
 // ---- heading must mirror the blog title: same key words, same meaning, just shorter ----
@@ -614,9 +623,41 @@ const layoutOf = (e) => e.layout || `${e.mode}/${(LAYOUTS[e.mode] || ['default']
 //  - g5 lifts a single floating white card with light rising under it
 const BG_FIT = { checklist: ['g5', 'sky'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], prompt: ['paper', 'sky'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
 // Chatbase-style layouts paint their own canvas (white in a grey frame, or black); 'dark' counts as vibrant
+// logotype: fetch the product's full logo lockup (both Brandfetch themes, or a local file), keep the version whose ink is black
+let LOGOTYPE = null;
+if (MODE === 'logotype') {
+  const inkOf = async (buf) => {
+    const { data, info } = await sharp(buf).ensureAlpha().resize(600, 600, { fit: 'inside' }).raw().toBuffer({ resolveWithObject: true });
+    let n = 0, lum = 0, sat = 0, col = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      const [r, g, b, a] = [data[i], data[i + 1], data[i + 2], data[i + 3]];
+      if (a < 60 || (r > 225 && g > 225 && b > 225)) continue;
+      const mx = Math.max(r, g, b), mn = Math.min(r, g, b), sa = mx ? (mx - mn) / mx : 0;
+      n++; lum += (r + g + b) / 3; sat += sa; if (sa > 0.3 && mx > 60) col++;
+    }
+    return n ? { lum: lum / n, sat: sat / n, colour: col / n, n } : null;
+  };
+  const sources = [];
+  const ref = spec.logotype || spec.logo;
+  if (ref && /\.(png|svg|webp|jpe?g)$/i.test(ref)) sources.push(['file', ref]);
+  else if (ref && BF_CLIENT) for (const th of ['dark', 'light']) sources.push(['url', `https://cdn.brandfetch.io/${encodeURIComponent(ref)}/w/1600/h/600/theme/${th}/fallback/404/type/logo?c=${encodeURIComponent(BF_CLIENT)}`]);
+  const tried = [];
+  for (const [kind, src] of sources) {
+    try {
+      const buf = kind === 'file' ? fs.readFileSync(src.startsWith('file:') ? fileURLToPath(src) : path.resolve(path.dirname(specFile), src))
+        : Buffer.from(await (await fetch(src, { headers: { 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36' } })).arrayBuffer());
+      const ink = await inkOf(buf); tried.push(ink);
+      if (ink && ink.lum < 90 && ink.sat < 0.25 && ink.colour < 0.06) { LOGOTYPE = `data:image/png;base64,${(await sharp(buf).trim().png().toBuffer()).toString('base64')}`; break; }
+    } catch { tried.push(null); }
+  }
+  if (!LOGOTYPE && !args.includes('--force')) {
+    console.error(`LOGOTYPE CHECK FAILED: no black logo lockup found for "${ref}". This layout needs a black logo (icon and wordmark). Use "dark" for this product, or save its black logo to featured-images/assets/ and set "logotype": "../assets/<file>.png".`);
+    process.exit(2);
+  }
+}
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo'].includes(LAYOUT);
 const VIVID = MODE === 'dark' || ['versus/slash', 'versus/duo'].includes(LAYOUT);   // black fields count as vibrant (1 in 3, never neighbours)
-Object.assign(BG_FIT, { dark: ['paper'] });
+Object.assign(BG_FIT, { dark: ['paper'], logotype: ['cream'] });
 const DEFAULT_BG = Object.fromEntries(Object.entries(BG_FIT).map(([m, l]) => [m, l[0]]));
 const BGS = ['sky', 'paper', 'cream', 'g5'];
 const BG_OK = [...BGS, 'blue'];
@@ -714,7 +755,7 @@ if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force) {
 // texture (edge guide lines + a few margin accent dots) = the anti-bland structure layer. On by default for 'sky'/'paper'
 // backgrounds; opt in elsewhere with "texture": true. Off when the frame grid is on (never both).
 const FRAME_ON = spec.bg !== 'blue' && (spec.frame ?? FRAME_DEFAULT[MODE] ?? false);
-const TEX = !FRAME_ON && !CB_LAYOUT && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
+const TEX = !FRAME_ON && !CB_LAYOUT && MODE !== 'logotype' && (spec.texture ?? (['sky', 'paper'].includes(BG) || ['checklist', 'ranked', 'focus', 'versus', 'before-after', 'stack'].includes(MODE)));
 const texRand = (() => { let h = 2166136261; for (const c of String(slug)) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; })();
 const pt = (x, y) => [Math.round(x), Math.round(y)];
 const accDots = [0, 1, 2, 3, 4].map((i) => {     // outer margins only: never near text or cards

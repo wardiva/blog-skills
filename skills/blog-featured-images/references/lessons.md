@@ -61,7 +61,7 @@ Read this before every batch.
 - **A one-brand image for an X vs Y article** (dark layout) looked like an ad. Comparisons always show both products.
 - **Review rounds:** an interactive review page (before | fixed, Approve / Needs change / Pick A·B, a note per image) made feedback fast; turn each note into a prompt before acting.
 - **Not every QA fix is wanted:** a tighter window, a pointer callout and bigger logo badges were all rejected ("before is better"). When a fix changes the look, show it next to the original first.
-- **The user dislikes `versus/logos`** (removed) and loves `versus/slash`, `versus/connect` and `versus/duo` (each may repeat up to 5 times per category; duo has no site mark). Single-product articles use `dark` (up to 3 times per category).
+- **The user dislikes `versus/logos`** (removed) and loves `versus/slash`, `versus/connect` and `versus/duo` (each may repeat up to 5 times per category; duo has no site mark). Single-product articles use `logotype` when the logo is black with strong typography (up to 2 per category), otherwise `dark` (up to 3).
 - **Logo chain surprises:** a brand's "icon" can be a stale anniversary badge (Availity) or a pale grey wordmark (Sectra). Check every logo by eye; use the official site icon from the brand's website when needed.
 - **Work in the project folder.** One batch rendered into a temporary scratch folder; delivered images must live in the project's `featured-images/` (finalize also keeps a copy in `~/.blog-featured-images/delivered/`).
 - **Fix the skill, then publish:** renderer fixes made during a batch go into the skill and are pushed, never left as local patches.
