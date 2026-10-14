@@ -118,3 +118,4 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 - Receipt: "heading placement feels off" with a centred headline. The new options are `"place": "top" | "bottom"` (pending a pick).
 - NetSuite vs SAP B1 (-guide-2): asked for type on black, then "different layout". `versus/bento` was picked for its concept ("design is okay"). From 4 finishes, light won ("looks better in light") once the "+" grid was removed ("overwhelming here"). It replaced the approved type image. `versus/chat` was shown and not picked.
 - Batch 4, round 3: picked the receipt with `"place": "bottom"` (headline baseline on the total line) and `versus/frost` on the light mesh (the blue mesh was disapproved). All 10 are final.
+- Stat: a spec with an empty card heading no longer leaves a gap above the first row (the heading is only drawn when set); found by the Self-Critique on the RCM re-render.

@@ -341,7 +341,7 @@ function stat() {
 .sr.a div{color:#141A26}.sr.a>i>i{background:linear-gradient(90deg,#3B86F0,#0A5FD8)}
 </style>
 <div class="sv">${esc(spec.value)}</div><div class="sc">${esc(spec.caption)}</div><div class="ss">${esc(spec.sub || '')}</div>
-<div class="scard"><h3>${esc(spec.card.heading)}</h3>${rows}</div>`;
+<div class="scard">${spec.card.heading ? `<h3>${esc(spec.card.heading)}</h3>` : ''}${rows}</div>`;
 }
 
 // "ranked": named bars ranked by a real metric; the winner in the accent, the rest neutral.
