@@ -1,0 +1,36 @@
+{
+  "articleTitle": "7 Best Appointment Reminder Software for Small Practices 2026",
+  "brand": "medsoftwarehub",
+  "category": "practice-management-software",
+  "slug": "7-best-appointment-reminder-software-for-small-practices-2026",
+  "mode": "spotlight",
+  "headline": "Best {{Appointment Reminder}} Software",
+  "items": [
+    {
+      "name": "Weave",
+      "logo": "getweave.com"
+    },
+    {
+      "name": "Solutionreach",
+      "logo": "../assets/solutionreach-mark.png"
+    },
+    {
+      "name": "Luma Health",
+      "logo": "../assets/luma-health-mark.png"
+    },
+    {
+      "name": "Phreesia",
+      "logo": "../assets/phreesia-circle.png"
+    },
+    {
+      "name": "NexHealth",
+      "logo": "../assets/nexhealth-mark.png"
+    },
+    {
+      "name": "Klara",
+      "logo": "../assets/klara-k-mark.png"
+    }
+  ],
+  "bg": "glow",
+  "bgPick": true
+}

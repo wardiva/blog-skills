@@ -28,5 +28,16 @@
  "32-shortlist": "e-prescribing.shortlist.json",
  "33-lineup": "urgent-care-emrs.lineup.json",
  "34-versus-frost": "practice-fusion-vs-athenahealth.versus-frost.json",
- "35-versus-bento": "netsuite-vs-sap.versus-bento.json"
+ "35-versus-bento": "netsuite-vs-sap.versus-bento.json",
+ "36-versus-badges": "theranest-vs-valant.versus-badges.json",
+ "37-versus-checks": "aapc-codify-vs-find-a-code.versus-checks.json",
+ "39-versus-lanes": "office-ally-vs-claim-md.versus-lanes.json",
+ "40-versus-scores": "oracle-health-vs-meditech.versus-scores.json",
+ "41-versus-center": "modmed-vs-eclinicalworks.versus-center.json",
+ "42-spotlight": "appointment-reminder.spotlight.json",
+ "43-picks": "hospital-information-systems.picks.json",
+ "44-cloud": "claims-management.cloud.json",
+ "45-count": "dermatology-pm.count.json",
+ "46-ranges": "small-practice-emr.ranges.json",
+ "48-prompt-logos": "rxnt-vs-drfirst.prompt.json"
 }

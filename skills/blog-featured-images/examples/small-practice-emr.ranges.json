@@ -1,0 +1,49 @@
+{
+  "articleTitle": "5 Best EMR Software Options for Small Practices in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "5-best-emr-software-options-for-small-practices-in-2026",
+  "mode": "ranges",
+  "headline": "Small Practice EMR",
+  "sub": "per provider/month",
+  "max": 1100,
+  "rows": [
+    {
+      "name": "athenahealth",
+      "logo": "../assets/athenahealth-folder-mark.png",
+      "lo": 140,
+      "open": true,
+      "label": "From $140\n+ fee"
+    },
+    {
+      "name": "AdvancedMD",
+      "logo": "../assets/advancedmd-folder-mark.png",
+      "lo": 130,
+      "hi": 1070,
+      "label": "$130–1,070"
+    },
+    {
+      "name": "Tebra",
+      "logo": "../assets/tebra-folder-mark.png",
+      "lo": 49,
+      "hi": 799,
+      "label": "$49–799"
+    },
+    {
+      "name": "DrChrono",
+      "logo": "../assets/drchrono-folder-mark.png",
+      "lo": 199,
+      "label": "~$199"
+    },
+    {
+      "name": "eClinicalWorks",
+      "logo": "../assets/eclinicalworks-folder-mark.png",
+      "lo": 449,
+      "hi": 599,
+      "label": "$449–599"
+    }
+  ],
+  "bg": "white",
+  "bgPick": true,
+  "bare": true
+}

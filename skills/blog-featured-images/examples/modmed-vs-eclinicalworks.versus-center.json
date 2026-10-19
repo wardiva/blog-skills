@@ -1,0 +1,19 @@
+{
+  "articleTitle": "ModMed vs eClinicalWorks for Dermatology Practices (2026)",
+  "brand": "medsoftwarehub",
+  "category": "specialty-software",
+  "slug": "modmed-vs-eclinicalworks-for-dermatology-practices-2026",
+  "mode": "versus",
+  "variant": "center",
+  "label": "Dermatology",
+  "left": {
+    "label": "ModMed",
+    "logo": "../assets/modmed-folder-mark.png"
+  },
+  "right": {
+    "label": "eClinicalWorks",
+    "logo": "../assets/eclinicalworks-folder-mark.png"
+  },
+  "bg": "cream",
+  "bgPick": true
+}

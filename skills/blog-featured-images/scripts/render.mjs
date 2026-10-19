@@ -1,6 +1,6 @@
 // blog-featured-images renderer: one article spec -> a featured image in the approved design language.
 // Usage: node render.mjs <spec.json> [--brand <brand.json>] [--out <dir>]
-//   spec  : article content + "mode" (19 modes / 30 layouts, listed in layouts.mjs). See references/spec-format.md
+//   spec  : article content + "mode" (24 modes / 40 layouts, listed in layouts.mjs). See references/spec-format.md
 //   brand : colour overrides (default: brands/default.json). See brands/_template.json
 //   out   : output folder (default: ./featured-images/<slug>)
 // Writes master.png (1600x900), 7x5.webp (theme crop), 16x9-1200.webp (social), card-350x250.png (check size), page.html
@@ -108,7 +108,8 @@ const baTop = Math.round((900 - (baH + 190)) / 2);
 // "versus": in the approved card language, structurally unlike before-after.
 //   variant "overlap" (default): two cards tilted toward each other, overlapping at the centre with the vs chip on the overlap.
 //   variant "table": ONE comparison card, products as column headers, matched rows, the right column tinted.
-// The other variants are the headline layouts (pills, connect, slash, duo) and the Gumloop-style ones (type, tiles, glass, frost, bento).
+// The other variants are the headline layouts (pills, connect, slash, duo), the Gumloop-style ones (type, tiles, glass, frost, bento)
+// and the arrangements of approved parts (badges, checks, center, lanes, scores).
 function versus() {
   if (spec.variant === 'pills') return cbVersusPills();
   if (spec.variant === 'connect') return cbVersusConnect();
@@ -119,6 +120,11 @@ function versus() {
   if (spec.variant === 'glass') return glGlass();
   if (spec.variant === 'frost') return glFrost();
   if (spec.variant === 'bento') return glBento();
+  if (spec.variant === 'badges') return o7Badges();
+  if (spec.variant === 'checks') return o7Checks();
+  if (spec.variant === 'center') return o8Center();
+  if (spec.variant === 'lanes') return o9Lanes();
+  if (spec.variant === 'scores') return o9Scores();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
   const legend = spec.legend ? `<div class="legend vleg"><span class="lg1"><i></i>${esc(spec.legend[0])}</span><span class="lg2"><i></i>${esc(spec.legend[1])}</span></div>` : '';
   if (spec.variant === 'table') {
@@ -172,7 +178,7 @@ function hub() {
       const ang = Math.atan2(ey - qy, ex - qx), h = 24;
       const p1 = [ex - h * Math.cos(ang - 0.5), ey - h * Math.sin(ang - 0.5)], p2 = [ex - h * Math.cos(ang + 0.5), ey - h * Math.sin(ang + 0.5)];
       arrows += `<path d="M${sx.toFixed(1)} ${sy.toFixed(1)} Q ${qx.toFixed(1)} ${qy.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)}"/><path d="M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} L ${ex.toFixed(1)} ${ey.toFixed(1)} L ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}"/>`;
-      tiles += `<div class="hq" style="left:${cx - S / 2}px;top:${cy - S / 2}px;transform:rotate(${r}deg)">${logo(cd.logo, L, cd.name)}</div>`;
+      tiles += `<div class="hq" style="left:${cx - S / 2}px;top:${cy - S / 2}px;transform:rotate(${r}deg)">${logo(cd.logo, cd.scale ? Math.round(S * Math.min(0.8, Math.max(0.5, Number(cd.scale)))) : L, cd.name)}</div>`;   // optional per-card "scale" (0.5-0.8 of the tile) for a wide, light lockup (QA, batch 5)
     });
     return `<style>
 .tile{position:absolute;left:640px;top:${T - 160}px;width:320px;height:320px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;box-shadow:0 30px 60px rgba(10,95,216,.25)}
@@ -217,20 +223,25 @@ svg.arr{position:absolute;inset:0;overflow:visible}
 
 // "prompt" mode (Granola "Introducing Recipes"): a faded app panel, a big headline over it, a pill input bar with chips.
 function prompt() {
-  const rows = spec.panel.rows.map((r, i) => `<div class="pr" style="opacity:${[1, 0.72, 0.48][i] ?? 0.35}"><i class="ph ph-file-text"></i><div><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></div></div>`).join('');
-  const chips = spec.chips.map((t) => `<span class="chip"><i></i>${esc(t)}</span>`).join('');
+  // "panel.even": true keeps every row at full strength (no fade), for rows that are equals (RXNT vs DrFirst, option C, Oct 20 2026)
+  const BIGP = spec.panel.rows.length <= 2;   // two rows grow to fill the panel (Visual QA, b10: a half-empty panel reads as a missing row)
+  // a row or chip that names a product shows its real logo (QA, batch 5: file icons beside product names read as files)
+  const rows = spec.panel.rows.map((r, i) => `<div class="pr" style="opacity:${spec.panel.even ? 1 : [1, 0.72, 0.48][i] ?? 0.35}">${r.logo ? `<span class="plg">${logo(r.logo, BIGP ? 70 : 54, r.title)}</span>` : '<i class="ph ph-file-text"></i>'}<div><b>${esc(r.title)}</b><span>${esc(r.sub)}</span></div></div>`).join('');
+  const chips = (spec.chips || []).map((t) => typeof t === 'object' ? (t.logo && !t.label ? `<span class="chip lo">${logo(t.logo, 40, '')}</span>` : `<span class="chip">${t.logo ? logo(t.logo, 30, t.label) : '<i></i>'}${esc(t.label || '')}</span>`) : `<span class="chip"><i></i>${esc(t)}</span>`).join('');
   return `<div style="position:absolute;inset:0;background:${spec.field !== 'soft' ? 'linear-gradient(180deg,#F7FBFF 0%,#EAF5FE 38%,#A9DCFB 78%,#7CC8F8 100%)' : 'linear-gradient(160deg,#EEF6FE 0%,#D6EAFC 50%,#BFDDFA 100%)'}"></div><style>
 .panel{position:absolute;left:210px;top:-20px;width:1180px;height:810px;border-radius:0 0 48px 48px;background:linear-gradient(180deg,#FFFFFF 35%,#D9ECFC 100%);box-shadow:0 30px 60px rgba(30,60,110,.10)}
 .plbl{position:absolute;left:290px;top:66px;font-size:26px;font-weight:500;color:#8A93A5;letter-spacing:.01em}
-.prs{position:absolute;left:290px;top:122px;display:grid;gap:30px}
+.prs{position:absolute;left:290px;top:${BIGP ? 182 : 122}px;display:grid;gap:30px}
 .pr{display:flex;align-items:center;gap:28px}.pr i{width:80px;height:80px;border-radius:16px;background:#F1F4F8;display:grid;place-items:center;font-size:36px;color:#8A93A5}
 .pr b{display:block;font-size:36px;font-weight:500;line-height:1.2;color:#2B3245}.pr span{display:block;margin-top:4px;font-size:28px;line-height:1.25;color:#6B7487}
 h1{position:absolute;left:0;right:0;top:492px;margin:0;text-align:center;font-size:${Math.min(66, Math.floor(820 / (String(spec.headline).length * 0.52)))}px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B}
+${BIGP ? ".prs{gap:40px}.prs .plg{width:104px;height:104px;border-radius:22px}.pr b{font-size:40px}.pr span{font-size:30px}" : ""}
 .bar{position:absolute;left:250px;top:620px;width:1100px;height:124px;border-radius:62px;background:rgba(255,255,255,.92);box-shadow:0 20px 50px rgba(30,60,110,.14),0 0 0 1px rgba(20,26,38,.05);display:flex;align-items:center;padding:0 22px 0 46px;gap:16px}
 .bar .ph-txt{display:flex;align-items:center;gap:14px;font-size:36px;color:#8A93A5;margin-right:auto}
 .bar .ph-txt:before{content:"";width:4px;height:52px;background:#27ACF2;border-radius:2px}
 .chip{display:flex;align-items:center;gap:12px;font-size:28px;font-weight:500;color:#141A26;background:#fff;border-radius:40px;padding:16px 26px;box-shadow:0 0 0 1px rgba(20,26,38,.07)}
 .chip i{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#BFE3F8,#4F93E8)}
+.plg{width:80px;height:80px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(20,26,38,.07);display:grid;place-items:center;flex:none}.plg .lg,.chip .lg{box-shadow:none;background:transparent;padding:0}.chip.lo{padding:12px 26px}.chip.lo .lg{width:auto!important;height:40px!important;max-width:200px;border-radius:0}.chip.lo .lg img{width:auto;height:40px;max-width:200px}
 .go{width:92px;height:92px;border-radius:50%;background:linear-gradient(160deg,#3B86F0,#0A5FD8);display:grid;place-items:center;color:#fff;font-size:42px;flex:none}
 </style>
 <div class="panel"></div><div class="plbl">${esc(spec.panel.label)}</div><div class="prs">${rows}</div>
@@ -513,7 +524,7 @@ function cbVersusConnect() {
   // the headline sits on ONE line (user: "2 lines looks visually off"), centred above the divider; only a pair too long to read
   // on one line (under 72px) breaks onto two, which then sits at the top and stays clear of the corner dot patches (900 wide)
   const L = spec.left, R = spec.right, head0 = spec.headline || `${L.label} vs ${R.label}`, one = head0.replace(/\s*\n\s*/g, ' ');
-  const fs1 = cbFs(one, 96, 1200), single = fs1 >= 72;
+  const fs1 = cbFs(one, 96, 1080), single = fs1 >= 72;   // 1080 wide at most, the approved headline's width (QA: 1200 ran past x 210-1390)
   const head = single ? one : (head0.includes('\n') ? head0 : `${L.label} vs\n${R.label}`), fs = single ? fs1 : cbFs(head, 104, 900);
   const hTop = Math.round(245 - (single ? 1 : 2) * fs * 0.51);   // centred above the divider either way
   const S = 240, cy = 620, lx = 330, rx = 1270, cr = 74;
@@ -527,7 +538,7 @@ function cbVersusConnect() {
 ${cbFramed(`<div style="position:absolute;inset:0;background:radial-gradient(60% 45% at 50% 82%,rgba(47,123,255,.09),transparent 70%)"></div>
 <svg width="1600" height="900" style="position:absolute;inset:0"><defs><linearGradient id="fdL" x1="0" x2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 <radialGradient id="fdm" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></radialGradient><mask id="dmk"><rect width="1600" height="900" fill="url(#fdm)"/></mask></defs>
-<g fill="#C3CAD8">${dots(96)}${dots(1350)}</g>
+${spec.cornerDots === false ? '' : `<g fill="#C3CAD8">${dots(96)}${dots(1350)}</g>`}
 <g stroke="#9DB8F2" stroke-width="2" fill="none" stroke-linecap="round">${strands}</g>
 <g fill="#fff" stroke="#9DB8F2" stroke-width="2.5"><circle cx="${le}" cy="${cy}" r="8"/><circle cx="${re}" cy="${cy}" r="8"/></g>
 <g stroke="#9DB8F2" stroke-width="2"><line x1="590" y1="372" x2="770" y2="372"/><line x1="830" y1="372" x2="1010" y2="372"/></g>
@@ -630,10 +641,15 @@ function logotype() {
 // blue mesh, versus/bento on black (light won).
 const GL_FIELD_FIT = { 'versus/bento': ['light'], 'versus/frost': ['light'], 'versus/type': ['light'], 'versus/tiles': ['blue', 'light'], 'versus/glass': ['light', 'black'], 'swap/default': ['light'], 'badge/default': ['light'] };
 const GL_FIT = GL_FIELD_FIT[LAYOUT];
-const GL_FIELD = GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
+// "bgPick": true = the user picked this image's background ("bg") himself (the bg-picks review, Oct 2026): it skips the background fit
+// checks (BG_FIT, BLUE_FIT and the canvas refusal; a picked "blue" has its own list, BLUE_PICK), and a layout that draws its canvas
+// with glCanvas drops that canvas so the picked field shows (its ink follows the field: light, or white on "blue").
+// Light fields: sky, paper, cream, g5, soft, white, glow, mesh; vibrant: blue.
+const BG_PICK = spec.bgPick === true && spec.bg != null;
+const GL_FIELD = BG_PICK ? (spec.bg === 'blue' ? 'blue' : 'light') : GL_FIT && GL_FIT.includes(spec.field) ? spec.field : GL_FIT ? GL_FIT[0] : 'light';
 // The Gumloop layouts and the Originals (receipt, definition, shortlist, lineup) paint their own canvas, and so do the Chatbase
 // headline layouts (white in a grey frame, or black): CB_LAYOUT. 'dark' counts as vibrant.
-const GL_LAYOUTS = ['versus/type', 'versus/tiles', 'versus/glass', 'versus/frost', 'versus/bento', 'swap/default', 'badge/default', 'receipt/default', 'definition/default', 'shortlist/default', 'lineup/default'];
+const GL_LAYOUTS = ['versus/badges', 'versus/type', 'versus/tiles', 'versus/glass', 'versus/frost', 'versus/bento', 'swap/default', 'badge/default', 'receipt/default', 'definition/default', 'shortlist/default', 'lineup/default'];
 const CB_LAYOUT = MODE === 'dark' || ['versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', ...GL_LAYOUTS].includes(LAYOUT);
 // "field" picks a Gumloop layout's canvas, and prompt takes "soft" (its calmer glow); anywhere else it would do nothing, so it is refused
 if (spec.field != null && !(GL_FIT ? GL_FIT.includes(spec.field) : LAYOUT === 'prompt/default' && spec.field === 'soft') && !force) {
@@ -645,7 +661,30 @@ if (spec.field != null && !(GL_FIT ? GL_FIT.includes(spec.field) : LAYOUT === 'p
 // "bg" sets the card layouts' field; a layout that paints its own canvas would ignore it, so it is refused there. prompt paints its
 // own full field too (its calmer glow is "field": "soft"), so it counts as a canvas here: CANVAS
 const CANVAS = CB_LAYOUT || LAYOUT === 'prompt/default';
-if (spec.bg != null && CANVAS && !force) {
+// The backgrounds: light = BGS, vibrant = "blue" (the deep dunes).
+const BGS = ['sky', 'paper', 'cream', 'g5', 'soft', 'white', 'glow', 'mesh'];
+// a picked bg shows only where the canvas can step aside (glCanvas layouts); the others paint a full canvas of their own over it
+const PICK_CANVAS = ['versus/badges', 'versus/type', 'versus/tiles', 'versus/bento', 'swap/default', 'badge/default', 'shortlist/default'];
+// a picked "blue" only behind layouts whose text all sits in a white card: the approved blue layouts (BLUE_FIT below), versus/checks,
+// picks and stack (every word in their white card), and versus/tiles, whose own approved field is blue. Anywhere else (logotype
+// included) text sits straight on the field, where the blue drowns it.
+const BLUE_PICK = ['checklist/default', 'versus/table', 'window/default', 'before-after/flow', 'versus/checks', 'versus/tiles', 'picks/default', 'stack/default'];
+// why this layout can't take "bg" as a pick (null = it can); the picker (scripts/bgpick.mjs) asks for the list with --pick-fields
+const pickRefusal = (bg) => CANVAS && !PICK_CANVAS.includes(LAYOUT) ? `${LAYOUT} paints its own full canvas, so a picked "bg" would never show. Remove "bg" and "bgPick" (a picked field works on the card layouts and on ${PICK_CANVAS.join(', ')}).`
+  : bg === 'blue' && !BLUE_PICK.includes(LAYOUT) ? `blue only behind layouts whose text all sits in a white card (${BLUE_PICK.join(', ')}). Pick a light field (${BGS.join(', ')}).`
+  : MODE === 'checklist' && bg !== 'blue' ? 'the checklist goes on the vibrant "blue" only (its light field was deleted in review).'
+  : MODE === 'ranges' && spec.bare === true && bg !== 'white' ? 'ranges "bare" (no card behind the bars) goes on the white field only: light grey tracks need a white card on any tinted field (drop "bare" for another field).'
+  : null;
+// --pick-fields: print the fields this spec's layout takes as a pick and stop (nothing is checked further, rendered or recorded)
+if (args.includes('--pick-fields')) { console.log(`PICK FIELDS ${[...BGS, 'blue'].filter((b) => !pickRefusal(b)).join(' ') || 'none'}`); process.exit(0); }
+const pickWhy = spec.bgPick == null || force ? null
+  : spec.bgPick !== true || spec.bg == null ? `"bgPick": true marks the user's own pick of "bg", so it needs a "bg" (and only true is valid).`
+  : pickRefusal(spec.bg);
+if (pickWhy) { console.error(`BACKGROUND PICK FAILED: ${pickWhy}`); process.exit(2); }
+// ranges "bare" drops the white card behind the bars (the user, Oct 20 2026: "dont add container for bars section"), approved on the
+// white field only; on a tinted field the light grey tracks still need their white card (Visual QA, b8)
+if (MODE === 'ranges' && spec.bare === true && !(BG_PICK && spec.bg === 'white') && !force) { console.error('BACKGROUND CHECK FAILED: ranges "bare" (no card behind the bars) goes on the white field only: add "bg": "white", "bgPick": true, or drop "bare" (the light grey tracks need their white card on any tinted field).'); process.exit(2); }
+if (spec.bg != null && CANVAS && !force && !BG_PICK) {
   console.error(`BACKGROUND CHECK FAILED: ${LAYOUT} paints its own canvas, so "bg" does nothing here. Remove "bg"${GL_FIT && GL_FIT.length > 1 ? ` (its canvas is picked with "field": ${GL_FIT.map((f) => `"${f}"`).join(' or ')})` : LAYOUT === 'prompt/default' ? ' (its calmer field is picked with "field": "soft")' : ''}.`);
   process.exit(2);
 }
@@ -664,6 +703,7 @@ let glN = 0;
 const glBg = (css) => { const k = 'glb' + (++glN); return `<style>.${k}{${css}}</style><div class="cbf ${k}"></div>`; };
 const glCanvas = (inner, pattern = 'plus') => {
   const P = glPal(), pat = pattern === 'plus' ? glPlus(P.mark) : pattern === 'dots' ? glDots(P.dot, 36, 1.4) : '';
+  if (BG_PICK) return `${CB_CSS}${inner}`;   // the user's chosen field shows through (BG_CSS)
   if (GL_FIELD === 'light') return `${CB_CSS}${cbFramed(`${pat}${inner}`)}`;
   // the vibrant blue field (versus/tiles), with heavy grain
   return `${CB_CSS}${glBg(`background:${P.bg}`)}${glBg(`background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85`)}${pat}${inner}`;
@@ -804,11 +844,11 @@ ${items.map(row).join('')}</div>${spec.icon ? `<div style="position:absolute;rig
 
 // lineup ("best X" lists, user reference Oct 2026): one centred row of square logo tiles, evenly spaced (gap ~38% of a tile, logo ~70%
 // of its tile, measured from the reference), white tiles on one frosted bar, on the approved glow field. No headline (the reference has
-// none). 3-6 products. (Each tile frosted, "glass": "tiles", and a watermark icon behind the row were rejected by the user.)
+// none). 3-7 products (7 since the pediatric delivery, Oct 2026). (Each tile frosted, "glass": "tiles", and a watermark icon behind the row were rejected by the user.)
 function lineup() {
-  const items = (spec.cards || []).filter((c) => c.logo).slice(0, 6), n = items.length;
+  const items = (spec.cards || []).filter((c) => c.logo).slice(0, 7), n = items.length;
   const T = Math.min(180, Math.floor(1096 / (n + (n - 1) * 0.38))), G = Math.round(T * 0.38), PAD = Math.round(T * 0.26);
-  const tile = (c) => `<div style="width:${T}px;height:${T}px;border-radius:${Math.round(T * 0.09)}px;display:grid;place-items:center;flex:none;background:#fff;box-shadow:0 10px 24px rgba(20,50,120,.10)">${logo(c.logo, Math.round(T * 0.7), c.name)}</div>`;
+  const tile = (c) => `<div style="width:${T}px;height:${T}px;border-radius:${Math.round(T * 0.09)}px;display:grid;place-items:center;flex:none;background:#fff;box-shadow:0 10px 24px rgba(20,50,120,.10)">${logo(c.logo, Math.round(T * Math.min(0.8, Math.max(0.5, Number(c.scale) || 0.7))), c.name)}</div>`;   // "scale" (0.5-0.8, default 0.7): a wide, thin mark (a wave, a short wordmark) needs a bigger box to carry equal weight (QA, batch 5)
   const row = items.map(tile).join('');
   return `${CB_CSS}<style>.lu .lg{box-shadow:none;background:transparent;padding:0}.lu .lg:not(.full){border-radius:0;overflow:visible}</style>
 ${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}
@@ -852,14 +892,166 @@ function glBento() {
   // no pattern (user, batch 4: "delete pattern from bg, it looks overwhelming here"): the grid of cells is texture enough
   return glCanvas(`${side(L, x0)}${side(R, x0 + W + G)}${vs}`, 'none');
 }
-const modes = { lineup, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, receipt, definition };
+// ---- Batch 7 options (Oct 19 2026): new arrangements built only from approved parts (the user: "design using our design
+// language"; all props and device mockups were rejected). Each names the approved template it is made from. ----
+
+// versus/badges: from the approved badge. Each side: its name (or wordmark) on top, its key figure in the tinted value box,
+// a muted qualifier under it; a light "vs" between. One blue tint for both boxes. White in the grey frame, sparse dots.
+// Options (TheraNest vs Valant, option B approved Oct 20 2026: the names were "too bold and big, visual hierrachy is not good"):
+// "nameSize" / "nameWeight" / "nameInk" cap the names (delivered: 44, 600), "valueSize" caps the figures (delivered: 84), "spread": true
+// moves the sides out (490/1110) and centres the "vs" in the gap between the two value boxes. Without them: the original look.
+function o7Badges() {
+  const L = spec.left, R = spec.right, c = '#2F7BFF';
+  const box = { bg: hexMix(c, '#ffffff', 0.9), bd: hexMix(c, '#ffffff', 0.5), tx: hexMix(c, '#ffffff', 0.28) };
+  const vfs = Math.min(spec.valueSize || 72, Math.floor((spec.valueSize ? spec.valueSize * 4.6 : 330) / (Math.max(String(L.value).length, String(R.value).length) * 0.6)));
+  const nfs = Math.min(spec.nameSize || 72, Math.floor(440 / (Math.max(String(L.label).length, String(R.label).length) * 0.56)));
+  const side = (s, cx) => `<div style="position:absolute;left:${cx - 270}px;width:540px;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:42px">
+<div style="height:${Math.round(nfs * 1.2)}px;display:flex;align-items:center">${s.logo ? glMark(s, 30000, 420, nfs * 1.2) : `<b style="font-size:${nfs}px;font-weight:${spec.nameWeight || 700};letter-spacing:${spec.nameSize ? '-.025em' : '-.04em'};color:${spec.nameInk || '#0A0A0B'};white-space:nowrap">${esc(s.label)}</b>`}</div>
+<div style="padding:20px 46px 26px;border-radius:40px;background:${box.bg};border:3px solid ${box.bd};font-size:${vfs}px;font-weight:600;letter-spacing:-.02em;line-height:1.1;color:${box.tx};white-space:nowrap">${esc(s.value)}</div>
+${s.note ? `<div style="font-size:40px;font-weight:400;letter-spacing:-.02em;color:#8A8F98;white-space:nowrap">${esc(s.note)}</div>` : ''}</div>`;
+  const [cl, cr] = spec.spread ? [490, 1110] : [520, 1080], bw = (v) => String(v).length * vfs * 0.58 + 98, vx = spec.spread ? Math.round(((cl + bw(L.value) / 2) + (cr - bw(R.value) / 2)) / 2) : 800;
+  return glCanvas(`${side(L, cl)}${side(R, cr)}<span style="position:absolute;left:${vx - 60}px;width:120px;top:${450 - 30}px;text-align:center;font-size:52px;font-weight:300;color:#0A0A0B">${esc(spec.separator || 'vs')}</span>`, 'dots');
+}
+// versus/checks: from the approved checklist card. A tilted white card with the title, a thin blue rule, and one checked row
+// per product (its logo tile, its name, its strength in the article's words); the tinted back card behind.
+// Options (AAPC vs Find-A-Code, option B approved Oct 20 2026: "checkboxes are not needed"): "checks": false drops the blue check
+// boxes; with it, "big": true grows the logo tiles (104, mark 72) and spacing. Without them: the checked rows.
+function o7Checks() {
+  const rows = [spec.left, spec.right];
+  const tfs = Math.min(44, Math.floor(820 / (String(spec.title).length * 0.55)));
+  const NOCHK = spec.checks === false, BIGR = NOCHK && spec.big === true;
+  const row = (s) => `<div style="display:flex;align-items:center;gap:${BIGR ? 30 : 24}px;padding:${BIGR ? 24 : 26}px 0;border-top:2px solid #F1F3F6">${NOCHK ? '' : '<span style="width:46px;height:46px;border-radius:12px;background:#0A5FD8;display:grid;place-items:center;color:#fff;font-size:26px;flex:none"><i class="ph-bold ph-check"></i></span>'}<span style="width:${BIGR ? 104 : 84}px;height:${BIGR ? 104 : 84}px;border-radius:22px;background:#fff;box-shadow:0 0 0 2px #EEF0F4;display:grid;place-items:center;flex:none">${logo(s.logo, BIGR ? 72 : 58, s.label)}</span><div><b style="display:block;font-size:${BIGR ? 36 : 38}px;font-weight:600;letter-spacing:-.02em;color:#141A26;white-space:nowrap">${esc(s.label)}</b>${s.sub ? `<span style="display:block;margin-top:4px;font-size:28px;color:#7F8794;white-space:nowrap">${esc(s.sub)}</span>` : ''}</div></div>`;
+  return `<style>.o7c .lg{box-shadow:none;background:transparent;padding:0}</style><div class="o7c"><div style="position:absolute;left:350px;top:200px;width:920px;height:520px;border-radius:30px;background:#E4EFFC;transform:rotate(4deg)"></div>
+<div style="position:absolute;left:310px;top:185px;width:980px;height:530px;box-sizing:border-box;border-radius:30px;background:#fff;transform:rotate(-2deg);padding:54px 60px;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)">
+<b style="display:block;font-size:${tfs}px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B;white-space:nowrap">${esc(spec.title)}</b><i style="display:block;margin:24px 0 10px;height:10px;border-radius:5px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)"></i>${rows.map(row).join('')}</div></div>`;
+}
+// spotlight: from the approved focus. The centred headline with its angle phrase in the blue selection box ({{ }}), and a white
+// UI card below bleeding off the bottom with one row per product (logo tile + name), the last rows fading.
+function o7Spotlight() {
+  const head = esc(spec.headline).replace(/\{\{(.+?)\}\}/g, '<span class="sel">$1<i class="h1"></i><i class="h2"></i><i class="h3"></i><i class="h4"></i></span>');
+  const items = (spec.items || []).slice(0, 6);
+  const rows = items.map((it, i) => `<div style="display:flex;align-items:center;gap:22px;padding:18px 0;border-top:${i ? '2px solid #F1F3F6' : '0'};opacity:${[1, 1, 0.85, 0.7, 0.55, 0.45][i]}"><span style="width:64px;height:64px;border-radius:18px;background:#fff;box-shadow:0 0 0 2px #EEF0F4;display:grid;place-items:center;flex:none">${logo(it.logo, 44, it.name)}</span><b style="font-size:32px;font-weight:500;color:#141A26;white-space:nowrap">${esc(it.name)}</b>${it.value ? `<span style="margin-left:auto;font-size:30px;font-weight:500;color:#5D6675;white-space:nowrap">${esc(it.value)}</span>` : `<i style="margin-left:auto;width:${[180, 140, 160, 120, 150, 110][i]}px;height:14px;border-radius:7px;background:#EEF0F4"></i>`}</div>`).join('');   // an optional "value" (e.g. a price) replaces the skeleton bar
+  return `<style>
+.o7s .lg{box-shadow:none;background:transparent;padding:0}
+.o7s .fh{position:absolute;left:50%;top:150px;transform:translateX(calc(-50% - 3px));width:1180px;text-align:center;font-size:${Math.min(64, Math.floor(1100 / (String(spec.headline).replace(/\{\{|\}\}/g, '').length * 0.52)))}px;font-weight:600;line-height:1.12;letter-spacing:-.03em;color:#0A0A0B}
+.o7s .sel{position:relative;display:inline-block;padding:2px 18px 8px;margin:0 0 0 4px;font-weight:600;${ANCHOR}}
+.o7s .sel i{position:absolute;width:16px;height:16px;background:#3B86F0}
+.o7s .h1{left:-20px;top:-20px}.o7s .h2{right:-20px;top:-20px}.o7s .h3{left:-20px;bottom:-20px}.o7s .h4{right:-20px;bottom:-20px}
+</style><div class="o7s"><div class="fh">${head}</div>
+<div style="position:absolute;left:50%;top:310px;transform:translateX(-50%);width:1000px;height:640px;padding:30px 56px;border-radius:24px;background:#fff;box-sizing:border-box;box-shadow:0 30px 70px rgba(30,60,110,.15),0 0 0 1px rgba(20,26,38,.05)">${rows}</div></div>`;
+}
+// picks: from the approved checklist. A tilted white card titled with the heading, every pick of the article as a checked row
+// (names only, in its order), the tinted back card behind. On a light field.
+function o7Picks() {
+  const items = (spec.items || []).slice(0, 7), n = items.length, RH = n > 6 ? 58 : 64, ch = 170 + n * RH, ct = Math.round((900 - ch) / 2);
+  const tfs = Math.min(42, Math.floor(820 / (String(spec.title).length * 0.55)));
+  const ifs = n > 6 ? 30 : 32;
+  return `<div style="position:absolute;left:360px;top:${ct + 15}px;width:900px;height:${ch - 10}px;border-radius:30px;background:#E4EFFC;transform:rotate(4deg)"></div>
+<div style="position:absolute;left:330px;top:${ct}px;width:940px;height:${ch}px;box-sizing:border-box;border-radius:30px;background:#fff;transform:rotate(-2deg);padding:46px 56px;box-shadow:0 30px 70px rgba(30,60,110,.16),0 0 0 1px rgba(20,26,38,.05)">
+<b style="display:block;font-size:${tfs}px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B;white-space:nowrap">${esc(spec.title)}</b><i style="display:block;margin:20px 0 14px;height:10px;border-radius:5px;background:linear-gradient(90deg,#3B86F0,#0A5FD8)"></i>
+${items.map((it) => `<div style="display:flex;align-items:center;gap:22px;height:${RH}px;font-size:${ifs}px;color:#141A26"><span style="width:38px;height:38px;border-radius:10px;background:#0A5FD8;display:grid;place-items:center;color:#fff;font-size:22px;flex:none"><i class="ph-bold ph-check"></i></span>${esc(it.name || it)}</div>`).join('')}</div>`;
+}
+
+// ---- Batch 8 (Oct 19 2026): four arrangements of approved parts (the others from this batch were retired), one per remaining batch-5 article (the user: "I want like the
+// designs that I have approved… now I want more designs for the rest"). Each names the approved template it grows from. ----
+const O8_CARD = 'background:#fff;border-radius:28px;box-shadow:0 24px 50px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05)';
+const o8Tile = (s, r) => `width:${s}px;height:${s}px;border-radius:${r}px;background:#fff;box-shadow:0 0 0 2px #EEF0F4;display:grid;place-items:center;flex:none`;
+const O8_CSS = '<style>.o8 .lg{box-shadow:none;background:transparent;padding:0}</style>';
+
+// versus/center: from the approved hub. Both products' logo tiles (names under them) point into one blue tile: the article's angle.
+function o8Center() {
+  const S = 210, ty = 380, T = { x: 650, y: 330, s: 300 };
+  const pos = [[350, ty, -4], [1250, ty, 4]];
+  const tile = (s, [cx, cy, r]) => `<div style="position:absolute;left:${cx - S / 2}px;top:${cy - S / 2}px;width:${S}px;display:flex;flex-direction:column;align-items:center;gap:30px"><span style="${o8Tile(S, 48)};box-shadow:0 18px 40px rgba(30,60,110,.12),0 0 0 1px rgba(20,26,38,.05);transform:rotate(${r}deg)">${logo(s.logo, Math.round(S * Math.min(0.8, Math.max(0.45, Number(s.scale) || 0.66))), s.label)}</span><b style="font-size:38px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B;white-space:nowrap">${esc(s.label)}</b></div>`;
+  // rough black hand-drawn arrows from each tile into the centre tile, as on the approved hub
+  const arr = (sx, sy, ex, ey, bend) => { const qx = (sx + ex) / 2, qy = Math.min(sy, ey) - bend, ang = Math.atan2(ey - qy, ex - qx), h = 24;
+    const p1 = [ex - h * Math.cos(ang - 0.5), ey - h * Math.sin(ang - 0.5)], p2 = [ex - h * Math.cos(ang + 0.5), ey - h * Math.sin(ang + 0.5)];
+    return `<path d="M${sx} ${sy} Q ${qx} ${qy} ${ex} ${ey}"/><path d="M${p1[0].toFixed(1)} ${p1[1].toFixed(1)} L ${ex} ${ey} L ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}"/>`; };
+  const arrows = arr(350 + S / 2 + 26, ty - 30, T.x - 26, T.y + 120, 60) + arr(1250 - S / 2 - 26, ty - 30, T.x + T.s + 26, T.y + 120, 60);
+  return `${O8_CSS}<div class="o8"><svg viewBox="0 0 1600 900" width="1600" height="900" style="position:absolute;inset:0;overflow:visible"><defs><filter id="rough"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4"/></filter></defs><g filter="url(#rough)" fill="none" stroke="#141A26" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${arrows}</g></svg>
+<div style="position:absolute;left:${T.x}px;top:${T.y}px;width:${T.s}px;height:${T.s}px;border-radius:64px;background:linear-gradient(160deg,#3B86F0,#0A5FD8);box-shadow:0 30px 60px rgba(10,95,216,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff">${spec.icon ? `<i class="${esc(spec.icon)}" style="font-size:120px"></i>` : ''}<span style="font-size:${spec.icon ? 36 : Math.min(52, Math.floor(260 / (String(spec.label).length * 0.56)))}px;font-weight:600;letter-spacing:-.02em;white-space:nowrap">${esc(spec.label)}</span></div>
+${tile(spec.left, pos[0])}${tile(spec.right, pos[1])}</div>`;
+}
+
+// cloud: from the approved prompt chips and lineup tiles. The heading, then the article's picks as white logo pills (logo + name) in
+// staggered centred rows, like a logo cloud on a product site.
+function o8Cloud() {
+  const items = (spec.items || []).slice(0, 8), per = items.length > 6 ? [3, 3, 2] : items.length > 3 ? [Math.ceil(items.length / 2), Math.floor(items.length / 2)] : [items.length];
+  let k = 0;
+  const rows = per.map((m) => items.slice(k, (k += m)));
+  const pill = (it) => `<span style="display:inline-flex;align-items:center;gap:20px;height:108px;box-sizing:border-box;padding:0 40px 0 22px;border-radius:54px;${O8_CARD};border-radius:54px"><span style="${o8Tile(68, 34)};box-shadow:none">${logo(it.logo, 50, it.name)}</span><b style="font-size:34px;font-weight:500;letter-spacing:-.015em;color:#141A26;white-space:nowrap">${esc(it.name)}</b></span>`;
+  const hfs = Math.min(64, Math.floor(1100 / (String(spec.headline).length * 0.52)));
+  return `${O8_CSS}<div class="o8"><div style="position:absolute;left:0;right:0;top:${rows.length > 2 ? 150 : 230}px;text-align:center;font-size:${hfs}px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B;white-space:nowrap">${esc(spec.headline)}</div>
+<div style="position:absolute;left:150px;right:150px;top:${rows.length > 2 ? 300 : 400}px;display:grid;gap:34px;justify-items:center">${rows.map((r) => `<div style="display:flex;gap:30px">${r.map(pill).join('')}</div>`).join('')}</div></div>`;
+}
+
+// ranges: from the approved ranked bars. The heading and its unit, then a white card with one row per pick: its logo tile, a track
+// with its price range in the blue anchor (a dot for a single price, a fading bar for an open "From" price), and the price as written.
+function o8Ranges() {
+  // vertical columns (Visual QA, b8: horizontal rows were the ranked skeleton, already used in clinical): one track per pick on a
+  // shared $0–max scale, its price range as a blue bar (a dot for one price, an arrow-capped bar for an open "From" price), the price
+  // above, its logo tile below; the heading and its unit centred on top.
+  // "bare": true (Small Practice EMR, Oct 20 2026: "use the previous bg, and in that dont add container for bars section") drops the
+  // white card and darkens the tracks a step (#E1E5EC) so they hold on the white field; white only (BACKGROUND CHECK below).
+  const rows = (spec.rows || []).slice(0, 6), max = spec.max, n = rows.length;
+  const CL = 300, CT = 250, CW = 1000, CH = 590, top = 92, bot = CH - 132, TH = bot - top;
+  const y = (v) => bot - (v / max) * TH, colX = (i) => Math.round(110 + i * ((CW - 220) / Math.max(1, n - 1)));
+  const col = (r, i) => { const x = colX(i), yl = y(r.lo), yh = r.open ? Math.max(top + 30, yl - 150) : y(r.hi ?? r.lo), single = !r.open && (r.hi == null || r.hi === r.lo);
+    const mark = single ? `<i style="position:absolute;left:${x - 14}px;top:${yl - 14}px;width:28px;height:28px;border-radius:50%;background:#0A5FD8;box-shadow:0 0 0 6px #fff"></i>`
+      : r.open ? `<i style="position:absolute;left:${x - 11}px;top:${yh}px;width:22px;height:${yl - yh}px;border-radius:11px;background:linear-gradient(0deg,#1F6FE8,rgba(59,134,240,0))"></i><i style="position:absolute;left:${x - 14}px;top:${yl - 14}px;width:28px;height:28px;border-radius:50%;background:#0A5FD8;box-shadow:0 0 0 6px #fff"></i>`
+      : `<i style="position:absolute;left:${x - 11}px;top:${yh}px;width:22px;height:${Math.max(22, yl - yh)}px;border-radius:11px;${ANCHOR}"></i>`;
+    const lt = (single ? yl - 14 : yh) - 14;   // an open "From" price fades upward with no solid end (Fact QA, b8: every bar end reads as a figure)
+    return `<i style="position:absolute;left:${x - 3}px;top:${top}px;width:6px;height:${TH}px;border-radius:3px;background:${spec.bare ? '#E1E5EC' : '#EEF0F4'}"></i>${mark}
+<div style="position:absolute;left:${x - 95}px;width:190px;bottom:${CH - lt}px;text-align:center;font-size:27px;font-weight:600;line-height:1.15;letter-spacing:-.01em;color:#141A26;white-space:pre-line">${esc(r.label)}</div>
+<span style="position:absolute;left:${x - 34}px;top:${bot + 38}px;${o8Tile(68, 18)}">${logo(r.logo, 46, r.name)}</span>`; };
+  return `${O8_CSS}<div class="o8"><div style="position:absolute;left:0;right:0;top:92px;text-align:center;font-size:56px;font-weight:600;letter-spacing:-.03em;line-height:1.1;color:#0A0A0B;white-space:nowrap">${esc(spec.headline)}</div>
+<div style="position:absolute;left:0;right:0;top:166px;text-align:center;font-size:28px;color:#7F8794;white-space:nowrap">${esc(spec.sub || '')}</div>
+<div style="position:absolute;left:${CL}px;top:${CT}px;width:${CW}px;height:${CH}px;${spec.bare ? '' : O8_CARD}">${rows.map(col).join('')}</div></div>`;
+}
+
+// count: from the approved stat. The number of picks large in the blue gradient with the heading under it; a white card with one row
+// per pick (logo tile + name), in the article's order.
+function o8Count() {
+  const items = (spec.items || []).slice(0, 6), n = items.length, RH = n > 4 ? 84 : 96, ch = 2 * 40 + n * RH;
+  return `${O8_CSS}<div class="o8"><div style="position:absolute;left:205px;top:${450 - 200}px;font-size:250px;font-weight:600;letter-spacing:-.06em;line-height:1;background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:10px">${esc(String(spec.value ?? n))}</div>
+<div style="position:absolute;left:212px;top:${450 + 80}px;width:520px;font-size:42px;font-weight:600;line-height:1.2;letter-spacing:-.02em;color:#0A0A0B">${esc(spec.caption)}</div>
+<div style="position:absolute;left:790px;top:${Math.round(450 - ch / 2)}px;width:600px;box-sizing:border-box;padding:40px 46px;${O8_CARD}">${items.map((it, i) => `<div style="display:flex;align-items:center;gap:24px;height:${RH}px;border-top:${i ? '2px solid #F1F3F6' : '0'}"><span style="${o8Tile(64, 18)}">${logo(it.logo, 44, it.name)}</span><b style="font-size:34px;font-weight:500;letter-spacing:-.015em;color:#141A26;white-space:nowrap">${esc(it.name)}</b></div>`).join('')}</div></div>`;
+}
+
+// ---- Batch 9 (Oct 19 2026): the user's b8 review. Office Ally range "i like the design but it is confusing" (lanes replaced it),
+// Oracle rings disapproved (scores replaced it). ----
+
+// versus/scores: from the approved type layout (18). No card and no chart: the metric small on top, then one row per product with its
+// logo tile and name large in black and its score large in the blue gradient, a hairline between the rows.
+function o9Scores() {
+  const row = (s, y) => `<div style="position:absolute;left:300px;width:1000px;top:${y}px;height:150px;display:flex;align-items:center;gap:30px"><span style="${o8Tile(104, 26)};box-shadow:0 12px 30px rgba(30,60,110,.10),0 0 0 1px rgba(20,26,38,.05)">${logo(s.logo, 70, s.label)}</span><b style="font-size:68px;font-weight:600;letter-spacing:-.035em;color:#0A0A0B;white-space:nowrap">${esc(s.label)}</b><span style="margin-left:auto;text-align:right;font-size:120px;font-weight:600;letter-spacing:-.05em;line-height:1;background:linear-gradient(180deg,#4E9BF7,#1F6FE8);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:8px;white-space:nowrap">${esc(String(s.score))}</span></div>`;
+  return `${O8_CSS}<div class="o8"><div style="position:absolute;left:300px;top:235px;font-size:40px;font-weight:600;letter-spacing:-.02em;color:#5D6675;white-space:nowrap">${esc(spec.title)}</div>
+${row(spec.left, 315)}<i style="position:absolute;left:300px;width:1000px;top:495px;height:2px;background:rgba(20,26,38,.10)"></i>${row(spec.right, 525)}</div>`;
+}
+
+// versus/lanes: from the approved timeline, made explicit. One lane per product (its logo tile and name on the left), its own price
+// stops labelled right above them on a shared scale; the comparison as the heading, the unit under it.
+function o9Lanes() {
+  const t0 = 640, t1 = 1290, min = spec.min ?? 0, max = spec.max, x = (v) => t0 + (v - min) / (max - min) * (t1 - t0);
+  const fmt = (v) => `${spec.prefix ?? '$'}${v.toLocaleString('en-US')}`;
+  const lane = (s, y) => { const p = [...s.points].sort((a, b) => a - b), a = x(p[0]), b = x(p[p.length - 1]);
+    return `<div style="position:absolute;left:270px;top:${y - 48}px;display:flex;align-items:center;gap:24px"><span style="${o8Tile(96, 24)}">${logo(s.logo, 66, s.label)}</span><b style="font-size:42px;font-weight:600;letter-spacing:-.025em;color:#0A0A0B;white-space:nowrap">${esc(s.label)}</b></div>
+<i style="position:absolute;left:${t0}px;top:${y - 4}px;width:${t1 - t0}px;height:8px;border-radius:4px;background:#EEF0F4"></i>
+${p.length > 1 ? `<i style="position:absolute;left:${a}px;top:${y - 9}px;width:${b - a}px;height:18px;border-radius:9px;${ANCHOR}"></i>` : ''}
+${p.map((v) => `<i style="position:absolute;left:${x(v) - 17}px;top:${y - 17}px;width:34px;height:34px;border-radius:50%;background:#0A5FD8;box-shadow:0 0 0 7px #fff"></i><span style="position:absolute;left:${x(v)}px;top:${y - 82}px;transform:translateX(-50%);font-size:34px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B;white-space:nowrap">${esc(fmt(v))}</span>`).join('')}`; };
+  return `${O8_CSS}<div class="o8"><div style="position:absolute;left:0;right:0;top:110px;text-align:center;font-size:58px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B;white-space:nowrap">${esc(spec.headline)}</div>
+<div style="position:absolute;left:0;right:0;top:186px;text-align:center;font-size:30px;color:#7F8794;white-space:nowrap">${esc(spec.sub || '')}</div>
+<div style="position:absolute;left:210px;top:280px;width:1180px;height:470px;${O8_CARD}"></div>${lane(spec.left, 440)}${lane(spec.right, 630)}</div>`;
+}
+
+const modes = { cloud: o8Cloud, ranges: o8Ranges, count: o8Count, spotlight: o7Spotlight, picks: o7Picks, lineup, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, receipt, definition };
 
 
 // ---- heading must mirror the blog title: same key words, same meaning, just shorter. Every headline is black #0A0A0B (user). ----
 const STOP = new Set('a an the and or of for to in on at by with your you our is are be how what why when which who vs versus its it this that from into without about best top guide per 2024 2025 2026 2027'.split(' '));
 const stem = (w) => w.endsWith('sses') ? w.slice(0, -2) : w.endsWith('ss') ? w : w.length > 4 && /(ches|shes|xes|zes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w;
 const words = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9+ ]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w)).map(stem);
-const HEADING = { dark: spec.headline, versus: ['pills', 'connect', 'duo', 'tiles'].includes(VARIANT) ? spec.headline : undefined, receipt: spec.headline, shortlist: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
+const HEADING = { focus: spec.headline && spec.headline.replace(/\{\{|\}\}/g, ''), cloud: spec.headline, ranges: spec.headline, count: spec.caption, spotlight: spec.headline && spec.headline.replace(/\{\{|\}\}/g, ''), picks: spec.title, dark: spec.headline, versus: ['pills', 'connect', 'duo', 'tiles', 'lanes'].includes(VARIANT) ? spec.headline : VARIANT === 'checks' ? spec.title : undefined, receipt: spec.headline, shortlist: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
 const heading = HEADING[MODE];
 if (heading !== undefined && !force) {
   if (!spec.articleTitle) { console.error('HEADING CHECK FAILED: add "articleTitle" (the blog post\'s real title) to the spec. The image heading must reuse its words.'); process.exit(3); }
@@ -884,7 +1076,7 @@ if (heading !== undefined && !force) {
 //  - big white app windows sit on sky; cool greys never go on cream
 //  - blue dosage: a big blue mass (hub tile) gets a neutral field (cream/paper), never g5
 //  - g5 lifts a single floating white card with light rising under it
-const BG_FIT = { hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
+const BG_FIT = { 'versus/scores': ['sky', 'paper'], 'versus/lanes': ['cream', 'sky'], 'versus/checks': ['sky', 'g5'], 'versus/center': ['cream', 'paper'], cloud: ['g5', 'sky'], ranges: ['sky', 'g5'], count: ['paper', 'sky'], spotlight: ['sky', 'g5'], picks: ['sky', 'g5'], hub: ['cream', 'paper'], ranked: ['sky', 'g5'], focus: ['sky', 'g5'], timeline: ['cream', 'sky'], window: ['sky', 'g5'], stat: ['paper', 'cream'], stack: ['g5', 'cream'], 'before-after': ['g5', 'sky'], versus: ['sky', 'cream'] };
 // crop to the visible ink (sharp's trim keeps transparent rows)
 async function inkCrop(buf) {
   const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -1119,7 +1311,6 @@ if (MODE === 'checklist') {
   }
   spec.bg = 'blue';
 }
-const BGS = ['sky', 'paper', 'cream', 'g5'];
 const BG_OK = [...BGS, 'blue'];
 if (spec.bg && !BG_OK.includes(spec.bg)) {
   console.error(`BACKGROUND CHECK FAILED: "${spec.bg}" is not a background. Use a light background (${BGS.join(', ')}) or the vibrant "blue".`);
@@ -1145,7 +1336,24 @@ const thin = {
   stat: () => n(spec.card?.rows) < 2 && 'stat card needs 2+ rows',
   focus: () => n(spec.rows) < 2 && 'focus needs 2+ rows',
   shortlist: () => n(spec.items) < 3 && 'shortlist needs 3+ items',
-  lineup: () => n((spec.cards || []).filter((c) => c.logo)) < 3 && 'lineup needs 3-6 products with logos',
+  picks: () => n(spec.items) < 3 && 'picks needs 3-7 items',
+  spotlight: () => n(spec.items) < 3 && 'spotlight needs 3-6 items',
+  count: () => n(spec.items) < 3 && 'count needs 3-6 items',
+  cloud: () => n((spec.items || []).filter((c) => c.logo)) < 3 && 'cloud needs 3-8 products with logos',
+  ranges: () => n(spec.rows) < 3 ? 'ranges needs 3-6 rows' : !(Number(spec.max) > 0) && 'ranges needs "max" (the top of its price scale)',
+  // the two-product arrangements: both sides need the fact the layout is built on
+  versus: () => {
+    const both = (k) => [spec.left, spec.right].every((s) => s && s[k] != null && s[k] !== '');
+    return {
+      badges: () => !both('value') && 'versus/badges needs a "value" on both sides',
+      checks: () => !spec.title && 'versus/checks needs "title"',
+      center: () => !spec.label && 'versus/center needs "label" (the angle on the blue tile)',
+      lanes: () => (![spec.left, spec.right].every((s) => s && n(s.points)) || !(Number(spec.max) > 0)) && 'versus/lanes needs "max" and "points" on both sides',
+      // two real numbers: a score in words against a number got "ew revert it" (Oracle vs MEDITECH 2026)
+      scores: () => ((!both('score') || !spec.title) && 'versus/scores needs "title" (the metric) and a "score" on both sides') || ([spec.left, spec.right].some((s) => !/^[~$€£]?[0-9][0-9.,%]*$/.test(String(s?.score))) && 'versus/scores needs a real number on both sides (a word against a number looked broken); change the metric or the year'),
+    }[VARIANT]?.();
+  },
+  lineup: () => n((spec.cards || []).filter((c) => c.logo)) < 3 && 'lineup needs 3-7 products with logos',
   // a Phosphor icon in place of the product logo was rejected ("icon is not looking good"): dark needs the real logo
   dark: () => !(spec.panelLogo || spec.panelLogoUrl) && 'dark needs the product\'s own logo ("panelLogo")',
 }[MODE]?.();
@@ -1207,18 +1415,18 @@ Use it on at most 1 in 3 images and never on neighbours. Remove "series" from th
 }
 // a layout that paints its own canvas (prompt too) still sits on 'paper' (the page under it, hidden by the canvas), but is
 // recorded as 'canvas'; the fine overlay grain sits on top
-let BG = spec.bg || (CANVAS ? 'paper' : DEFAULT_BG[MODE]);
+let BG = spec.bg || (CANVAS ? 'paper' : DEFAULT_BG[LAYOUT] || DEFAULT_BG[MODE]);
 const prevBg = prior.length ? prior[prior.length - 1].bg : null;   // the category's last rendered image (history is sorted by time)
-const FIT = CANVAS ? ['paper'] : BG_FIT[MODE] || ['sky', 'g5'];
+const FIT = CANVAS ? ['paper'] : BG_FIT[LAYOUT] || BG_FIT[MODE] || ['sky', 'g5'];
 // Vibrant fit: the deep-dunes blue flatters only illustrations built on a big white card.
 // Blue-heavy illustrations and floating logo tiles never go on blue.
 const BLUE_FIT = ['checklist', 'versus/table', 'window', 'before-after/flow'];
-if (spec.bg === 'blue' && !BLUE_FIT.includes(MODE) && !BLUE_FIT.includes(LAYOUT) && !force) {
+if (spec.bg === 'blue' && !BLUE_FIT.includes(MODE) && !BLUE_FIT.includes(LAYOUT) && !force && !BG_PICK) {
   console.error(`VIBRANT FIT FAILED: the ${LAYOUT} illustration doesn't look good on the vibrant blue. Use blue only with: ${BLUE_FIT.join(', ')}.`);
   process.exit(2);
 }
 if (!spec.bg && BG === prevBg) BG = FIT.find((b) => b !== prevBg) || BG;   // neighbours differ, but only within the layout's fitting backgrounds
-if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force) {
+if (spec.bg && spec.bg !== 'blue' && !FIT.includes(spec.bg) && !force && !BG_PICK) {
   console.error(`BACKGROUND FIT FAILED: "${spec.bg}" doesn't flatter the ${MODE} illustration. Use ${FIT.map((b) => `"${b}"`).join(' or ')}${BLUE_FIT.includes(MODE) || BLUE_FIT.includes(LAYOUT) ? ' (or the vibrant "blue")' : ''}.`);
   process.exit(2);
 }
@@ -1247,8 +1455,7 @@ const NOISE = `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://
 const CRAFT = spec.craft === true && !CB_LAYOUT && MODE !== 'logotype';   // the site mark is for card layouts only
 // text and structure that sit directly on a saturated field turn white
 const FIELD_CSS = `body.fd .fleg span,body.fd .fleg .f1,body.fd .fleg .f2{color:#fff}body.fd .fleg i{background:#fff !important}body.fd .fleg .f1{opacity:.75}
-body.fd .l1 b,body.fd .l2 b{color:#fff}
-body.fd .tex .acc{display:none}body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}body.fd .tex .acc{filter:brightness(0) invert(1);opacity:.7}
+body.fd .tex .acc{display:none}body.fd .tex{background:linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 210px 0/1px 100% no-repeat,linear-gradient(rgba(255,255,255,.22),rgba(255,255,255,.22)) 1389px 0/1px 100% no-repeat}
 body.fd svg.fl g{stroke:#fff}body.fd .fb{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}body.fd .fb b{color:#fff}body.fd .fb span{color:rgba(255,255,255,.8)}body.fd .fb .fi{background:rgba(255,255,255,.2);color:#fff}
 body.fd .grain{opacity:.06;mix-blend-mode:soft-light}`;
 const MONO = "'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace";
@@ -1277,6 +1484,10 @@ const NO_GRAIN = spec.grain === false && BG !== 'blue';
 const GRAIN = !NO_GRAIN && BG !== 'cream';
 const LIGHT_GRAIN = `.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:multiply;opacity:.2}`;
 const BG_CSS = {
+  soft: `body{background:linear-gradient(160deg,#EEF6FE 0%,#D6EAFC 50%,#BFDDFA 100%)}body:before{display:none}${LIGHT_GRAIN}`,
+  white: `body{background:#F2F2F3}body:before{display:block;inset:28px;border-radius:28px;background:radial-gradient(circle,rgba(20,26,38,.10) 1.4px,transparent 2px) 18px 18px/36px 36px,#fff}`,
+  glow: `body{background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)}body:before{display:block;inset:0;background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)}`,
+  mesh: `body{background:${svgBg("<rect width='1600' height='900' fill='#EEF5FF'/><g filter='url(#b)'><circle cx='160' cy='200' r='420' fill='#9CC6FF'/><circle cx='1480' cy='760' r='420' fill='#BFE6FF'/><circle cx='1300' cy='140' r='300' fill='#E4E8FF'/><circle cx='420' cy='820' r='300' fill='#DCEBFF'/></g>", 90)} center/cover}body:before{display:none}`,
   blue: `body{background:${BLUE_GLOW};background-size:cover}body:before{display:none}.bgn{position:absolute;inset:0;pointer-events:none;background-image:${NOISE};background-size:320px;mix-blend-mode:overlay;opacity:.85}`,
   cream: `body{background:#F6F2EA}body:before{display:none}`,
   // Granola #5 in blue: near-white top, a bright clear sky glowing up from under the hero card
@@ -1331,7 +1542,7 @@ let out = html;
 for (const [k, v] of Object.entries(swaps)) if (v) out = out.split(k).join(v);
 // Shadows: none on the vibrant blue; minimal and tinted to the field on light backgrounds.
 // 1px "ring" shadows (0 0 0 Npx) are card edges, not drop shadows, and are kept on light fields.
-const SHADOW_TINT = { sky: '30,60,110', g5: '30,80,140', paper: '20,26,38', cream: '90,70,40' }[BG] || '30,60,110';
+const SHADOW_TINT = { sky: '30,60,110', g5: '30,80,140', paper: '20,26,38', cream: '90,70,40', soft: '30,70,140', white: '20,26,38', glow: '30,80,170', mesh: '30,80,170' }[BG] || '30,60,110';
 const softShadow = (decl) => decl.split(/,(?![^(]*\))/).map((sh) => {
   const m = sh.trim().match(/^(inset\s+)?(-?[\d.]+)(?:px)?\s+(-?[\d.]+)(?:px)?\s+([\d.]+)(?:px)?(\s+-?[\d.]+(?:px)?)?\s+(rgba?\([^)]*\)|#[0-9a-fA-F]{3,8}|[a-z]+)$/);
   if (!m) return sh;
@@ -1379,8 +1590,9 @@ await sharp(crop75).webp({ quality: 90 }).toFile(path.join(outDir, '7x5.webp'));
 await sharp(master).resize(1200, 675).webp({ quality: 90 }).toFile(path.join(outDir, '16x9-1200.webp'));
 fs.rmSync(raw);
 // bg = what the image is painted on: the card layouts' field, or "canvas" for a layout that paints its own, prompt included (plus its
-// "field" when it has a choice), so the next card's background check compares like with like
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: CANVAS ? 'canvas' : BG, ...(GL_FIT ? { field: GL_FIELD } : {}), series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, ...(USER_PICK ? { userPick: true } : {}), out: path.resolve(outDir), at: new Date().toISOString() };
+// "field" when it has a choice); a picked bg (bgPick) is recorded as itself, canvas layouts included, so the next card's background
+// check compares like with like
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: CANVAS && !BG_PICK ? 'canvas' : BG, ...(BG_PICK ? { bgPick: true } : {}), ...(GL_FIT && !BG_PICK ? { field: GL_FIELD } : {}), series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, ...(USER_PICK ? { userPick: true } : {}), out: path.resolve(outDir), at: new Date().toISOString() };
 // Parallel renders share these files: take the lock (usage.mjs), re-read, then write, so no entry is lost. A re-render replaces the
 // slug's entry but keeps what finalize.mjs and the user set on it.
 const KEEP = ['final', 'finalizedAt', 'stored', 'superseded'];
@@ -1392,4 +1604,4 @@ withLock(historyFile, () => {
   fs.writeFileSync(historyFile, JSON.stringify([...H.filter((x) => x.slug !== slug), e], null, 1));
 });
 console.log(`${outDir}
-  layout=${LAYOUT} ${GL_LAYOUTS.includes(LAYOUT) ? `field=${GL_FIELD}` : `bg=${BG}`} category=${category} words=${WORDS}/${MAX_WORDS}`);
+  layout=${LAYOUT} ${GL_LAYOUTS.includes(LAYOUT) && !BG_PICK ? `field=${GL_FIELD}` : `bg=${BG}${BG_PICK ? ' (picked)' : ''}`} category=${category} words=${WORDS}/${MAX_WORDS}`);

@@ -58,7 +58,7 @@ export function userRecord(brand) {
     const used = !!r && r.status === 'used', cats = [...new Set(((r && r.cats) || []).map(normCat).filter(Boolean))];
     // used with no category: still used (never "not used yet"), refused in no category until the user names one
     if (used && !cats.length) warnings.push(`the record marks "${l}" used but names no category: it counts as used, and no category refuses it`);
-    layouts[l] = { used, cats };
+    layouts[l] = { used, cats, at: r && r.asOf ? String(r.asOf) : '' };
   }
   return { layouts, at: String(j.recordedAt || ''), warnings };
 }
@@ -66,11 +66,12 @@ export const warnRecord = (rec) => { for (const w of rec.warnings) console.warn(
 
 // history: countable entries (see countable). The user's record is the truth for every layout it lists, as of recordedAt (an image in
 // the history the user marked "not used yet" never went live). It covers every entry up to and including recordedAt, and entries with
-// no "at"; entries after it are added on top. Layouts the record doesn't list go by the history alone.
+// no "at"; entries after it are added on top. A layout's own "asOf" replaces recordedAt as its cutoff. Layouts the record doesn't list
+// go by the history alone.
 export function usage(history, record) {
-  const out = {}, after = (e) => !!e.at && String(e.at) > record.at;
+  const out = {};
   for (const l of ALL_LAYOUTS) {
-    const r = record.layouts[l], all = history.filter((e) => layoutOf(e) === l), hits = r ? all.filter(after) : all;
+    const r = record.layouts[l], asOf = (r && r.at) || record.at, after = (e) => !!e.at && String(e.at) > asOf, all = history.filter((e) => layoutOf(e) === l), hits = r ? all.filter(after) : all;
     const cats = new Set(hits.map((e) => normCat(e.category)).filter(Boolean));
     let before = 0;   // images the record covers: one per recorded category at least (one if it names none), or the history's own count there
     if (r && r.used) {

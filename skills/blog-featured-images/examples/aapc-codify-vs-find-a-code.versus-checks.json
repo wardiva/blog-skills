@@ -1,0 +1,23 @@
+{
+  "articleTitle": "AAPC Codify vs Find-A-Code: Which Medical Coding Tool Fits in 2026",
+  "brand": "medsoftwarehub",
+  "mode": "versus",
+  "variant": "checks",
+  "title": "AAPC Codify vs Find-A-Code",
+  "left": {
+    "label": "AAPC Codify",
+    "logo": "aapc.com",
+    "sub": "Certification content"
+  },
+  "right": {
+    "label": "Find-A-Code",
+    "logo": "../assets/findacode-mark.png",
+    "sub": "Reimbursement accuracy"
+  },
+  "category": "medical-billing",
+  "slug": "aapc-codify-vs-find-a-code-which-medical-coding-tool-fits-in-2026",
+  "bg": "blue",
+  "bgPick": true,
+  "checks": false,
+  "big": true
+}

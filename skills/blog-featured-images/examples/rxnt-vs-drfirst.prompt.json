@@ -1,0 +1,27 @@
+{
+  "articleTitle": "RXNT vs DrFirst: Which E-Prescribing Platform Fits in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "rxnt-vs-drfirst-which-e-prescribing-platform-fits-in-2026",
+  "mode": "prompt",
+  "field": "soft",
+  "headline": "Which Platform Fits?",
+  "placeholder": "E-prescribing price",
+  "panel": {
+    "label": "",
+    "rows": [
+      {
+        "logo": "rxnt.com",
+        "title": "RXNT",
+        "sub": "$665/provider/year"
+      },
+      {
+        "logo": "../assets/drfirst-icon.png",
+        "title": "DrFirst",
+        "sub": "From $799/feature/year"
+      }
+    ],
+    "even": true
+  },
+  "chips": []
+}

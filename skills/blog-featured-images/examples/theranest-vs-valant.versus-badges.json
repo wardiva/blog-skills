@@ -1,0 +1,24 @@
+{
+  "brand": "medsoftwarehub",
+  "category": "specialty-software",
+  "slug": "theranest-vs-valant-for-group-therapy-practices-2026",
+  "articleTitle": "TheraNest vs Valant for Group Therapy Practices (2026)",
+  "mode": "versus",
+  "variant": "badges",
+  "left": {
+    "label": "TheraNest",
+    "value": "$29–$89/mo",
+    "note": "per therapist"
+  },
+  "right": {
+    "label": "Valant",
+    "value": "$100–$300/mo",
+    "note": "per provider"
+  },
+  "bg": "glow",
+  "bgPick": true,
+  "nameSize": 44,
+  "nameWeight": 600,
+  "valueSize": 84,
+  "spread": true
+}

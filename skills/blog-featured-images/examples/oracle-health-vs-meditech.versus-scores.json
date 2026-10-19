@@ -1,0 +1,21 @@
+{
+ "articleTitle": "Oracle Health vs MEDITECH: Which Hospital EHR Fits in 2026",
+ "brand": "medsoftwarehub",
+ "category": "hospital-and-lab-software",
+ "slug": "oracle-health-vs-meditech-which-hospital-ehr-fits-in-2026",
+ "mode": "versus",
+ "variant": "scores",
+ "title": "2025 Best in KLAS overall score",
+ "left": {
+  "label": "Oracle Health",
+  "logo": "oracle.com",
+  "score": 64.7
+ },
+ "right": {
+  "label": "MEDITECH",
+  "logo": "../assets/meditech-m-mark.png",
+  "score": 76.3
+ },
+ "bg": "glow",
+ "bgPick": true
+}

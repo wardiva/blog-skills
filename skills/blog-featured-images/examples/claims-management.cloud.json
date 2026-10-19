@@ -1,0 +1,32 @@
+{
+  "articleTitle": "7 Best Claims Management Software Platforms for Medical Practices",
+  "brand": "medsoftwarehub",
+  "category": "medical-billing",
+  "slug": "7-best-claims-management-software-platforms-for-medical-practices",
+  "mode": "cloud",
+  "headline": "Best Claims Management Software",
+  "items": [
+    {
+      "name": "Waystar",
+      "logo": "../assets/waystar-lineup-mark.png"
+    },
+    {
+      "name": "Availity",
+      "logo": "../assets/availity-lineup-mark.png"
+    },
+    {
+      "name": "Office Ally",
+      "logo": "../assets/officeally-lineup-mark.png"
+    },
+    {
+      "name": "Change Healthcare (Optum)",
+      "logo": "../assets/optum-o-mark.png"
+    },
+    {
+      "name": "Claim.MD",
+      "logo": "../assets/claimmd-lineup-mark.png"
+    }
+  ],
+  "bg": "glow",
+  "bgPick": true
+}

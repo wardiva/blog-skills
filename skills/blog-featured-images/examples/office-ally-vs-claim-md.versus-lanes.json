@@ -1,0 +1,30 @@
+{
+  "articleTitle": "Office Ally vs Claim.MD: Which Clearinghouse Fits Small Practices",
+  "brand": "medsoftwarehub",
+  "category": "medical-billing",
+  "slug": "office-ally-vs-claim-md-which-clearinghouse-fits-small-practices",
+  "mode": "versus",
+  "variant": "lanes",
+  "headline": "Office Ally vs Claim.MD",
+  "sub": "Starting price per month",
+  "min": 0,
+  "max": 120,
+  "left": {
+    "label": "Office Ally",
+    "logo": "../assets/officeally-lineup-mark.png",
+    "points": [
+      0
+    ]
+  },
+  "right": {
+    "label": "Claim.MD",
+    "logo": "../assets/claimmd-lineup-mark.png",
+    "points": [
+      30,
+      60,
+      120
+    ]
+  },
+  "bg": "mesh",
+  "bgPick": true
+}
