@@ -1,7 +1,7 @@
 // blog-featured-images renderer: one article spec -> a featured image in the approved design language.
-// Usage: node render.mjs <spec.json> [--brand <brand.json>] [--out <dir>]
+// Usage: node render.mjs <spec.json> [--brand <brand.json>] [--out <dir>] [--user-pick] [--check-only] [--pick-fields] [--force]
 //   spec  : article content + "mode" (28 modes / 46 layouts, listed in layouts.mjs). See references/spec-format.md
-//   brand : colour overrides (default: brands/default.json). See brands/_template.json
+//   brand : colour overrides (default: brands/<spec.brand>.json, or brands/default.json when the spec has no "brand"). See brands/_template.json
 //   out   : output folder (default: ./featured-images/<slug>)
 // Writes master.png (1600x900), 7x5.webp (theme crop), 16x9-1200.webp (social), card-350x250.png (check size), page.html
 import { LAYOUTS, retiredOf, retiredMsg, GL_LAYOUTS, CB_LAYOUTS, CANVAS_LAYOUTS, PICK_CANVAS } from './layouts.mjs';

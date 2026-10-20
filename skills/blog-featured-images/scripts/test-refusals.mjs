@@ -179,6 +179,9 @@ one('one element over 7 words, 15 in all', spec('e-prescribing-cost.figures.json
 // 5. usage: a used layout once per category (the user's record + the site history)
 one('used layout in its category', spec(BADGES), 'VARIETY CHECK FAILED', { record: record({ 'versus/badges': used(['specialty-software']) }) });
 one('same layout in another category', spec(BADGES, (s) => { s.category = 'medical-billing'; }), 'OK', { record: record({ 'versus/badges': used(['specialty-software']) }) });
+C.push({ name: 'plan refuses a used layout in its category', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [{ plan: ['--category', 'specialty-software', '--reserve', 'used-a=versus/badges'], expect: 'is already used in the "specialty-software" category' }] });
+one('record without "brand" applies to no brand', spec(BADGES), 'OK', { record: { recordedAt: '2026-01-01T00:00:00.000Z', layouts: { 'versus/badges': used(['specialty-software']) } } });
+one('record "used" with no category refuses no category', spec(BADGES), 'OK', { record: record({ 'versus/badges': used([]) }) });
 // the user's pick ("slug=layout!" in plan.mjs) skips the category rule for that slug only, re-renders included
 C.push({ name: 'user pick: plan, render, re-render; another slug refused', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [
   { plan: ['--category', 'specialty-software', '--reserve', 'pick-a=versus/badges!'], expect: 'OK' },
@@ -279,6 +282,8 @@ one('glass with an ultra-wide wordmark', spec('08-glass-light.gumloop-glass-ligh
 one('logotype with a coloured logo', spec('notion-review.logotype.json', (s) => { s.logotype = fixLogos('../assets/tebra-folder-mark.png'); }), 'LOGOTYPE CHECK FAILED: no black logo lockup');
 one('logotype without a separate icon', spec('notion-review.logotype.json', (s) => { s.logotype = BLOCK; }), 'LOGOTYPE CHECK FAILED: the logo for');
 one('slash with a name it cannot split', spec('advancedmd-vs-curemd.versus-slash.json', (s) => { s.left.label = 'zocdoc'; }), 'SLASH NAME CHECK FAILED');
+
+one('stat caption with one shared word', spec('rcm-outsourcing.stat.json', (s) => { s.caption = 'of net collections for RCM'; }), 'HEADING CHECK FAILED');
 
 // ---- run ----
 const cases = C.filter((c) => !filter || c.name.includes(filter));
