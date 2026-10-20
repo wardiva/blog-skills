@@ -1,8 +1,8 @@
 {
  "_note": "The user's record of which layouts are used on the site, kept on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q, collection \"usage\"). For every layout listed here it is the truth as of recordedAt (an older history image the user marked not used never went live); every image rendered (drafts too), reserved or delivered after recordedAt that isn't superseded is added on top. A layout's own \"asOf\" replaces recordedAt as its cutoff. A layout not used yet is free for any article it suits and goes first; a used layout cannot be used again in a category listed here, only in a different one. scripts/usage.mjs applies it.",
- "source": "The user's own selections on the Template Usage page (all 30 layouts, Save all & finish).",
+ "source": "The user's own selections on the Template Usage page (all 46 layouts, Save all & finish, Oct 20 2026).",
  "brand": "medsoftwarehub",
- "recordedAt": "2026-10-14T19:46:04.294Z",
+ "recordedAt": "2026-10-20T01:09:54.379Z",
  "updatedAt": "2026-10-20",
  "layouts": {
   "badge/default": {
@@ -27,6 +27,24 @@
     "clinical-software"
    ]
   },
+  "cloud/default": {
+   "status": "used",
+   "cats": [
+    "medical-billing"
+   ]
+  },
+  "costgrid/default": {
+   "status": "used",
+   "cats": [
+    "medical-billing"
+   ]
+  },
+  "count/default": {
+   "status": "used",
+   "cats": [
+    "specialty-software"
+   ]
+  },
   "dark/default": {
    "status": "unused",
    "cats": []
@@ -37,7 +55,25 @@
     "clinical-software"
    ]
   },
+  "figures/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
   "focus/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "frostrow/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "glassbar/default": {
    "status": "used",
    "cats": [
     "clinical-software"
@@ -60,9 +96,23 @@
    "status": "unused",
    "cats": []
   },
+  "picks/default": {
+   "status": "used",
+   "cats": [
+    "hospital-and-lab-software"
+   ]
+  },
   "prompt/default": {
-   "status": "unused",
-   "cats": []
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
+  },
+  "ranges/default": {
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
   },
   "ranked/default": {
    "status": "used",
@@ -82,6 +132,12 @@
     "clinical-software"
    ]
   },
+  "spotlight/default": {
+   "status": "used",
+   "cats": [
+    "practice-management-software"
+   ]
+  },
   "stack/default": {
    "status": "used",
    "cats": [
@@ -95,8 +151,10 @@
    ]
   },
   "swap/default": {
-   "status": "unused",
-   "cats": []
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
   },
   "timeline/default": {
    "status": "used",
@@ -104,10 +162,29 @@
     "uncategorized"
    ]
   },
+  "versus/badges": {
+   "status": "used",
+   "cats": [
+    "specialty-software",
+    "clinical-software"
+   ]
+  },
   "versus/bento": {
    "status": "used",
    "cats": [
     "clinical-software"
+   ]
+  },
+  "versus/center": {
+   "status": "used",
+   "cats": [
+    "specialty-software"
+   ]
+  },
+  "versus/checks": {
+   "status": "used",
+   "cats": [
+    "medical-billing"
    ]
   },
   "versus/connect": {
@@ -120,21 +197,32 @@
   "versus/duo": {
    "status": "used",
    "cats": [
-    "hospital-and-lab-software"
+    "hospital-and-lab-software",
+    "medical-billing"
+   ]
+  },
+  "versus/fan": {
+   "status": "used",
+   "cats": [
+    "practice-management-software"
    ]
   },
   "versus/frost": {
    "status": "used",
    "cats": [
     "clinical-software"
-   ],
-   "asOf": "2026-10-19T20:09:39.654Z",
-   "why": "the user marked it used in clinical-software on the Template Usage page (Oct 19, 20:09)"
+   ]
   },
   "versus/glass": {
    "status": "used",
    "cats": [
     "hospital-and-lab-software"
+   ]
+  },
+  "versus/lanes": {
+   "status": "used",
+   "cats": [
+    "medical-billing"
    ]
   },
   "versus/overlap": {
@@ -149,11 +237,21 @@
     "clinical-software"
    ]
   },
+  "versus/scores": {
+   "status": "unused",
+   "cats": []
+  },
   "versus/slash": {
    "status": "used",
    "cats": [
     "clinical-software",
     "medical-billing"
+   ]
+  },
+  "versus/stacked": {
+   "status": "used",
+   "cats": [
+    "practice-management-software"
    ]
   },
   "versus/table": {
@@ -163,24 +261,22 @@
    ]
   },
   "versus/tiles": {
-   "status": "unused",
-   "cats": []
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
   },
   "versus/type": {
-   "status": "unused",
-   "cats": []
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ]
   },
   "window/default": {
    "status": "used",
    "cats": [
     "specialty-software"
    ]
-  },
-  "versus/scores": {
-   "status": "unused",
-   "cats": [],
-   "asOf": "2026-10-19T19:23:25.151Z",
-   "why": "The user loves the design and marked it not used (Oct 20 2026), so it is free again in every category."
   }
  }
 }
