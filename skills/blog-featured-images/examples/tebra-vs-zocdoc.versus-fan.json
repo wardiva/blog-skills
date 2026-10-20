@@ -1,0 +1,22 @@
+{
+  "articleTitle": "Tebra vs Zocdoc: Which Scheduling Tool Wins in 2026",
+  "brand": "medsoftwarehub",
+  "category": "practice-management-software",
+  "slug": "tebra-vs-zocdoc-which-scheduling-tool-wins-in-2026",
+  "mode": "versus",
+  "variant": "fan",
+  "left": {
+    "label": "Tebra",
+    "logo": "../assets/tebra-folder-mark.png",
+    "value": "~$49–$799",
+    "unit": "per provider/month"
+  },
+  "right": {
+    "label": "Zocdoc",
+    "logo": "zocdoc.com",
+    "value": "~$35–$100",
+    "unit": "per new patient booking"
+  },
+  "bg": "glow",
+  "bgPick": true
+}

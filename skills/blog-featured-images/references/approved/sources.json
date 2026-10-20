@@ -39,5 +39,11 @@
  "44-cloud": "claims-management.cloud.json",
  "45-count": "dermatology-pm.count.json",
  "46-ranges": "small-practice-emr.ranges.json",
- "48-prompt-logos": "rxnt-vs-drfirst.prompt.json"
+ "48-prompt-logos": "rxnt-vs-drfirst.prompt.json",
+ "49-glassbar": "ehr-interoperability-cost.glassbar.json",
+ "50-figures": "e-prescribing-cost.figures.json",
+ "51-frostrow": "telehealth-for-therapists.frostrow.json",
+ "52-costgrid": "medical-billing-cost.costgrid.json",
+ "53-versus-fan": "tebra-vs-zocdoc.versus-fan.json",
+ "54-versus-stacked": "symplr-vs-modio-health.versus-stacked.json"
 }

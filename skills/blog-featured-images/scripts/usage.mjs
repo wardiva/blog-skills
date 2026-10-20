@@ -1,4 +1,4 @@
-// Layout usage and the site history, shared by render.mjs, plan.mjs, finalize.mjs and sheet.mjs.
+// Layout usage and the site history, shared by render.mjs, plan.mjs, finalize.mjs, sheet.mjs and bgpick.mjs.
 // The user's rule (Oct 2026): "the ones that are used shouldn't be used again unless the category is different. The ones that aren't
 // used can easily be used". So a layout not used yet is free for any article it suits and goes first in line; a used layout is refused
 // only in a category it was already used in. REPEATABLE (layouts.mjs) adds a site-wide cap for a few layouts.
@@ -24,10 +24,18 @@ export const historyFileOf = (brand) => path.join(historyDir(), `history-${brand
 export const readJson = (f, empty = []) => { try { return fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : empty; } catch { return empty; } };
 
 // The site history (one per brand, wherever a batch's output folder is) merged with a batch folder's ledger, per slug, newest entry
-// wins (a stale folder ledger must never override a newer site-history reservation). plan.mjs has no output folder: site history only.
+// wins (a stale folder ledger must never override a newer site-history reservation). Two copies of the same render (same "at") merge;
+// otherwise the newer entry replaces the older one and keeps only the lock fields (final, finalizedAt, stored, superseded), so an old
+// "userPick" or "bgPick" never leaks onto a re-planned layout. plan.mjs has no output folder: site history only.
 export function loadHistory(brand, ledgerFile = null) {
   const bySlug = new Map(), byAt = (x, y) => String(x.at).localeCompare(String(y.at));
-  for (const e of [...readJson(historyFileOf(brand)), ...(ledgerFile ? readJson(ledgerFile) : [])].sort(byAt)) bySlug.set(e.slug, { ...bySlug.get(e.slug), ...e });
+  const LOCK = ['final', 'finalizedAt', 'stored', 'superseded'];
+  for (const e of [...readJson(historyFileOf(brand)), ...(ledgerFile ? readJson(ledgerFile) : [])].sort(byAt)) {
+    const prev = bySlug.get(e.slug);
+    if (!prev || prev.at === e.at) { bySlug.set(e.slug, { ...prev, ...e }); continue; }
+    const keep = Object.fromEntries(LOCK.filter((k) => prev[k] !== undefined && e[k] === undefined).map((k) => [k, prev[k]]));
+    bySlug.set(e.slug, { ...e, ...keep });
+  }
   return [...bySlug.values()].sort(byAt);
 }
 // the entries that count: not superseded (a delivered design the user rejected and had replaced is no longer on the site) and not

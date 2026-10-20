@@ -2,11 +2,13 @@
 // Regression test for the skill, and the way to keep the approved reference images current.
 //   node test-examples.mjs              render every examples/*.json with the current rules; report any that fail
 //   node test-examples.mjs --refresh    also re-render every approved reference image from references/approved/sources.json
+//   node test-examples.mjs --examples-only   skip the refusal suite
+// Then it runs test-refusals.mjs (the user's rules as refusal cases, on temp history and record) and fails if either part fails.
 // Renders go to a temporary folder, each example with its own empty history, ledger and usage record, so results are the same every
 // run and the real site history, the user's record and delivered images are never touched. No --force: every real check runs (heading,
 // text, logo, field and background fit), so an example the rules refuse fails here.
 // Run it after every change to render.mjs, layouts.mjs, a brand file or an example; a failing example means the change broke a layout.
-import { execFile } from 'node:child_process';
+import { execFile, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -56,4 +58,15 @@ if (refresh) {
   console.log(`approved references refreshed: ${n}${orphans.length ? `; with no source in sources.json: ${orphans.join(', ')}` : ''}`);
 }
 fs.rmSync(tmp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
-process.exitCode = failed.length ? 1 : 0;
+// SKILL.md frontmatter: the description is how the skill is found. Over 1024 characters, or an unquoted value holding ": ", it fails
+// to load and the skill shows only its title (Oct 20: it grew to 1070 characters and stopped being discoverable).
+{
+  const md = fs.readFileSync(path.join(skill, 'SKILL.md'), 'utf8'), fm = (md.match(/^---\r?\n([\s\S]*?)\r?\n---/) || [])[1] || '';
+  const line = fm.split(/\r?\n/).find((l) => l.startsWith('description:')) || '', raw = line.slice(12).trim();
+  const quoted = /^"[^"]*"$/.test(raw), desc = quoted ? raw.slice(1, -1) : raw;
+  const bad = !fm.includes('name: blog-featured-images') ? 'no name' : !desc ? 'no description' : desc.length > 1024 ? `description is ${desc.length} characters (max 1024)` : !quoted && /: /.test(desc) ? 'unquoted description holds ": "' : '';
+  if (bad) { console.log(`FAIL  SKILL.md frontmatter: ${bad}`); failed.push({ file: 'SKILL.md' }); } else console.log(`SKILL.md frontmatter ok (description ${desc.length}/1024)`);
+}
+// the refusal suite: every rule the user decided, each a spec that must be refused (or must render)
+const refusals = process.argv.includes('--examples-only') ? 0 : spawnSync(process.execPath, [path.join(here, 'test-refusals.mjs')], { stdio: 'inherit' }).status;
+process.exitCode = failed.length || refusals ? 1 : 0;

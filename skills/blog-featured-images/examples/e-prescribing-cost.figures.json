@@ -1,0 +1,21 @@
+{
+  "articleTitle": "How Much Does E-Prescribing Software Cost in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "how-much-does-e-prescribing-software-cost-in-2026",
+  "mode": "figures",
+  "headline": "E-Prescribing Software Cost",
+  "sub": "per provider per month",
+  "rows": [
+    {
+      "label": "Standalone",
+      "value": "$30–$200"
+    },
+    {
+      "label": "EMR-bundled",
+      "value": "$200–$600"
+    }
+  ],
+  "bg": "white",
+  "bgPick": true
+}

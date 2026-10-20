@@ -1,6 +1,6 @@
 # Featured Image Design Language
 
-You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Three families and the originals share it: the **card layouts** (sections 3–5), the **headline layouts** (section 3d), and the **Gumloop layouts** and **originals** (section 3e): 24 modes / 40 layouts, listed in `scripts/layouts.mjs`. The images in `references/approved/` show the target, and their specs are in `examples/` (`references/approved/sources.json` maps each image to its spec).
+You are judging and making images that will sit side by side in a blog grid for years. Every rule below exists because a real image broke it and the user noticed. **This file is the rulebook.** Three families and the originals share it: the **card layouts** (sections 3–5), the **headline layouts** (section 3d), and the **Gumloop layouts**, **originals** and the batch-5 and batch-6 arrangements (section 3e): 28 modes / 46 layouts, listed in `scripts/layouts.mjs` (42 more are retired). The images in `references/approved/` show the target, and their specs are in `examples/` (`references/approved/sources.json` maps each image to its spec).
 
 **Our design language is the approved templates.** A new layout is a new arrangement of approved parts (white cards, rows, tracks, checklists, logo tiles, the selection box, the blue tile, big tight Inter type, our fields), never a prop, a device or a material. In batch 5 all 12 props and device mockups were rejected: "not a single image that you have created matches our design language… why are you using mobile mockups" (`taste.md` 17).
 
@@ -29,6 +29,15 @@ Passing every check is not enough. Judge every image like a design director, ide
 7. **Every element earns its place.** Remove decoration that only fills: check boxes on a pair ("checkboxes are not needed"), a container around bars on the white field ("dont add container for bars section"), corner dot patches ("delete these dot grid from top left and top right"). `taste.md` 10.
 8. **Taste.** Every principle behind the user's notes, and the Self-Critique every image passes, are in `references/taste.md`.
 
+### 2a. Pro craft and colour across a batch (batch 6)
+
+- **Pro craft:** one hero at a confident size, aligned edges, even gaps, sizes from one scale; nothing small, staggered or squeezed in ("it looks like this is designed by a begineer not by a pro experienced designer"; "painfully bad visual design"). `taste.md` 21.
+- **One focal group:** one tight centred group about 940–1000px wide, never pieces spread to the edges ("it looks scattered, it looks like AI slop"). `taste.md` 22.
+- **A comparison reads as one:** two equal sides, the same kind of fact, a clear "vs" ("doesnt look like comparison image"). `taste.md` 23.
+- **Consistent shapes:** every tile in a row has one size and one radius ("corner radius of logo bg is not consistent"). `taste.md` 2.
+- **Colour variety across a batch:** use the range (the black canvas, the blue gradient, glow, mesh, the white panel, sky, cream), never one colour for a whole batch ("you are just using same color"; "we have multiple colors, black background color, blue gradient"). `taste.md` 24.
+- **Predict the verdict** against the approved sheet and the rejected patterns before the user sees an image (`taste.md`, Predict the Verdict).
+
 ---
 
 ## 3. Backgrounds Flatter the Illustration
@@ -41,15 +50,15 @@ The field is never decoration: it exists to lift the hero off the page.
 | Light | `paper` | cool off-white `#F1F3F6` |
 | Light | `cream` | warm off-white `#F6F2EA`, warm guide lines, no grain |
 | Light | `g5` | near-white at the top glowing into bright sky under the hero |
-| Light, picked only | `soft` | calm light-blue diagonal gradient with fine grain (prompt's `"field": "soft"`) |
-| Light, picked only | `white` | white rounded panel inset 28px in the light-grey `#F2F2F3` frame, sparse faint dots |
-| Light, picked only | `glow` | `lineup`'s field: light-blue diagonal with a blue glow bottom right |
-| Light, picked only | `mesh` | the light blurred blue mesh behind `versus/frost` and light `versus/glass` |
+| Light, picked | `soft` | calm light-blue diagonal gradient with fine grain (prompt's `"field": "soft"`) |
+| Light, picked or a batch-6 fit list | `white` | white rounded panel inset 28px in the light-grey `#F2F2F3` frame, sparse faint dots |
+| Light, picked or a batch-6 fit list | `glow` | `lineup`'s field: light-blue diagonal with a blue glow bottom right |
+| Light, picked or a batch-6 fit list | `mesh` | the light blurred blue mesh behind `versus/frost` and light `versus/glass` |
 | **Vibrant** | `blue` | **"Deep dunes":** bright blue `#3D80F2` at the top melting into deep royal `#1638B0` / `#0A1E70` in soft rolling bands |
 
 - **Grain:** heavy on the vibrant blue, fine on `sky`, `paper`, `g5` and `soft`, none on `cream`. It sits on the field only, so cards stay crisp. `"grain": false` turns off both grain layers (the field grain and the fine overlay) on a light field; the vibrant blue always keeps its grain.
-- **Vibrant images** (the deep-dunes blue, the black headline layouts, and the Gumloop black and blue fields) appear on at most 1 in 3 images per category, never on neighbours ("VIBRANT CHECK FAILED").
-- Only these nine fields exist ("BACKGROUND CHECK FAILED" for any other name). No layout lists `soft`, `white`, `glow` or `mesh` in its fit list: they come only from the user's pick (3f).
+- **Vibrant images** (the deep-dunes blue, the black headline layouts and `glassbar`, and the Gumloop black and blue fields) appear on at most 1 in 3 images per category, never on neighbours ("VIBRANT CHECK FAILED").
+- Only these nine fields exist ("BACKGROUND CHECK FAILED" for any other name). `soft`, `white`, `glow` and `mesh` come from the user's pick (3f); the only fit lists that name them are the batch-6 layouts', which lead with the field the user picked for the delivered image (`figures` white, `costgrid`, `versus/fan` and `versus/stacked` glow; `versus/stacked` also takes `mesh`).
 
 ### 3a. Background fit: every layout has its own list
 Each layout lists only the backgrounds that suit its illustration, best first. Neighbours alternate within that list. A `bg` outside it is refused ("BACKGROUND FIT FAILED").
@@ -73,6 +82,12 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 | versus/center | cream, paper | a big blue tile needs a neutral field |
 | cloud | g5, sky | white pills rising off the field |
 | count | paper, sky | the giant gradient number brings the colour |
+| figures | white, sky, paper | big blue figures and black labels with no card; delivered on the white the user picked (image 50) |
+| costgrid | glow, paper, sky | a blue anchor card and two white cards; delivered on the glow the user picked (image 52) |
+| versus/fan | glow, sky, paper (and the vibrant blue) | two white price cards; approved on the blue (round 4), delivered on the glow the user picked (image 53) |
+| versus/stacked | glow, mesh, sky | two white row cards; approved on the mesh, delivered on the glow the user picked (image 54) |
+| frostrow | its own light mesh (a `bg` is refused: "BACKGROUND CHECK FAILED"; a pick: "BACKGROUND PICK FAILED") | frosted tiles need the mesh behind them; the history records it as `canvas` |
+| glassbar | its own black canvas (`bg` is refused: "BACKGROUND CHECK FAILED") | the frosted bar on black with a blue glow; counts as vibrant |
 
 - Fit lists can be per layout (`BG_FIT['versus/checks']`); a layout without its own list uses its mode's.
 - Cool greys never sit on cream; on cream the guide lines turn warm and the blue margin dots are hidden (automatic).
@@ -82,7 +97,7 @@ Each layout lists only the backgrounds that suit its illustration, best first. N
 
 | On blue? | Layouts |
 |---|---|
-| **Yes** | `checklist` (blue only; it always counts as vibrant), `versus/table`, `window`, `before-after/flow` |
+| **Yes** | `checklist` (blue only; it always counts as vibrant), `versus/table`, `window`, `before-after/flow`, `versus/fan` (approved on the blue in batch 6; its cards lose their shadows there, and the logo tiles keep a hairline border) |
 | **No** | every other card layout (blue-heavy illustrations become one flat blob; floating tiles look weak) |
 
 This is the `"bg": "blue"` card field. The Gumloop `versus/tiles` is separate: it paints its own approved blue field (its default, approved image 20).
@@ -112,10 +127,10 @@ Each of these came from a reference the user shared; every detail below is measu
 - **Type:** one weight, Inter **500 Medium**, for every text element (headline, VS, tag pill, panel names) in `versus/pills`, `versus/connect`, `versus/duo` and `dark`; headlines tracked −0.035em. Only `versus/slash` keeps its heavy Poppins caps.
 - **Colour:** shapes are a near-solid vivid blue (`#0A6EF5 → #1D8BFF`) with only a faint tonal drift and fine grain. **Headlines carry no blue words:** black `#0A0A0B` on the white layouts (pills, connect), white on the black ones (duo, dark); `{{ }}` only colours part of each name in `versus/slash`.
 - **White frame:** a white design always sits in a **white rounded panel inset 28px on a light-grey `#F2F2F3` frame**, so it reads as its own block on a white blog page (automatic).
-- **Black fields** (`dark`, `versus/slash`, `versus/duo`, and the Gumloop black and blue fields: `versus/glass` black, `versus/tiles` blue) count as vibrant (see 3).
+- **Black fields** (`dark`, `versus/slash`, `versus/duo`, `glassbar`, and the Gumloop black and blue fields: `versus/glass` black, `versus/tiles` blue) count as vibrant (see 3).
 - **Brand colour:** when a product's logo colour is vivid and modern (e.g. Sage green), `dark` and `duo` use it for the panel (`"color": "#00C247"`); otherwise the panel is the subtle blue.
 - **Single-product articles:** `logotype` when the product's logo is black with strong typography (at most 2 across the site), otherwise `dark` (at most 3 across the site); each once per category. X vs Y articles use a versus layout.
-- **Sixteen ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`, `type`, `tiles`, `glass`, `frost`, `bento`, `badges`, `checks`, `lanes`, `scores`, `center` (and `prompt` with two logo rows, image 48, for a pair on price). **Each is used once per category; `slash`, `connect` and `duo` are favourites with a site-wide cap of 5, `pills` 2** (the user: "max 2 times"). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
+- **Eighteen ways to show X vs Y**, all showing both products: `versus/overlap`, `table`, `pills`, `connect`, `slash`, `duo`, `type`, `tiles`, `glass`, `frost`, `bento`, `badges`, `checks`, `lanes`, `scores`, `center`, `fan`, `stacked` (and `prompt` with two logo rows, image 48, for a pair on price). Each must read as a comparison at a glance: two equal sides and a clear "vs" ("doesnt look like comparison image", `taste.md` 23). **Each is used once per category; `slash`, `connect` and `duo` are favourites with a site-wide cap of 5, `pills` 2** (the user: "max 2 times"). An X vs Y image never features only one brand ("FAIRNESS CHECK FAILED").
 - These layouts paint their own canvas: leave `bg` out (it is refused, "BACKGROUND CHECK FAILED"); `logotype` takes only `cream`, its default, and any other light `bg` is refused with "BACKGROUND FIT FAILED" (`blue`: "VIBRANT FIT FAILED"; a picked blue: "BACKGROUND PICK FAILED"). Headlines follow the heading rule (10). Every word stays inside x 210–1390, except `dark` (its text column starts at x 120 for balance with the panel, and its 7:5 crop shifts left to match) and `versus/duo` (its headline starts at x 96 and its panels run nearly edge to edge, so its 7:5 is the whole master padded top and bottom with its own black).
 
 ## 3e. Gumloop Layouts and the Originals
@@ -137,16 +152,30 @@ Two more sets came from the user's references and reviews (Oct 2026). Their tabl
   - `count` (stat): the number of picks big in the blue gradient with the caption under it, a white card of logo rows.
   - `ranges` (ranked bars, turned upright): a headline and unit, a white card of vertical price tracks, one per pick (a bar for a range, a dot for one price, a fading bar with no solid end for an open "From" price), the logo tile under each. On the user's white field it may drop the card (`"bare": true`, tracks a step darker; image 46: "use the previous bg, and in that dont add container for bars section").
 - **Prompt with two logo rows** (image 48, RXNT vs DrFirst): a panel of two rows or fewer grows on its own (104px tiles, 70px logos, 40px titles), and `"panel": { "even": true }` keeps both rows at full strength (no fade) when the products are equals.
-- **Retired** (30; not in `layouts.mjs`, refused with "RETIRED LAYOUT", their code deleted from `render.mjs`): `brandline` (a background with only a headline), `folder` ("not the layout"), `versus/scale` ("looks like a law illustration": no clip-art metaphors), `versus/chat` (not picked), `versus/split` and `versus/duet` (the user passed on both twice), `versus/rows` (rejected), `versus/logos` (disliked); the batch-5 props, all rejected ("not a single image that you have created matches our design language"): `versus/compare`, `versus/search`, `versus/polaroid`, `versus/notes`, `versus/phones`, `versus/browser`, `notify`, `wallet`, `stickers`, `letterboard`, `tags`, `keycaps`; `versus/window` (disapproved); `versus/range` ("i like the design but it is confusing"; `versus/lanes` replaced it); `versus/rings` and `versus/share` (disapproved); `versus/sheet` and `versus/columns` (options never approved); from the final batch-5 round: `versus/plans` ("i dont like the design, try smth else for comparison"; approved earlier with "design can be improved"), `versus/fit` (disapproved), `versus/spot` (QA: Appointment's spotlight under a new name), `grid` ("7 best pediatric shouldnt be like other logos, this looks off"; both fixes disapproved, then "for this use this glass version template": Pediatric EHR went to `lineup`). History: `lessons.md`.
+- **Batch-6 layouts** (Oct 20 2026, six live; images 49–54). Each is an approved part in a new arrangement, named in brackets; all six were delivered:
+  - `glassbar` (approved 24's frosted bar; image 49, EHR interoperability cost): its own black canvas with a blue glow, the white heading above (Inter 500, the rule on black), one frosted bar holding the tier `label` | its `value` in the blue gradient, the qualifier under it in dimmed white (reduced-opacity white, never grey hex over a glow). One fact for a cost article. Vibrant. Approved in round 7 after "it looks like this is designed by a begineer not by a pro experienced designer" and three more rejected EHR rounds: "There should be some minimal way for this. Also try using black background".
+  - `figures` (the `versus/scores` type; image 50, E-Prescribing Software Cost): the heading and unit centred on top, then two centred columns, each a price range large in the blue gradient over its label in black, one hairline between. Two price ranges of one product type. Delivered on the white panel the user picked (its default).
+  - `frostrow` (the `versus/frost` glass tiles; image 51, 7 Best Telehealth Software for Therapists): its own light mesh, the heading centred on top, one row of 3–6 equal frosted logo tiles (one size, one radius), each name under its tile, no numbers. For "best X" lists with clean logos. The user: "for logos bg glass bg would look better", and "it should be just zoom not zoom for healthcare". A picked `bg` is refused (the mesh would hide it).
+  - `costgrid` (the `versus/bento` cells and the blue anchor; image 52, Medical Billing Software Cost): the heading top-left, one tall card in the blue anchor for the main pricing model and two white cards stacked beside it, each with the model, its figure big and its unit. Cost by pricing model. Delivered on the glow the user picked (its default).
+  - `versus/fan` (the tilted white card and the "vs" disc; image 53, Tebra vs Zocdoc): two white price cards tilted −4° and +4°, meeting at the blue "vs" disc on the seam; each card its logo tile and name, its figure in the blue gradient, its unit. One price each, the same size. "this is fine". Approved on the deep blue (no shadows there; the logo tiles keep a hairline border), delivered on the glow the user picked (its default); the blue is allowed.
+  - `versus/stacked` (the fan's parts, stacked; image 54, symplr vs Modio Health): two wide white row cards one above the other, tilted −2° and −1°, logo tile and name on the left, the figure in the blue gradient with its unit right-aligned, the "vs" disc on the seam. Prices of different scales (a yearly contract against a per-provider fee) still read as a pair. "love it. The concept, visual , everything looks so appealing and perfect". Approved on the light mesh, delivered on the glow the user picked (its default; `mesh` fits too).
+- **Retired** (42; listed in `RETIRED` in `layouts.mjs`, not in `LAYOUTS`, refused with "RETIRED LAYOUT", their code deleted from `render.mjs`):
+  - Before batch 5: `brandline` (a background with only a headline), `folder` ("not the layout"), `versus/scale` ("looks like a law illustration": no clip-art metaphors), `versus/chat` (not picked), `versus/split` and `versus/duet` (the user passed on both twice), `versus/rows` (rejected), `versus/logos` (disliked).
+  - The batch-5 props, all rejected ("not a single image that you have created matches our design language"): `versus/compare`, `versus/search`, `versus/polaroid`, `versus/notes`, `versus/phones`, `versus/browser`, `notify`, `wallet`, `stickers`, `letterboard`, `tags`, `keycaps`.
+  - Batch 5, later rounds: `versus/window` (disapproved); `versus/range` ("i like the design but it is confusing"; `versus/lanes` replaced it); `versus/rings` and `versus/share` (disapproved); `versus/sheet` and `versus/columns` (options never approved); from the final round: `versus/plans` ("i dont like the design, try smth else for comparison"; approved earlier with "design can be improved"), `versus/fit` (disapproved), `versus/spot` (QA: Appointment's spotlight under a new name), `grid` ("7 best pediatric shouldnt be like other logos, this looks off"; both fixes disapproved, then "for this use this glass version template": Pediatric EHR went to `lineup`).
+  - Batch 6, first pass: `steps` ("it looks like this is designed by a begineer not by a pro experienced designer"), `numbered` ("numbers looks so weird and visually cluttered and unbalanced and corner radius of logo bg is not consistent"; `frostrow` replaced it), `versus/pill` ("doesnt look like comparison image"; `versus/badges` replaced it), `versus/chips` and `versus/offset` ("painfully bad visual design"; `versus/fan` and `versus/stacked` replaced them), `versus/halves` ("i dont like this it looks off and doesnt match our design vibe"; `versus/duo` replaced it).
+  - Batch 6, round 3: `link`, `versus/annotate` and `versus/corners` ("all of them looks too much and you are just using same color and it doesn't look visually balanced, it doesn't look visually appealing, it looks scattered, it looks like AI slop"; annotate was disapproved again on black and on blue).
+  - Batch 6, cut by QA and never shown: `poster` (a badge without its box), `versus/glasscards` (the retired plans' columns in glass), `versus/figures` (a restyle of the scores type). Not the `figures` mode, which is live.
+  - History: `lessons.md`.
 
 ## 3f. The user picks each image's background
 The user: "we have so many background why are you fixated on just one. show me 12 images and options for backgrounds and i'll selevt the bg for each". The fit lists kept nearly every image on sky or g5, so the fit list is now only the starting point.
 
 - After the batch renders, show every image on every field it can take (picker page) and let the user pick. The pick goes in the spec: `"bg": "<field>", "bgPick": true`.
 - A pick skips the fit list (BG_FIT), the blue fit (BLUE_FIT) and the canvas refusal; it never skips the vibrant check (a picked blue still counts: 1 in 3 per category, never neighbours). The history records the picked field, so the next image's neighbour check sees it.
-- Card layouts take any light field. A layout that paints its own canvas takes a pick only where its canvas can step aside (`versus/badges`, `versus/type`, `versus/tiles`, `versus/bento`, `swap`, `badge`, `shortlist`): light fields only, and blue only on `versus/tiles`. The rest (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`, `versus/glass`, `versus/frost`, `receipt`, `definition`, `lineup`, `prompt`) refuse it ("BACKGROUND PICK FAILED").
-- The vibrant blue only where every word sits inside a white card (the user picked it for `versus/checks`, image 37): the renderer refuses a picked blue on any other layout (`BLUE_PICK`: `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, and `versus/tiles` on its own blue field).
-- **Variety in backgrounds too.** In batch 5 the user picked seven different fields for 12 images (glow 4, mesh 2, soft 2, blue, cream, paper, white; after the final round the two soft picks became RXNT's `prompt` on its own soft field and Pediatric EHR's `lineup` on its own glow canvas). Never let a batch drift onto one field.
+- Card layouts take any light field. A layout that paints its own canvas takes a pick only where its canvas can step aside (`versus/badges`, `versus/type`, `versus/tiles`, `versus/bento`, `swap`, `badge`, `shortlist`): light fields only, and blue only on `versus/tiles`. The rest (`versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`, `glassbar`, `versus/glass`, `versus/frost`, `receipt`, `definition`, `lineup`, `prompt`) refuse it ("BACKGROUND PICK FAILED"), and so does `frostrow`, which paints its own light mesh over the whole canvas.
+- The vibrant blue only where every word sits inside a white card (the user picked it for `versus/checks`, image 37): the renderer refuses a picked blue on any other layout (`BLUE_PICK`: `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/fan`, and `versus/tiles` on its own blue field).
+- **Variety in backgrounds too.** In batch 5 the user picked seven different fields for 12 images (glow 4, mesh 2, soft 2, blue, cream, paper, white; after the final round the two soft picks became RXNT's `prompt` on its own soft field and Pediatric EHR's `lineup` on its own glow canvas). In batch 6: glow 5 (`versus/badges`, `swap`, `costgrid`, `versus/fan`, `versus/stacked`), white 2 (`figures`, `versus/type`), blue 1 (`versus/tiles`: "use the blue gradient bg"), with `glassbar` and `versus/duo` on their own black and `frostrow` on its own mesh. Never let a batch drift onto one field (2a, `taste.md` 24).
 - **`ranges` "bare" is white only.** `"bare": true` (no card behind the bars, tracks `#E1E5EC`) renders only with `"bg": "white", "bgPick": true`; on any tinted field the light grey tracks need their white card ("BACKGROUND CHECK FAILED").
 
 ---
@@ -186,7 +215,7 @@ Two layouts that share a skeleton (block arrangement) read as the same image at 
 | prompt | faded panel bleeding off the top, centred headline, pill input bar | cost, FAQ, "what is" |
 | stack | a takeaway card sized to its text, two cards peeking from the top | one key rule or warning |
 | window | full app window: list pane + detail pane | vendor lists, pricing tables |
-| versus/checks | one tilted checklist card: title, blue rule, a row per product (logo tile, name, sub), checked or (`"checks": false`) not | X vs Y, each product's strength |
+| versus/checks | one tilted checklist card: title, blue rule, a row per product (logo tile, name, sub), no check boxes by default (`"checks": true` adds them) | X vs Y, each product's strength |
 | versus/lanes | centred headline + unit, a white card with one lane per product: blue price stops on a shared scale | X vs Y with several price points |
 | versus/scores | small metric title, two rows: logo tile, big name, very large gradient score; no card | X vs Y with one published score |
 | versus/center | two tilted logo tiles, hand-drawn arrows into one central blue tile with the angle | X vs Y for one specialty or audience |
@@ -195,8 +224,14 @@ Two layouts that share a skeleton (block arrangement) read as the same image at 
 | cloud | centred headline over staggered white logo pills | "best X" lists |
 | count | giant gradient number + caption left, a card of logo rows right | "N best" lists |
 | ranges | headline + unit, a card of vertical price tracks with a logo tile under each (no card when `bare` on white) | "best X" lists with prices |
+| figures | centred headline + unit, two centred columns of a big gradient figure over its label, one hairline between | cost: two price ranges |
+| costgrid | headline top-left, one tall blue anchor card beside two stacked white cards (model, figure, unit) | cost by pricing model |
+| frostrow | centred headline over one row of 3–6 equal frosted logo tiles with names, on its own mesh | "best X" lists with clean logos |
+| glassbar | white headline over one frosted bar (label \| figure) and a dimmed caption, on its own black | cost: one fact |
+| versus/fan | two white price cards tilted ±4°, side by side, meeting at the "vs" disc | X vs Y, one price each |
+| versus/stacked | two wide white row cards stacked, tilted −2°/−1°, logo + name left, figure right, the "vs" disc on the seam | X vs Y, prices of different scales |
 
-- The same article type can use several layouts (cost: focus, stat, prompt, window, ranked; how-to: before-after, timeline, stack, checklist; best-of lists: hub, spotlight, picks, cloud, count, ranges, shortlist, lineup). Use that range so no layout comes back in the same category.
+- The same article type can use several layouts (cost: focus, stat, prompt, window, ranked, receipt, badge, figures, costgrid, glassbar; how-to: before-after, timeline, stack, checklist; best-of lists: hub, spotlight, picks, cloud, count, ranges, shortlist, lineup, frostrow). Use that range so no layout comes back in the same category.
 - **When adding a layout:** build it only from approved parts (see the top of this file), never a prop, a device or a material. Squint at its 350×250 card next to every other layout. If two share a skeleton, redesign one. Built from an approved template, it changes the skeleton, not only the styling (horizontal price rows were the `ranked` skeleton again; a split card with "vs" on the seam is the `versus/table` skeleton). Siblings from one approved part (`picks` and `versus/checks` are both checklist cards) never share a category. When no free layout fits an article (none not used yet, none used only in other categories), design a new variant (shown to the user first).
 - **Clear in one glance.** A chart must read without study: `versus/range` was liked and still retired ("i like the design but it is confusing"). Light grey tracks sit on a white card (the one exception: `ranges` `"bare": true` on the user's white field, tracks a step darker); a callout line touches what it names; an open "From" price fades out with no solid end, because every bar end reads as a figure.
 
@@ -215,7 +250,7 @@ A calm image still needs one thing that grabs the eye and a structure that holds
 5. **Hard alignment:** connectors hit centres, selection handles sit on the corners, gaps are even.
 6. **At most one interaction cue:** a cursor (`"cursor": [x, y]`) pointing at the key fact, never covering text.
 7. **Scale contrast:** one very large element against small labels.
-8. **Enough content:** each layout needs enough real facts to fill its frame (window 2+ rows, hub 6–7 products, ranked, checklist and timeline 3+, stat card 2+, focus 2+ rows, shortlist 3+ items, lineup 3–7 logos, picks 3–7, spotlight and count 3–6, cloud 3–8 logos, ranges 3–6 rows plus `max`; versus/badges a `value` on both sides, versus/checks a `title`, versus/center a `label`, versus/lanes `max` and both sides' `points`, versus/scores a `title` and a real number on both sides, never a word). The renderer refuses thinner specs ("CONTENT CHECK FAILED").
+8. **Enough content:** each layout needs enough real facts to fill its frame (window 2+ rows, hub 6–7 products, ranked, checklist and timeline 3+, stat card 2+, focus 2+ rows, shortlist 3+ items, lineup 3–7 logos, picks 3–7, spotlight and count 3–6, cloud 3–8 logos, ranges 3–6 rows plus `max`; versus/badges a `value` on both sides, versus/checks a `title`, versus/center a `label`, versus/lanes `max` and both sides' `points`, versus/scores a `title` and a real number on both sides, never a word; frostrow 3–6 logos, figures 2 rows, costgrid 3 cells, glassbar a `label` and a `value`, versus/fan and versus/stacked a `value` on both sides). The renderer refuses thinner specs ("CONTENT CHECK FAILED").
 
 ---
 
@@ -233,7 +268,9 @@ A calm image still needs one thing that grabs the eye and a structure that holds
 
 ## 8. Logos Are the Brand's Real, Current Mark
 
-- **Where:** wherever a real product is named: hub tiles, versus sides and table headers, window rows, ranked rows, stat rows, prompt rows and chips, and the logo rows and tiles of the batch-5 layouts. Never decorative.
+- **Where:** wherever a real product is named: hub tiles, versus sides and table headers, window rows, ranked rows, stat rows, prompt rows and chips, and the logo rows and tiles of the batch-5 and batch-6 layouts. Never decorative.
+- **One tile per row:** every logo in a row shares one tile size and one radius ("corner radius of logo bg is not consistent"). A solid app icon is the tile itself with `"fill": true` (edge to edge, clipped to the tile: `lineup`, `versus/center`, `versus/fan`, `versus/stacked`; on `frostrow` it sits at 48% inside its glass tile with the same 22% radius), or gives way to the brand's bare mark on the tile. `"logo": "icon:<domain>"` asks for the brand's square app icon.
+- **Names as people say them** under a logo ("just zoom not zoom for healthcare"); the user's spelling wins.
 - **How:** set `"logo": "<official domain>"`. The renderer's free chain finds it at render time (nothing stored): Brandfetch symbol → Iconify `logos` (the `-icon` version, then the full logo) → Simple Icons → Brandfetch icon (edge to edge as an app tile only when it really is a solid tile) → lettermark. Without a Brandfetch client ID, the Brandfetch steps are skipped and Google's favicon stands in for the icon step. A local file (`"../assets/<file>.png"`) or a full URL is used as is.
 - **Brandfetch client ID:** free at brandfetch.com/developers. Keep it **local** (`~/.blog-featured-images/config.json` or `BRANDFETCH_CLIENT_ID`); never commit it.
 - **Style:** original colours (`"logoStyle": "color"`, the default) in white tiles; one style per image. `mono` and `tint` exist for when colour logos would compete with the anchor.
@@ -260,7 +297,7 @@ The heading uses **the blog title's own words and meaning, just shorter**. No cr
 
 1. Keep the subject (EMR, ERP, Dynamics 365) and the angle (cost, switch, best, vs, by practice size).
 2. Drop the year, filler, "How to", "Complete guide" and brackets.
-3. Keep at least 75% of the heading's key words from the title.
+3. Keep at least 75% of the heading's key words from the title (`stat`'s caption needs only 2 shared words).
 
 | Blog title | Good | Bad |
 |---|---|---|
@@ -268,7 +305,7 @@ The heading uses **the blog title's own words and meaning, just shorter**. No cr
 | How to Switch EMR Vendors Without Losing Patient Data | Switch EMR Vendors Without Losing Data | Every chart makes the move |
 | 7 Best ERP Software for Small Businesses in 2026 | 7 Best ERP for Small Businesses | Seven ERPs. One right fit. |
 
-Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HEADING CHECK FAILED"). It checks the heading wherever a layout has one, the batch-5 layouts included (`spotlight`, `cloud` and `ranges` headline, `picks` and `versus/checks` title, `count` caption, `versus/lanes` headline). A list heading keeps the title's angle ("Best Small Practice EMR", not "5 Best EMR"). Layouts without a headline (before-after, most versus variants, hub) use the title's key terms in their labels. A tile label is not a heading: the hub's blue tile may shorten to the count and category ("7 Best ERP" on approved image 02) when the tile can't fit the angle; a heading never does.
+Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HEADING CHECK FAILED"). It checks the heading wherever a layout has one, the batch-5 and batch-6 layouts included (`spotlight`, `cloud`, `ranges`, `figures`, `costgrid`, `frostrow` and `glassbar` headline, `picks` and `versus/checks` title, `count` caption, `versus/lanes` headline). A list heading keeps the title's angle ("Best Small Practice EMR", not "5 Best EMR"). Layouts without a headline (before-after, most versus variants, hub) use the title's key terms in their labels. A tile label is not a heading: the hub's blue tile may shorten to the count and category ("7 Best ERP" on approved image 02) when the tile can't fit the angle; a heading never does.
 
 ---
 
@@ -281,6 +318,7 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 | Badge figure | up to ~168px, in its tinted box |
 | Hero number (stat) | up to 150px (the card grew to match; never outweighs it) |
 | Count number, scores | `count` 250px beside its logo card, `versus/scores` 120px with no card; both in the blue gradient |
+| Price figures (batch 6) | in the blue gradient, auto-fit: `figures` up to 110px, `glassbar` and `versus/fan` up to 92px, `versus/stacked` up to 80px, `costgrid` up to 64px on the anchor and 50px on the white cards; the two figures of a pair share one size |
 | Names over figures | a name labelling a figure sits a step below it (`versus/badges` image 36: names 44px / 600, prices up to 84px); never as big or bold as the figure (`taste.md` 1) |
 | Section labels | about 50px / 500, muted |
 | Card headings | 32–36px |
@@ -300,9 +338,9 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 ## 13. Never
 
-- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; black fields only in `dark`, `versus/slash`, `versus/duo` and the approved black field of `versus/glass`; every headline black `#0A0A0B` (white on dark fields), with no blue words; black is also the ink of `logotype`'s logo and `dark`'s top-left icon.
+- **Colour:** one accent family (blue); never a blue-heavy illustration on a blue field; never one field for a whole batch ("you are just using same color"); black fields only in `dark`, `versus/slash`, `versus/duo`, `glassbar` and the approved black field of `versus/glass`; every headline black `#0A0A0B` (white on dark fields), with no blue words; black is also the ink of `logotype`'s logo and `dark`'s top-left icon.
 - **Logos:** never a tiny logo in a big tile, an app icon shrunk inside a white tile, or invented or warped logos.
-- **Layouts:** never two layouts with the same skeleton; never anything added to fill space (no check boxes on a pair, no container that only frames, no corner dot patches); never a heading or count dressed as one more tile among logo tiles ("7 best pediatric shouldnt be like other logos, this looks off"); never a name that outweighs its figure; never a word against a number in a pair of figures; a white design always has the grey frame; never the site mark on a headline layout; never a one-brand image for an X vs Y article.
+- **Layouts:** never two layouts with the same skeleton; never pieces scattered to the edges, a stagger with no reason, or small chips where a big figure belongs ("it looks scattered, it looks like AI slop"; "painfully bad visual design"); never an X vs Y image that doesn't read as a pair ("doesnt look like comparison image"); never anything added to fill space (no check boxes on a pair, no container that only frames, no corner dot patches); never a heading or count dressed as one more tile among logo tiles ("7 best pediatric shouldnt be like other logos, this looks off"); never a name that outweighs its figure; never a word against a number in a pair of figures; a white design always has the grey frame; never the site mark on a headline layout; never a one-brand image for an X vs Y article.
 - **Details:** no heavy shadows, small grey VS chips, badges straddling a card edge, AI-looking 3D or art, stock photos or neon.
 - **Props:** never a device, a prop or a material (phone or browser mockups, a laptop lid, keycaps, sticky notes, polaroids, a felt letter board, price tags, wallet cards). The receipt and the notepad work because they are flat white typographic cards in our palette.
 
@@ -310,4 +348,4 @@ Every spec carries `"articleTitle"`; the renderer refuses drifting headings ("HE
 
 The full log of the user's references, and what was taken from each, is in `references/inspiration.md`.
 
-Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments: variety comes from layout, never from palette or type. Good product blogs (Clerk, Mintlify) build their art from their own product UI and data, drawn flat; so do we.
+Granola (one colour family, white UI on a bold field, logos-only integrations), Base44 (big UI, grid with corner squares), Mintlify (skeleton rows, selection-box highlight), grainient.supply (grainy deep gradients), Chatbase (comparison layouts, the subtle vivid blue, black + brand colour, framed white panels). Borrow their principles, never their ornaments: variety comes from layout, never from palette or type. Good product blogs (Clerk, Mintlify) build their art from their own product UI and data, drawn flat; so do we. Raycast and Linear (batch 6) put one object on a strong field, often black with one glow: one focal group, never scattered pieces.

@@ -10,8 +10,8 @@
 //       slug): {bg, note, at}.
 //   node bgpick.mjs apply --picks <picks.json> <spec.json> ...
 //       picks.json maps slug -> field (or -> {bg, note}, as the db docs are); writes "bg": <field>, "bgPick": true into each spec,
-//       keeping its formatting and line endings (a one-line spec stays on one line). "default" is always accepted: it removes them
-//       (the layout's own background). A field the layout can't take is refused.
+//       keeping its formatting and line endings (a one-line spec stays on one line). "default" is always accepted (it removes them:
+//       the layout's own background) except on ranges "bare", which is white only. A field the layout can't take is refused.
 // <featured-images> is the folder the specs sit in (featured-images/specs/<slug>.json -> featured-images), unless --out / --images.
 // Each option renders with its own TEMPORARY history (a copy of the site history) and ledger (a copy of the folder's), so every check
 // runs as it will on the real render, while the real site history is never touched and options never replace each other's entries.
@@ -24,7 +24,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { brandKeyOf, historyFileOf } from './usage.mjs';
-import { LAYOUTS } from './layouts.mjs';
+import { LAYOUTS, CANVAS_LAYOUTS, PICK_CANVAS } from './layouts.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const RENDER = path.join(HERE, 'render.mjs');
@@ -56,6 +56,8 @@ const pickFields = (f) => {
   if (!m) throw new Error(`render.mjs --pick-fields printed no fields for ${f}`);
   return m[1].trim() === 'none' ? [] : m[1].trim().split(/\s+/);
 };
+// the layouts whose own full canvas would hide a pick (render.mjs pickRefusal), short names for the picker page: pills, ..., prompt
+const NO_PICK = CANVAS_LAYOUTS.filter((l) => !PICK_CANVAS.includes(l)).map((l) => l.replace(/^versus\//, '').replace(/\/default$/, ''));
 const pool = async (items, n, fn) => { const res = []; let k = 0; await Promise.all(Array.from({ length: n }, async () => { while (k < items.length) { const i = k++; res[i] = await fn(items[i]); } })); return res; };
 
 if (cmd === 'render') {
@@ -168,7 +170,7 @@ textarea{font:14px/1.4 var(--display);color:var(--ink);background:var(--bg);bord
 </style>
 <main>
   <div class="top"><h1>Background Picker</h1><div class="tally" id="tally">0 of ${ids.length} picked</div></div>
-  <p class="intro">Every image on every background its layout can take. Click the one you want for each image; you can change your mind any time. Picks save as you go, and Claude reads them from here. Vibrant blue is offered only where all the text sits inside a white card; a layout that paints its own canvas shows that canvas only.</p>
+  <p class="intro">Every image on every background its layout can take. Click the one you want for each image; you can change your mind any time. Picks save as you go, and Claude reads them from here. Vibrant blue is offered only where all the text sits inside a white card; a layout whose own full canvas would hide a pick (${NO_PICK.join(', ')}) shows that canvas only.</p>
   <p class="status" id="status">Connecting…</p>
 ${sections}</main>
 <script>
@@ -213,7 +215,9 @@ if (cmd === 'apply') {
     if (!pick) { console.log(`skip  ${slug}: no pick`); continue; }
     let fields;
     try { fields = pickFields(f); } catch (e) { console.log(`FAIL  ${slug}: ${e.message}`); bad++; continue; }
-    const offered = [...fields, 'default'];   // "default" (no pick: the layout's own background) is always accepted
+    // "default" (no pick: the layout's own background) is always accepted, except on ranges "bare": white only (render.mjs refuses it
+    // without its picked white)
+    const offered = spec.mode === 'ranges' && spec.bare === true ? fields : [...fields, 'default'];
     if (!offered.includes(pick)) { console.log(`FAIL  ${slug}: ${layoutOf(spec)} can't take "${pick}" as a pick (it takes ${offered.join(', ')})`); bad++; continue; }
     let t = text;
     if (!/\r?\n/.test(text.trim())) {
@@ -237,7 +241,7 @@ if (cmd === 'apply') {
     try { const j = JSON.parse(t); ok = pick === 'default' ? j.bg === undefined && j.bgPick === undefined : j.bg === pick && j.bgPick === true; } catch {}
     if (!ok) { console.log(`FAIL  ${slug}: couldn't edit ${f} safely; set "bg": "${pick}", "bgPick": true by hand`); bad++; continue; }
     if (t !== text) fs.writeFileSync(f, t);
-    console.log(`ok    ${slug}: ${pick === 'default' ? 'its own canvas (no "bg")' : `"bg": "${pick}", "bgPick": true`} -> ${f}`);
+    console.log(`ok    ${slug}: ${pick === 'default' ? 'its default background (no "bg")' : `"bg": "${pick}", "bgPick": true`} -> ${f}`);
   }
   console.log(bad ? `${bad} pick(s) not applied` : 'Now render each spec as usual: node render.mjs <spec.json> --out featured-images/<slug>');
   process.exitCode = bad ? 1 : 0;

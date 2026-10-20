@@ -1,0 +1,27 @@
+{
+  "articleTitle": "How Much Does Medical Billing Software Cost in 2026",
+  "brand": "medsoftwarehub",
+  "category": "medical-billing",
+  "slug": "how-much-does-medical-billing-software-cost-in-2026",
+  "mode": "costgrid",
+  "headline": "Billing Software Cost",
+  "cells": [
+    {
+      "label": "Cloud-based",
+      "value": "$200–$2,000",
+      "unit": "per month"
+    },
+    {
+      "label": "On-premise",
+      "value": "$10,000–$100,000",
+      "unit": "upfront"
+    },
+    {
+      "label": "Outsourced RCM",
+      "value": "4%–9%",
+      "unit": "of collections"
+    }
+  ],
+  "bg": "glow",
+  "bgPick": true
+}

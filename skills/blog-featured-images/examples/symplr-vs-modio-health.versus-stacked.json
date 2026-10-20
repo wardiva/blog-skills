@@ -1,0 +1,23 @@
+{
+  "articleTitle": "Symplr vs Modio Health: Credentialing Software Compared 2026",
+  "brand": "medsoftwarehub",
+  "category": "practice-management-software",
+  "slug": "symplr-vs-modio-health-credentialing-software-compared-2026",
+  "mode": "versus",
+  "variant": "stacked",
+  "left": {
+    "label": "symplr",
+    "logo": "../assets/symplr-mark.png",
+    "value": "$50K–$200K+",
+    "unit": "per year"
+  },
+  "right": {
+    "label": "Modio Health",
+    "logo": "modiohealth.com",
+    "value": "$50–$125",
+    "unit": "est., per provider/month"
+  },
+  "texture": false,
+  "bg": "glow",
+  "bgPick": true
+}

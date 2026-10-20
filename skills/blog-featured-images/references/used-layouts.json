@@ -124,8 +124,12 @@
    ]
   },
   "versus/frost": {
-   "status": "unused",
-   "cats": []
+   "status": "used",
+   "cats": [
+    "clinical-software"
+   ],
+   "asOf": "2026-10-19T20:09:39.654Z",
+   "why": "the user marked it used in clinical-software on the Template Usage page (Oct 19, 20:09)"
   },
   "versus/glass": {
    "status": "used",

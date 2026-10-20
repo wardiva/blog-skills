@@ -1,0 +1,33 @@
+{
+  "articleTitle": "7 Best Telehealth Software Options for Therapists in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "7-best-telehealth-software-options-for-therapists-in-2026",
+  "mode": "frostrow",
+  "headline": "Best Telehealth for Therapists",
+  "items": [
+    {
+      "name": "Doxy.me",
+      "logo": "doxy.me",
+      "fill": true
+    },
+    {
+      "name": "SimplePractice",
+      "logo": "../assets/simplepractice-app-icon.png",
+      "fill": true
+    },
+    {
+      "name": "Zoom",
+      "logo": "zoom.us",
+      "fill": true
+    },
+    {
+      "name": "VSee",
+      "logo": "../assets/vsee-v-mark.png"
+    },
+    {
+      "name": "Amwell",
+      "logo": "amwell.com"
+    }
+  ]
+}

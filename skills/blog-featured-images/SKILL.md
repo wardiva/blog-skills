@@ -1,6 +1,6 @@
 ---
 name: blog-featured-images
-description: Make article-specific blog featured images (1600x900 plus crops) in three approved families plus originals: card layouts on light grainy fields or a vibrant deep blue, Chatbase-style headline layouts (X vs Y, single product), Gumloop-style layouts (bold type, tilted tiles, frosted bar, switch arrow, figure badge) and originals (receipt, dictionary entry, best-of and X vs Y arrangements) - 24 modes / 40 layouts. Use when the user wants a blog featured image, thumbnail, article cover, hero or OG image for an article URL, several, or a whole category. Reads each article, uses a layout once per category (not-used layouts first), writes a minimal spec from its facts with real product logos, renders with headless Chrome, then the user picks each image's background on a picker page. New designs are arrangements of approved parts, never props. Four roles (orchestrator, parallel makers, visual and fact QA); built-in checks block off-title headings, too much text, thin content, reused layouts and unfitting backgrounds.
+description: "Make article-specific blog featured images (1600x900 plus crops) for a blog post or article URL, several URLs or a whole category - 28 modes / 46 layouts: card layouts on light grainy fields or vibrant blue, headline layouts (X vs Y, single product) on white or black, Gumloop-style type, tiles, glass, swap and badge, and originals for cost, what-is, best-of and X vs Y articles. Use when the user wants a featured image, blog thumbnail, article cover, hero or OG image. Reads each article, uses a layout once per category (not-used layouts first, the user's Template Usage record), writes a short spec from its real facts with real product logos, renders with headless Chrome, and lets the user pick each background. New designs are arrangements of approved parts, never props. Four roles (orchestrator, makers, visual and fact QA); built-in checks and a refusal test suite enforce the user's taste."
 ---
 
 # Blog Featured Images
@@ -31,11 +31,15 @@ Fifteen visible words, seven per element, no sentences. Whitespace is good. Neve
 
 ### Variety comes from layout, never from palette
 
-The reader sees the images together, so a layout not used anywhere yet goes first in line, and a used layout never comes back in the same category, only in a different one (the user's rule, §3 of the decision framework). All of them share one palette, one type family and one finish, so the grid still reads as one brand.
+The reader sees the images together, so a layout not used anywhere yet goes first in line, and a used layout never comes back in the same category, only in a different one (the user's rule, §3 of the decision framework). All of them share one palette, one type family and one finish, so the grid still reads as one brand. The fields vary across a batch, never one colour for everything: "we have multiple colors, black background color, blue gradient, and then like so many other" (batch 6). Use the black canvas layouts, the blue gradient, glow, mesh, white and the light fields together.
 
 ### Beauty is the gate
 
 An image that passes every check but doesn't look good fails. Judge it like a design director next to `references/approved/`.
+
+### Designed by a pro
+
+Batch 6's first pass was rejected because "it looks like this is designed by a begineer not by a pro experienced designer", and a later round because "all of them looks too much… it doesn't look visually balanced… it looks scattered, it looks like AI slop". Every image is balanced, not scattered, never "too much", with one corner radius across its tiles. A comparison reads as a comparison at a glance ("doesnt look like comparison image"). Ask of every image: would a senior designer ship it? (taste 21–23)
 
 ### New means a new arrangement of our parts
 
@@ -51,14 +55,14 @@ When the user shares a reference, every detail is the rule: the tile behind an i
 
 ## Read First
 
-Read these before your first image in a session:
-- `references/approved/`: the 40 finalized images, the target look. `references/approved/sources.json` names the example spec behind each one; `scripts/test-examples.mjs --refresh` rebuilds them all with the current rules.
+Read these before your first image in a session, and again before every batch, even one that redoes images the user disapproved ("keep in mind what you have learned, what tools you have built. If you need to rerun the skill, then do it"):
+- `references/approved/`: the 46 finalized images, the target look. `references/approved/sources.json` names the example spec behind each one; `scripts/test-examples.mjs --refresh` rebuilds them all with the current rules.
 - `references/design-language.md`: the rulebook (visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, and the "Never" list).
-- `references/spec-format.md`: the JSON spec for every layout. `examples/` holds 48 approved specs, at least one for each layout.
+- `references/spec-format.md`: the JSON spec for every layout. `examples/` holds 54 approved specs, at least one for each layout.
 - `references/agents.md`: the four roles (each one's job, steps, prompt and limits), the fast-batch flow, and the Visual and Fact checklists.
-- `references/taste.md`: the user's taste, distilled from every review note: 20 principles, each with the image that taught it, and the Self-Critique every image must pass.
+- `references/taste.md`: the user's taste, distilled from every review note: 24 principles, each with the image that taught it, the Self-Critique every image must pass, and Predict the Verdict (the approved and rejected patterns every image is compared with before the user sees it).
 - `references/lessons.md`: what each batch and review round taught, speed tools, pre-flight checks and gotchas.
-- `references/checks.md`: every check the renderer runs and the feedback behind it, plus the regression test.
+- `references/checks.md`: every check the renderer runs and the feedback behind it, plus the regression test and the refusal suite.
 - `references/inspiration.md`: every reference the user shared, what was taken and what was rejected, plus the product blogs studied before inventing (Clerk, Mintlify).
 - `references/used-layouts.json`: the user's own record of which layouts are used and in which categories, kept on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q). It belongs to one brand (its `"brand"` key) and is the truth as of its `recordedAt` (or a layout's own `asOf`, which overrides it for that layout); `scripts/usage.mjs` adds every image after that from the site history (§3 below).
 
@@ -89,10 +93,10 @@ Before reserving any layout, answer these questions in order.
 
 | Article | Layouts |
 | --- | --- |
-| X vs Y | `versus/table`, `versus/overlap`, `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `versus/type`, `versus/tiles`, `versus/glass`, `versus/frost`, `versus/bento`, `versus/badges`, `versus/checks`, `versus/lanes`, `versus/scores`, `versus/center`; `prompt` with two logo rows |
+| X vs Y | `versus/table`, `versus/overlap`, `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `versus/type`, `versus/tiles`, `versus/glass`, `versus/frost`, `versus/bento`, `versus/badges`, `versus/checks`, `versus/lanes`, `versus/scores`, `versus/center`, `versus/fan`, `versus/stacked`; `prompt` with two logo rows |
 | One product (review, pricing, features, "is X worth it") | `logotype` when its logo is black with strong typography, otherwise `dark` |
-| "Best X" list | `hub`, `lineup`, `shortlist`, `spotlight`, `picks`, `cloud`, `ranges`, `count` (which one: the table below) |
-| Cost or pricing | `focus`, `stat`, `prompt`, `window`, `ranked`, `badge`, `receipt` |
+| "Best X" list | `hub`, `lineup`, `shortlist`, `spotlight`, `picks`, `cloud`, `ranges`, `count`, `frostrow` (which one: the table below) |
+| Cost or pricing | `focus`, `stat`, `prompt`, `window`, `ranked`, `badge`, `receipt`, `glassbar`, `figures`, `costgrid` (which one: the table below) |
 | How-to or migration | `before-after`, `timeline`, `stack`, `checklist` |
 | "Old way → new way", switch, migration | `before-after/flow`, `swap` |
 | "What is X" | `definition`, `prompt` |
@@ -104,7 +108,9 @@ Then pick by what the article gives you. The image shows the fact the article is
 
 | The X vs Y article gives | Layouts |
 | --- | --- |
-| One headline figure per product (a price range, a fee) | `versus/badges` |
+| One headline figure per product (a price range, a fee) | `versus/badges` (Doxy.me vs Zoom went here after `versus/pill`: "doesnt look like comparison image") |
+| One price per product, with its unit and real logos | `versus/fan` (Tebra vs Zocdoc: "this is fine") |
+| One price per product, on very different scales (per year against per month) | `versus/stacked` (symplr vs Modio Health: "love it. The concept, visual , everything looks so appealing and perfect") |
 | Which fits whom, one strength each ("Which … Fits") | `versus/checks` |
 | A price per product, as on a pricing page | `prompt` with the two products as big logo rows and each price as its row's sub (`"panel": {"even": true}`; RXNT vs DrFirst, approved image 48, after `versus/plans` was retired: "i dont like the design, try smth else for comparison") |
 | Price tiers or stops on one scale | `versus/lanes` |
@@ -118,10 +124,18 @@ Then pick by what the article gives you. The image shows the fact the article is
 | The "best X" article gives | Layouts |
 | --- | --- |
 | 6–7 recognisable logos, nothing else | `hub` (logos only), `lineup` (one row of up to 7; Pediatric EHR went here after `grid` was retired: "for this use this glass version template") |
-| 3–6 recognisable logos | `lineup` (one row, 3–7), `cloud` (3–8 logo pills under the headline), `count` (the count big, 3–6 logo rows) |
+| 3–6 recognisable logos | `lineup` (one row, 3–7), `cloud` (3–8 logo pills under the headline), `count` (the count big, 3–6 logo rows), `frostrow` (the heading over one row of frosted-glass logo tiles with names: "for logos bg glass bg would look better") |
 | An angle in the title worth highlighting ("Best Appointment Reminder Software") | `spotlight` (3–6 logo rows) |
 | Picks whose logos are weak or missing | `picks` (3–7 names on a checked card), `shortlist` (3–8 names on a notepad) |
 | A price range per pick | `ranges` (3–6 vertical price tracks on a shared scale) |
+
+| The cost article gives | Layouts |
+| --- | --- |
+| One fact: a tier and its price | `glassbar` (black, vibrant; EHR Interoperability Cost) |
+| Two price ranges (two options, one unit) | `figures` (E-Prescribing Software Cost) |
+| A cost per pricing model, three models | `costgrid` (Medical Billing Software Cost) |
+| Rows that add up to a total | `receipt` |
+| One headline number with a breakdown | `stat`, `badge` |
 
 **Siblings never share a category.** Layouts built from the same approved part (`versus/checks` and `picks` are both checklist cards) never go in one category together: at 350×250 they read as one template.
 
@@ -150,7 +164,7 @@ The user's rule (Oct 2026): "the ones that hasnt used yet can be used now if sui
 This is the one full statement of the rule; every other file points here.
 
 **Usage = the user's record + the site history after it.** `scripts/usage.mjs` applies it for the renderer and the planner:
-- **The record**, `references/used-layouts.json`, kept by the user on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q): one card per layout, "Used" with its categories, or "Not used yet". It belongs to one brand (its `"brand"` key, `medsoftwarehub`) and applies only to that brand; other brands go by their history alone. For every layout it lists, it is the truth for every history entry up to and including its `recordedAt` (and entries with no `at`), because the user knows what is live on the site: a history image for a layout marked "Not used yet" never went live and doesn't count. A layout marked "Used" with no categories still counts as used, but refuses no category until the user names one (the scripts warn). A layout's own `"asOf"` overrides `recordedAt` as its cutoff: the history up to `asOf` is covered by the record, later renders count again. It is set when the user changes one layout in chat: "add that to not used cus i love the design" marked `versus/scores` "unused" with `asOf` at its Oracle Health vs MEDITECH render, so it is free again in every category.
+- **The record**, `references/used-layouts.json`, kept by the user on the Template Usage page (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q): one card per layout, "Used" with its categories, or "Not used yet". It belongs to one brand (its `"brand"` key, `medsoftwarehub`) and applies only to that brand; other brands go by their history alone. For every layout it lists, it is the truth for every history entry up to and including its `recordedAt` (and entries with no `at`), because the user knows what is live on the site: a history image for a layout marked "Not used yet" never went live and doesn't count. A layout marked "Used" with no categories still counts as used, but refuses no category until the user names one (the scripts warn). A layout's own `"asOf"` overrides `recordedAt` as its cutoff: the history up to `asOf` is covered by the record, later renders count again. It is set when the user changes one layout in chat, or on the page without finishing (synced before every plan, Workflow step 2): "add that to not used cus i love the design" marked `versus/scores` "unused" with `asOf` at its Oracle Health vs MEDITECH render, so it is free again in every category.
 - **The history**, `~/.blog-featured-images/history-<brand>.json`: every image rendered (drafts too), reserved or delivered that isn't superseded. Entries after `recordedAt` (or a layout's own `asOf`, which overrides it for that layout) are added on top of the record, and a layout the record doesn't list goes by the history alone. A re-render or re-reservation of the same slug replaces its entry, so redoing one article never uses a layout twice. A reservation you won't render still counts until you release it: `plan.mjs --brand <b> --release <slug> ...`.
 - Categories are compared normalised everywhere ("Hospital & Lab Software" = `hospital-and-lab-software`).
 
@@ -178,13 +192,15 @@ Nothing else skips it (`--force` is only for a redo the user explicitly asks for
 - Not-used-yet layouts first, always.
 - When a batch would mostly reuse templates already on the site, design new ones from approved parts (the Core Philosophy above) and show options first, before rendering the batch.
 - **A design approved in a direction check is approved for the article it was shown on.** Never roll a newly approved layout out across the batch: "I want like the designs that I have approved. Those are fine. Now I want more designs for the rest of the URLs." The other articles each get their own new design.
+- **A redo is a new design, not the old template again.** Batch 6: "the images that I have disapproved has already been used multiple times, so I wanted to create new ones. But keep in mind what you have learned, what tools you have built. If you need to rerun the skill, then do it." A first pass that leans on templates already used site-wide gets rejected. Before the batch, re-read this skill and the approved sheet.
+- **Map the approved sheet, then research, then invent.** "map all of our previous templates… That is the design language you need to follow, but you can go to browser and do your research". List what each approved image is built from (its parts, its field, its type), look at good product blogs in the browser (`references/inspiration.md`), and only then draw something new from those parts.
 
 ### 4. Should it be vibrant?
 
 | Vibrant | Allowed on |
 | --- | --- |
-| The deep-dunes blue (`"bg": "blue"`, card layouts) | only `checklist` (always blue), `versus/table`, `window`, `before-after/flow` (a big white card); a picked blue (`bgPick`, §5) also on `versus/checks` (approved image 37), `picks` and `stack`, whose text all sits in their white card; separately, the Gumloop `versus/tiles` paints its own approved blue field (its default) |
-| The black and blue layouts | `dark`, `versus/slash`, `versus/duo`, `versus/glass` on its black field, `versus/tiles` on its blue field |
+| The deep-dunes blue (`"bg": "blue"`, card layouts) | only `checklist` (always blue), `versus/table`, `window`, `before-after/flow` (a big white card) and `versus/fan` (two white cards; approved on the blue in batch 6); a picked blue (`bgPick`, §5) also on `versus/checks` (approved image 37), `picks` and `stack`, whose text all sits in their white card; separately, the Gumloop `versus/tiles` paints its own approved blue field (its default) |
+| The black and blue layouts | `dark`, `versus/slash`, `versus/duo`, `glassbar` (its own black canvas, always), `versus/glass` on its black field, `versus/tiles` on its blue field |
 
 **Rule: at most 1 in 3 images per category is vibrant (blue and black together), never neighbours** ("VIBRANT CHECK FAILED"; the user's background pick never skips it); a layout that can't go on the blue is refused with "VIBRANT FIT FAILED". `checklist` goes on the blue only (its light field was deleted in the approved review), so it always counts as vibrant: if a neighbour is vibrant, pick another layout.
 
@@ -192,20 +208,21 @@ Nothing else skips it (`--force` is only for a redo the user explicitly asks for
 
 The user, batch 5: "we have so many background why are you fixated on just one. show me 12 images and options for backgrounds and i'll select the bg for each". So the first render is a draft field, and the user picks the final one. The 12 batch-5 picks used 7 different fields (glow ×4, mesh ×2, soft ×2, blue, cream, paper, white), where the fit lists had put nearly everything on sky or g5.
 
-**First render: leave `bg` out.** The renderer picks the layout's best-fitting light field from its fit list (`sky`, `paper`, `cream`, `g5`; the checklist always gets the blue), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. `prompt`, the headline layouts (except `logotype`, which only takes `cream`), the Gumloop layouts, `versus/badges` and the originals paint their own canvas, so `bg` on them is refused ("BACKGROUND CHECK FAILED: … paints its own canvas"); the Gumloop layouts, `versus/frost` and `versus/bento` pick their canvas with `field` instead (leave it out for the default), prompt takes only `"field": "soft"` (its calmer glow), and every other layout takes no `field` (refused).
+**First render: leave `bg` out.** The renderer picks the layout's best-fitting light field from its fit list (`sky`, `paper`, `cream`, `g5`; the checklist always gets the blue), and refuses one that doesn't flatter the illustration ("BACKGROUND FIT FAILED"). A blue-heavy illustration gets a neutral field. The batch-6 card layouts lead their fit list with the field the user picked for the delivered image (`figures` white; `costgrid`, `versus/fan` and `versus/stacked` glow), so a first render already looks like the approved one. `prompt`, the headline layouts (except `logotype`, which only takes `cream`), `glassbar`, the Gumloop layouts, `versus/badges` and the originals paint their own canvas, so `bg` on them is refused; for `frostrow` leave `bg` out (it paints its own canvas, recorded as "canvas"; a `bg` is refused with "BACKGROUND CHECK FAILED", a pick with "BACKGROUND PICK FAILED"); the Gumloop layouts, `versus/frost` and `versus/bento` pick their canvas with `field` instead (leave it out for the default), prompt takes only `"field": "soft"` (its calmer glow), and every other layout takes no `field` (refused).
 
 **Then the picker (Workflow step 6, `scripts/bgpick.mjs`).** Render every image on every field its layout can take and show the user one picker page, per image, every option side by side. The pick goes in the spec as `"bg": "<field>", "bgPick": true`:
-- **Fields:** `sky`, `paper`, `cream`, `g5`, `soft`, `white` (the dotted white panel in the grey frame), `glow`, `mesh`, and the vibrant `blue`. `soft`, `white`, `glow` and `mesh` are reachable on card layouts only through a pick.
+- **Fields:** `sky`, `paper`, `cream`, `g5`, `soft`, `white` (the dotted white panel in the grey frame), `glow`, `mesh`, and the vibrant `blue`. `soft` is reachable on card layouts only through a pick; `white`, `glow` and `mesh` also through the batch-6 fit lists (`figures` white; `costgrid`, `versus/fan`, `versus/stacked` glow; `versus/stacked` also `mesh`).
 - **What a pick skips:** the fit list (`BACKGROUND FIT`), the blue fit list (`VIBRANT FIT`) and the "paints its own canvas" refusal. **Never** the vibrant check: a picked blue still counts as vibrant (1 in 3 per category, never neighbours). The checklist stays blue only (a light pick on it is refused: `BACKGROUND PICK`).
-- **Card layouts** (and `logotype`, which sits on a field, not a canvas) take any light field. A picked blue only behind layouts whose text all sits in a white card (`BLUE_PICK` in `render.mjs`: `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, and `versus/tiles` (its own approved field is blue)); anywhere else, `logotype` included, it is refused ("BACKGROUND PICK FAILED").
+- **Card layouts** (and `logotype`, which sits on a field, not a canvas) take any light field. A picked blue only behind layouts whose text all sits in a white card (`BLUE_PICK` in `render.mjs`: `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/fan`, and `versus/tiles` (its own approved field is blue)); anywhere else, `logotype` included, it is refused ("BACKGROUND PICK FAILED").
 - **Canvas layouts drawn through the shared Gumloop canvas** (`versus/badges`, `versus/type`, `versus/tiles`, `versus/bento`, `swap`, `badge`, `shortlist`) take a pick: their canvas drops away and the picked field shows. Light fields only; the blue only on `versus/tiles`.
-- **Every other canvas layout refuses a pick** ("BACKGROUND PICK FAILED"): `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`, `versus/glass`, `versus/frost`, `receipt`, `definition`, `lineup`, `prompt`. The picker shows them on their own canvas only.
+- **Every other canvas layout refuses a pick** ("BACKGROUND PICK FAILED"): `versus/pills`, `versus/connect`, `versus/slash`, `versus/duo`, `dark`, `glassbar`, `versus/glass`, `versus/frost`, `receipt`, `definition`, `lineup`, `prompt`, and `frostrow` (its own light mesh covers the whole canvas). The picker shows them on their own canvas only.
+- **Vary the fields across the batch.** Plan the layouts so the batch's drafts already span several fields (the black canvas layouts, the blue gradient, glow, mesh, white, the light fields), never one colour for everything, and offer the same range on the picker ("we have multiple colors, black background color, blue gradient, and then like so many other").
 - `ranges` with `"bare": true` (no card behind the bars) takes only the `white` pick, so the picker offers only white; without that pick it is refused ("BACKGROUND CHECK FAILED", or "BACKGROUND PICK FAILED" for another picked field).
 - The history records the picked field and `bgPick: true`, so the next image's background check compares like with like. The render line says `bg=<field> (picked)`.
 
 `bgPick` goes in a spec only when the user picked that field for that image. A Maker never sets it on its own.
 
-## Layouts: 24 modes, 40 layouts
+## Layouts: 28 modes, 46 layouts
 
 **Card layouts** (light fields, white UI cards):
 
@@ -261,8 +278,8 @@ The user, batch 5: "we have so many background why are you fixated on just one. 
 
 | Layout | Built from | Shows | Best for | Fields |
 | --- | --- | --- | --- | --- |
-| `versus/badges` | `badge` | two columns: the name or wordmark, the key figure in a blue-tinted value box, a grey note under it; a light "vs" between. The figure leads: `"nameSize": 44, "nameWeight": 600, "valueSize": 84, "spread": true` (+ `nameInk`) is the approved hierarchy ("the heading of theranest and valant are too bold and big, visual hierrachy is not good and balanced"); without them, the original look | X vs Y with one headline figure each (TheraNest vs Valant) | its own canvas |
-| `versus/checks` | `checklist` | a tilted checklist card: the title, a blue rule, one checked row per product (logo tile, name, a grey sub); `"checks": false` drops the check boxes ("checkboxes are not needed"), and with it `"big": true` grows the logo rows | which-fits comparisons; the title mirrors the article (AAPC Codify vs Find-A-Code: picked on the blue, no boxes, big rows) | sky, g5 |
+| `versus/badges` | `badge` | two columns: the name or wordmark, the key figure in a blue-tinted value box, a grey note under it; a light "vs" between. The figure leads: the approved hierarchy (names 44px at 600, figures up to 84px, sides spread) is the default ("the heading of theranest and valant are too bold and big, visual hierrachy is not good and balanced"); `nameSize`, `nameWeight`, `nameInk`, `valueSize` and `"spread": false` only override it | X vs Y with one headline figure each (TheraNest vs Valant) | its own canvas |
+| `versus/checks` | `checklist` | a tilted checklist card: the title, a blue rule, one row per product (logo tile, name, a grey sub); by default no check boxes and big logo rows ("checkboxes are not needed"); only an explicit `"checks": true` brings the boxes back | which-fits comparisons; the title mirrors the article (AAPC Codify vs Find-A-Code: picked on the blue, no boxes, big rows) | sky, g5 |
 | `versus/lanes` | `timeline` | a centred headline and unit, a white card with one lane per product: logo tile and name, its blue price stops and the span between them on one shared scale | price tiers on one scale (Office Ally vs Claim.MD) | cream, sky |
 | `versus/scores` | `versus/type` | the metric small in grey on top, then two rows: logo tile, the name big in black, the score very large in the blue gradient; a hairline between; no card | rating comparisons with a real number on both sides from one source and year (Oracle Health vs MEDITECH, 2025 KLAS; "i love the design") | sky, paper |
 | `versus/center` | `hub` | two tilted logo tiles with names, hand-drawn arrows into a central blue tile carrying the article's own word | X vs Y for one specialty or angle (ModMed vs eClinicalWorks, "Dermatology") | cream, paper |
@@ -272,12 +289,25 @@ The user, batch 5: "we have so many background why are you fixated on just one. 
 | `ranges` | `ranked` (re-skeletoned) | the headline and unit, a white card of vertical price tracks on a shared scale: a blue bar per range, a dot for one price, a fading bar for an open "From" price; the price above, the logo tile below. `"bare": true` drops the card and darkens the tracks, on the picked `white` field only ("use the previous bg, and in that dont add container for bars section") | best-of lists with a price range per pick, 3–6 picks | sky, g5 |
 | `count` | `stat` | the number of picks big in the blue gradient with the caption under it; a white card of logo rows | best-of lists with 3–6 picks | paper, sky |
 
-**Retired** (refused with "RETIRED LAYOUT" before any other check, by `render.mjs` and `plan.mjs`; their code is deleted and they never come back), all 30:
+**Batch-6 layouts** (Oct 20 2026: new designs for articles whose first pass leaned on templates already used site-wide; each approved on one article, approved images 49–54). Keys are in `references/spec-format.md`; the minimums are under "Every image has enough real content":
+
+| Layout | Built from | Shows | Best for | Fields (default first) |
+| --- | --- | --- | --- | --- |
+| `glassbar` | approved 24's frosted bar on black | a black canvas with blue glows and grain, the heading in white Inter 500, one near-white frosted bar (the tier's label, a hairline, its price in the blue gradient), the qualifier under it in dimmed white | a cost article reduced to one fact (EHR Interoperability Cost: approved as "glass on black" after three rejected rounds, the first "it looks like this is designed by a begineer not by a pro experienced designer") | its own black canvas; vibrant (1 in 3, never neighbours); any `bg` or pick is refused |
+| `figures` | the `versus/scores` type | the heading and unit centred, then two centred columns: the value big in the blue gradient over its label, a hairline between | two price ranges (E-Prescribing Software Cost) | white (the user's pick), sky, paper |
+| `frostrow` | `versus/frost`'s glass tiles | its own light blue mesh, the heading centred, one row of 3–6 equal frosted-glass logo tiles (one size, one radius), each name under its tile; no numbers | best-of lists with real logos (Telehealth for Therapists: "for logos bg glass bg would look better") | its own light mesh (recorded as "canvas"); a `bg` or a pick is refused |
+| `costgrid` | the bento cells | the heading top-left, a tall blue anchor card for the main model and two stacked white cards for the others, each with its label, its value big and its unit | cost by pricing model, three models (Medical Billing Software Cost) | glow (the user's pick), paper, sky |
+| `versus/fan` | white cards, logo tiles, the "vs" disc | two white cards tilted −4° and +4°, meeting at the blue "vs" disc; each its logo tile, name, value in the blue gradient (both one size) and unit | X vs Y with one price each (Tebra vs Zocdoc: "this is fine") | glow (the user's pick), sky, paper; the blue too (`BLUE_FIT`, `BLUE_PICK`) |
+| `versus/stacked` | the fan's parts, stacked | two wide white row cards tilted −2° and −1°, one above the other: logo tile and name on the left, value and unit on the right, the "vs" disc on the seam | X vs Y with prices on different scales (symplr vs Modio Health: "love it. The concept, visual , everything looks so appealing and perfect") | glow (the user's pick), mesh, sky |
+
+**Retired** (refused with "RETIRED LAYOUT" before any other check, by `render.mjs` and `plan.mjs`; their code is deleted and they never come back), all 42:
 - `brandline`, `folder`, `versus/scale`, `versus/chat`, `versus/split`, `versus/duet`, `versus/rows`, `versus/logos`. `brandline` was a background with only a headline ("the bg looks good, but not like this with just a title"); its glow field now carries `lineup`.
 - The batch-5 props layouts: `versus/compare`, `versus/search`, `versus/polaroid`, `versus/notes`, `versus/phones`, `versus/browser`, `notify`, `wallet`, `stickers`, `letterboard`, `tags`, `keycaps` ("not a single image that you have created matches our design language… why are you using mobile mockups?").
 - `versus/window` (disapproved in the batch-7 direction check).
 - `versus/range` ("i like the design but it is confusing"; `versus/lanes` replaced it), `versus/rings` and `versus/share` (disapproved), `versus/sheet` and `versus/columns` (options never approved).
 - The batch-5 final review (Oct 20 2026): `versus/plans` ("i dont like the design, try smth else for comparison"; RXNT vs DrFirst went to `prompt` with two logo rows), `versus/fit` (disapproved), `versus/spot` (rejected by QA: Appointment's `spotlight` under a new name), `grid` (Pediatric EHR: "7 best pediatric shouldnt be like other logos, this looks off"; both fixes disapproved, then "for this use this glass version template", so it went to `lineup`).
+- Batch 6, first pass (Oct 20 2026), each redone with another layout: `steps` (EHR interoperability cost: "it looks like this is designed by a begineer not by a pro experienced designer"), `numbered` (Telehealth for Therapists: "numbers looks so weird and visually cluttered and unbalanced and corner radius of logo bg is not consistent…"; `frostrow` replaced it), `versus/pill` (Doxy.me vs Zoom: "doesnt look like comparison image"; `versus/badges` replaced it), `versus/chips` and `versus/offset` (Tebra, symplr: "painfully bad visual design"; `versus/fan` and `versus/stacked` replaced them), `versus/halves` (Waystar vs R1: "i dont like this it looks off and doesnt match our design vibe"; `versus/duo` replaced it).
+- Batch 6, round 3: `link`, `versus/annotate` and `versus/corners`, all disapproved: "all of them looks too much and you are just using same color and it doesn't look visually balanced, it doesn't look visually appealing, it looks scattered, it looks like AI slop". Never shown (Visual QA cut them): `poster` (a badge skeleton), `versus/glasscards` (a cramped "vs"; the retired plans' columns in glass) and `versus/figures` (a restyle of the scores type; not the live `figures` mode).
 
 ## The Rules
 
@@ -319,7 +349,8 @@ At most 15 visible words, 7 per element, no sentences ("TEXT CHECK FAILED"). Sec
 Each layout needs enough real facts to fill its frame ("CONTENT CHECK FAILED"):
 - window 2+ rows, hub 6–7 products, ranked, checklist, timeline and shortlist 3+, stat card and focus 2+ rows, lineup 3–7 logos
 - picks 3–7 items, spotlight and count 3–6 items, cloud 3–8 products with logos, ranges 3–6 rows plus `max` (the top of its scale)
-- `versus/badges` a `value` on both sides; `versus/checks` a `title`; `versus/center` a `label` (the word on the blue tile); `versus/lanes` `max` and `points` on both sides; `versus/scores` a `title` (the metric) and a `score` on both sides that is a real number ("needs a real number on both sides": a word against a number looked broken; change the metric or the year)
+- `glassbar` a `label` and a `value` (its one bar); `figures` 2 rows (label and value); `costgrid` 3 cells (the main one first); `frostrow` 3–6 products with logos
+- `versus/badges`, `versus/fan` and `versus/stacked` a `value` on both sides; `versus/checks` a `title`; `versus/center` a `label` (the word on the blue tile); `versus/lanes` `max` and `points` on both sides; `versus/scores` a `title` (the metric) and a `score` on both sides that is a real number ("needs a real number on both sides": a word against a number looked broken; change the metric or the year)
 - `dark` the product's own logo (`panelLogo`)
 
 Pick a layout that suits fewer facts rather than padding one.
@@ -345,11 +376,11 @@ None on blue or black. Minimal and tinted to the field on light backgrounds. The
 
 ### White designs sit in a grey frame
 
-A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so it reads as its own block on a white blog page (automatic in `versus/pills`, `versus/connect`, `versus/type`, `versus/tiles` on light, `swap`, `badge`, `definition`, `shortlist`, `versus/bento` and `versus/badges`, unless the user picked a field for it). No frame on the rest: `receipt` paints its own warm cream dotted field, and `versus/glass`, `versus/frost` and `lineup` paint their own mesh or glow.
+A white design always sits in a white rounded panel inset 28px on `#F2F2F3`, so it reads as its own block on a white blog page (automatic in `versus/pills`, `versus/connect`, `versus/type`, `versus/tiles` on light, `swap`, `badge`, `definition`, `shortlist`, `versus/bento` and `versus/badges`, unless the user picked a field for it). No frame on the rest: `receipt` paints its own warm cream dotted field, `versus/glass`, `versus/frost`, `frostrow` and `lineup` paint their own mesh or glow, and `glassbar` its black canvas.
 
 ### Headline layouts speak in one voice
 
-Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. Headlines carry no blue words (black on pills and connect, white on duo and dark; see "One family, one finish").
+Every word in pills, connect, duo and dark is Inter 500 Medium; only `versus/slash` keeps its heavy Poppins caps. `glassbar` follows the same rule on its black canvas: the heading in white Inter 500, the caption in dimmed white. Headlines carry no blue words (black on pills and connect, white on duo and dark; see "One family, one finish").
 
 ### Never the site mark on a headline layout
 
@@ -362,7 +393,11 @@ Once QA passes and the user has the images, finalize them (`scripts/finalize.mjs
 ### New designs are built from approved parts
 
 When a batch needs new layouts (§3), design them the way batch 5 finally got approved:
-- **Look first.** Before inventing, look at good product blogs (`references/inspiration.md`: Clerk, Mintlify) and at the approved sheet. Good blogs draw their art from their own product UI, flat.
+- **Look first.** Before inventing, map the approved sheet (what each image is built from: its parts, its field, its type) and research good product blogs in the browser (`references/inspiration.md`: Clerk, Mintlify). Good blogs draw their art from their own product UI, flat. "map all of our previous templates… That is the design language you need to follow, but you can go to browser and do your research" (batch 6).
+- **Designer-level craft.** Balanced, not scattered, never "too much"; one corner radius across a set of tiles; one treatment for parallel things. Batch 6 retired 12 layouts on exactly this: "designed by a begineer not by a pro experienced designer"; "numbers looks so weird and visually cluttered and unbalanced and corner radius of logo bg is not consistent"; "it looks scattered, it looks like AI slop". Would a senior designer ship it?
+- **A comparison reads as a comparison.** Two sides, matched, with the "vs" or the pairing visible at 350×250 in one glance ("doesnt look like comparison image", `versus/pill`).
+- **Vary the fields.** Across a batch use the black canvas layouts, the blue gradient, glow, mesh, white and the light fields, never one colour for everything ("you are just using same color").
+- **Names as people say them.** A product's name on the image is the one people use, not the long official form: "it should be just zoom not zoom for healthcare" (frostrow, Telehealth for Therapists).
 - **Our parts only.** White cards, rows, tracks, checklists, logo tiles, the selection box, big Inter type, our fields. Never props, devices or materials (taste 17).
 - **A new skeleton, not a restyle.** A layout "built from" an approved one must change the skeleton, not only the styling: horizontal range rows were the `ranked` skeleton again, in a category that already had ranked. An option offered after a disapproval changes the composition, not only the chart inside it. A split card with "vs" on the seam is the `versus/table` skeleton.
 - **Clear in one glance.** A chart must read in one glance at 350×250; clever but confusing fails (`versus/range`: "i like the design but it is confusing", taste 18).
@@ -376,21 +411,21 @@ When a batch needs new layouts (§3), design them the way batch 5 finally got ap
 
 ### Show options, don't argue
 
-For any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick. The same when a batch would mostly reuse templates already on the site: show new options first. Never bring back anything listed as rejected in `references/agents.md` (Visual checklist, V9).
+For any "I don't like it" or a new look, render 2–3 options side by side at once and let the user pick; at least 2 of them must differ in composition (the skeleton: what goes where), not only in colour, field or the chart inside the same frame. Batch 6's round-3 options were all disapproved together: "all of them looks too much and you are just using same color". The same when a batch would mostly reuse templates already on the site: show new options first. Never bring back anything listed as rejected in `references/agents.md` (Visual checklist, V9).
 
 ## Keep Learning (Required)
 
 The user's goal is images made without their guidance, and never having to repeat feedback. Everything they say is a lesson: a note, a reference, "this is right", "this is wrong", "love it", "disgusting". Treat each one the same way, in this order, before the next image:
 
 1. **Prompt:** rewrite it as a clear prompt, show it, then act on it.
-2. **Principle:** add it to `references/taste.md` with the user's words quoted and the image named (as evidence under an existing principle, or a new one). Praise is evidence too: what they love is a rule to keep.
+2. **Principle:** add it to `references/taste.md` with the user's words quoted and the image named (as evidence under an existing principle, or a new one). Praise is evidence too: what they love is a rule to keep. A new principle also gets a Self-Critique row, named in the Review Checklist's 'Self-Critique not run' row (this file), the Maker template's step 4 and the Visual QA template's Self-Critique list (`references/agents.md`); and the principle count in `references/taste.md`, this file, the README and memory (`featured-image-taste-loop.md`) goes up.
 3. **Lesson:** add what happened to `references/lessons.md`.
-4. **Check:** if it can be measured (a size, a colour, a count, a match), make the renderer enforce it and list it in `references/checks.md`, so it can't come back. If only an eye can catch it, make it a QA rule: a V-check (looks) or an F-check (facts) in `references/agents.md`, plus a line in the Maker template when a Maker can avoid it, so every role enforces it (batch 5's "siblings never share a category" and "a starting price needs From" went this way).
+4. **Check:** if it can be measured (a size, a colour, a count, a match), make the renderer enforce it and list it in `references/checks.md`, so it can't come back. Every decision the renderer or `plan.mjs` can enforce (a retired layout, a deleted field, a refused pick, a content minimum, a heading, a usage rule) also gets a case in `scripts/test-refusals.mjs`: a spec built from an example with one change, and the refusal it must get (or `OK`); then update the case count (SKILL.md Workflow step 8, checks.md, the README). If only an eye can catch it, make it a QA rule: a V-check (looks) or an F-check (facts) in `references/agents.md`, plus a line in the Maker template when a Maker can avoid it, so every role enforces it (batch 5's "siblings never share a category" and "a starting price needs From" went this way).
 5. **Generalise:** when the same correction comes twice, apply it to the whole family (black headlines went from one layout to all).
-6. **Decide:** a rejection goes into `references/agents.md` V9 ("Decided, never re-opened") and, for a layout, into `RETIRED` in `scripts/layouts.mjs` (its code deleted from `render.mjs`, its specs archived to `~/.blog-featured-images/_archive/`; if it had an approved image, archive that `.webp` and remove its line from `references/approved/sources.json`, so `--refresh` never keeps a stale one). A newly approved image gets an example spec in `examples/` and a line in `references/approved/sources.json`; a design approved in a direction check is approved for that article only (§3).
+6. **Decide:** a rejection goes into `references/agents.md` V9 ("Decided, never re-opened") and, for a layout, into `RETIRED` in `scripts/layouts.mjs` (its code deleted from `render.mjs`, its specs archived to `~/.blog-featured-images/_archive/`; if it had an approved image, archive that `.webp` and remove its line from `references/approved/sources.json`, so `--refresh` never keeps a stale one). A newly approved image gets an example spec in `examples/` and a line in `references/approved/sources.json`; a design approved in a direction check is approved for that article only (§3). Then update every count it changes (modes/layouts, retired, approved images, examples, refusal cases) in this file, `references/design-language.md`, `references/checks.md`, `references/spec-format.md`, `references/agents.md` V9, the README, the `scripts/render.mjs` header comment and memory, and for a layout, add or remove its card on the Template Usage page (republish it) and make sure the README hero `assets/examples.webp` shows only live layouts.
 7. **Tell:** tell every running Maker and QA agent about the new rule before their next image.
 8. **Reference:** a shared inspiration goes into `references/inspiration.md` (what was taken, what was rejected) before building.
-9. **Refresh and test:** `node <skill-dir>/scripts/test-examples.mjs --refresh` rebuilds every approved image with the new rule; compare old and new and fix any unintended change.
+9. **Refresh and test:** `node <skill-dir>/scripts/test-examples.mjs --refresh` rebuilds every approved image with the new rule and then runs the refusal suite; compare old and new and fix any unintended change.
 10. **Publish:** update every file that mentions the rule, run the regression (`references/checks.md`), then push approved work only (`references/lessons.md`, "Publishing").
 
 A lesson that lives only in a conversation is a lesson lost: the next session, and every agent, only knows what is written in these files.
@@ -401,7 +436,7 @@ Each role's job, steps, prompt template and limits are in `references/agents.md`
 
 | Role | How many | Does | Never |
 | --- | --- | --- | --- |
-| **Orchestrator** (you) | 1 | Reads the articles, checks logos, plans and reserves layouts (new designs and options first when the batch would mostly reuse), pre-flights, briefs all Makers in one message, starts both QA agents in one message, routes fixes, runs the background picker, fixes renderer bugs in the skill, delivers and finalizes | Approves an image; picks a background for the user |
+| **Orchestrator** (you) | 1 | Re-reads the skill and the approved sheet before each batch, reads the articles, checks logos, plans and reserves layouts with the fields varied across the batch (when the batch would mostly reuse: maps the approved sheet, researches, then shows 2 composition-different options first), pre-flights, briefs all Makers in one message, starts both QA agents in one message, routes fixes, runs the background picker, fixes renderer bugs in the skill, delivers and finalizes | Approves an image; picks a background for the user |
 | **Makers** | 1 per article (1 per 2–3 when the batch is over 12), in parallel | Write each spec from the article's own facts for the assigned layout, render it, return the paths plus every fact with its source sentence | Pick a layout or a background; set `bgPick` unless the brief names the user's pick; use `--force` |
 | **Visual QA** | 1 per batch; 1 per category for 12+ images | Judges looks on the contact sheet and PNGs (Visual checklist) | Checks facts; edits |
 | **Fact QA** | 1 per batch; 1 per ~15 articles | Checks every word and number against the article text (Fact checklist); needs no images, so it runs alongside Visual QA | Judges looks; edits |
@@ -416,12 +451,14 @@ An image ships only when **both** QA agents pass it. Failures go back to their o
    node "<skill-dir>/scripts/plan.mjs" --brand <b> --category <c> --reserve <slug>=<mode>[/<variant>][!][@<topic>] ...
    ```
    `!` marks the user's own pick for that slug (§3). The list stops at the next `--flag`. Release a reservation you won't render: `plan.mjs --brand <b> --release <slug> ...` (only unrendered ones). Show the plan when doing more than 3 images.
-   - **When the plan would mostly reuse templates already on the site** (§3), design new layouts from approved parts (Rules, "New designs are built from approved parts") and show the options before rendering the batch. A design the user approves goes on the article it was shown on, not across the batch.
-   - **When the user updates the Template Usage page** (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q), sync it before planning:
-     1. Read the page's database with ArtifactData: collection `usage` (one doc per layout, `{code, status: "used" | "unused", cats}`) and the doc `done` in collection `usage-meta` (written when the user presses Save all & finish).
-     2. Write `references/used-layouts.json` as `{_note, source, brand, recordedAt: <done.at>, updatedAt, layouts: {<code>: {status, cats}}}`, keeping `brand` (`medsoftwarehub`) and the `_note`'s wording (the record is the truth as of `recordedAt`; every image rendered (drafts too), reserved or delivered after `recordedAt` that isn't superseded is added on top; a layout's own `asOf` replaces `recordedAt` as its cutoff). A full sync drops any per-layout `asOf` (the new `recordedAt` covers it); a one-layout change the user makes in chat edits only that entry and gives it `asOf` (§3).
-     3. Check it: `plan.mjs --brand <b> --category <c>` for each category the user named, and read any `USED-LAYOUTS WARNING`.
-     4. Push.
+   - **When the plan would mostly reuse templates already on the site** (§3), map the approved sheet, research in the browser, design new layouts from approved parts (Rules, "New designs are built from approved parts") and show at least 2 composition-different options before rendering the batch. A design the user approves goes on the article it was shown on, not across the batch.
+   - **Vary the fields:** the plan mixes the black canvas layouts, the blue gradient, glow, mesh, white and the light fields (within the vibrant rule, §4), never one colour for the whole batch.
+   - **Before planning any batch, sync the Template Usage page** (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q). The user may change it without saying "done with usage" (Oct 19, 20:09: they marked `versus/frost` used in clinical-software on the page, and it never reached the record):
+     1. Read the page's database with ArtifactData: collection `usage` (one doc per layout, `{code, status: "used" | "unused", cats}`, with its `updatedAt`) and the doc `done` in collection `usage-meta` (written when the user presses Save all & finish).
+     2. Sync every `usage` doc whose `updatedAt` is later than the record (`recordedAt`, or that layout's `asOf`) into `references/used-layouts.json` as that layout's entry with `"asOf": <updatedAt>`.
+     3. When `done.at` is later than `recordedAt` (the user pressed Save all & finish), write the whole record instead: `references/used-layouts.json` as `{_note, source, brand, recordedAt: <done.at>, updatedAt, layouts: {<code>: {status, cats}}}`, keeping `brand` (`medsoftwarehub`) and the `_note`'s wording (the record is the truth as of `recordedAt`; every image rendered (drafts too), reserved or delivered after `recordedAt` that isn't superseded is added on top; a layout's own `asOf` replaces `recordedAt` as its cutoff). A full sync drops any per-layout `asOf` (the new `recordedAt` covers it); a one-layout change the user makes in chat edits only that entry and gives it `asOf` (§3).
+     4. Check it: `plan.mjs --brand <b> --category <c>` for each category the user named or you plan, and read any `USED-LAYOUTS WARNING`.
+     5. Push.
 3. **Spec + render (Makers, in parallel):** one `specs/<slug>.json` each (always `articleTitle`, `brand` (the site's file in `brands/`; without it the neutral `default` brand is used), `category`, `slug`, `topic` when shared, `logo` on named products), then:
    ```bash
    node "<skill-dir>/scripts/render.mjs" "featured-images/specs/<slug>.json" --out "featured-images/<slug>"
@@ -444,9 +481,9 @@ An image ships only when **both** QA agents pass it. Failures go back to their o
       ```bash
       node "<skill-dir>/scripts/bgpick.mjs" apply --picks picks.json featured-images/specs/<slug>.json ...
       ```
-      It writes `"bg": "<field>", "bgPick": true` into each spec, keeping its formatting and line endings (a one-line spec stays on one line), and refuses a field the layout can't take; `default` is always accepted and removes them (the layout's own background). Then render each spec as usual into `featured-images/<slug>`, last, so the site history records the picked field. A picked field is the user's choice: Visual QA never fails it for fit, and only re-checks the picked render for clipping and legibility.
+      It writes `"bg": "<field>", "bgPick": true` into each spec, keeping its formatting and line endings (a one-line spec stays on one line), and refuses a field the layout can't take; `default` is always accepted, except on `ranges` with `"bare": true` (white only), and removes them (the layout's own background). Then render each spec as usual into `featured-images/<slug>`, last, so the site history records the picked field. A picked field is the user's choice: Visual QA never fails it for fit, and only re-checks the picked render for clipping and legibility.
 7. **Deliver** each image once its background is picked (Report Format above). Ask before uploading anything to a website.
-8. **After any change to the skill**, run `node <skill-dir>/scripts/test-examples.mjs` (and `--refresh` when an approved look changed) before pushing.
+8. **After any change to the skill**, run `node <skill-dir>/scripts/test-examples.mjs` (and `--refresh` when an approved look changed) before pushing. It renders every example, then runs `scripts/test-refusals.mjs`, the user's rules as 151 refusal cases on a temporary history and record, and fails if either part fails (`--examples-only` skips the refusals; `node <skill-dir>/scripts/test-refusals.mjs <filter>` runs only the cases whose name contains it). See `references/checks.md`.
 9. **Finalize** the delivered images:
    ```bash
    node "<skill-dir>/scripts/finalize.mjs" --brand <b> <slug> <slug> ...
@@ -469,8 +506,8 @@ The renderer checks in this order: retired layout, unknown mode or variant, miss
 | `VARIETY CHECK FAILED` | That layout is already used in this category (or has hit its site-wide cap): use one it lists, not-used-yet layouts first, then layouts used only in other categories (set `mode`, plus `variant` when not `default`). Only the user's own pick (`<slug>=<layout>!` or `--user-pick`, §3) skips it. It also fires when a same-topic article already uses this mode; nothing skips that one, the user's pick included: use another mode |
 | `BACKGROUND FIT FAILED` | Remove `bg` (or use one it lists). A field the user picked goes in with `"bgPick": true` (§5) |
 | `BACKGROUND CHECK FAILED` | That background doesn't exist (use `sky`, `paper`, `cream`, `g5`, `soft`, `white`, `glow`, `mesh` or `blue`), or "… paints its own canvas": the layout paints its own, so remove `bg` (use `field` where the layout has one), unless the user picked it (`bgPick`, §5); or `ranges` `"bare"` without `"bg": "white", "bgPick": true` (the bare tracks hold only on white: drop `"bare"` for any other field) |
-| `BACKGROUND PICK FAILED` | `bgPick` without a `bg` (or not `true`); a pick on a layout whose own full canvas would hide it (pills, connect, slash, duo, dark, glass, frost, receipt, definition, lineup, prompt); a picked blue on a layout whose text doesn't all sit in a white card (only `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/tiles` take it); a light pick on the checklist; or a pick other than `white` on `ranges` `"bare"`. Show that layout on its own canvas, or offer a light field |
-| `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black). On a card layout, use a light background; on a layout that paints its own canvas (`bg` is refused there), pick a light layout, or `"field": "light"` for `versus/tiles` and `versus/glass`; a checklist is blue only, so pick another layout |
+| `BACKGROUND PICK FAILED` | `bgPick` without a `bg` (or not `true`); a pick on a layout whose own full canvas would hide it (pills, connect, slash, duo, dark, glassbar, glass, frost, frostrow, receipt, definition, lineup, prompt); a picked blue on a layout whose text doesn't all sit in a white card (only `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/fan`, `versus/tiles` take it); a light pick on the checklist; or a pick other than `white` on `ranges` `"bare"`. Show that layout on its own canvas, or offer a light field |
+| `VIBRANT CHECK FAILED` | A neighbour is already vibrant (blue or black). On a card layout, use a light background; on a layout that paints its own canvas (`bg` is refused there), pick a light layout (`glassbar` is always black), or `"field": "light"` for `versus/tiles` and `versus/glass`; a checklist is blue only, so pick another layout |
 | `VIBRANT FIT FAILED` | This layout doesn't go on the blue; remove `"bg": "blue"` (the user's pick of the blue goes in with `"bgPick": true`, only on a layout whose text all sits in a white card: §5) |
 | `CHECKLIST FIELD FAILED` | The checklist goes on the blue only (its light field was deleted in review): remove `bg`. If a neighbour is already vibrant, pick another layout |
 | `SERIES CHECK FAILED` | Remove `"series"` |
@@ -508,8 +545,15 @@ The QA agents check every image against the Visual and Fact checklists in `refer
 | A new layout that reads as an approved one at 350×250, or a sibling (`versus/checks`, `picks`) in the same category | Change the skeleton, not the styling; give the sibling's article another layout |
 | A batch filled mostly with templates already on the site, or one newly approved layout rolled out across it | Design new ones from approved parts and show options first; an approved design belongs to its article (§3) |
 | A field nobody asked the user about | Run the background picker before delivering (Workflow step 6) |
+| A design a senior designer wouldn't ship: scattered, "too much", cluttered | Fewer elements, one clear composition, aligned and balanced ("designed by a begineer not by a pro experienced designer"; "it looks scattered, it looks like AI slop"; taste 21, 22) |
+| Tiles or cards with different corner radii | One radius per set ("corner radius of logo bg is not consistent"; taste 2) |
+| An X vs Y image that doesn't read as a comparison at a glance | Two matched sides with the pairing visible at 350×250 ("doesnt look like comparison image"; taste 23) |
+| A batch in one colour | Mix the black canvas layouts, the blue gradient, glow, mesh, white and the light fields ("you are just using same color"; taste 24) |
+| A long official product name where people use a short one | The name people say ("it should be just zoom not zoom for healthcare"; taste 8) |
+| Options after a rejection that only change the colour | Change the composition; at least 2 options differ in skeleton |
 | A chart that needs a second look to say what it compares | Give each product its own lane or track, label every stop, keep tracks on a white card, except `ranges` `"bare"` on white (taste 18: "i like the design but it is confusing") |
-| A name heavier than the figure it labels | Smaller, lighter names and a bigger figure (`versus/badges`: `nameSize` 44, `nameWeight` 600, `valueSize` 84, `spread`; taste 1) |
-| A check box, container or dot patch that adds nothing | Drop it (`versus/checks` `"checks": false`, `ranges` `"bare"` on white, `versus/connect` `"cornerDots": false`; taste 10) |
+| A name heavier than the figure it labels | Smaller, lighter names and a bigger figure (the `versus/badges` default: names 44px at 600, figures up to 84px, sides spread; taste 1) |
+| A check box, container or dot patch that adds nothing | Drop it (`versus/checks` has no boxes by default, `ranges` `"bare"` on white, `versus/connect` `"cornerDots": false`; taste 10) |
 | A loved design on a concept that doesn't fit the article, or a number against words | Ask "is this the right concept for this article?" (taste 19); paired figures are two real numbers from one source and year (taste 2) |
-| Self-Critique not run | Run it (`references/taste.md`, including Our parts, Own skeleton, Fresh batch, Background mix, One glance, Hierarchy, Earns its place, Real pairs, Concept fit and Praised parts) and fix every "no" |
+| Self-Critique not run | Run it (`references/taste.md`, including Radii, Names, Our parts, Own skeleton, Fresh batch, Field variety, One glance, Hierarchy, Earns its place, Label vs logo, Real pairs, Concept fit, Praised parts, Pro craft, Not scattered, Reads as comparison and Predicted verdict) and fix every "no" |
+| An image or option sent without a predicted verdict | Put it next to the approved sheet and the rejected patterns, write "Predict: approve/reject, closest to …", and fix a predicted reject before the user sees it (`references/taste.md`, "Predict the Verdict") |
