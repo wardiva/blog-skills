@@ -58,7 +58,7 @@ if (reqs.length) {
       if (ret) { errs.push(`${slug}: ${retiredMsg(ret)}`); continue; }
       const layout = `${mode}/${variant}`;
       if (!ALL.includes(layout)) { errs.push(`${slug}: unknown layout ${layout}`); continue; }
-      if (history.some((e) => e.slug === slug && e.final)) { errs.push(`${slug}: already delivered (final); delivered images can't be re-created`); continue; }
+      if (history.some((e) => e.slug === slug && e.final)) { errs.push(`${slug}: already delivered (final); delivered images aren't re-planned (a redo the user asks for goes straight to render.mjs --redo)`); continue; }
       const live = countable(hist, [slug]);
       const why = pick ? null : blocked(usage(live, rec), layout, category);   // the user's pick skips the category rule and the cap
       if (why) { const f = freeFor(usage(live, rec), category); errs.push(`${slug}: ${why} Not used yet: ${f.fresh.join(', ') || 'none'}. Used only in other categories: ${f.elsewhere.join(', ') || 'none'}`); continue; }

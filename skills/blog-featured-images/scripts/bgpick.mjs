@@ -1,4 +1,4 @@
-// The background picker: the user picks each image's background himself (Oct 2026: "we have so many background why are you fixated on
+// The background picker: the user picks each image's background themselves (Oct 2026: "we have so many background why are you fixated on
 // just one. show me 12 images and options for backgrounds and i'll select the bg for each").
 // Usage:
 //   node bgpick.mjs render --brand <brand> [--out <featured-images>] [--user-pick] <spec.json> ...

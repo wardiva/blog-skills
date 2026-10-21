@@ -9,14 +9,16 @@ You write one JSON file per article, from the article's own facts. Start from th
 | `category` | yes | The site's blog category. A spec without one is refused ("CATEGORY MISSING"); the spelling is normalised ("Hospital & Lab Software" = `hospital-and-lab-software`). A layout is used once per category (the usage rule: `SKILL.md`, Layout Decision Framework step 3); the category also drives the vibrant mix and the site mark (1 in 3, never neighbours) |
 | `topic` | when shared | Same string for articles on the same subject (e.g. duplicate URLs). They never share a mode |
 | `slug` | yes | Output folder name and history key (unique per article) |
-| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype`. Gumloop: `swap`, `badge` (plus the versus variants below). Originals: `receipt`, `definition`, `shortlist`, `lineup`. Batch-5 layouts for best-of lists: `spotlight`, `picks`, `cloud`, `count`, `ranges`. Batch-6 layouts: `figures`, `costgrid`, `glassbar` (cost), `frostrow` (best-of) |
-| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, the headline variants `pills`, `connect`, `slash`, `duo`, the Gumloop variants `type`, `tiles`, `glass`, the originals `frost`, `bento`, the batch-5 variants `badges`, `checks`, `lanes`, `scores`, `center`, and the batch-6 variants `fan`, `stacked`. Mode + variant = one layout |
-| `bg` | no | Leave it out: the renderer picks the layout's best-fitting background (the batch-6 card layouts lead with the field the user picked for their delivered image: `figures` white, `costgrid`, `versus/fan` and `versus/stacked` glow). Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language); `soft`, `white`, `glow` and `mesh` as the user's pick (`bgPick`) or where a batch-6 fit list names them. Vibrant: `"blue"` on at most 1 in 3 images (counting the black layouts), only for `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/fan`. The checklist is blue only: the renderer sets it, and any other `bg` is refused ("CHECKLIST FIELD FAILED"). Refused on every layout that paints its own canvas (`prompt`, the headline layouts except `logotype`, which takes only `cream`, and the Gumloop and original layouts: "BACKGROUND CHECK FAILED"); prompt's calmer field is `"field": "soft"` |
-| `bgPick` | no | `true` = the user picked this `bg` on the picker page (it needs a `bg`; only `true` is valid). It skips the fit list, the blue fit and the canvas refusal, never the vibrant check. Canvas layouts take a pick only on `versus/badges`, `versus/type`, `versus/tiles`, `versus/bento`, `swap`, `badge` and `shortlist` (light fields; blue only on `versus/tiles`); every other canvas layout refuses it ("BACKGROUND PICK FAILED"), and so does `frostrow` (its own mesh covers the canvas). A picked `blue` only on layouts whose text all sits in a white card (`checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/fan`, `versus/tiles`). Set by `scripts/bgpick.mjs apply`. Design language 3f |
-| `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns off both grain layers (field grain and fine overlay) on a light field |
-| `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`, prompt `panel.rows[]` and `chips[]`, and the `items[]`/`rows[]`/`left`/`right` of the batch-5 and batch-6 layouts. The renderer finds the logo itself. When it finds the wrong mark, use a file instead: `"../assets/<file>.png"` (relative to the spec; the official mark saved from the brand's website). `"icon:<domain>"` asks for the brand's square app icon (Brandfetch icon, edge to edge) |
-| `scale` (per item) | no | How much of its tile a logo fills, for a wide, thin mark that needs a bigger box to carry equal weight (judge by eye): `lineup` `cards[]` 0.5–0.8 (default 0.7), `hub` logo tiles 0.5–0.8 (default about 0.65), `versus/center` `left`/`right` 0.45–0.8 (default 0.66), `frostrow` `items[]` (default 0.48), `versus/fan` and `versus/stacked` `left`/`right` (default 0.64) |
-| `fill` (per item) | no | `true` = the logo is a solid app icon that becomes the tile itself, edge to edge, clipped to the tile's radius (never an icon's own rounded square inside a white tile: "corner radius of logo bg is not consistent"). On `lineup` `cards[]`, `versus/center` and `versus/fan`/`versus/stacked` `left`/`right`; on `frostrow` `items[]` the icon is clipped to the tile's 22% radius at 48% of the glass tile |
+| `mode` | no | Card layouts: `before-after` (default), `versus`, `hub`, `focus`, `stat`, `ranked`, `timeline`, `checklist`, `prompt`, `stack`, `window`. Headline layouts: `dark`, `logotype`. Gumloop: `swap`, `badge` (plus the versus variants below). Originals: `receipt`, `definition`, `shortlist`, `lineup`. Batch-5 layouts for best-of lists: `spotlight`, `picks`, `cloud`, `count`, `ranges`. Batch-6 layouts: `figures`, `costgrid`, `glassbar` (cost), `frostrow` (best-of). Batch-7 layouts: `checkcard`, `research`, `squircles`, `bluegrid` (best-of), `flatcard2`, `strike`, `meter` (cost), `typehero` (X vs Y) |
+| `variant` | no | `before-after`: `default`, `flow`. `versus`: `overlap` (default), `table`, the headline variants `pills`, `connect`, `slash`, `duo`, the Gumloop variants `type`, `tiles`, `glass`, the originals `frost`, `bento`, the batch-5 variants `badges`, `checks`, `lanes`, `scores`, `center`, the batch-6 variants `fan`, `stacked`, and the batch-7 variants `peecpair`, `inline`, `span`, `duel`, `band`, `glasspair`. Mode + variant = one layout |
+| `bg` | no | Leave it out: the renderer picks the layout's best-fitting background (the batch-6 card layouts lead with the field the user picked for their delivered image: `figures` white, `costgrid`, `versus/fan` and `versus/stacked` glow). Light: `sky`, `paper`, `cream`, `g5`, but only those in the layout's fit list ("Background fit" in the design language); `soft`, `white`, `glow` and `mesh` as the user's pick (`bgPick`) or where a batch-6/7 fit list names them. Vibrant: `"blue"` on at most 1 in 3 images (counting the black layouts), only for `checklist`, `versus/table`, `window`, `before-after/flow`, `versus/fan`. The checklist is blue only: the renderer sets it, and any other `bg` is refused ("CHECKLIST FIELD FAILED"). Refused on every layout that paints its own canvas (`prompt`, the headline layouts except `logotype`, which takes only `cream`, the Gumloop and original layouts, and the twelve batch-7 canvas layouts: "BACKGROUND CHECK FAILED"); prompt's calmer field is `"field": "soft"`. Of the batch-7 card layouts, `strike` fits `glow`, `sky` and `meter` `white` only; neither goes on the blue |
+| `canvas` | no | Batch 7 only, and only the one approved field: `versus/span` and `versus/glasspair` `"dunes"` (the deep-dunes blue), `squircles` `"grid"` (the faint grid). Leaving it out paints the same field. Any other value, or `canvas` on any other layout, is refused ("FIELD FIT FAILED": span on black was "change bg, this bg doesnt look good", glasspair on a hand-mixed blue "use our good gradient bg", squircles on Calendly's sky "the gradient looks awful") |
+| `glass` | no | `research` only, and only `true` (our light glass; the same as leaving it out). `false`, or `glass` on any other layout, is refused ("FIELD FIT FAILED"; the black version was "for this use our glass bg") |
+| `bgPick` | no | `true` = the user picked this `bg` on the picker page (it needs a `bg`; only `true` is valid). It skips the fit list, the blue fit and the canvas refusal, never the vibrant check. Canvas layouts take a pick only on `versus/badges`, `versus/type`, `versus/tiles`, `versus/bento`, `swap`, `badge` and `shortlist` (light fields; blue only on `versus/tiles`); every other canvas layout refuses it ("BACKGROUND PICK FAILED"), and so do `frostrow` (its own mesh covers the canvas) and the twelve batch-7 canvas layouts; `strike` takes a light pick and `meter` white only, also as a pick ("BACKGROUND PICK FAILED: meter has no card behind its tracks"); neither takes the blue. A picked `blue` only on layouts whose text all sits in a white card (`checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/fan`, `versus/tiles`). Set by `scripts/bgpick.mjs apply`. Design language 3f |
+| `grain` | no | Field grain, on by default for `sky`, `paper`, `g5` and always on `blue`; never on `cream`. `false` turns off both grain layers (field grain and fine overlay) on a light field. Off by default on `versus/peecpair` and `checkcard` (the Peec copies were approved without grain; their examples still say `"grain": false`) |
+| `logo` (per item) | no | The product's official domain (e.g. `"odoo.com"`) on hub `cards[]`, versus `left`/`right`, window `list.rows[]`, ranked `rows[]`, stat `card.rows[]`, prompt `panel.rows[]` and `chips[]`, and the `items[]`/`cards[]`/`rows[]`/`left`/`right` of the batch-5, batch-6 and batch-7 layouts. The renderer finds the logo itself. When it finds the wrong mark, use a file instead: `"../assets/<file>.png"` (relative to the spec; the official mark saved from the brand's website). `"icon:<domain>"` asks for the brand's square app icon (Brandfetch icon, edge to edge) |
+| `scale` (per item) | no | How much of its tile a logo fills, for a wide, thin mark that needs a bigger box to carry equal weight (judge by eye): `lineup` `cards[]` 0.5–0.8 (default 0.7), `hub` logo tiles 0.5–0.8 (default about 0.65), `versus/center` `left`/`right` 0.45–0.8 (default 0.66), `frostrow` `items[]` (default 0.48), `versus/fan` and `versus/stacked` `left`/`right` (default 0.64); batch 7: `research` `cards[]` (default 0.56), `squircles` `items[]` (default 0.52), `versus/glasspair` `left`/`right` (default 0.5) |
+| `fill` (per item) | no | `true` = the logo is a solid app icon that becomes the tile itself, edge to edge, clipped to the tile's radius (never an icon's own rounded square inside a white tile: "corner radius of logo bg is not consistent"). On `lineup` `cards[]`, `versus/center` and `versus/fan`/`versus/stacked` `left`/`right`; on `frostrow` `items[]` the icon is clipped to the tile's 22% radius at 48% of the glass tile; batch 7: `research` `cards[]`, `squircles` `items[]`, `bluegrid` `cards[]`, and `typehero`, `versus/inline` and `versus/glasspair` `left`/`right` (inside a frosted tile the icon sits at about half its size) |
 | `logoStyle` | no | `color` (default), `mono` or `tint`. One style per image |
 | `frame` | no | Faint grid + registration squares. On by default for `stat`, `timeline`, `window` (never on blue; `ranked` gets the guide-line texture instead). `true`/`false` overrides |
 | `texture` | no | Thin guide lines at x 210/1390 + a few margin dots. On by default for sky/paper fields and for checklist, ranked, focus, versus, before-after and stack; off where the frame grid is on (never both). `true`/`false` overrides |
@@ -315,6 +317,7 @@ Ten live layouts, each a new arrangement of an approved template (named in brack
   "right": { "label": "MEDITECH", "logo": "../assets/meditech-m-mark.png", "score": 76.3 } }
 ```
 - The metric small and grey on top (`title`, required: it names the source and the measure), then two rows split by a hairline: logo tile, `label` big in black, `score` (required on both sides) very large in the blue gradient. No card and no chart. Fits: sky, paper.
+- `"prefix"` and `"suffix"` (optional) set a unit before or after both scores, so the number stays a plain number: TruBridge in batch 7 used `"suffix": "%"` (7.6% / 21.9%, approved).
 - Both scores must be real numbers (digits, with an optional leading `~`, `$`, `€` or `£` and `.`, `,` or `%`); a word is refused ("CONTENT CHECK FAILED"). The 2026 version had a number only for MEDITECH and "Lowest ranked" for Oracle, and got "ew revert it". When the year the user asks for has no number for both sides, change the metric or keep the year that has both, and say so before rendering.
 - Before using it, check the concept: the score must be the article's own lead metric and the one figure it gives for both products ("i love the design but is the concept right?", `taste.md` 19).
 
@@ -427,10 +430,148 @@ Six live layouts, each an approved part in a new arrangement, approved after the
 - Two wide white row cards, one above the other, tilted −2° and −1°; each row its logo tile and `label` on the left, its `value` in the blue gradient with its `unit` right-aligned; the "vs" disc with its white ring on the seam. A `value` on both sides is required ("CONTENT CHECK FAILED"). It handles prices of different scales (a yearly contract against a per-provider fee). No headline. Per side: `fill`, `scale` (default 0.64). Image 54 sets `"texture": false`.
 - Fits: glow, mesh, sky (glow is the default: approved on the light mesh, delivered on the glow the user picked). "love it. The concept, visual , everything looks so appealing and perfect": the model to repeat for a pair on price (`taste.md` 20).
 
-Retired (42; listed in `RETIRED` in `layouts.mjs`, not in `LAYOUTS`, refused with "RETIRED LAYOUT", their code and options gone): brandline, folder, versus/scale, versus/chat, versus/split, versus/duet, versus/rows, versus/logos; the batch-5 props versus/compare, versus/search, versus/polaroid, versus/notes, versus/phones, versus/browser, notify, wallet, stickers, letterboard, tags, keycaps; versus/window, versus/range, versus/rings, versus/share, versus/sheet, versus/columns; from the final batch-5 round versus/plans ("i dont like the design, try smth else for comparison"), versus/fit (disapproved), versus/spot (QA: Appointment's spotlight under a new name) and grid ("7 best pediatric shouldnt be like other logos, this looks off"; Pediatric EHR went to `lineup`); from batch 6 steps ("it looks like this is designed by a begineer not by a pro experienced designer"), numbered ("numbers looks so weird and visually cluttered and unbalanced"), versus/pill ("doesnt look like comparison image"), versus/chips and versus/offset ("painfully bad visual design"), versus/halves ("i dont like this it looks off and doesnt match our design vibe"), link, versus/annotate and versus/corners ("it looks scattered, it looks like AI slop"), and poster, versus/glasscards and versus/figures (QA-cut, never shown; the `figures` mode is live). History: `lessons.md`.
+# Batch-7 layouts (approved and delivered Oct 21–22 2026)
+Fourteen live layouts, each in a delivered final (approved images 55–69; their specs are in `examples/`, `references/approved/sources.json`). Most were led by the user's references and browser research (Peec, Dub, Calendly, Databricks), measured and translated to our fields, colours, 22% tile radius and "vs". **Each takes one approved field only**: the twelve canvas layouts refuse `bg` and `bgPick` ("BACKGROUND CHECK FAILED" / "BACKGROUND PICK FAILED") and a `field`; three of them may name their field with `canvas`, and `research` with `glass` (top table); `strike` and `meter` sit on a field. Leave out what the snippet doesn't show. Big object, full stage: keep the type and tiles as big as the snippets render them (`taste.md` 26).
+
+## Checkcard (`"mode": "checkcard"`; the user's Peec checklist; image 55) — "best X" lists, names only
+```json
+{ "mode": "checkcard", "headline": "Best dental software for small practices",
+  "items": [ { "name": "Open Dental" }, { "name": "Curve Dental" }, { "name": "Dentrix" }, { "name": "Eaglesoft" }, { "name": "Denticon" } ],
+  "grain": false }
+```
+- A copy of the user's reference, pixel for pixel ("ss1 exact pixel perfect"): a light grey card with the `headline` (heading rule) as its grey heading line, a nested white card with one row per item (a blue checked box and the `name`), among white rounded cards cropped at the canvas edges. The checkbox is Peec's, measured on the original: box 120, radius 35 (29%), tick M32 59 L48.5 76.5 L91 35, stroke 9, round caps, `#0081FF` ("use exact same checkboxes size and tick icon that was in its inpirsation"). Only the first `max` items are drawn (default 4): image 55 lists five and shows four.
+- Its field: the faint grid of white cards on near-white, no grain (the default now; `"grain": false` is kept in the example).
+
+## Flatcard2 (`"mode": "flatcard2"`; the flat card, refined; image 56) — cost: one figure and its qualifier
+```json
+{ "mode": "flatcard2", "headline": "EHR Implementation Cost", "tag": "Small practice, year one", "value": "$15K–$65K", "handles": true }
+```
+- One flat white card (~1100px): the `headline` (heading rule), the `value` big in the blue gradient inside a light dashed selection, and a collaboration cursor (blue arrow) whose compact name tag holds `tag`, the figure's qualifier, inside the card ("perfect"). `"handles": true` adds small square handles at the selection's corners, as in a design tool. Keep `value` short (thousands as K).
+- Its field: the light glow (its own canvas).
+
+## Research (`"mode": "research"`; Peec's research cover; images 57 and 58) — "best X" lists; a pair
+```json
+{ "mode": "research", "tag": "Dermatology", "headline": "Best EHR Software\nfor Dermatology Practices",
+  "cards": [ { "name": "ModMed EMA", "logo": "../assets/modmed-icon.png" }, { "name": "Nextech", "logo": "../assets/nextech-icon.png" },
+             { "name": "Ezderm", "logo": "ezderm.com" }, { "name": "Pabau", "logo": "icon:pabau.com" } ],
+  "glass": true }
+```
+```json
+{ "mode": "research", "tag": "Medical Coding", "headline": "Solventum vs Optum",
+  "cards": [ { "name": "360 Encompass", "logo": "icon:solventum.com" }, { "name": "EncoderPro", "logo": "../assets/optum-o-mark.png" } ],
+  "glass": true, "names": false, "tilt": 8, "tilesTop": 478, "tileSize": 230, "gap": -14 }
+```
+- A frosted pill with `tag`, the black `headline` (heading rule; `\n` breaks it), one row of frosted white squircle tiles (`cards[]`: `name`, `logo`, `fill`, `scale`), Peec's guide lines in our blue, no dot pattern ("perfect"). Image 57 shows seven picks (150px tiles).
+- Two or three cards get bigger tiles (180px) with each name under its tile. For a pair the title already names, `"names": false` drops those names ("delete 360 encompass and encodepro text"), and `tilt` (degrees, alternating, at most 8), `tileSize` (px), `gap` (px; negative overlaps) and `tilesTop` (px from the top) place two tilted tiles that just touch ("make logo close so they touch each other a lil bit and also incrase the sizes"; image 58).
+- Its field: our light glass only (`"glass": true` or left out; "for this use our glass bg"). Not vibrant.
+
+## Squircles (`"mode": "squircles"`; the user's Calendly tiles; image 59) — "best X" lists with real marks
+```json
+{ "mode": "squircles", "headline": "Best Mental Health EHRs\nfor Group Therapy",
+  "items": [ { "label": "TherapyNotes", "logo": "../assets/therapynotes-icon.png" },
+             { "label": "SimplePractice", "logo": "../assets/simplepractice-app-icon.png", "fill": true },
+             { "label": "Valant", "logo": "icon:valant.io", "fill": false, "scale": 0.82 } ],
+  "canvas": "grid" }
+```
+- The black `headline` (heading rule; `\n` breaks it) over one row of big frosted squircle tiles (220px), each mark in its colours (`fill` for a solid app icon, `scale` default 0.52). Five tiles fill the width (image 59); no names.
+- Its field: the faint grid only (`"canvas": "grid"` or left out; Calendly's sky: "the gradient looks awful"; the glow was disapproved).
+
+## Bluegrid (`"mode": "bluegrid"`; Databricks' partner cover; image 60) — "best X" lists, vibrant
+```json
+{ "mode": "bluegrid", "headline": "Best Physical Therapy Software\nfor Multi-Location Clinics",
+  "cards": [ { "name": "Raintree", "logo": "icon:raintreeinc.com" }, { "name": "WebPT", "logo": "icon:webpt.com", "fill": true },
+             { "name": "Prompt Health", "logo": "promptemr.com" }, { "name": "Jane", "logo": "icon:jane.app", "fill": true } ] }
+```
+- A flat blue field crossed by white hairline grid lines edge to edge, the `headline` (heading rule) in white, one band of cells, each pick on a white logo tile in its own cell ("i like this layout and design"). Image 60 shows seven.
+- Its field: its own blue. Vibrant (1 in 3 per category, never neighbours).
+
+## Typehero (`"mode": "typehero"`; big type and the frosted bar; image 61) — X vs Y, one short answer each
+```json
+{ "mode": "typehero",
+  "left": { "label": "Tecsys", "logo": "tecsys.com", "value": "Multi-hospital", "unit": "networks" },
+  "right": { "label": "Cardinal Health", "logo": "icon:cardinalhealth.com", "fill": true, "value": "High-turn", "unit": "supply tracking" } }
+```
+- "`left.label` vs `right.label`" big in one line (it is the heading, checked against the title), a light grey "vs", then one frosted bar holding each side's logo tile, `value` (blue gradient) and `unit`, split by a hairline. No `headline` key.
+- Its field: its light glass canvas.
+
+## Strike (`"mode": "strike"`; image 62) — an advertised price against the real one
+```json
+{ "mode": "strike", "headline": "Free EHR for Small Practices: Worth It?", "from": "$0", "to": "$100–$500/mo",
+  "caption": "typically, with hosting, IT and add-ons", "bg": "glow", "bgPick": true }
+```
+- One white card: the `headline` (heading rule), `from` in grey with a slanted strike, a blue arrow, `to` big in the blue gradient, and the `caption` (the qualifier) under them ("Love it"). The figure lives in the card (`taste.md` 27).
+- Fits: glow (the user's pick for image 62), sky. Never the blue: a `"bg": "blue"` is "VIBRANT FIT FAILED", a picked blue "BACKGROUND PICK FAILED".
+
+## Meter (`"mode": "meter"`; image 63) — cost: two options on one scale
+```json
+{ "mode": "meter", "headline": "AI Medical Scribe Cost", "sub": "per provider per month", "max": 3000, "lead": 0,
+  "rows": [ { "label": "AI scribe", "low": 99, "high": 830, "display": "$99–$830" },
+            { "label": "Human scribe", "low": 1000, "high": 3000, "display": "$1,000–$3,000" } ],
+  "bg": "white", "bgPick": true }
+```
+- The `headline` (heading rule) and its unit (`sub`) centred, then one row per option on a shared track from 0 to `max`: its `label` (and a logo tile with `logo`) on the left, a bar from `low` to `high` (a single `low` is a bar from 0), the figure as written (`display`) at the bar. The `lead` row (by index) is the blue gradient, the other muted; without `lead` both bars are blue.
+- No card: "delete white container" made bare its only look, so the card is gone from the code and there is no `"bare"` key.
+- Fits: white only, also as a pick (an unpicked `bg` of another field is "BACKGROUND FIT FAILED", a picked one "BACKGROUND PICK FAILED: meter has no card behind its tracks"). Never the blue.
+
+## Versus peecpair (`"mode": "versus", "variant": "peecpair"`; the user's Peec "Powered by" cover; image 64)
+```json
+{ "mode": "versus", "variant": "peecpair", "grain": false, "headline": "Pricing and Features Compared",
+  "left": { "label": "SimplePractice", "logo": "../assets/simplepractice-wordmark-black.png" },
+  "right": { "label": "TheraNest", "mark": "../assets/ensora-mark.svg", "ink": "#0A0A0B" } }
+```
+- A near-white field cut by grey hairlines into cells, a white pill on top holding the `headline` (the title's angle; heading rule), and in the middle row each brand's lockup centred on its cell. A side is a full wordmark file (`logo`) or a `mark` with its `label` typed beside it in `ink`, black ("use black color for logo text"); marks keep their colours. `logoWidth` (default 470) sizes the wordmarks; the two lockups read one width ("show some other whose logos width will look equal"; `taste.md` 31). Never a typed name beside its own wordmark.
+- Its field: its near-white grid, no grain (the default now).
+
+## Versus inline (`"mode": "versus", "variant": "inline"`; image 65)
+```json
+{ "mode": "versus", "variant": "inline", "headline": "Which Physical Therapy Software Wins?",
+  "left": { "label": "WebPT", "logo": "icon:webpt.com", "fill": true, "wordmark": true, "value": "$99", "unit": "from, per provider/month" },
+  "right": { "label": "Jane", "logo": "icon:jane.app", "fill": true, "wordmark": true, "value": "CAD $54", "unit": "from, per month, solo" } }
+```
+- With `"wordmark": true` (the logo tiles read as the names): the two tiles big at the top, the `headline` (the title's angle; heading rule) in big type under them. Without it: a two-line headline, "[tile] A" and "vs [tile] B", which is then the heading. Under a hairline, each side's `value` in the blue gradient with its `unit`, which keeps the qualifier ("from, per provider/month").
+- Its field: its light canvas (the white panel, a faint "+" grid).
+
+## Versus span (`"mode": "versus", "variant": "span"`; image 66) — vibrant
+```json
+{ "mode": "versus", "variant": "span", "min": 0, "max": 800,
+  "left": { "label": "Curve Dental", "logo": "../assets/curve-dental-symbol.png", "value": "$200–$399", "unit": "from, per user/month", "lo": 200, "hi": 399 },
+  "right": { "label": "Denticon", "logo": "denticon.com", "value": "$750–$795", "unit": "from, flat rate/month", "lo": 750, "hi": 795 },
+  "canvas": "dunes" }
+```
+- One price axis from `min` (default 0) to `max`; each side on its own lane: logo tile, `label`, `value` and `unit` on one line, its range (`lo` to `hi`) as a white capsule to scale. The axis ends are labelled with `prefix` (default `$`). Only the two ends are drawn (no tick marks). No headline.
+- Its field: the deep-dunes blue only (`"canvas": "dunes"` or left out). Vibrant.
+
+## Versus duel (`"mode": "versus", "variant": "duel"`; from Dub; image 67)
+```json
+{ "mode": "versus", "variant": "duel", "eyebrow": "HIPAA Compliance",
+  "left": { "label": "Vanta", "logo": "vanta.com" }, "right": { "label": "Drata", "logo": "drata.com" } }
+```
+- Two big lockups (logo tile and `label`, up to 120px Inter 600) with a small grey "vs" between, centred; the `eyebrow` (optional: the title's angle) in small mono caps above. Per side: `fill`, `scale`. No headline ("wow love it").
+- Its field: a faint square grid with soft lavender and blue corner glows.
+
+## Versus band (`"mode": "versus", "variant": "band"`; Peec's partner cover; image 68) — vibrant
+```json
+{ "mode": "versus", "variant": "band", "equal": true,
+  "left": { "label": "DoseSpot", "logo": "dosespot.com" }, "right": { "label": "RxNT", "logo": "rxnt.com" } }
+```
+- Plain black, one hairline band full width, both real wordmarks in white with no tile, a small grey "vs" between ("this is perfect"). `"equal": true` sizes the two wordmarks to one width. The wordmarks come from Brandfetch or a local file, as on the Gumloop layouts; a brand without one gets its mark in white beside its typed name. Use it only when both brands have a text wordmark that turns white cleanly. No headline.
+- Its field: plain black ("use full black bg"). Vibrant.
+
+## Versus glasspair (`"mode": "versus", "variant": "glasspair"`; the user's Calendly screenshot; image 69) — vibrant
+```json
+{ "mode": "versus", "variant": "glasspair",
+  "left": { "label": "McKesson", "logo": "../assets/mckesson-mark.png", "scale": 0.6 },
+  "right": { "label": "PioneerRx", "logo": "../assets/pioneerrx-mark.png", "scale": 0.64 },
+  "canvas": "dunes" }
+```
+- Two big frosted white squircle tiles (400px, 22% radius like `frostrow`: "make the corner radius consistenty"), a small gap between, each mark in its colours (`scale` default 0.5; `fill` for a solid app icon); no text, no headline.
+- Its field: the deep-dunes blue only (`"canvas": "dunes"` or left out; "use our good gradient bg"). Vibrant.
+
+Retired (134; listed in `RETIRED` in `layouts.mjs`, not in `LAYOUTS`, refused with "RETIRED LAYOUT", their code and options gone): brandline, folder, versus/scale, versus/chat, versus/split, versus/duet, versus/rows, versus/logos; the batch-5 props versus/compare, versus/search, versus/polaroid, versus/notes, versus/phones, versus/browser, notify, wallet, stickers, letterboard, tags, keycaps; versus/window, versus/range, versus/rings, versus/share, versus/sheet, versus/columns; from the final batch-5 round versus/plans ("i dont like the design, try smth else for comparison"), versus/fit (disapproved), versus/spot (QA: Appointment's spotlight under a new name) and grid ("7 best pediatric shouldnt be like other logos, this looks off"; Pediatric EHR went to `lineup`); from batch 6 steps ("it looks like this is designed by a begineer not by a pro experienced designer"), numbered ("numbers looks so weird and visually cluttered and unbalanced"), versus/pill ("doesnt look like comparison image"), versus/chips and versus/offset ("painfully bad visual design"), versus/halves ("i dont like this it looks off and doesnt match our design vibe"), link, versus/annotate and versus/corners ("it looks scattered, it looks like AI slop"), and poster, versus/glasscards and versus/figures (QA-cut, never shown; the `figures` mode is live); and from batch 7 (92): in the user's words versus/burst ("disgusting shapes"), versus/underline ("too bad visual"), versus/bubbles ("ew"), versus/delta ("$20 looks so weird bec its so big there is no visula balance at all"), slider ("this layout is borint"), footnote ("too much text"), heroglass ("its too bad not visually appealing at all"), horizon ("i like the shape you used but over alll its too much., not visually apealing at all"), gooey ("ew dont connect and the gradient looks awful"), capsule ("i dont like this rounded it looks weird"), cursorcard ("not tilted rectangle pls also use our bgs"); disapproved with no note (50) tree, bigword, sidecolumn, wordtag, market, estimate, index, horizonrow, tilegrid, iconrows, bluefield, horizon2, sideglow, eclipse, crescent, masthead, cropmarks, bracket, contrast, waffle, notepad, pricebar, spectrum, glowtiles, glasstiles, breakdown, typelist, toppick, arc, track, rating, versus/medallions, versus/profiles, versus/routes, versus/logobar, versus/outline, versus/gap, versus/toggle, versus/eclipses, versus/pricepair, versus/butterfly, versus/venn, versus/bands, versus/ladder, versus/tierchips, versus/lockups, versus/titlecard, versus/sidetiles, versus/aura, versus/iconbadge; approved once and then replaced on every article ("actually delete all of them") flatcard (improved into `flatcard2`), avatars, glassrows, versus/glasssplit, bigtype; and never shown (26) lockupwall, blueprint, plus, aurarow, byline, gridcells, collection, eyebrow, pillstat, fan and bento (modes; `versus/fan` and `versus/bento` are live), editorial, cascade, glassbars, orbit, mosaic, versus/gauges, versus/segbar, versus/pairchips, versus/chipfigures, versus/pillrows, versus/pillduel, versus/vstack, versus/overlap2, versus/tiltcards, versus/chipcloud. History: `lessons.md`.
 
 ## Overrides
 - The user's own pick skips ONLY the usage rule (once per category, site-wide caps); every other check still runs, the same-topic rule too. Per slug: reserve it with `!` in `plan.mjs` (`--reserve <slug>=<mode>/<variant>!`), and `render.mjs` honours that reservation for that slug and layout. For a whole call: `--user-pick` (render.mjs and plan.mjs).
+- A delivered image is redone only when the user asks for it: `render.mjs --redo` lifts only FINAL IMAGE LOCKED, and only for the slug's own delivered image in its own folder ("REDO REFUSED" for a slug never delivered, or another slug's delivered folder); every other check runs, and a redo in the same layout and category is the same image, not a second use. Then finalize it again: a new `finalizedAt`, the earlier dates kept in `previousFinalizedAt`. Never `--force`.
 - `plan.mjs --brand <brand> --release <slug> ...` drops reservations that were never rendered (rendered and delivered images stay).
 - Internal fields (`receiptX`, `seriesPos`, `panelLogoUrl`, and `valueSize` outside `versus/badges`) exist for fine-tuning in the renderer; leave them out of specs.
 - Records of delivered designs the user rejected and had replaced carry `"superseded": true` and don't count as used.

@@ -1,0 +1,27 @@
+{
+  "articleTitle": "How Much Does an AI Medical Scribe Cost in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "how-much-does-an-ai-medical-scribe-cost-in-2026",
+  "mode": "meter",
+  "headline": "AI Medical Scribe Cost",
+  "sub": "per provider per month",
+  "max": 3000,
+  "lead": 0,
+  "rows": [
+    {
+      "label": "AI scribe",
+      "low": 99,
+      "high": 830,
+      "display": "$99–$830"
+    },
+    {
+      "label": "Human scribe",
+      "low": 1000,
+      "high": 3000,
+      "display": "$1,000–$3,000"
+    }
+  ],
+  "bg": "white",
+  "bgPick": true
+}

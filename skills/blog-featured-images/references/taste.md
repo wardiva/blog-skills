@@ -4,7 +4,7 @@ You are expected to make images the user would approve without asking them. This
 
 ## The Principles
 
-There are **24 principles** (1–24), and the Self-Critique below checks every one of them. Before any image goes to the user, predict the user's verdict (the last section, "Predict the Verdict").
+There are **34 principles** (1–34), and the Self-Critique below checks every one of them. Before any image goes to the user, predict the user's verdict (the last section, "Predict the Verdict").
 
 ### 1. Balance and hierarchy: nothing outweighs its partner, and the key figure leads
 
@@ -56,6 +56,7 @@ Dot grids, "+" grids and rings add texture; they never compete with the content.
 - **Bento** (batch 4): "delete pattern from bg, it looks overwhelming here". The grid of cells is texture enough; it has no pattern.
 - **Lineup** (batch 4): the user asked to delete the faint watermark behind the row ("this rectangle shape") and didn't like the "+" shape. The row sits on the glow field with faint dots at the edges only.
 - **Connect** (Oracle Health vs MEDITECH, batch 5 final round): "delete these dot grid from top left and top right". The two corner dot patches only filled the corners; `"cornerDots": false` drops them. Decoration has to earn its place (principle 10).
+- **Research** (7 Best EHR for Dermatology, batch 7): "use bg lines too like ss2 in our colors and dont use dot pattern in bottom". Peec's guide lines, drawn in our blue, frame the pill and the heading; the dot fade under the tiles went. Approved as "perfect".
 
 **Ask:** is the pattern sparse and faint, and does the content read first? On `shortlist`, `lineup` or a dark field, is it clear behind the content? If you notice it before the content, it's too strong; if you can't find it, it's gone, which is just as wrong.
 
@@ -105,6 +106,9 @@ Calm is good; bland is not. A safe composition with no anchor, contrast or colou
 
 When the user shares a reference, every detail is the rule: tiles behind icons, padding, the gap between shapes, flat or rounded ends, the weight of a word. Measure its pixels (the pills gap is 57% of the pill height because the reference measured that). Each missed detail cost a review round.
 
+- **Peec checklist card** (7 Best Dental Software for Small Practices, batch 7): "ss1 exact pixel perfect design i want in…". Approved as `checkcard`: a light grey card with a grey heading line, a nested white card of blue-checked rows, on a faint grid of white rounded cards, grain off. The tick had been eyeballed, and came back: "use exact same checkboxes size and tick icon that was in its inpirsation". Measured on Peec's 4096px original: box 120, corners 35 (29%), tick `M32 59 L48.5 76.5 L91 35`, stroke 9, round caps, `#0081FF`.
+- **"Exact ditto"** (the Peec partner cover, batch 7): "delete dermatology tag . this should be exact ditto like inspiration attached. the bg the logo without bg, white logo colors, logo text. so for this template use logos that has logo text too". Ditto covers the field, the logo treatment (tile or none, colour, wordmark or icon) and the sub-element geometry. What then moves to our system is principle 32.
+
 ### 10. Restraint: every element earns its place
 
 "Before is better" came back three times: auto-sizing the window, a pointer callout on the timeline, logo badges scaled up. A QA fix that changes the look is shown next to the original first, and the user's approved look wins over a checklist suggestion.
@@ -116,6 +120,7 @@ Restraint also runs the other way: an element already in a template stays only w
 - **Small Practice EMR** (`ranges`, batch 5 final round): after every new background was disapproved, "use the previous bg, and in that dont add container for bars section". The white card behind the bars was a box inside the white panel; `"bare": true` drops it, and the tracks go a step darker (`#E1E5EC`) so they still hold. Only on the white field (the exception to principle 18's card rule).
 - **Connect corner dots** (principle 4): "delete these dot grid from top left and top right".
 - **Minimal means one fact** (EHR Interoperability Cost, batch 6 round 7, after six rounds): "you already have all the templates designed. I just want you to make it more visually appealing. So like the one you created, it's 3 cards, they are like too much. There should be some minimal way for this." Three tier cards still read as three things, even with two of them dimmed. The approved answer was one frosted bar on black holding one tier and its price (`glassbar`). When an article keeps failing, cut to its one figure inside one approved container.
+- **AI medical scribe cost** (`meter`, batch 7): on the white field the user picked, "delete white container". The same lesson as Small Practice EMR: on white, the card is a box inside a box. `meter` is bare only now.
 
 **Ask:** cover each element in turn (a check box, a card, a pattern patch, an icon). Does the image lose any meaning without it? If not, it goes.
 
@@ -126,6 +131,8 @@ A note names a direction, not an extreme. "Lighter" means visibly lighter, not g
 ### 12. Fewer words, bigger meaning
 
 Fifteen words is a ceiling, not a target. "Too much text" (stack): keep the title plus one lead line when the lead already carries the figure.
+
+- **Footnote** (Claims Denial Management Cost, batch 7 round 6): "too much text". A cost image is a heading, one figure and one short caption.
 
 ### 13. Optical, not mathematical
 
@@ -147,6 +154,7 @@ The user sees every image together, across categories and batches, so a layout u
 - **Variety in backgrounds too:** "we have so many background why are you fixated on just one. show me 12 images and options for backgrounds and i'll selevt the bg for each". Given the choice, the user picked seven different fields for 12 images (glow, mesh, soft, blue, cream, paper, white). Colour across a batch is principle 24.
 - **Batch 6, "dont repeat the template that is already being used":** the first pass used three templates never used anywhere (`versus/tiles`, `versus/type`, `swap`), and all three were approved.
 - **Batch 6, options round, "not used here" is not "new":** after six disapprovals, ten of the twelve options were approved templates not yet used in their category, and the user approved only three. Then: "the images that I have disapproved has already been used multiple times, so I wanted to create new ones. But keep in mind what you have learned, what tools you have built." A template the user has seen many times on the site reads as a repeat in any category. When the user asks for new designs, every option is a new layout built from parts the user approved, in this batch first (big blue figures from `figures`, frosted glass from `frostrow`, the blue anchor from `costgrid`).
+- **Batch 7, approved templates are not "new":** asked for images "that hasnt been used before", the user chose brand-new designs for all 20. Round 2 rolled approved looks out instead (glass split ×4, stacked ×5, fan ×2) and most were rejected: "that I approved in this feature image review and in my last feature image review is fine. For the others, used a brand new layout that haven't been used before, and follow our design language." Then, with one family on several articles of one page: "done stop repeating designs now , use black bg too in some". One skeleton per page and per category is principle 25; approval that holds only once the batch is seen together is principle 34.
 
 **Ask:** is this layout already used in this category, or has the user already seen it in this batch? Has the user seen it many times across the site? Then pick another. Is a sibling of it (built from the same approved part) already in the category? Is there a layout not used yet anywhere that suits the article? Then it goes first.
 
@@ -175,10 +183,11 @@ Our language is the approved templates: flat product UI (white cards, tables, ap
 
 - **Batch 5, new versions (Oct 19 2026), all 12 rejected:** "not a single image that you have created matches our design language… these are bullshit… why are you using mobile mockups? … doesn't even match our design language and it looks so bad." The rejected set: phone mockups, a laptop lid with stickers, a keyboard of keycaps, sticky notes, polaroids, a felt letter board, hanging price tags, wallet cards, notification cards, a browser chrome window, a search box, and a product-compare page. All retired.
 - "Real objects" was the wrong lesson from the receipt and the notepad. Those two worked because they are flat, white, typographic cards in our palette. The rejected batch drew physical things: devices, wood, felt, kraft paper, plastic keys, tape.
-- **Batch 7 direction check (Oct 19 2026):** variations built only from approved parts. Approved: `versus/badges` (from the badge), `versus/checks` (from the checklist card), `spotlight` (from focus), `picks` (from the checklist). Disapproved: `versus/window` (one app-window pane per product with the VS badge on the split). Then eight more for the rest of the batch (round b8), each from one approved template: `versus/plans`, `versus/center`, `cloud`, `count`, `ranges` and `grid` approved at first; `versus/range` and `versus/rings` not, and their round-b9 replacements `versus/lanes` and `versus/scores` approved. Building from our own approved parts is the way.
+- **The batch-5 direction check (Oct 19 2026):** variations built only from approved parts. Approved: `versus/badges` (from the badge), `versus/checks` (from the checklist card), `spotlight` (from focus), `picks` (from the checklist). Disapproved: `versus/window` (one app-window pane per product with the VS badge on the split). Then eight more for the rest of the batch (round b8), each from one approved template: `versus/plans`, `versus/center`, `cloud`, `count`, `ranges` and `grid` approved at first; `versus/range` and `versus/rings` not, and their round-b9 replacements `versus/lanes` and `versus/scores` approved. Building from our own approved parts is the way.
 - **Approved is not finished:** `versus/plans` was approved with "design can be improved", its alternative options (`size lg`, `band`) were disapproved, and at the final review it was retired: "i dont like the design, try smth else for comparison". `grid` was retired in the same round (principle 2). An approval with a reservation is a warning, not a model: never copy it, and expect it to be questioned again.
 - An option offered after a disapproval changes the composition, not only the chart inside it (rings → columns kept the same title, card and label row, and neither was approved).
 - Before inventing, look at good product blogs (`inspiration.md`) and at our own approved sheet, then build from our own ingredients.
+- **Batch 7, references beat invention:** about 10% of the invented options were approved, while the options copied from a reference (Dub, Peec, Databricks, Calendly's tiles, the user's own screenshots) passed in one or two rounds. After two failed rounds of inventions, go to references, then translate them to our fields (principle 32).
 - **Batch 6, map first** (round 4): "map all of our previous templates that you created. That is the design language you need to follow, but you can go to browser and do your research." Lay every approved image (`references/approved/`) next to the live site sheet (`scripts/sheet.mjs`), grouped by field and composition, before designing. Round 3 had invented new skeletons (a connector between system cards, selection-box annotations, prices in two corners) and every one was rejected. Every layout approved in batch 6 is an approved part in a new arrangement: `figures` (the `versus/scores` type in two columns), `costgrid` (the `versus/bento` cells with one blue anchor), `frostrow` (the `versus/frost` glass tiles in a row: the user's own "for logos bg glass bg would look better"), `glassbar` (approved 24's frosted bar on black), `versus/fan` and `versus/stacked` (white price cards and the blue "vs" disc).
 
 **Ask:** put the new image in the middle of the approved sheet. Does it look like it was made by the same designer, with the same parts? If it shows a device, a prop or a material (wood, felt, paper, plastic), it fails.
@@ -208,9 +217,19 @@ Praise is a rule too. When the user loves an image, name what made it work and r
 - **Spotlight** (Best Appointment Reminder Software, batch 5): "perfect concept and design". The title's own angle sits in the blue selection box, and the article's real products are the rows of the card under it: the headline and the evidence are one picture. Repeat: one selection box on the title's angle, real products as the rows.
 - **Versus scores** (Oracle Health vs MEDITECH): "i love the design". Big type and two real numbers carry it, with no card and no chart. Repeat: when a single published figure decides a comparison, set it big; don't draw a chart around it.
 - **Versus stacked** (symplr vs Modio Health, batch 6 round 5, approved image 54): "love it. The concept, visual , everything looks so appealing and perfect". Two wide white row cards, stacked, each tilted only slightly (−2° and −1°): logo tile and name on the left, the price big in the blue gradient on the right with its unit under it, the blue "vs" disc with its white ring on the seam. Approved on the light mesh, delivered on the glow the user picked. It came after rounds of rejected "new" skeletons (link, annotate, corners, black and blue fields: "looks like AI slop… scattered… same color"). Repeat: two clear rows that read as a pair, logo + name left and figure right, a slight tilt, one tight centred group, soft depth on a calm light field.
+- **Strike** (Is Free EHR Software Worth It for Small Practices, batch 7): "Love it". One white card holds the heading, then "$0" in grey with a slanted strike through it, a blue arrow, and the real monthly cost big in the blue gradient, with the article's qualifier underneath. The whole idea of the article fits in one line. Repeat: when the article's point is "the advertised price isn't the real price", show the claim crossed out and the truth beside it.
 - **Glass for logos:** the batch-4 note "I like how you have used logos with these glass bgs, we can utilize them with any other bg" became `versus/frost`; in batch 6 the user asked for it again on a list ("for logos bg glass bg would look better") and approved `frostrow`. Repeat: logo rows and pairs on frosted glass tiles over the light mesh.
 - **Approved at once, no note** (batch 6 first pass): `figures` (two big blue price ranges, one hairline) and `costgrid` (one tall blue anchor card beside two white cards). Plain, big and strong beat clever: the six new layouts with more pieces were all rejected.
 - **"wow love it, everything is perfect"** (batch 4): `shortlist`, `definition`, `versus/glass`, `versus/tiles`, `versus/type`. In batch 6 `versus/tiles` was approved again with "use the blue gradient bg".
+- **Duel** (Vanta vs Drata for HIPAA Compliance, batch 7 redo, from the Dub research): "wow love it". Two big lockups (logo tile and name, about 120px Inter 600) with a small grey "vs" between them, the title's angle as a small mono-caps eyebrow above, on a near-white field with a faint square grid and soft lavender and blue corner glows. No figures, no card. Approved again in another category, for Nextech vs NextGen (specialty, no eyebrow). Repeat: the comparison as two big brand lockups on a quiet grid.
+- **Figures inside an object** (batch 7): the strike, flatcard2's selection, the span's track, the meter and the scores pair are all led by a figure, and all were kept. What failed was a figure alone on the field (big type, bracket, horizon, blue field, delta). Repeat: principle 27.
+- **Black band** (DoseSpot vs RxNT, batch 7, from the Peec partner covers): "this is perfect". Plain black, one hairline band across the full width, both brands' real wordmarks in white with no tile, sized to one width, a small grey "vs". Use it only when both brands have a text wordmark that turns white cleanly and the two balance in width (principle 31). The Nextech vs NextGen band was approved ("show some other whose logos width will look equal in this template"), then replaced by the duel after delivery ("their designs are not good"): NextGen's boxed wordmark looked small.
+- **"perfect" ×2** (batch 7): EHR Implementation Cost as one flat white product card on the glow (`flatcard2`): the title, the figure big in the blue gradient inside a light dashed selection with small square corner handles, and a collaboration cursor (a blue arrow with a compact name tag carrying the qualifier) inside the card. The dermatology research cover on our light glass (`research`): a frosted pill, a black heading, frosted logo tiles in one row, thin Peec guide lines in our blue, no dot pattern. Repeat: one flat product card, wide and centred; a pill, a heading and one row of frosted tiles on light glass.
+- **Research with two tilted tiles** (Solventum 360 Encompass vs Optum EncoderPro, batch 7): "just need one change everything is perfect except delete 360 encompass and encodepro text and tilt the logos from one above", then "this is fine just make logo close so they touch each other a lil bit and also incrase the sizes of them too so they look a lil bigger". No names under the tiles; tiles 230px, tilted 8°, corners just touching (gap −14). Repeat: two big tiles that nearly touch (principle 33).
+- **Peec "Powered by" pair** (SimplePractice vs TheraNest, batch 7, `versus/peecpair`): "this is fine but use black color for logo text". A near-white hairline grid, a white pill with the title's angle, each brand's logo with its name in its own cell, lettering black, marks in their own colours.
+- **Blue grid** (7 Best PT Software for Multi-Location Clinics, batch 7, from the user's Databricks reference): "i like this layout and design". A flat blue field, a white hairline grid edge to edge, each pick on a white tile in its own cell. Repeat: the picks as one shaped group, one per cell, on a strong field.
+- **Approved and kept, no note** (batch 7): `squircles` (the picks as big frosted squircle tiles in one row on the faint grid), `versus/glasspair` (two big frosted squircles on the deep-dunes blue, after "this looks better but use our good gradient bg"), `versus/span` (each product's price range to scale on one axis, on the dunes after "change bg, this bg doesnt look good"), `typehero` (big names in one line, one frosted bar of answers), `versus/inline` (logos inside a big two-line headline), `meter` (bare, on white). What they share: one object at confident scale, on one of our strong fields.
+- **Praise that was reversed** (batch 7): `versus/glasssplit` (DoseSpot, Nextech on black, McKesson, Solventum light), `glassrows` (mental health), `avatars` (mental health, "these 2 can be improved"), `capsule` (PT), `flatcard` (the first flat card with a cursor, "this can be improved") and `bigtype` (Solventum) were approved, then replaced by the user on every article. Asked whether to keep them, the user first said keep all, then "actually delete all of them": all six are retired. Two lineups in specialty (derm, PT) and the picker's `versus/center` and `versus/badges` were replaced too ("need new templates for these"). None of these is a model to repeat; principle 34.
 - **"Its fine"** (`count`, `cloud`, `versus/center`, `versus/lanes`, `picks`; `versus/fan`, batch 6: "this is fine"): accepted, not praised. Use them, but don't copy them as models.
 
 **Ask:** which praised image is closest to this article, and does this image use what made that one work?
@@ -249,15 +268,125 @@ An X vs Y image must say "two things, side by side" in one glance: two equal sid
 
 ### 24. Use our whole palette across a batch
 
-Variety comes from layout, and colour varies across a batch too. Our fields range from the black canvas (`glassbar`, `dark`, `versus/duo`, `versus/slash`) and the blue gradient (the deep-dunes blue, the `versus/tiles` blue) to the light glow, mesh, white panel, sky and cream. A batch drawn from one corner of that range looks like one template.
+Variety comes from layout, and colour varies across a batch too. Our fields range from black (the black canvas of `glassbar`, `dark`, `versus/duo`, `versus/slash`; plain black for `versus/band`) and the blue gradient (the deep-dunes blue, the `versus/tiles` blue, the `bluegrid` blue) to the faint grids, light glass, the light glow, mesh, white panel, sky and cream. A batch drawn from one corner of that range looks like one template.
 
 - **Round 3** (batch 6): "you are just using same color". Every option was pale sky with blue accents. Then: "we have multiple colors, black background color, blue gradient, and then like so many other".
 - **Round 7** (batch 6): "try using black background maybe, because we haven't used it for like so long." The approved `glassbar` is black.
 - **Versus tiles** (DrChrono vs athenahealth, batch 6): approved with "use the blue gradient bg".
 - **Batch 5 picks:** seven different fields for 12 images (principle 14).
 - **Batch 6 as delivered:** black twice (`glassbar`, `versus/duo`), the blue once (`versus/tiles`), white twice (`figures`, `versus/type`), glow five times (picked), and `frostrow`'s own light mesh. The vibrant rule (1 in 3 per category, never neighbours) still holds; the user overrode it once, for Waystar's black duo.
+- **Batch 7, "use black bg too in some":** black and blue were asked for, but which black and which blue matters (principle 28). Black is plain black ("use full black bg"); blue is the deep dunes. "Our good gradient" (McKesson vs PioneerRx glass pair): "this looks better but use our good gradient bg". The hand-mixed blue (sky to royal with lavender and aqua glows) was not ours; the approved one is the deep-dunes blue with grain (`"canvas": "dunes"`), and the light glow version was disapproved.
+- **Batch 7, the vibrant cap against an approved black:** Solventum's black big type was approved, the 1-in-3 rule refused it, and the light substitute was later sent back with SimplePractice and Nextech: "their designs are not good". When the cap blocks an approved image, say so and offer an override or a different black or blue design; never silently downgrade to a light reuse.
+- **Batch 7 as delivered:** black twice (`dark`, `versus/band`), the blue three times (`bluegrid`; `versus/span` and `versus/glasspair` on the dunes), and the light fields for the rest (faint grids, light glass, glow, white, sky).
 
 **Ask:** lay the batch out as thumbnails. Are the strong fields (black, the blue) there as well as the light ones? Does any single field take over? Within a category, do the vibrant images stay 1 in 3 and apart?
+
+### 25. One skeleton per review page, once per category per batch
+
+A review page shows each skeleton once. A delivered batch uses a layout at most once per category, even when the user approved it on two articles.
+
+- **Batch 7, every round:** a family shown on N articles of one page won at most once, often never. Round 4 put big type on 6 articles and notepad on 3; one big type won. Round 2's rollout: stacked 0 of 5, fan 0 of 2, glass split 1 of 4. The user: "done stop repeating designs now , use black bg too in some".
+- **Two lineups in specialty** (derm and PT, both approved in round 2) were both flagged after delivery ("need new templates for these") and replaced. Approving both didn't make the repeat welcome.
+- **Visual QA's "repeat" calls were right almost every time.** Count families by skeleton, not by name: QA flagged glass split as `versus/table`, meter as `ranked`, glassbars as `versus/stacked`.
+- A loved design may come back in a different category (the duel: Vanta in compliance, then Nextech in specialty, approved), never twice in one (the user declined "Reuse the looks you loved" for the last specialty articles).
+
+**Ask:** does any other option on this page, or any other image of this category in the batch, share this skeleton?
+
+### 26. Big object, full stage
+
+One object at confident scale fills the stage: duel names about 120px, tiles 200–400px, cards about 900–1100px wide. A small widget floating in a big field reads as a dashboard screenshot, not a cover.
+
+- **Batch 7 rounds 1–3:** almost every rejection was a compact white or frosted card about 600px wide, 2–4 rows of 14–22px labels and mid-sized blue figures, centred on a gradient: `breakdown`, `track`, `toppick`, `glasstiles`, `pricebar`, `versus/routes`, `versus/profiles`. All retired.
+- **The flagged finals**, the seven finals the user flagged with "need new templates for these" (EHR implementation, Vanta vs Drata, SimplePractice vs TheraNest, Nextech vs NextGen, the dermatology, physical therapy and mental health lists), had the same look: lineups as a thin strip of small icons, badges as outline chips, a cost grid in the top-left.
+- **`flatcard`** (retired; improved into `flatcard2`): "increase its width and make it center aligned and increase the size of cursor". The approved `flatcard2` is wide and centred.
+- **The kept finals** fill the canvas: the duel's names, the band's wordmarks, squircles and glass-pair tiles at 220–400px, the checkcard about 900px wide or more and flatcard2 (~1100px).
+
+**Ask:** at 350×250, is there one big thing at confident scale, or a small card floating in an empty field? Are the labels big enough to read at that size?
+
+### 27. A figure lives inside an object
+
+A price or a score is never the lone hero on a bare field. It sits inside an object: a struck claim, a product card with a selection, a to-scale track, a type pair, a prompt panel. It stays in balance with the heading (principle 1's 150px cap).
+
+- **Rejected, a figure alone:** big type (1 of 6 approved, then retired), `bracket`, `horizon` ×3, `bluefield`, `wordtag`, and `versus/delta`: "$20 looks so weird bec its so big there is no visula balance at all" (the $20 was about 2.4× the heading).
+- **Kept, a figure inside an object:** `strike` ("Love it"), `flatcard2`'s selection ("perfect"), `versus/span`'s and `meter`'s tracks, the `versus/scores` pair (TruBridge, 7.6% vs 21.9%), and `prompt`.
+- This replaces "logos and type lead, figures follow", which was written mid-batch and is too broad: figure-led images were approved whenever the figure had a home.
+
+**Ask:** cover the field around the figure. Is the figure still inside something (a card, a track, a strike, a pair)? Is it the same weight as the heading or a step above, never a block on its own?
+
+### 28. Black is plain black, blue is our deep dunes
+
+Black means plain black. Blue means the deep-dunes blue with grain (or the `bluegrid` blue). Never the navy-blob black canvas, another brand's gradient or a hand-mixed blue.
+
+- **"use full black bg"** (the Peec black covers): the approved `versus/band` is plain black, one hairline band.
+- **The navy-blob black lost:** nearly every rejected black option sat on black with big navy and blue glows (rows, routes, glow tiles, big type, `heroglass`: "its too bad not visually appealing at all"; `versus/underline`: "too bad visual"). Glass rows, glass split and big type on it were all retired. Curve's span, approved on it in round 5, came back as a final: "change bg, this bg doesnt look good". Of black, the dunes and the glow, the dunes won.
+- **Outside gradients:** "you can also use calendly gradient cus it matches with ours", then, on the result: "the gradient looks awful" (sky and aurora). The user's verdict on the image overrules their own suggestion.
+- **Hand-mixed blue:** "this looks better but use our good gradient bg" (McKesson). Our gradient is the dunes.
+
+**Ask:** is the black plain black? Is the blue the dunes (or the `bluegrid` blue)? Is any gradient on the image one we didn't approve?
+
+### 29. Flat shapes: card corners, no rotation, no blobs
+
+Big panels take card corners (about 40px), never pill ends. Cards never rotate; only small tiles (240px or less) may tilt, by 8° at most. No liquid joins, bursts, bubbles, Venn diagrams, rims, orbits or org-chart trees.
+
+- **Capsule** (PT, the seven marks in one white pill): "i dont like this rounded it looks weird".
+- **`cursorcard`** (tilted, from Peec; retired): "not tilted rectangle pls also use our bgs". Rebuilt flat as `flatcard`, approved, then improved into `flatcard2`, the one kept.
+- **Gooey** (Calendly's fused squircles): "ew dont connect and the gradient looks awful".
+- **Burst:** "disgusting shapes". **Bubbles:** "ew". **Horizon:** "i like the shape you used but over alll its too much., not visually apealing at all"; kept for round 7 and failed every time after (horizon2, side glow, eclipse, crescent): a liked part is not a direction.
+- Disapproved with no note: `versus/venn`, `versus/bands`, `versus/butterfly`, `waffle`, `arc`, `versus/medallions`, `tree`.
+- **Tilt survived once:** Solventum's two 230px tiles at 8°, corners touching.
+
+**Ask:** is any panel pill-ended, any card rotated, any tile tilted past 8°? Is there a shape that isn't a card, a tile, a track or type?
+
+### 30. Say each thing once
+
+No visible string twice: no tag repeating the title, no names under tiles the heading already names, no chip and cursor tag saying the same thing, no typed name beside its own wordmark.
+
+- **Nextech band:** "delete dermatology tag" (the title already says dermatology).
+- **Solventum research:** "delete 360 encompass and encodepro text" (the heading names both).
+- **`flatcard`** (now `flatcard2`): its action pill was cut because it repeated the tag. Fact QA: a wordmark next to the same typed name fails (`"wordmark": true` hides the typed name).
+
+**Ask:** read every word on the image. Does any word or name appear twice, or say what the heading already says?
+
+### 31. Wordmark pairs are real and equal
+
+Layouts that show wordmarks use each brand's real text wordmark, or the mark plus its name typed in ink. The two are sized to equal width. Lettering is white on black and black on light; the marks keep their colours.
+
+- **Band:** "the bg the logo without bg, white logo colors, logo text. so for this template use logos that has logo text too". Then: "show some other whose logos width will look equal in this template". Tecsys vs Cardinal on the band was disapproved (Cardinal's thin wordmark looked small), and Nextech's band was replaced because NextGen's boxed wordmark looked small.
+- **Peecpair:** "this is fine but use black color for logo text". A brand with no wordmark of its own (TheraNest) gets its mark in colour and its name in black, not in brand colour.
+
+**Ask:** are both wordmarks real, the same width by eye, lettered in ink (white on black, black on light), with the marks in their own colours?
+
+### 32. A reference is a spec, translated to our system
+
+Measure a reference on the original file (radius as a %, stroke, sizes, colours, paths) and put the numbers in the spec. Then translate only what makes it ours: our fields, our colours, our 22% tile radius and our "vs". This sharpens principle 9.
+
+- **The checkbox had to be redone:** "use exact same checkboxes size and tick icon that was in its inpirsation" (principle 9 has the numbers).
+- **Our fields:** "for this use our glass bg" (derm research), "not tilted rectangle pls also use our bgs" (`cursorcard`, retired), "for McKesson vs PioneerRx … use this ss with our bg".
+- **Our colours:** "use bg lines too like ss2 in our colors".
+- **Our radius:** "make the corner radius consistenty" (the glass pair tiles take frostrow's 22%, not Calendly's 30%).
+- **Our grammar:** "done and i like these we have black bg template too so use that instead of + use vs".
+- **References beat invention** in batch 7: about 10% of invented options were approved; the reference-led ones passed in one or two rounds. After two failed rounds of inventions, go to references (browser research of product blogs with our vibe: Dub, Peec, Calendly, Databricks), not to the approved-looks picker: of the four approved-looks picks, three were later replaced (Vanta center, SimplePractice badges, EHR implementation costgrid); only Claims Denial's prompt stayed.
+
+**Ask:** does the spec carry the reference's measured numbers? Is everything that changed one of: field, colour, radius, "vs"?
+
+### 33. Pairs sit close and big
+
+A two-tile pair is at least 200px per tile and nearly touches. With a "vs", the gap is the "vs", not empty field.
+
+- **Solventum:** "this is fine just make logo close so they touch each other a lil bit and also incrase the sizes of them too so they look a lil bigger". Tiles 180 → 230px, gap −14.
+- **Kept pairs:** the glass pair (two 400px squircles on the dunes), the duel (the small grey "vs" is the gap).
+
+**Ask:** is each tile 200px or more? Is the gap between them either nothing or the "vs"?
+
+### 34. Approval holds only when the batch holds
+
+An approval in a round is provisional until the user sees the whole batch together. Show the batch as a contact sheet and critique it before delivery: repeats, small widgets, the navy-blob black, one field everywhere.
+
+- **Batch 7:** 11 of 20 approved finals were redone after delivery: "need new templates for these use /blog-featured-images" (seven at once), "these 2 can be improved i am attaching some inspirations in the next msg", "neeed designs for them, their designs are not good".
+- **Designs approved and then replaced everywhere are retired.** Asked whether to keep them, the user first said keep all, then "actually delete all of them" (glass split, glass rows, avatars, capsule, flatcard, big type).
+- **The best of a weak set is provisional:** the PT capsule was accepted as the only option on offer and flagged again minutes later.
+
+**Ask:** lay the batch out as one sheet. Is there a repeat, a small widget, a navy-blob black or a field that takes over? Would the user flag any image if they saw it next to the others?
 
 ## Self-Critique (Required)
 
@@ -292,13 +421,23 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Our parts | Built only from approved parts, checked against the map of the approved sheet; no device, prop or material (17) |
 | Own skeleton | Its skeleton isn't shared with a layout already in the category, siblings from the same approved part included (14, 17) |
 | Fresh batch | The batch isn't filled with reuse: no layout the user has already seen in it, no template the user has seen many times across the site offered as "new", no approved option rolled out to other articles (14) |
-| Field variety | Across the batch the colour range is used: the black canvas and the blue gradient as well as the light fields, no single field taking over; the user's picks (`bgPick`) are kept; vibrant stays 1 in 3 per category (6, 14, 24) |
+| Field variety | Across the batch the colour range is used: black (plain black for new designs) and the blue (the dunes) as well as the light fields, no single field taking over; the user's picks (`bgPick`) are kept; vibrant stays 1 in 3 per category (6, 14, 24) |
 | One glance | Any chart reads in one glance at 350×250; grey tracks sit on a white card, or bare on the white field only (18) |
 | Concept fit | The visual idea matches what the article is about, and its figure is the article's own lead figure for every product shown (19) |
 | Praised parts | The closest praised image was checked, and what made it work is used where it fits (20) |
 | Pro craft | It looks made by a senior designer: one hero at a confident size, aligned edges, even gaps, sizes from one scale; nothing small, staggered or squeezed in (21) |
 | Not scattered | One tight group on the optical centre, about 940–1000px wide; nothing floats alone near an edge (22) |
 | Reads as comparison | An X vs Y image shows two equal sides with the same kind of fact and a clear "vs"; covering the "vs" still leaves an obvious pair (23) |
+| Once per page | No other option on the review page, and no other image of this category in the batch, shares this skeleton, counted by skeleton, not by name (25) |
+| Full stage | One object at confident scale (names about 120px, tiles 200–400px, a card about 900–1100px wide); not a ~600px widget of 14–22px labels floating in a field (26) |
+| Figure in an object | Every figure sits inside a card, a track, a struck claim, a type pair or a prompt; none stands alone on the field, and none outweighs the heading (27) |
+| Our black, our blue | Black is plain black; blue is the dunes (or the `bluegrid` blue); no navy-blob black, no outside or hand-mixed gradient (28) |
+| Flat shapes | No pill-ended panel, no rotated card, tile tilt only on tiles of 240px or less and at most 8°; no liquid joins, bursts, bubbles, Venn, rims, orbits or trees (29) |
+| Said once | No word or name appears twice; no tag repeats the title; no names under tiles the heading already names; no typed name beside its own wordmark (30) |
+| Wordmark pair | Real text wordmarks (or mark + name in ink), equal width by eye, lettering white on black and black on light, marks in their colours (31) |
+| Reference numbers | The spec carries the reference's measured numbers; only the field, colour, the 22% radius and "vs" were translated to ours (9, 32) |
+| Close pair | A two-tile pair is 200px or more per tile and nearly touches; with a "vs", the gap is the "vs" (33) |
+| Batch view | The whole batch, seen as one contact sheet before delivery, shows no repeats, no small widgets, no navy-blob black and no single field taking over (24, 25, 26, 34) |
 | Predicted verdict | Its closest match is an approved image, not a rejected pattern; the prediction is written down (Predict the Verdict) |
 
 Any "no" is a fix before the image moves on.
@@ -324,13 +463,39 @@ The user should rarely have to say no. Before any image or option goes to the us
 | A heading dressed as a tile | "7 best pediatric shouldnt be like other logos, this looks off" | `grid` |
 | A background with only a headline | "can be used with some other illustration, but not like this with just a title heading" | `brandline` |
 | A word against a number | "ew revert it" | Oracle vs MEDITECH 2026 scores |
+| A lone hero number on a field, too big for its heading (27) | "$20 looks so weird bec its so big there is no visula balance at all"; the rest with no note | `sp-delta`; big type ×5, `impl-bracket`, `impl-bluefield`, `impl-wordtag`, `cd-contrast`, `cd-masthead` (batch 7) |
+| A small widget in a big field: a ~600px card of 14–22px labels on a gradient (26) | no note; "need new templates for these" on the finals with the same look | `breakdown`, `track`, `toppick`, `glasstiles`, `pricebar`, `versus/routes`, `versus/profiles`; the seven finals the user flagged with "need new templates for these" (EHR implementation, Vanta vs Drata, SimplePractice vs TheraNest, Nextech vs NextGen, the dermatology, physical therapy and mental health lists) (batch 7) |
+| The same skeleton on several articles of one page (25) | "done stop repeating designs now" | big type ×6, notepad ×3, stacked ×5, glass split ×4 (batch 7) |
+| The navy-blob black: black with big navy and blue glows (28) | "its too bad not visually appealing at all"; "too bad visual"; "change bg, this bg doesnt look good"; "use full black bg" | `impl-heroglass`, `vd-underline`, Curve span on black, glow tiles, big type, rows and routes on black (batch 7) |
+| An outside or hand-mixed gradient (28) | "the gradient looks awful"; "this looks better but use our good gradient bg" | `mh-squircles` and `gooey` on the Calendly sky and aurora; `mck-glass-blue` (batch 7) |
+| A pill-ended panel (29) | "i dont like this rounded it looks weird" | `pt-capsule` (batch 7) |
+| A rotated card (29) | "not tilted rectangle pls also use our bgs" | `impl-cursorcard`; tilted `notepad` (batch 7) |
+| Liquid joins between tiles (29) | "ew dont connect and the gradient looks awful" | `mh-gooey`, `pt-gooey` (batch 7) |
+| Decorative or diagrammatic geometry: bursts, sized bubbles, Venn, overlap bands, rims and horizons, orbits, an org-chart tree (15, 29) | "disgusting shapes"; "ew"; "i like the shape you used but over alll its too much., not visually apealing at all"; the rest with no note | `vd-burst`, `sp-bubbles`, `impl-horizon`, horizon2, side glow, eclipse, crescent, `nx-venn`, `nx-bands`, `vd-butterfly`, `vd-waffle`, `derm-tree` (batch 7) |
+| A UI control or stationery as the idea: a slider, a toggle, crop marks, a notepad | "this layout is borint"; the rest with no note | `cd-slider`, `sp-toggle`, `impl-cropmarks`, `sol-notepad`, `vd-notepad` (batch 7) |
+| Too many words on a cost image (12) | "too much text" | `cd-footnote` (batch 7) |
+| Redundant text: a tag repeating the title, names under tiles the heading names (30) | "delete dermatology tag"; "delete 360 encompass and encodepro text" | `nx-band`, `sol-research` before the fix (batch 7) |
+| Unequal or unreal wordmarks: one thin or boxed, typed names in brand colour (31) | "show some other whose logos width will look equal in this template"; "use black color for logo text" | `tc-band`, the Nextech band, `sp-peec` before the fix (batch 7) |
+| Many small pieces in place of one object (chips, icon rows, a ladder, an app directory, a chip cloud) | no note; disapproved | `sp-tierchips`, `sp-ladder`, `impl-iconrows`, `derm-market`, `toppick` with its minis (batch 7) |
+| The template being replaced, re-dressed (a lineup row with hairlines or a horizon, a logo grid) | no note; disapproved | `derm-index`, `pt-horizonrow`, `pt-tilegrid` (batch 7) |
 
-**What the user praises** (repeat these first, principle 20): `spotlight` "perfect concept and design" (the title's angle in the selection box over a card of real products); `versus/scores` "i love the design" (two real numbers set big, no chart); `versus/stacked` "love it. The concept, visual , everything looks so appealing and perfect" (two clear rows, logo + name left, figure right, a slight tilt, on a calm light field); frosted glass for logos ("I like how you have used logos with these glass bgs", then "for logos bg glass bg would look better": `versus/frost`, `lineup`, `frostrow`); "wow love it, everything is perfect" for `shortlist`, `definition`, `versus/glass`, `versus/tiles` and `versus/type`; `figures` and `costgrid`, approved at once with no note (big blue figures, one anchor).
+**What the user praises** (repeat these first, principle 20): `spotlight` "perfect concept and design" (the title's angle in the selection box over a card of real products); `versus/scores` "i love the design" (two real numbers set big, no chart); `versus/stacked` "love it. The concept, visual , everything looks so appealing and perfect" (two clear rows, logo + name left, figure right, a slight tilt, on a calm light field); frosted glass for logos ("I like how you have used logos with these glass bgs", then "for logos bg glass bg would look better": `versus/frost`, `lineup`, `frostrow`); "wow love it, everything is perfect" for `shortlist`, `definition`, `versus/glass`, `versus/tiles` and `versus/type`; `figures` and `costgrid`, approved at once with no note (big blue figures, one anchor). From batch 7, only what was kept: `strike` "Love it" (the claim struck through, the truth beside it); `versus/duel` "wow love it" (two big lockups on a quiet grid); `versus/band` "this is perfect" (two white wordmarks on plain black); `flatcard2` and `research` "perfect" (one flat product card; a pill, a heading and frosted tiles on light glass with blue guide lines); `bluegrid` "i like this layout and design"; `checkcard`, `versus/peecpair` and `versus/glasspair` (copies of the user's own references on our fields). Never repeat the reversed praise listed under principle 20.
 
 **How the predictions went in batch 6** (calibration): the plain, strong layouts (`figures`, `costgrid`) and the never-used approved templates passed at once; every layout with more pieces than an approved one failed. Of nine round-4 options, the one approved (`versus/fan`) was the closest to an approved image (the tilted card on blue, 07); the eight rejected ones had no close approved match.
 
+**How the predictions went in batch 7** (calibration, 20 articles, about 170 verdicts, about 33 approvals):
+- **Invention converted at about 10%.** Of roughly 80 skeletons invented in rounds 1–7 and the redo, only `strike`, `meter`, `versus/span`, `versus/inline` and `typehero` reached a delivered final. Rounds 6 and 7 approved nothing (15 of 15 disapproved).
+- **Reference-led options passed in one or two rounds:** `versus/duel` (Dub), `bluegrid` (Databricks), `squircles` and `versus/glasspair` (Calendly's tiles), `versus/band`, `research`, `checkcard`, `versus/peecpair` and `flatcard2` (Peec and the user's screenshots). Nine of the fourteen kept layouts came from a reference.
+- **What approved:** one object at confident scale, a figure only inside an object, our strong fields (plain black, the dunes, the blue grid) or a quiet light one (faint grid, light glass), real wordmarks or big tiles as the hero.
+- **What didn't:** the same skeleton on several articles, a small widget in a field, a lone hero number, the navy-blob black, outside gradients, decorative geometry, UI controls as the idea, pill-ended or rotated panels.
+- **Approval was not the verdict:** 11 of 20 approved finals were redone after delivery, and 6 approved layouts were retired. Predict for the batch, not the round: before delivery, check the image on the batch sheet (principle 34).
+- **The picker was a miss:** Of the four approved-looks picks, three were later replaced (Vanta center, SimplePractice badges, EHR implementation costgrid); only Claims Denial's prompt stayed. After two failed rounds, predict from references, not from old templates.
+- **Visual QA's "repeat" calls were right almost every time;** when they were overridden, the results were mixed. A QA "repeat" is a predicted reject.
+
 ## How to Keep Learning
 
-Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named; a new one also gets a Self-Critique row, named in SKILL.md's Review Checklist and in agents.md's Maker and Visual QA templates, and raises the principle count here, in SKILL.md, in the README and in memory), a lesson, a renderer check where it can be measured, with a case in `scripts/test-refusals.mjs` for every decision the renderer or `plan.mjs` can enforce (otherwise a V- or F-check in `agents.md` and a line in the Maker template), a generalisation when the same correction comes twice, the decision recorded (a rejection in `agents.md` V9 and, for a layout, `RETIRED` in `layouts.mjs`; a newly approved image as an example spec and a `sources.json` line; every count it changes (modes/layouts, retired, approved images, examples, refusal cases) updated across the skill, the README, the `scripts/render.mjs` header comment and memory), every running Maker and QA told, the inspiration log for references, refreshed approved images, and a push.
+Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named; a new one also gets a Self-Critique row, named in SKILL.md's Review Checklist and in agents.md's Maker and Visual QA templates, and raises the principle count here, in SKILL.md, in the README and in memory), a lesson, a renderer check where it can be measured, with a case in `scripts/test-refusals.mjs` for every decision the renderer or `plan.mjs` can enforce (otherwise a V- or F-check in `agents.md` and a line in the Maker template), a generalisation when the same correction comes twice, the decision recorded (a rejection in `agents.md` V9 and, for a layout, `RETIRED` in `layouts.mjs`; a newly approved image as an example spec and a `sources.json` line; every count it changes (modes/layouts, retired, approved images, examples, refusal cases and steps, taste principles) updated across the skill, the README, the `scripts/render.mjs` header comment and memory), every running Maker and QA told, the inspiration log for references, refreshed approved images, and a push.
 
 Batch 6 (Oct 20 2026) added principles 21–24 (pro craft, one focal group, a comparison that reads as one, the whole palette across a batch), grew 2 (radii), 8 (names), 10 (minimal means one fact), 14 (seen-before is not new), 17 (map first) and 20 (what was praised), and the Predict the Verdict section. The history is in `lessons.md` section 21.
+
+Batch 7 (Oct 21–22 2026) added principles 25–34 (one skeleton per page, big object, a figure inside an object, plain black and the dunes, flat shapes, say each thing once, real and equal wordmarks, a reference as a spec, close pairs, approval that holds only with the batch), grew 4 (no dot fade), 9 (the checkcard numbers, "exact ditto"), 10 (meter bare), 12 (cost words), 14 (approved templates are not new), 17 (references beat invention), 20 (only what was kept; the reversed praise) and 24 (which black, which blue; the vibrant cap), and calibrated Predict the Verdict. The history is in `lessons.md` sections 22 and 23.

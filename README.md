@@ -1,6 +1,6 @@
 # Blog Featured Images: a Claude Code skill
 
-Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in three families plus originals: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream), Gumloop-style layouts (bold type vs, tilted app-icon tiles, a frosted wordmark bar, a switch arrow, a figure badge), and originals (a receipt for costs, a dictionary entry for "what is"; for costs also a frosted glass bar on black, two big figures and a cost grid; for best-of lists a notepad shortlist, a frosted logo lineup, a row of frosted-glass logo tiles, a selection-box spotlight, a checked picks card, a logo cloud, price-range tracks and a big count; for X vs Y frosted glass logo tiles, a bento grid, figure badges, a checked card, price lanes, big scores, a centre tile, and two price cards fanned or stacked). 28 modes, 46 layouts. It's free: everything renders with headless Chrome, with **no AI image generation**.
+Turn blog article URLs into **premium, article-specific featured images** (1600×900 plus crops) in three families plus originals: calm card layouts on grainy light backgrounds (plus a vibrant deep-blue field), Chatbase-style headline layouts for comparisons (facing pills, connected logos, black slash, black duo panels) and single products (black + brand colour, or a black logo on cream), Gumloop-style layouts (bold type vs, tilted app-icon tiles, a frosted wordmark bar, a switch arrow, a figure badge), and originals (a receipt for costs, a dictionary entry for "what is"; for costs also a frosted glass bar on black, two big figures and a cost grid; for best-of lists a notepad shortlist, a frosted logo lineup, a row of frosted-glass logo tiles, a selection-box spotlight, a checked picks card, a logo cloud, price-range tracks and a big count; for X vs Y frosted glass logo tiles, a bento grid, figure badges, a checked card, price lanes, big scores, a centre tile, and two price cards fanned or stacked), plus covers led by product-blog references (Peec, Dub, Calendly, Databricks): a measured checklist card, frosted squircle tiles, a blue grid, a struck-through price, a true-scale meter, a price axis, big name lockups, white wordmarks on plain black and two frosted tiles on the deep blue. 36 modes, 60 layouts. It's free: everything renders with headless Chrome, with **no AI image generation**.
 
 ![Example featured images](assets/examples.webp)
 
@@ -13,7 +13,8 @@ Every image:
 - **looks different**: a layout not used yet goes first, and a used layout never comes back in the same category, only in a different one (enforced)
 - shows **real, balanced product logos** where products are named
 - is built from **the approved parts** (white cards, rows, tracks, checklists, logo tiles, big type), never props or device mockups, and crafted like a senior designer would: balanced, not scattered, one corner radius per set; a comparison reads as one at a glance
-- comes in a batch whose **backgrounds vary** (black, the blue gradient, glow, mesh, white and the light fields), never one colour for everything
+- comes in a batch whose **backgrounds vary** (plain black, the deep-dunes blue, glow, mesh, white, the faint grid, light glass and the light fields), never one colour for everything and never another brand's gradient
+- is **one big object on a full stage**, never a small widget floating on a gradient, and a batch is critiqued as a whole on one contact sheet before delivery
 - is **checked by two independent QA agents** side by side, one for looks (visual appeal is a hard gate) and one for facts
 
 ---
@@ -64,7 +65,7 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 
 **Four roles, in one fast batch** (an agent never both makes and approves an image):
 
-1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), checks which logo-dependent layouts each brand can use (`logo-check.mjs`), picks the best free layout per article (not used yet first, then used only in other categories) and which ones go on the vibrant blue, and reserves them all (`plan.mjs`). When a batch would mostly reuse templates already on the site, it maps the approved images, researches good product blogs, designs new layouts from the approved parts and shows you at least two options that differ in composition, not only in colour.
+1. **Orchestrator** (Claude): reads every URL at once (`read-articles.mjs`), checks which logo-dependent layouts each brand can use (`logo-check.mjs`), picks the best free layout per article (not used yet first, then used only in other categories) and which ones go on the vibrant blue, and reserves them all (`plan.mjs`). When a batch would mostly reuse templates already on the site, it maps the approved images, researches good product blogs, designs new layouts from the approved parts and shows you at least two options that differ in composition, not only in colour (one skeleton per review page; after two failed rounds of inventions, the next round is led by references). It never asks you for notes: a disapproval is diagnosed from the written taste.
 2. **Makers** (parallel subagents): write each spec from the article's facts and render it.
 3. **Visual QA** (an independent subagent): judges the whole batch on one contact sheet (`sheet.mjs`): visually appealing, crafted like a senior designer would (not scattered, one corner radius per set), a comparison that reads as one, backgrounds varied across the batch, background fits, no layout reused in a category, 2-second scan, minimal, balanced, clean logos.
 4. **Fact QA** (an independent subagent, running at the same time): checks every word and number against the article text: the heading mirrors the title, every figure keeps its qualifier, nothing contradicts or is invented.
@@ -72,7 +73,8 @@ Or invoke `/blog-featured-images`. Each article gets a `featured-images/<slug>/`
 Failures go back to their own Maker and are re-checked only by the QA agent that failed them; an image is delivered only when both pass.
 
 5. **Background picker** (`bgpick.mjs`): `render` renders every image on every background its layout can take (each option on a temporary copy of the history, so the real one is never written), `page` builds a picker page where you pick one per image (picks save as you click), and `apply` writes your pick into the spec as `"bg": "<field>", "bgPick": true`; the image is then rendered last with it.
-6. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting as used in their category, and can never be re-created or overwritten.
+6. **Deliver** after a batch critique on one contact sheet: separate files per image and a link page with a Copy button per row.
+7. **Finalize** (`finalize.mjs`): delivered images become permanent. They stay stored (plus a copy in `~/.blog-featured-images/delivered/`), keep counting as used in their category, and can never be re-created or overwritten, except when you ask for an image to be redone: `render.mjs --redo` (every other check still runs; never `--force`), then finalize it again.
 
 **Which layouts are free.** The user's rule: "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used". So a layout not used yet goes first, and a used layout comes back only in a different category. Usage is kept per brand: every image rendered (drafts too), reserved or delivered, plus your own record, `references/used-layouts.json`, which is the truth for its brand up to its `recordedAt` (or up to a layout's own `asOf`, when you change one layout later: a design you love can go back to "not used"). A re-render of the same article replaces its entry, and `plan.mjs --release` frees a reservation you won't use. To pick a layout yourself for one article, reserve it as `<slug>=<layout>!`. The rule is the floor: a batch is never filled mostly with templates already on the site, and a design you approve on one article stays with that article rather than being rolled out across the batch.
 
@@ -85,8 +87,8 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `VARIETY CHECK FAILED` | A layout is used once per category (see "Which layouts are free"); favourites also have a site-wide cap (slash, connect, duo 5; dark 3; pills, logotype 2); same-topic articles never share a mode |
 | `BACKGROUND FIT FAILED` | Each layout only takes the light backgrounds that flatter its illustration, unless you picked the background (`bgPick`) |
 | `BACKGROUND CHECK FAILED` | Only `sky`, `paper`, `cream`, `g5`, `soft`, `white`, `glow`, `mesh` and `blue` exist, and a layout that paints its own canvas takes no `bg` unless you picked it; `ranges` without its card (`"bare"`) goes only on your `white` pick |
-| `BACKGROUND PICK FAILED` | `"bgPick": true` needs a `bg`; a layout whose own full canvas would hide the pick (pills, connect, slash, duo, dark, glassbar, glass, frost, frostrow, receipt, definition, lineup, prompt) refuses it, and a picked blue is refused unless all the layout's text sits in a white card (`checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/fan`, plus `versus/tiles` on its own blue field) |
-| `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts, `glassbar` included) appear on at most 1 in 3 images per category, never on neighbours |
+| `BACKGROUND PICK FAILED` | `"bgPick": true` needs a `bg`; a layout whose own full canvas would hide the pick (pills, connect, slash, duo, dark, glassbar, glass, frost, frostrow, receipt, definition, lineup, prompt, and the twelve batch-7 canvas layouts) refuses it, and a picked blue is refused unless all the layout's text sits in a white card (`checklist`, `versus/table`, `window`, `before-after/flow`, `versus/checks`, `picks`, `stack`, `versus/fan`, plus `versus/tiles` on its own blue field); `meter` takes white only, also as a pick |
+| `VIBRANT CHECK FAILED` | Vibrant images (the deep-dunes blue and the black layouts, `glassbar`, `versus/band`, `bluegrid`, `versus/span` and `versus/glasspair` included) appear on at most 1 in 3 images per category, never on neighbours |
 | `CONNECT LOGO CHECK FAILED` | `versus/connect` needs each brand's own app icon (with its background colour); otherwise use another versus layout |
 | `SLASH NAME CHECK FAILED` | A `versus/slash` name must be white + its brand colour; a one-word name with no capital break needs its coloured part marked |
 | `PILLS LOGO CHECK FAILED` | `versus/pills` needs logos that sit on white; a brand with only a solid app icon uses another versus layout |
@@ -94,13 +96,14 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `VIBRANT FIT FAILED` | Only checklist, versus/table, window, before-after/flow and versus/fan go on the vibrant blue, unless you picked the blue for `versus/checks`, `picks` or `stack`, whose text all sits in a white card (a picked blue still counts as vibrant) |
 | `CHECKLIST FIELD FAILED` | The checklist goes on the vibrant blue only (the renderer sets it) |
 | `SERIES CHECK FAILED` | The optional site mark appears on at most 1 in 3 images per category, never on neighbours |
-| `FIELD FIT FAILED` | Gumloop layouts, `versus/frost` and `versus/bento` take their approved fields; prompt takes only `"soft"`; every other layout takes no `field` |
+| `FIELD FIT FAILED` | Gumloop layouts, `versus/frost` and `versus/bento` take their approved fields; prompt takes only `"soft"`; every other layout takes no `field`. Batch-7 layouts paint one approved field: `"canvas"` only `"dunes"` on `versus/span` and `versus/glasspair` and `"grid"` on `squircles`, `"glass"` only `true` on `research` |
 | `TILES LOGO CHECK FAILED` / `GLASS LOGO CHECK FAILED` | `versus/tiles` needs two tiles that match (both filled or both white); `versus/glass` needs wordmarks that fit the bar |
 | `LOGO FILE MISSING` | The local logo file named in the spec doesn't exist at that path (relative to the spec) |
-| `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten |
-| `CONTENT CHECK FAILED` | Each layout needs enough real facts to fill its frame (e.g. window 2+ rows, hub 6–7 logos, picks 3–7, cloud 3–8 logos, frostrow 3–6 logos, ranges 3–6 rows plus a scale, figures 2 rows, costgrid 3 cells, glassbar a label and a value, a figure or score on both sides of a two-product layout; `versus/scores` needs a real number on both sides, never a number against words) |
+| `REDO REFUSED` | `--redo` only redoes a slug's own delivered image, in its own folder: refused for a slug never delivered or for another slug's delivered folder |
+| `FINAL IMAGE LOCKED` | A delivered image is permanent: it can't be re-created or overwritten, except by `--redo` when you ask for that image to be redone (it lifts only this lock) |
+| `CONTENT CHECK FAILED` | Each layout needs enough real facts to fill its frame (e.g. window 2+ rows, hub 6–7 logos, picks 3–7, cloud 3–8 logos, frostrow 3–6 logos, ranges 3–6 rows plus a scale, figures 2 rows, costgrid 3 cells, glassbar a label and a value, a figure or score on both sides of a two-product layout; `versus/scores` needs a real number on both sides, never a number against words; the batch-7 layouts too, e.g. meter 2+ rows and a `max`, strike `from` and `to`, both logos on the versus pairs) |
 | `FAIRNESS CHECK FAILED` | `dark` is refused when the title says "vs" or "versus": an X vs Y article always shows both products |
-| `RETIRED LAYOUT` | 42 layouts were retired by the user and never come back: `brandline`, `folder`, `versus/scale`, `versus/chat`, `versus/split`, `versus/duet`, `versus/rows`, `versus/logos`; the batch-5 props layouts (`versus/compare`, `versus/search`, `versus/polaroid`, `versus/notes`, `versus/phones`, `versus/browser`, `notify`, `wallet`, `stickers`, `letterboard`, `tags`, `keycaps`); `versus/window`, `versus/range`, `versus/rings`, `versus/share`, `versus/sheet`, `versus/columns`; and from the batch-5 final review `versus/plans` ("i dont like the design, try smth else for comparison"), `versus/fit`, `versus/spot` and `grid` ("7 best pediatric shouldnt be like other logos, this looks off"); and from batch 6 `steps` ("it looks like this is designed by a begineer not by a pro experienced designer"), `numbered`, `versus/pill` ("doesnt look like comparison image"), `versus/chips`, `versus/offset` ("painfully bad visual design"), `versus/halves`, `link`, `versus/annotate`, `versus/corners` ("it looks scattered, it looks like AI slop"), `poster`, `versus/glasscards` and `versus/figures` |
+| `RETIRED LAYOUT` | 134 layouts were retired by the user and never come back. Batch 7 retired 92 (all listed in `scripts/layouts.mjs`): 11 in the user's words, among them `versus/burst` ("disgusting shapes"), `capsule` ("i dont like this rounded it looks weird") and `cursorcard` ("not tilted rectangle pls also use our bgs"); 50 disapproved with no note; 5 approved once and then replaced on every article ("actually delete all of them"); 26 never shown. Before that: `brandline`, `folder`, `versus/scale`, `versus/chat`, `versus/split`, `versus/duet`, `versus/rows`, `versus/logos`; the batch-5 props layouts (`versus/compare`, `versus/search`, `versus/polaroid`, `versus/notes`, `versus/phones`, `versus/browser`, `notify`, `wallet`, `stickers`, `letterboard`, `tags`, `keycaps`); `versus/window`, `versus/range`, `versus/rings`, `versus/share`, `versus/sheet`, `versus/columns`; and from the batch-5 final review `versus/plans` ("i dont like the design, try smth else for comparison"), `versus/fit`, `versus/spot` and `grid` ("7 best pediatric shouldnt be like other logos, this looks off"); and from batch 6 `steps` ("it looks like this is designed by a begineer not by a pro experienced designer"), `numbered`, `versus/pill` ("doesnt look like comparison image"), `versus/chips`, `versus/offset` ("painfully bad visual design"), `versus/halves`, `link`, `versus/annotate`, `versus/corners` ("it looks scattered, it looks like AI slop"), `poster`, `versus/glasscards` and `versus/figures` |
 | `CATEGORY MISSING` | Every spec names its blog category (a layout is used once per category) |
 
 **The look:**
@@ -110,7 +113,7 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 - **One bold blue anchor**, white UI cards, black `#0A0A0B` headlines on every layout and brand (white on the black and blue fields; semibold on card layouts, Inter Medium on headline layouts), a hero at 55–70% of the width.
 - **Logos:** a free chain, loaded at render time: a local file or URL in the spec first; then Brandfetch symbol (with a client ID) → Iconify → Simple Icons → Brandfetch square icon (with an ID; Google's favicon without one) → letter tile. Logos fill ~65% of their tile, app icons fill the tile, pale marks are darkened, and "best of" hubs show logos only. A wrong mark can be replaced by the official file in `featured-images/assets/`.
 
-## Layouts (28 modes, 46 layouts)
+## Layouts (36 modes, 60 layouts)
 
 **Card layouts:**
 
@@ -186,6 +189,25 @@ Failures go back to their own Maker and are re-checked only by the QA agent that
 | `versus/fan` | X vs Y with one price each: two white cards tilted toward a blue "vs" disc, each with logo tile, name, price and unit | glow, sky, paper; the blue too |
 | `versus/stacked` | X vs Y with prices on different scales: two wide tilted row cards, logo and name left, price and unit right, the "vs" disc on the seam | glow, mesh, sky |
 
+**Batch-7 layouts** (20 articles redesigned, led by the user's references and product-blog research: Peec, Dub, Calendly, Databricks; 14 kept, each in a delivered final). Each takes one approved field only:
+
+| Layout | Best for | Its one field |
+|---|---|---|
+| `checkcard` | Best-of lists, names only: a pixel copy of the user's Peec checklist, with its measured checkbox | a faint grid of white cards, no grain |
+| `flatcard2` | One cost figure: the figure in a dashed selection with handles, a cursor whose tag holds the qualifier | the light glow |
+| `research` | Best-of lists (and a pair) as frosted squircle tiles under a frosted tag and the heading, from Peec's research cover | our light glass |
+| `squircles` | Best-of lists with real marks: big frosted squircle tiles in one row | the faint grid |
+| `bluegrid` | Best-of lists: each pick on a white tile in its own cell of a blue grid, from Databricks | its blue field (vibrant) |
+| `typehero` | X vs Y with one short answer each: the names big in one line, both answers on one frosted bar | its light glass |
+| `strike` | "Is free X worth it": "$0" struck through, an arrow, the real monthly cost | glow, sky |
+| `meter` | Two cost options on one true-scale track, no card | white |
+| `versus/peecpair` | X vs Y with real wordmarks on a near-white hairline grid, from the user's Peec cover | its near-white grid, no grain |
+| `versus/inline` | X vs Y with a figure each: the logos set inside a big headline | its light canvas |
+| `versus/span` | X vs Y with a price range each: two capsules to scale on one price axis | the deep-dunes blue (vibrant) |
+| `versus/duel` | X vs Y as two big name lockups and a small "vs", from Dub | a faint grid with soft corner glows |
+| `versus/band` | X vs Y with clean text wordmarks: both in white on one hairline band | plain black (vibrant) |
+| `versus/glasspair` | X vs Y with strong marks: two big frosted tiles, no text | the deep-dunes blue (vibrant) |
+
 ## Add your own site
 
 Copy `brands/_template.json` to `brands/<site>.json`, fill in the site's colours, and optionally `markUrl` (the site's own square icon) and `markName` for the site mark (card layouts only). Then set `"brand": "<site>"` in specs. Usage history is kept separately per brand, and the user's record in `references/used-layouts.json` belongs to one brand (its `"brand"` key), so a new site has no record until you keep one for it: until then its own history decides.
@@ -197,19 +219,19 @@ Paths are inside `skills/blog-featured-images/`.
 | Path | Contents |
 |---|---|
 | `SKILL.md` | Hard rules, layouts and workflow (Claude reads this first); the required "Keep Learning" loop |
-| `references/approved/` | The 46 finalized reference images: the target look; `sources.json` names the example spec behind each |
+| `references/approved/` | The 61 finalized reference images: the target look; `sources.json` names the example spec behind each |
 | `references/design-language.md` | The rulebook: visual appeal, backgrounds and fit, shadows, layouts, text budget, logos, guardrails |
 | `references/spec-format.md` | The JSON spec for every layout (snippets show each layout's own fields; `examples/` has complete, renderable specs) |
 | `references/agents.md` | The four roles (job, steps, prompt, limits), the fast-batch flow, the Visual and Fact checklists |
-| `references/taste.md` | The user's taste as 24 principles (each tied to the note that taught it), the Self-Critique every image passes, and the approved and rejected patterns every image is compared with before you see it |
+| `references/taste.md` | The user's taste as 34 principles (each tied to the note that taught it), the Self-Critique every image passes, and the approved and rejected patterns every image is compared with before you see it |
 | `references/lessons.md` | What each batch and review taught, speed tools, gotchas, pre-flight checks |
 | `references/checks.md` | Every renderer check and the feedback behind it, plus the regression test and the refusal suite |
-| `references/inspiration.md` | Every reference the user shared and what was taken from it, plus the product blogs studied before inventing (Clerk, Mintlify) |
+| `references/inspiration.md` | Every reference the user shared and what was taken from it, plus the product blogs studied before inventing (Clerk, Mintlify; Dub, Peec, Calendly, Databricks) |
 | `references/used-layouts.json` | The user's own record of which layouts are used and in which categories, for one brand, kept on a Template Usage page; the truth up to its `recordedAt` (or a layout's own `asOf`, which overrides it for that layout) |
 | `references/fields/` | Approved backgrounds (the glow field `lineup` uses, and the blue mesh still without a layout) |
-| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs` (free layouts per category, reservations, `--release`), `usage.mjs` (the shared usage rule: the site history, the user's record, and the lock parallel renders share), `logo-check.mjs` (which logo-dependent layouts each brand can use), `test-examples.mjs` (regression test: renders every example, then runs the refusal suite; `--refresh` rebuilds the approved images, `--examples-only` skips the refusals), `test-refusals.mjs` (the user's rules as 155 refusal cases on a temporary history and record; `node test-refusals.mjs <filter>` runs a subset), `sheet.mjs`, `bgpick.mjs` (the background picker: renders the options, builds the picker page, applies your picks), `finalize.mjs` (locks delivered images) |
+| `scripts/` | `render.mjs` (renderer + checks), `layouts.mjs` (the layout list), `read-articles.mjs`, `plan.mjs` (free layouts per category, reservations, `--release`), `usage.mjs` (the shared usage rule: the site history, the user's record, and the lock parallel renders share), `logo-check.mjs` (which logo-dependent layouts each brand can use), `test-examples.mjs` (regression test: renders every example, then runs the refusal suite; `--refresh` rebuilds the approved images, `--examples-only` skips the refusals), `test-refusals.mjs` (the user's rules as 277 refusal cases, 296 steps, on a temporary history and record; `node test-refusals.mjs <filter>` runs a subset), `sheet.mjs`, `bgpick.mjs` (the background picker: renders the options, builds the picker page, applies your picks), `finalize.mjs` (locks delivered images) |
 | `brands/` | Brand files: `default.json`, `medsoftwarehub.json`, and `_template.json` for a new site |
-| `examples/` | 54 approved specs, at least one for every layout |
+| `examples/` | 69 approved specs, at least one for every layout |
 | `assets/` | Logo files a few examples use |
 
 ## Troubleshooting

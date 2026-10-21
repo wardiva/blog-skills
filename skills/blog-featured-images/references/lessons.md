@@ -50,8 +50,8 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 - One site-wide history per brand counts every render, wherever its folder is.
 - Layout identity (mode + variant) is the rule, and QA does the visual side-by-side (pixel similarity can't tell layouts apart).
 - When no layout free in the category fits a batch, add a variant **before** briefing Makers.
-- **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting as used in their category, and can't be re-created. Never delete the history file.
-- An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it gets a **different** layout than before, and the old files are backed up to `featured-images/_previous/<label>/` first.
+- **Finalize every delivered image** (`scripts/finalize.mjs`). Delivered images are permanent: they stay in the history and the ledger, keep counting as used in their category, and can't be re-created, except by a redo the user asks for (`render.mjs --redo`, then finalize again). Never delete the history file.
+- An article that already has a delivered image is not re-imaged unless the user explicitly asks; then it may keep its layout (a redo in the same layout and category is the same image, not a second use) or take another free one, the old files are backed up to `featured-images/_previous/<label>/` first, and it renders with `--redo`, never `--force`.
 
 ## 6. What the First Real Batch Taught (17 Articles)
 
@@ -129,7 +129,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 
 - **History of the usage rule:** batches 1-2 rotated layouts site-wide ("I don't want you to repeat any illustration, only repeat if it makes actual sense": a repeat only after all 30 were used, or with a written reason); in batch 3 the user judged variety across every image seen; in batch 4 a written reason still didn't make a repeat welcome. The per-category rule below replaced all of it.
 
-- **Four templates deleted** (the approved review, note "Delete"): the checklist on a light field (g5/sky), `versus/type` on blue, `versus/tiles` on black, `swap` on black. Their reference images (01-checklist, 19-gumloop-type-blue, 21-gumloop-tiles-black, 26-gumloop-swap-black) and example specs were archived; `references/approved/` then had 29 images (40 after batch 5's final round, sections 18–20; 46 after batch 6, section 21).
+- **Four templates deleted** (the approved review, note "Delete"): the checklist on a light field (g5/sky), `versus/type` on blue, `versus/tiles` on black, `swap` on black. Their reference images (01-checklist, 19-gumloop-type-blue, 21-gumloop-tiles-black, 26-gumloop-swap-black) and example specs were archived; `references/approved/` then had 29 images (40 after batch 5's final round, sections 18–20; 46 after batch 6, section 21; 61 after batch 7, section 23).
 - **What changed in the renderer:** the checklist is blue only. The renderer sets `"bg": "blue"` itself and refuses any other `bg` ("CHECKLIST FIELD FAILED"). It still counts as vibrant (1 in 3 per category, never neighbours), so if a neighbour is vibrant, pick another layout. Field fit: type light; tiles blue, light; swap light.
 - **Versus frost:** "the icons are too big and this is why visual balance off, improve". The marks went from 60% to 48% of each glass tile. 44% and 48% were rendered side by side and 48% was picked by taste: at 44% the marks looked lost in the tile.
 - **The usage rule changed.** The user: "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." A layout not used yet anywhere is free for any article it suits and goes first in line; a used layout can't be used again in the same category, only in a different one. This replaces the site-wide rotation and the repeat with a reason (both gone from the code; only the user's own pick, `--user-pick` or `plan.mjs` `slug=layout!`, or `--force` skips the rule). Restated on Oct 15: "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used again because they aren't used right now, obviously".
@@ -184,7 +184,7 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
   - One tint recipe for brand-coloured surfaces.
   - In a row of parallel objects, an extra line goes below the shared line, which never moves.
   - The blue "vs" disc shouldn't appear on every versus layout.
-- Batch 7 direction check: five variations built only from approved parts (badge, checklist, focus, window). Four approved (`versus/badges`, `versus/checks`, `spotlight`, `picks`); `versus/window` disapproved and retired.
+- The batch-5 direction check (Oct 19 2026): five variations built only from approved parts (badge, checklist, focus, window). Four approved (`versus/badges`, `versus/checks`, `spotlight`, `picks`); `versus/window` disapproved and retired.
 
 ## 18. Batch 5, rounds b8 and b9 (Oct 19 2026): new arrangements of approved parts
 
@@ -239,10 +239,10 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
   - Oracle Health vs MEDITECH: stays `versus/scores` with the 2025 pair. The 2026 version had a number only for MEDITECH and "Lowest ranked" for Oracle: "ew revert it". `versus/scores` now refuses a non-numeric score ("CONTENT CHECK FAILED": a real number on both sides). The user: "show me reverted one and add that to not used cus i love the design". On the design: "i love the design but is the concept right?" (taste 19).
   - `versus/connect` (the Oracle connect preview): "delete these dot grid from top left and top right" → `"cornerDots": false`.
   - Spotlight: "perfect concept and design" (taste 20). Oracle scores: "i love the design but is the concept right?". The others: "its fine".
-- **Retired in this round (30 in all then):** `versus/plans` ("i dont like the design, try smth else for comparison"), `versus/fit` (disapproved), `versus/spot` (QA: Appointment's spotlight under a new name), `grid` ("7 best pediatric shouldnt be like other logos, this looks off"; both fixes disapproved). Live then: 24 modes / 40 layouts (now 28 / 46 and 42 retired: section 21).
+- **Retired in this round (30 in all then):** `versus/plans` ("i dont like the design, try smth else for comparison"), `versus/fit` (disapproved), `versus/spot` (QA: Appointment's spotlight under a new name), `grid` ("7 best pediatric shouldnt be like other logos, this looks off"; both fixes disapproved). Live then: 24 modes / 40 layouts (28 / 46 and 42 retired after batch 6: section 21; 36 / 60 and 134 retired after batch 7: section 23).
 - **Usage:** `versus/scores` was marked unused in `references/used-layouts.json` with its own `"asOf"` (`2026-10-19T19:23:25.151Z`, after the delivered Oracle image's render at 18:08:12Z, so the record covers it) and a `"why"` (both dropped by the Oct 20 full save; it is still unused). In `scripts/usage.mjs` a per-layout `asOf` overrides `recordedAt` as that layout's cutoff, so the delivered Oracle image no longer counts and the layout is free in every category; renders after the cutoff still count.
 - **Usage sync (audit, Oct 20):** the user changes the Template Usage page without saying "done with usage". On Oct 19 at 20:09 they marked `versus/frost` used in clinical-software on the page, and it reached `references/used-layouts.json` only when the audit synced it. Rule: before planning any batch, read the page's `usage` collection (ArtifactData) and sync every doc whose `updatedAt` is later than the record (`recordedAt`, or that layout's `asOf`) into the record as that layout's entry with `"asOf": <updatedAt>`. When the user pressed Save all & finish (`usage-meta/done.at` later than `recordedAt`), the whole record is rewritten with `recordedAt = done.at` and no per-layout `asOf` (SKILL.md, Workflow step 2).
-- **Integration:** approved references 36 (badges), 37 (checks) and 46 (ranges) were re-rendered from their updated example specs with the new options; 48 (`48-prompt-logos`, `examples/rxnt-vs-drfirst.prompt.json`) was added; 38 (`versus/plans`) and 47 (`grid`) and their example specs were archived to `~/.blog-featured-images/_archive/batch5-final-2026-10-20/`. 40 approved references and 48 examples then (46 and 54 after batch 6). The code for `versus/spot`, `versus/fit`, `grid`, `versus/plans` and the word-score path of `versus/scores` was deleted from `render.mjs`.
+- **Integration:** approved references 36 (badges), 37 (checks) and 46 (ranges) were re-rendered from their updated example specs with the new options; 48 (`48-prompt-logos`, `examples/rxnt-vs-drfirst.prompt.json`) was added; 38 (`versus/plans`) and 47 (`grid`) and their example specs were archived to `~/.blog-featured-images/_archive/batch5-final-2026-10-20/`. 40 approved references and 48 examples then (46 and 54 after batch 6; 61 and 69 after batch 7). The code for `versus/spot`, `versus/fit`, `grid`, `versus/plans` and the word-score path of `versus/scores` was deleted from `render.mjs`.
 - **Lessons:** names never outweigh the key figure; every element earns its place (check boxes, a container, corner dots); a heading never dresses as one more tile; paired figures are two real numbers; check the concept against the article before rendering; repeat what was praised. All are in `taste.md` (principles 1, 2, 4, 10, 18, 19, 20) and its Self-Critique.
 - **Review (Oct 20):** the user pressed Keep on both open changes: the connect headline capped at 1080px (a touch smaller, inside the margins) and the frost marks at 48%. Both are settled; the review page's round was cleared. The old remote branch `batch-4-taste` (Oct 14, content already in main) was deleted at the user's request.
 
@@ -320,3 +320,188 @@ The user: "now generate images for following urls… dont repeat the template th
 - **BG_FIT leads with the picked field** for the batch-6 card layouts: `figures` white, `costgrid` glow, `versus/fan` glow, `versus/stacked` glow (each delivered on that pick), so a re-render without `bg` looks like the delivered image. `versus/fan` is also in BLUE_FIT and BLUE_PICK (approved on the blue in round 4).
 - **`versus/type` uses the 0.62 width estimate** for its names, like the other Inter 600–700 auto-fits; the names in approved reference 18 came out about 10% smaller when it was refreshed.
 - **Review and usage (Oct 20):** on the review page the user pressed Keep on all 17 batch-5 and batch-6 templates (36–54); none needed a change. On the Template Usage page they pressed Save all & finish for all 46 layouts, so `references/used-layouts.json` was fully re-synced (recordedAt 2026-10-20T01:09:54Z; per-layout `asOf` entries dropped, since the full save supersedes them). 42 used, 4 not used yet (before-after/default, versus/scores, dark, logotype).
+
+## 22. Batch 7 (Oct 21 2026): the rounds, in order
+
+Written as the batch ran. Rules that later turned out wrong are kept for the history and marked **Superseded**; the outcome and the rules that hold are in section 23.
+
+### Batch 7 (Oct 21 2026): 20 articles, brand-new designs for all
+- **Scope:** "create blog images that hasnt been used before". Only 4 layouts were never used anywhere (before-after, versus/scores, dark, logotype), so I asked. The user chose "brand-new designs for all".
+- **Articles came as Google Docs.** The `/export?format=txt` URL reads them; the title is the doc name (`<title>`, with any "Done " prefix dropped). The categories are on the live site's category menu (medsoftwarehub.com: clinical, practice-management, medical-billing, specialty, hospital-and-lab, compliance-and-analytics).
+- **Facts:** 4 agents in parallel, each writing `_review/facts-b7/<slug>.json` with verbatim sources.
+- **New families** in render.mjs (b7*):
+  - versus: glasssplit, medallions, profiles, routes;
+  - modes: meter, arc, glassrows, track, strike, rating, breakdown, typelist, toppick;
+  - also orbit and mosaic, which QA cut (orbit scattered; mosaic = the rejected pediatric grid).
+- **QA's restyle flags:** glasssplit = versus/table, meter = ranked, profiles = the fan without tilt, typelist = glassrows without logos. Count families by skeleton, not by name.
+- **Logos:**
+  - `icon:<domain>` (Brandfetch square icon) fixed most weak marks.
+  - A wordmark beside the same typed name fails Fact QA. Use the symbol cut from the brand's own logo, or `"wordmark": true` (no typed name).
+  - Brandfetch serves images only in a browser. The cut was done in headless Chrome (`--disable-web-security`, fetches in parallel), then split with sharp.
+  - Thin bare marks (Cardinal Health) fail at 350×250; use the filled mark.
+- **Facts:**
+  - "Top pick" needs the article's own verdict, not first place in the list.
+  - Two ranges for one item: use the one that agrees with every sentence.
+  - A spread of starting prices takes "from".
+- **Gotcha:** a `//` comment added mid-line in a spec script silently disabled every entry after it on that line.
+- **Batch 7, rounds 2–3:**
+  - The user approved 12 of 20 across two rounds:
+    - glasssplit ×3 (DoseSpot; Nextech on black after the light version was disapproved; McKesson on light);
+    - strike ("Love it");
+    - glassrows (mental health);
+    - meter (AI scribe);
+    - scores (TruBridge);
+    - dark (PioneerRx, its first use);
+    - shortlist (dental);
+    - lineup ×3 (PT, derm, HIPAA).
+  - **Superseded (Oct 21):** two lineups in specialty (PT, derm) broke the once-per-category rule even though the user approved both; both were flagged after delivery ("need new templates for these") and replaced (PT → `bluegrid`, derm → `research`). Only the HIPAA lineup (compliance) stayed. Every glass split and the glass rows were replaced too, and both layouts are retired (section 23).
+  - For the last 8, "used a brand new layout that haven't been used before, and follow our design language": the new families glasstiles, glowtiles, typehero and spectrum.
+  - QA cut glassbars as stacked restyled (and webpt-stacked was already rejected for that very article).
+  - Two frosted panels with a "vs" count as the glasssplit skeleton per category, even when they're separate tiles.
+
+### Batch 7, round 5 (Oct 21 2026): "done stop repeating designs now , use black bg too in some"
+- Round 4 offered the same new layout (big type, notepad) to several articles at once. The user approved only 2 of 7 and asked to stop repeating. In a review round, each option is its own design, used once on the page.
+- A new layout name is not a new design. QA cut gauges (= retired versus/rings), a diagonal card staircase (= retired steps), a white/black canvas split (= retired versus/halves) and corner-bleed logos (= retired versus/corners). Before rendering, compare every new idea with the RETIRED list in layouts.mjs, not just its name. The renderer also refuses retired names (steps, poster).
+- "Use black too": spend black where the category's vibrant budget has room (compliance, clinical). Count black and blue per category first.
+  **Clarified (Oct 21):** "black" means plain black ("use full black bg") or the deep-dunes blue, never the black canvas with navy and blue glows that rounds 4–7 used (taste 28).
+- Approved in round 4: Solventum big type (black, billing) and WebPT inline (light, specialty).
+
+### Batch 7, round 6 notes (Oct 21 2026): all 8 disapproved; the user's words
+- cd-footnote "too much text"; cd-slider "this layout is borint"; impl-heroglass "its too bad not visually appealing at all";
+  impl-horizon "i like the shape you used but over alll its too much., not visually apealing at all"; sp-bubbles "ew";
+  sp-delta "$20 looks so weird bec its so big there is no visula balance at all"; vd-burst "disgusting shapes"; vd-underline "too bad visual".
+- Rules taken: cost images carry a heading, one figure and one caption (about 7–10 words). No UI controls (sliders) as the idea. No
+  decorative line bursts or sized bubbles. No oversized hero numbers: a figure stays in balance with the heading. The rim-lit planet edge
+  (horizon) is a liked shape; round 7 keeps it as the only visual, with the soft blue haze, and strips everything else.
+  **Superseded (Oct 21):** the horizon failed every time after (horizon2, side glow, eclipse, crescent, `pt-horizonrow`) and is retired. A liked part is not a direction (taste 29).
+- Six rounds with no notes cost far more than asking: after two blank rejections of the same article, ask for notes.
+  **Superseded (Oct 21, 16:17):** never ask for notes. The user: "You should know why I have disapproved something. You have all the information, all the all of my past feedback. You have built a learn .md. You have the taste.md. You should know why if I'm disapproving something." Diagnose each disapproval from taste.md (the rejects table) and act.
+
+### Batch 7 close (Oct 21 2026): the last 4 went to approved looks
+- Rounds 4–7 of new designs (big type, notepad, logo bar, inline, bracket, contrast, waffle, toggle, slider, horizon, eclipse…) won only
+  Solventum big type, WebPT inline and Curve price span. Round 7, rebuilt from the user's notes, was still all disapproved.
+- The user chose "Pick from approved looks": each article shown in every approved design that fits, with the pick overriding the
+  category rule. Picked: Claims Denial → prompt (the clearinghouse look), Vanta vs Drata → versus/center ("HIPAA Compliance"),
+  SimplePractice vs TheraNest → versus/badges (as TheraNest vs Valant), EHR implementation → costgrid.
+- Rule: after two rounds of rejected new designs for the same article, offer the approved-looks picker instead of a third round of
+  inventions. The approved library is what the user trusts; new layouts are a bonus, not the default.
+- **Superseded (Oct 21):** of the four approved-looks picks, three were later replaced (Vanta center, SimplePractice badges, EHR implementation costgrid); only Claims Denial's prompt stayed. All three were among the seven finals flagged at 16:02 ("need new templates for these"). At 16:37 the user chose "Keep trying new designs" over reusing loved looks. What worked was references: after two failed rounds of inventions, go to browser research of product blogs with our vibe (Dub, Peec, Calendly, Databricks) or the user's references, not to the approved-looks picker (taste 32).
+
+### Batch 7 redo of seven finalized images (Oct 21 2026): "need new templates for these"
+- 14 new options. Approved only mh-avatars (an overlapping stack of round logo chips under a big centred heading, names in one grey line, light glow).
+- Disapproved with no notes: impl bluefield and iconrows, vd butterfly, sp tierchips and ladder, nx bands and venn, derm index, pt horizonrow and tilegrid. Visual QA had predicted most of these (repeats of rejected skeletons).
+- The user then said they won't explain disapprovals: "You should know why I have disapproved something. You have… learn .md… taste.md." From now on, diagnose every disapproval from taste.md, write the table and act. The diagnoses are in taste.md's "What the user rejects" table.
+- Voice notes on the review page (Web Speech API) didn't work inside the artifact; the user said "forget about it". The Speak button was removed.
+- Redo round 3 (from Dub, Cal.com, Ramp): vd-duel approved, "wow love it" (two lockups, small vs, mono eyebrow, faint grid with pastel glows). Disapproved: impl-estimate (one figure in a UI card), nx-lockups (black price pills), sp-titlecard (title card with prices), derm-market (seven small app cards). Inferred: logos and type lead and figures follow, and many small cards are clutter.
+  **Superseded (Oct 21):** "figures follow" was too broad. `strike`, `flatcard2`, `versus/span`, `meter` and `versus/scores` are figure-led and kept. The rule is taste 27: a figure lives inside an object, never alone on the field.
+- pt-capsule (the seven marks fused into one white pill): "i dont like this rounded it looks weird". Big panels take card corners (about 40px), never full pill ends. Pills stay for small tags and chips.
+- Lists from the user's references (Oct 21 2026): pt-bluegrid (Databricks: blue field, white hairline grid, each logo on a white tile in its own cell) was approved: "i like this layout and design". Calendly's fused squircles: "ew dont connect". My copies of the Calendly aurora and sky gradients: "the gradient looks awful". Never join tiles with liquid necks. Don't imitate an outside gradient; use our own fields.
+- mh-squircles (separate frosted squircle tiles) approved on the faint grid field (B15), not on the glow.
+- Peec round (Oct 21 2026): impl-cursorcard (a tilted card with a dashed selection and a cursor): "not tilted rectangle pls also use our bgs". Keep cards flat, and put them on our fields, not the reference's grey. derm-tree was disapproved (an org chart of small chips).
+- The user then shared Peec covers with "i like these we have black bg template too so use that instead of + use vs": partner covers (two lockups in a hairline band on black), the dark research cover (a pill tag, a white heading, dark app tiles), and white UI covers (ranked rows with a "You" chip, chips running from Negative to Positive, a checklist card). Became versus/band (lockups with "vs", on our black canvas, then plain black: next bullet) and research (its black version was rejected: "for this use our glass bg").
+- Then "use full black bg": the Peec-style black covers go on plain black (a soft centre lift, a vignette), not our black canvas with blue glows.
+- Dermatology research on glass: "use bg lines too like ss2 in our colors and dont use dot pattern in bottom". Peec guide lines in our blue (rules above and below the pill and the heading, margin verticals clear of the tiles), and no dot pattern on the glow.
+- **Oct 21 2026, dental + McKesson:**
+  - Render final specs from `featured-images/` (the renderer writes `<cwd>/featured-images/<slug>` when there is no `--out`). Run from inside it and the output lands in `featured-images/featured-images/<slug>`, the history records that path, and the project folder keeps the old image. After finalize, check the delivered master, not just the exit code.
+  - finalize.mjs doesn't refresh `delivered/<slug>/spec.json` on a re-finalize; copy the new spec there. Superseded (Oct 22): finalize.mjs copies `specs/<slug>.json` next to the output folder on every finalize, and a redo now goes through `render.mjs --redo`.
+  - Bare marks cut from an app icon carry the icon's crop: the PioneerRx ring was cut flat by the tile edge. Cut the mark from the full logo instead (orange ring + the blue P only, by colour and column).
+  - A tall image in `.lg` (inline-grid) ignores `height:100%` and overflows the square box, where `overflow:hidden` cuts it. Make the box flex with `max-width/max-height:100%` (done in glasspair).
+  - Brandfetch serves images only to a browser-like request; send the renderer's user agent (`UA`).
+  - Review builder: rename EVERY use of the collection (the save path `'<collection>/'+id` too), or verdicts land in the old round's collection.
+  - "use exact same checkboxes size and tick icon that was in its inpirsation": I had eyeballed the tick. Measure every part of a reference control on the original file (Peec's cover from peec.ai/blog at 4096px): box 120, corners 35 (29%), tick M32 59 L48.5 76.5 L91 35 in a 120 box, stroke 9, round ends, #0081FF. Now in `checkcard`.
+  - The glass pair tiles take frostrow's 22% corner radius ("make the corner radius consistenty"), not Calendly's 30%.
+- **Oct 21 2026, redo of three (SimplePractice, Nextech, Solventum):**
+  - Approved: Nextech vs NextGen as the duel (icons in tiles + big names, no eyebrow); Curve Dental's span on the deep-dunes blue (black and light glow were disapproved).
+  - Solventum research approved with "delete 360 encompass and encodepro text": with two picks, no names under the tiles.
+  - SimplePractice: the prompt price card was disapproved for the user's Peec "Powered by" cover, copied as `versus/peecpair` (near-white hairline grid, white pill, logo with name per cell). A brand with no wordmark of its own (TheraNest, now part of Ensora Health) gets its mark with the name set in its brand colour.
+    **Superseded (Oct 21, 18:35):** "this is fine but use black color for logo text". The name is set in black ink; only the mark keeps its brand colour (taste 31).
+  - Review collections: use a name never used before (`reviews-batch7-redo3` already held an older round's verdicts).
+
+## 23. Batch 7 outcome (Oct 21–22 2026): 20 finals, 14 kept layouts, 92 retired
+
+Batch 7 ran 7 option rounds, an approved-looks picker, a redo of 7 finalized images and about 12 reference rounds: about 170 verdicts, about 33 approvals. 11 of the 20 approved finals were redone after delivery; 9 kept their first delivered design. What follows is the state the integration left (Oct 22).
+
+### The 20 finals
+
+| # | Article (slug) | Category | Layout | Field |
+|---|---|---|---|---|
+| 1 | webpt-vs-jane-app-which-physical-therapy-software-wins | specialty-software | `versus/inline` | its light canvas |
+| 2 | is-free-ehr-software-worth-it-for-small-practices-in-2026 | clinical-software | `strike` | glow (picked) |
+| 3 | how-much-does-an-ai-medical-scribe-cost-in-2026 | clinical-software | `meter` (bare) | white (picked) |
+| 4 | is-pioneerrx-worth-it-for-independent-pharmacies-in-2026 | hospital-and-lab-software | `dark` (its first use) | its black canvas |
+| 5 | trubridge-vs-oracle-health-which-fits-rural-hospitals-in-2026 | hospital-and-lab-software | `versus/scores` (`"suffix": "%"`) | sky (picked) |
+| 6 | 7-best-hipaa-training-software-options-for-small-practices-2026 | compliance-and-analytics-software | `lineup` | its canvas |
+| 7 | tecsys-vs-cardinal-health-hospital-supply-chain-software-compared | compliance-and-analytics-software | `typehero` | its light glass |
+| 8 | how-much-does-claims-denial-management-software-cost-in-2026 | medical-billing | `prompt` (the user's pick overrode the category rule) | its own field |
+| 9 | vanta-vs-drata-for-hipaa-compliance-which-wins-in-2026 | compliance-and-analytics-software | `versus/duel` | faint grid with corner glows |
+| 10 | 7-best-physical-therapy-software-for-multi-location-clinics | specialty-software | `bluegrid` | its blue (vibrant) |
+| 11 | 7-best-mental-health-ehrs-for-group-therapy-practices-in-2026 | specialty-software | `squircles` | the faint grid (`"canvas": "grid"`) |
+| 12 | dosespot-vs-rxnt-which-e-prescribing-platform-fits-in-2026 | clinical-software | `versus/band` | plain black (vibrant) |
+| 13 | how-much-does-ehr-implementation-cost-in-2026 | clinical-software | `flatcard2` | glow |
+| 14 | 7-best-ehr-software-options-for-dermatology-practices-in-2026 | specialty-software | `research` | light glass with blue guide lines |
+| 15 | mckesson-vs-pioneerrx-which-fits-retail-pharmacy-chains-in-2026 | hospital-and-lab-software | `versus/glasspair` | deep dunes (vibrant) |
+| 16 | 7-best-dental-software-options-for-small-practices-in-2026 | specialty-software | `checkcard` | faint grid of white cards, no grain |
+| 17 | curve-dental-vs-denticon-which-cloud-dental-software-wins-in-2026 | specialty-software | `versus/span` | deep dunes (vibrant) |
+| 18 | nextech-vs-nextgen-for-dermatology-practices-2026-comparison | specialty-software | `versus/duel` (no eyebrow) | faint grid with corner glows |
+| 19 | solventum-360-encompass-vs-optum-encoderpro-which-wins-in-2026 | medical-billing | `research` (two tiles: tilt 8, 230px, gap −14, no names) | light glass |
+| 20 | simplepractice-vs-theranest-pricing-and-features-compared-2026 | specialty-software | `versus/peecpair` | near-white hairline grid, no grain |
+
+Replaced along the way (all after the user had approved them): dental shortlist; derm lineup; mental health glass rows, then avatars; PT lineup, then capsule; Curve span on black; DoseSpot glass split; EHR cost grid, then flatcard; McKesson glass split; Nextech glass split, then band; SimplePractice badges; Solventum glass split; Vanta center.
+
+### The 14 kept layouts (each in a delivered final, an example and an approved reference, 55–69)
+
+| Layout | Approved field (only) | Where it came from | The user's words |
+|---|---|---|---|
+| `checkcard` | faint grid of white cards, no grain (default) | the user's Peec checklist ("ss1") | "ss1 exact pixel perfect design i want in…"; "use exact same checkboxes size and tick icon that was in its inpirsation" |
+| `flatcard2` | the light glow | Peec agent cards + the user's cursor screenshot | "perfect" |
+| `research` | light glass only (`"glass": true` or omitted); not vibrant | Peec research cover + ss2 guide lines | "use frosted glass for dermatology tag bg and logos bg"; "perfect"; Solventum: "make logo close so they touch each other a lil bit…" |
+| `squircles` | the faint grid only (`"canvas": "grid"` or omitted) | the user's Calendly tile reference | approved on the grid, no note (Calendly sky: "the gradient looks awful"; glow disapproved) |
+| `bluegrid` | its blue; vibrant | Databricks partner cover | "i like this layout and design" |
+| `typehero` | its light glass | invented (round 3) | approved, no note |
+| `strike` | glow or sky (`BG_FIT`); never blue | invented (round 1) | "Love it" |
+| `meter` | white only, bare (no card) | invented (round 1) | "delete white container" |
+| `versus/peecpair` | its near-white grid, no grain (default) | the user's Peec "Powered by" screenshot | "use this attached ss design ditto for this…"; "this is fine but use black color for logo text" |
+| `versus/inline` | its light canvas | invented (round 4) | approved, no note |
+| `versus/span` | the deep dunes only (`"canvas": "dunes"` or omitted); vibrant | invented (round 5) | black: "change bg, this bg doesnt look good"; glow disapproved |
+| `versus/duel` | its faint-grid canvas | Dub comparison covers | "wow love it" |
+| `versus/band` | plain black; vibrant; only for two text wordmarks that turn white cleanly and balance in width | Peec partner covers | "use full black bg"; "this is perfect" |
+| `versus/glasspair` | the deep dunes only; vibrant | the user's Calendly screenshot for McKesson | "this looks better but use our good gradient bg"; "make the corner radius consistenty" |
+
+Older layouts used in finals, with no code change: `dark` (PioneerRx), `versus/scores` (TruBridge, with the new `"prefix"` / `"suffix"` option), `lineup` (HIPAA), `prompt` (Claims Denial).
+
+### The 92 retired (in `RETIRED` in `layouts.mjs`, code deleted)
+
+- **With the user's words (11):** `versus/burst` "disgusting shapes", `versus/underline` "too bad visual", `versus/bubbles` "ew", `versus/delta` "$20 looks so weird bec its so big there is no visula balance at all", `slider` "this layout is borint", `footnote` "too much text", `heroglass` "its too bad not visually appealing at all", `horizon` "i like the shape you used but over alll its too much., not visually apealing at all", `gooey` "ew dont connect and the gradient looks awful", `capsule` "i dont like this rounded it looks weird", `cursorcard` "not tilted rectangle pls also use our bgs".
+- **Disapproved with no note (50):** tree, bigword, sidecolumn, wordtag, market, estimate, index, horizonrow, tilegrid, iconrows, bluefield, horizon2, sideglow, eclipse, crescent, masthead, cropmarks, bracket, contrast, waffle, notepad, pricebar, spectrum, glowtiles, glasstiles, breakdown, typelist, toppick, arc, track, rating, versus/medallions, profiles, routes, logobar, outline, gap, toggle, eclipses, pricepair, butterfly, venn, bands, ladder, tierchips, lockups, titlecard, sidetiles, aura, iconbadge.
+- **Approved once, then replaced by the user on every article (5, plus `capsule` above):** `flatcard` (improved into `flatcard2`), `avatars`, `glassrows`, `versus/glasssplit`, `bigtype`. Asked whether to keep them, the user first said keep all, then "actually delete all of them".
+- **Never shown (26):** QA cut them as repeats of retired or rejected designs, or the user interrupted the round: lockupwall, blueprint, plus, aurarow, byline, gridcells, collection, eyebrow, pillstat, `fan` (the mode, not `versus/fan`), `bento` (the mode, not `versus/bento`), editorial, cascade, glassbars, orbit, mosaic, versus/gauges, segbar, pairchips, chipfigures, pillrows, pillduel, vstack, overlap2, tiltcards, chipcloud.
+
+### Code changes in the integration (render.mjs, layouts.mjs)
+
+- **One field per kept layout** (`CANVAS_ONLY`): `versus/span` and `versus/glasspair` take only `"dunes"`, `squircles` only `"grid"`, `research` only `"glass": true`. Any other `"canvas"` or `"glass"`, or `"canvas"` on any other layout, is refused ("FIELD FIT FAILED").
+- `meter` is bare only (the card is gone); `BG_FIT` meter `[white]`, strike `[glow, sky]`. `strike`, `track`, `breakdown` and `profiles` came out of `BLUE_PICK` / `BLUE_FIT` (never approved on blue).
+- **VIVID:** `bluegrid`, `versus/band`, `versus/span` and `versus/glasspair` count as vibrant; `research` does not (it had wrongly counted). The history was fixed to match: two research entries set to `vibrant: false`, glasspair to `true` (backup in `~/.blog-featured-images/_archive/history-backups-2026-10-22`).
+- No grain by default on `versus/peecpair` and `checkcard`.
+- Small fixes kept from the batch session: `versus/scores` `"prefix"` / `"suffix"` (TruBridge 7.6% vs 21.9%, approved); a typed name hidden beside a wordmark on `cloud`, `versus/fan` and `versus/stacked` (a Fact QA rule); `cloud` with 7 items splits 2/3/2 (no lone tile); the `versus/lanes` track moves right only when a name is too long for 640 (the approved Office Ally image is unchanged).
+- All 20 finals re-render pixel-identical with the cleaned code and pass every check without `--force`. The batch session had re-finalized them with `--force`, which skipped the heading, word, usage, vibrant, field-fit and delivered checks.
+
+### Process rules that hold (agents.md, SKILL.md workflow)
+
+- **Never ask the user for notes on a disapproval.** Diagnose it from taste.md (the rejects table) and act. This replaces section 22's "after two blank rejections ask for notes".
+- **"This can be improved" with no detail:** diagnose against the reference and the craft rules, then show A (the fixes) and B (the fixes plus one idea). `flatcard` went this way and came back as `flatcard2`, "perfect".
+- **An ambiguous note:** render each reading as an option; don't ask ("tilt the logos from one above" → `sol-tilt` and `sol-up`, and the user picked). Asking about "use glass bg" lost a round: the user's answer lost to their own earlier approval.
+- **Background undecided:** show the same design on 2–3 of our fields (the user chose the dunes for Curve and McKesson, the grid for squircles).
+- **One skeleton per review page** (taste 25). Visual QA's "repeat" calls were right almost every time.
+- **A contact sheet of the whole batch, with a batch-level critique, before delivery** (taste 34): repeats, small widgets, the navy-blob black, one field everywhere.
+- **After two failed rounds of inventions, go to references** (browser research or the user's own), not to the approved-looks picker. This replaces section 22's picker rule.
+- **No voice-note button** on review pages: it didn't work inside the artifact ("forget about it"). Don't ship untested features.
+- **Hand-off:** separate files per image; a link page with a Copy button per row (title → Google Doc → file) and "Copy all"; Before/After tables for each change. Every delivered file maps to its article at a glance ("this is for what url?").
+- **Ops:** a brand-new review collection name each round, renamed everywhere in the builder; render finals from the project root, not inside `featured-images/`; redo a delivered image with `render.mjs --redo` and finalize it again, never `--force`; cut bare marks from the full logo, not the app icon; read Google Docs via `/export?format=txt`; Brandfetch images need the renderer's browser user agent.
+- **The 1-in-3 vibrant cap:** when it blocks an approved image, say so and offer an override or a different black or blue design. "Use black too" means plain black or the dunes.
+
+### Counts after batch 7 (snapshot, Oct 22 2026)
+
+- 36 modes / 60 layouts live (28 / 46 after batch 6); 134 retired (42 after batch 6).
+- 69 examples (54 after batch 6); 61 approved reference images (46 after batch 6; new: 55–69).
+- Refusal suite: 277 cases / 296 steps (155 / 174 before); `test-examples`: 69 of 69 render.
+- Taste: 34 principles (24 before; 25–34 are from this batch).

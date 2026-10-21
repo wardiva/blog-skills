@@ -1,5 +1,6 @@
 // Finalize delivered images: marks them permanent in the site-wide history and in their folder's ledger.
-// A finalized image is never re-created or overwritten (the renderer refuses with "FINAL IMAGE LOCKED"), its files stay where
+// A finalized image is never re-created or overwritten (the renderer refuses with "FINAL IMAGE LOCKED") unless the user asks for that image
+// to be redone (render.mjs --redo, then finalize it again: a new finalizedAt, the earlier ones in "previousFinalizedAt"); its files stay where
 // they are, a copy goes to ~/.blog-featured-images/delivered/<brand>/<slug>/, and it keeps counting as used in its category (unless
 // the user's record, references/used-layouts.json, says otherwise; see usage.mjs).
 // Usage:
@@ -40,7 +41,10 @@ const missing = withLock(historyFile, () => {
     for (const name of fs.readdirSync(e.out)) if (/\.(png|webp|json)$/i.test(name)) fs.copyFileSync(path.join(e.out, name), path.join(store, name));
     const specPath = path.join(path.dirname(e.out), 'specs', `${e.slug}.json`);
     if (fs.existsSync(specPath)) fs.copyFileSync(specPath, path.join(store, 'spec.json'));
-    Object.assign(e, { final: true, finalizedAt: e.finalizedAt || at, stored: store });
+    // a redo (render.mjs --redo) re-rendered it after its last finalize: the new image gets today's date, the earlier dates are kept
+    const redone = e.finalizedAt && String(e.at) > String(e.finalizedAt);
+    if (redone) e.previousFinalizedAt = [...(e.previousFinalizedAt || []), e.finalizedAt];
+    Object.assign(e, { final: true, finalizedAt: e.finalizedAt && !redone ? e.finalizedAt : at, stored: store });
     const ledgerFile = path.join(path.dirname(e.out), '.featured-ledger.json');
     fs.writeFileSync(ledgerFile, JSON.stringify([...readJson(ledgerFile).filter((x) => x.slug !== e.slug), e], null, 1));
   }
@@ -48,4 +52,4 @@ const missing = withLock(historyFile, () => {
   return [];
 });
 if (missing.length) { console.error('FINALIZE REFUSED (nothing written): not rendered yet:\n  ' + missing.join('\n  ')); process.exit(2); }
-console.log(`Finalized ${slugs.length} image(s). They are permanent and can't be re-created.`);
+console.log(`Finalized ${slugs.length} image(s). They are permanent: only a redo the user asks for (render.mjs --redo) replaces one.`);

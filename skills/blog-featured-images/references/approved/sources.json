@@ -45,5 +45,20 @@
  "51-frostrow": "telehealth-for-therapists.frostrow.json",
  "52-costgrid": "medical-billing-cost.costgrid.json",
  "53-versus-fan": "tebra-vs-zocdoc.versus-fan.json",
- "54-versus-stacked": "symplr-vs-modio-health.versus-stacked.json"
+ "54-versus-stacked": "symplr-vs-modio-health.versus-stacked.json",
+ "55-checkcard": "dental-small-practices.checkcard.json",
+ "56-flatcard2": "ehr-implementation-cost.flatcard2.json",
+ "57-research": "dermatology-ehr.research.json",
+ "58-research-pair": "solventum-vs-optum.research-pair.json",
+ "59-squircles": "mental-health-group.squircles.json",
+ "60-bluegrid": "physical-therapy-multi.bluegrid.json",
+ "61-typehero": "tecsys-vs-cardinal.typehero.json",
+ "62-strike": "free-ehr-worth-it.strike.json",
+ "63-meter": "ai-scribe-cost.meter.json",
+ "64-versus-peecpair": "simplepractice-vs-theranest.versus-peecpair.json",
+ "65-versus-inline": "webpt-vs-jane.versus-inline.json",
+ "66-versus-span": "curve-vs-denticon.versus-span.json",
+ "67-versus-duel": "vanta-vs-drata.versus-duel.json",
+ "68-versus-band": "dosespot-vs-rxnt.versus-band.json",
+ "69-versus-glasspair": "mckesson-vs-pioneerrx.versus-glasspair.json"
 }

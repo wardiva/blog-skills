@@ -43,6 +43,8 @@ const example = (f) => JSON.parse(fs.readFileSync(path.join(skill, 'examples', f
 const fixLogos = (v) => typeof v === 'string' ? (v.startsWith('../assets/') ? path.join(assets, v.slice(10)) : v)
   : Array.isArray(v) ? v.map(fixLogos) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, fixLogos(x)])) : v;
 const spec = (base, change = () => {}) => { const s = fixLogos(example(base)); change(s); return s; };
+// every "logo" a local file (a solid app tile), so a case that must render runs offline
+const local = (s) => { const walk = (v) => { if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === 'object') for (const k of Object.keys(v)) { if (k === 'logo' && typeof v[k] === 'string') v[k] = path.join(assets, 'simplepractice-app-icon.png'); else walk(v[k]); } }; walk(s); return s; };
 const record = (layouts = {}, extra = {}) => ({ brand: BRAND, recordedAt: '2026-01-01T00:00:00.000Z', layouts, ...extra });
 const used = (cats) => ({ status: 'used', cats });
 
@@ -121,6 +123,17 @@ one('bg on frostrow (canvas)', spec('telehealth-for-therapists.frostrow.json', (
 one('unknown bg name', spec(FOCUS, (s) => { s.bg = 'teal'; }), 'BACKGROUND CHECK FAILED: "teal" is not a background');
 one('blue on stat, not picked', spec('rcm-outsourcing.stat.json', (s) => { s.bg = 'blue'; }), 'VIBRANT FIT FAILED');
 one('cream on ranked', spec('erp-implementation.ranked.json', (s) => { s.bg = 'cream'; }), 'BACKGROUND FIT FAILED: "cream" doesn\'t flatter the ranked');
+// batch 7 (Oct 21 2026): each batch-7 layout paints the one field the user approved; the others were disapproved
+one('versus/span on black', spec('curve-vs-denticon.versus-span.json', (s) => { s.canvas = 'black'; }), 'FIELD FIT FAILED: versus/span was approved on "dunes" only');
+one('versus/span on the light glow', spec('curve-vs-denticon.versus-span.json', (s) => { s.canvas = 'glow'; }), 'FIELD FIT FAILED: versus/span was approved on "dunes" only');
+one('versus/glasspair on the light glow', spec('mckesson-vs-pioneerrx.versus-glasspair.json', (s) => { s.canvas = 'glow'; }), 'FIELD FIT FAILED: versus/glasspair was approved on "dunes" only');
+one('squircles on the Calendly sky', spec('mental-health-group.squircles.json', (s) => { s.canvas = 'sky'; }), 'FIELD FIT FAILED: squircles/default was approved on "grid" only');
+one('research on black (glass off)', spec('dermatology-ehr.research.json', (s) => { s.glass = false; }), 'FIELD FIT FAILED: research was approved on our light glass only');
+one('"canvas" on a layout without one (duel)', spec('vanta-vs-drata.versus-duel.json', (s) => { s.canvas = 'grid'; }), 'FIELD FIT FAILED: versus/duel has no "canvas" option');
+one('meter on sky, not picked', spec('ai-scribe-cost.meter.json', (s) => { s.bg = 'sky'; delete s.bgPick; }), 'BACKGROUND FIT FAILED');
+one('picked blue on strike (never approved on blue)', spec('free-ehr-worth-it.strike.json', (s) => { s.bg = 'blue'; s.bgPick = true; }), 'BACKGROUND PICK FAILED');
+one('versus/span on dunes, local logos', spec('curve-vs-denticon.versus-span.json', (s) => { s.canvas = 'dunes'; local(s); }), 'OK');
+one('meter picked on sky (bare: white only)', spec('ai-scribe-cost.meter.json', (s) => { s.bg = 'sky'; }), 'BACKGROUND PICK FAILED: meter has no card behind its tracks');
 
 // 3. content each layout is built on
 one('versus/scores with a word score', spec('oracle-health-vs-meditech.versus-scores.json', (s) => { s.left.score = 'High'; }), 'CONTENT CHECK FAILED');
@@ -246,12 +259,25 @@ one('vibrant two back (1 in 3)', spec('ehr-interoperability-cost.glassbar.json')
 one('series two back (1 in 3)', spec(FOCUS, (s) => { s.craft = true; s.series = 'EMR COST'; }), 'SERIES CHECK FAILED', { history: [past('series-2back', 'stat/default', 'clinical-software', { series: true }), past('calm-1back', 'ranked/default', 'clinical-software', { at: '2026-10-02T00:00:00.000Z' })] });
 // a reservation isn't an image yet, so it is no neighbour
 one('a reservation is not a neighbour', spec('ehr-interoperability-cost.glassbar.json'), 'OK', { history: [past('res-blue', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true, reserved: true })] });
+// batch 7: the blue grid, the plain-black band and the deep-dunes blue (span, glass pair) count as vibrant; research is light glass
+one('bluegrid after a vibrant neighbour', spec('physical-therapy-multi.bluegrid.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-sp', 'checklist/default', 'specialty-software', { bg: 'blue', vibrant: true })] });
+one('versus/band after a vibrant neighbour', spec('dosespot-vs-rxnt.versus-band.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-cl', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true })] });
+one('versus/glasspair after a vibrant neighbour', spec('mckesson-vs-pioneerrx.versus-glasspair.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-hl', 'checklist/default', 'hospital-and-lab-software', { bg: 'blue', vibrant: true })] });
+one('research (light glass) after a vibrant neighbour', spec('dermatology-ehr.research.json', local), 'OK', { history: [past('blue-sp2', 'checklist/default', 'specialty-software', { bg: 'blue', vibrant: true })] });
+one('versus/span after a vibrant neighbour', spec('curve-vs-denticon.versus-span.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-sp3', 'checklist/default', 'specialty-software', { bg: 'blue', vibrant: true })] });
 
 // 7. the spec's category, delivered images, same-topic, plan.mjs syntax
 one('no category', spec(BADGES, (s) => { delete s.category; }), 'CATEGORY MISSING');
 C.push({ name: 'delivered slug is locked (render)', history: [past('locked-a', 'versus/badges', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z' })], steps: [{ spec: spec(BADGES), slug: 'locked-a', expect: 'FINAL IMAGE LOCKED' }] });
 // the lock also goes by output folder: another slug can't render into a delivered image's folder
 const LOCKED_OUT = path.join(tmp, 'delivered', 'locked-folder');
+C.push({ name: '--redo on a slug that was never delivered', steps: [{ spec: spec(BADGES), slug: 'not-delivered', args: ['--redo'], expect: 'REDO REFUSED' }] });
+C.push({ name: '--redo still runs the other checks (used in category)', record: record({ 'versus/badges': used(['specialty-software']) }), history: [past('locked-r', 'versus/badges', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z' })], steps: [{ spec: spec(BADGES), slug: 'locked-r', args: ['--redo'], expect: 'is already used in the "specialty-software" category' }] });
+C.push({ name: '--redo of the same image (layout and category) is not a second use', record: record({ 'versus/badges': used(['specialty-software']) }), history: [past('locked-s', 'versus/badges', 'specialty-software', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z' })], steps: [{ spec: spec(BADGES), slug: 'locked-s', args: ['--redo'], expect: 'OK' }] });
+C.push({ name: '--redo into another delivered slug\'s folder (own slug delivered too)', history: [past('locked-a2', 'versus/badges', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z' }), past('locked-b2', 'focus/default', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z', out: LOCKED_OUT })], steps: [{ spec: spec(BADGES), slug: 'locked-a2', out: LOCKED_OUT, args: ['--redo'], expect: 'REDO REFUSED' }] });
+one('versus/duel with only a "mark"', spec('vanta-vs-drata.versus-duel.json', (s) => { s.left.mark = s.left.logo; delete s.left.logo; }), 'CONTENT CHECK FAILED: versus/duel needs');
+C.push({ name: '--redo re-renders a delivered image', history: [past('locked-ok', 'versus/badges', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z' })], steps: [{ spec: spec(BADGES), slug: 'locked-ok', args: ['--redo'], expect: 'OK' }] });
+C.push({ name: '--redo into another slug\'s delivered folder', history: [past('locked-m', 'focus/default', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z', out: LOCKED_OUT })], steps: [{ spec: spec(BADGES), slug: 'other-redo', out: LOCKED_OUT, args: ['--redo'], expect: 'REDO REFUSED' }] });
 C.push({ name: 'delivered output folder is locked (render)', history: [past('locked-f', 'focus/default', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z', out: LOCKED_OUT })], steps: [{ spec: spec(BADGES), slug: 'other-slug', out: LOCKED_OUT, expect: 'FINAL IMAGE LOCKED' }] });
 C.push({ name: 'plan refuses a delivered slug', history: [past('locked-b', 'focus/default', 'medical-billing', { final: true, finalizedAt: '2026-10-02T00:00:00.000Z' })], steps: [{ plan: ['--category', 'specialty-software', '--reserve', 'locked-b=versus/checks'], expect: 'locked-b: already delivered (final)' }] });
 C.push({ name: 'plan --release refuses a rendered slug', history: [past('rendered-c', 'focus/default')], steps: [{ plan: ['--release', 'rendered-c'], expect: 'rendered-c: already rendered' }] });
@@ -284,6 +310,16 @@ one('logotype without a separate icon', spec('notion-review.logotype.json', (s) 
 one('slash with a name it cannot split', spec('advancedmd-vs-curemd.versus-slash.json', (s) => { s.left.label = 'zocdoc'; }), 'SLASH NAME CHECK FAILED');
 
 one('stat caption with one shared word', spec('rcm-outsourcing.stat.json', (s) => { s.caption = 'of net collections for RCM'; }), 'HEADING CHECK FAILED');
+// batch 7: the content each kept layout is built on
+one('meter without a "max"', spec('ai-scribe-cost.meter.json', (s) => { delete s.max; }), 'CONTENT CHECK FAILED: meter needs 2+ rows and a numeric "max"');
+one('strike without the advertised price', spec('free-ehr-worth-it.strike.json', (s) => { delete s.from; }), 'CONTENT CHECK FAILED: strike needs');
+one('versus/span without a side\'s range', spec('curve-vs-denticon.versus-span.json', (s) => { delete s.left.lo; }), 'CONTENT CHECK FAILED: versus/span needs');
+one('versus/band without a logo', spec('dosespot-vs-rxnt.versus-band.json', (s) => { delete s.right.logo; }), 'CONTENT CHECK FAILED: versus/band needs');
+one('squircles with 2 items', spec('mental-health-group.squircles.json', (s) => { s.items = s.items.slice(0, 2); }), 'CONTENT CHECK FAILED: squircles needs');
+one('flatcard2 without its figure', spec('ehr-implementation-cost.flatcard2.json', (s) => { delete s.value; }), 'CONTENT CHECK FAILED: flatcard2 needs');
+one('peecpair heading that shares no words', spec('simplepractice-vs-theranest.versus-peecpair.json', (s) => { s.headline = 'Totally unrelated banana words here'; }), 'HEADING CHECK FAILED');
+// a versus spec with no "variant" is versus/overlap (the default), never a batch-7 variant
+one('versus with no variant is overlap', spec('microsoft-dynamics-365-vs-acumatica-for-growing-businesses-2026.json', (s) => { delete s.variant; }), '"versus/overlap" is already used in the', { record: record({ 'versus/overlap': used(['clinical-software']) }) });
 
 // ---- run ----
 const cases = C.filter((c) => !filter || c.name.includes(filter));

@@ -25,11 +25,11 @@ export const readJson = (f, empty = []) => { try { return fs.existsSync(f) ? JSO
 
 // The site history (one per brand, wherever a batch's output folder is) merged with a batch folder's ledger, per slug, newest entry
 // wins (a stale folder ledger must never override a newer site-history reservation). Two copies of the same render (same "at") merge;
-// otherwise the newer entry replaces the older one and keeps only the lock fields (final, finalizedAt, stored, superseded), so an old
+// otherwise the newer entry replaces the older one and keeps only the lock fields (final, finalizedAt, previousFinalizedAt, stored, superseded), so an old
 // "userPick" or "bgPick" never leaks onto a re-planned layout. plan.mjs has no output folder: site history only.
 export function loadHistory(brand, ledgerFile = null) {
   const bySlug = new Map(), byAt = (x, y) => String(x.at).localeCompare(String(y.at));
-  const LOCK = ['final', 'finalizedAt', 'stored', 'superseded'];
+  const LOCK = ['final', 'finalizedAt', 'previousFinalizedAt', 'stored', 'superseded'];
   for (const e of [...readJson(historyFileOf(brand)), ...(ledgerFile ? readJson(ledgerFile) : [])].sort(byAt)) {
     const prev = bySlug.get(e.slug);
     if (!prev || prev.at === e.at) { bySlug.set(e.slug, { ...prev, ...e }); continue; }

@@ -1,0 +1,25 @@
+{
+  "articleTitle": "Solventum 360 Encompass vs Optum EncoderPro: Which Wins in 2026",
+  "brand": "medsoftwarehub",
+  "category": "medical-billing",
+  "slug": "solventum-360-encompass-vs-optum-encoderpro-which-wins-in-2026",
+  "mode": "research",
+  "tag": "Medical Coding",
+  "headline": "Solventum vs Optum",
+  "cards": [
+    {
+      "name": "360 Encompass",
+      "logo": "icon:solventum.com"
+    },
+    {
+      "name": "EncoderPro",
+      "logo": "../assets/optum-o-mark.png"
+    }
+  ],
+  "glass": true,
+  "names": false,
+  "tilt": 8,
+  "tilesTop": 478,
+  "tileSize": 230,
+  "gap": -14
+}

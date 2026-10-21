@@ -1,0 +1,25 @@
+{
+  "articleTitle": "WebPT vs Jane App: Which Physical Therapy Software Wins",
+  "brand": "medsoftwarehub",
+  "category": "specialty-software",
+  "slug": "webpt-vs-jane-app-which-physical-therapy-software-wins",
+  "mode": "versus",
+  "variant": "inline",
+  "headline": "Which Physical Therapy Software Wins?",
+  "left": {
+    "label": "WebPT",
+    "logo": "icon:webpt.com",
+    "fill": true,
+    "wordmark": true,
+    "value": "$99",
+    "unit": "from, per provider/month"
+  },
+  "right": {
+    "label": "Jane",
+    "logo": "icon:jane.app",
+    "fill": true,
+    "wordmark": true,
+    "value": "CAD $54",
+    "unit": "from, per month, solo"
+  }
+}

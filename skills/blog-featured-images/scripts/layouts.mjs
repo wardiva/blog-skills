@@ -1,5 +1,5 @@
 // The single list of layouts (mode -> variants, default first). Shared by render.mjs, plan.mjs, usage.mjs and bgpick.mjs.
-export const LAYOUTS = { glassbar: ['default'], 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'pills', 'connect', 'slash', 'duo', 'type', 'tiles', 'glass', 'frost', 'bento', 'badges', 'checks', 'center', 'lanes', 'scores', 'fan', 'stacked'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'], dark: ['default'], logotype: ['default'], swap: ['default'], badge: ['default'], receipt: ['default'], definition: ['default'], shortlist: ['default'], lineup: ['default'], spotlight: ['default'], picks: ['default'], frostrow: ['default'], figures: ['default'], costgrid: ['default'], cloud: ['default'], ranges: ['default'], count: ['default'] };
+export const LAYOUTS = { glassbar: ['default'], 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'pills', 'connect', 'slash', 'duo', 'type', 'tiles', 'glass', 'frost', 'bento', 'badges', 'checks', 'center', 'lanes', 'scores', 'fan', 'stacked', 'peecpair', 'inline', 'span', 'duel', 'band', 'glasspair'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'], dark: ['default'], logotype: ['default'], swap: ['default'], badge: ['default'], receipt: ['default'], definition: ['default'], shortlist: ['default'], lineup: ['default'], spotlight: ['default'], picks: ['default'], frostrow: ['default'], figures: ['default'], costgrid: ['default'], cloud: ['default'], ranges: ['default'], count: ['default'], checkcard: ['default'], flatcard2: ['default'], research: ['default'], squircles: ['default'], bluegrid: ['default'], typehero: ['default'], strike: ['default'], meter: ['default'] };
 
 // A layout is used at most once per category (usage.mjs). These layouts also have a site-wide cap: at most this many images
 // across all categories (the user: pills "max 2 times").
@@ -9,7 +9,7 @@ export const REPEATABLE = { 'versus/pills': 2, 'versus/slash': 5, 'versus/connec
 export const RETIRED = ['brandline', 'folder', 'versus/scale', 'versus/chat', 'versus/split', 'versus/duet', 'versus/rows', 'versus/logos',
   // batch 5 'new versions' (Oct 19 2026), all rejected: 'not a single image matches our design language… why are you using mobile mockups'
   'versus/compare', 'versus/search', 'versus/polaroid', 'versus/notes', 'versus/phones', 'versus/browser', 'notify', 'wallet', 'stickers', 'letterboard', 'tags', 'keycaps',
-  // batch 7 direction check (Oct 19 2026): disapproved
+  // the batch-5 direction check (Oct 19 2026): disapproved
   'versus/window',
   // batch 8/9 review (Oct 19 2026): range 'i like the design but it is confusing' (lanes replaced it); rings and share disapproved; sheet and columns (options) never approved
   'versus/range', 'versus/rings', 'versus/share', 'versus/sheet', 'versus/columns',
@@ -29,16 +29,39 @@ export const RETIRED = ['brandline', 'folder', 'versus/scale', 'versus/chat', 'v
   'link', 'versus/annotate', 'versus/corners',
   // batch 6 round 3, never shown (QA cut them): poster (a badge skeleton), versus/glasscards (a cramped "vs"; the retired plans' columns in
   // glass) and versus/figures (a restyle of the scores type). Not the "figures" mode, which is live.
-  'poster', 'versus/glasscards', 'versus/figures'];
+  'poster', 'versus/glasscards', 'versus/figures',
+  // batch 7 (Oct 21 2026), in the user's words: burst "disgusting shapes", underline "too bad visual", bubbles "ew", delta "$20 looks so weird bec its so big
+  // there is no visula balance at all", slider "this layout is borint", footnote "too much text", heroglass "its too bad not visually appealing
+  // at all", horizon "i like the shape you used but over alll its too much., not visually apealing at all", gooey "ew dont connect and the
+  // gradient looks awful", capsule "i dont like this rounded it looks weird", cursorcard "not tilted rectangle pls also use our bgs"
+  'versus/burst', 'versus/underline', 'versus/bubbles', 'versus/delta', 'slider', 'footnote', 'heroglass', 'horizon', 'gooey',
+  'capsule', 'cursorcard',
+  // batch 7, disapproved on the review page with no note (the reasons, as diagnosed in taste.md: a lone hero number, a stock diagram, many
+  // small pieces, a small card floating on a gradient, black with navy glows, the replaced template re-dressed)
+  'tree', 'bigword', 'sidecolumn', 'wordtag', 'market', 'estimate', 'index', 'horizonrow', 'tilegrid', 'iconrows', 'bluefield',
+  'horizon2', 'sideglow', 'eclipse', 'crescent', 'masthead', 'cropmarks', 'bracket', 'contrast', 'waffle', 'notepad', 'pricebar',
+  'spectrum', 'glowtiles', 'glasstiles', 'breakdown', 'typelist', 'toppick', 'arc', 'track', 'rating', 'versus/medallions',
+  'versus/profiles', 'versus/routes', 'versus/logobar', 'versus/outline', 'versus/gap', 'versus/toggle', 'versus/eclipses',
+  'versus/pricepair', 'versus/butterfly', 'versus/venn', 'versus/bands', 'versus/ladder', 'versus/tierchips', 'versus/lockups',
+  'versus/titlecard', 'versus/sidetiles', 'versus/aura', 'versus/iconbadge',
+  // batch 7, approved once and then replaced by the user on every article, then "delete all of them" (Oct 21 2026): flatcard (improved into
+  // flatcard2), avatars, glassrows, versus/glasssplit, bigtype
+  'flatcard', 'avatars', 'glassrows', 'versus/glasssplit', 'bigtype',
+  // batch 7, never shown (Visual QA cut them as repeats of retired or rejected designs, or the user interrupted the round). The modes "fan"
+  // and "bento" are not versus/fan and versus/bento, which are live
+  'lockupwall', 'blueprint', 'plus', 'aurarow', 'byline', 'gridcells', 'collection', 'eyebrow', 'pillstat', 'fan', 'bento',
+  'editorial', 'cascade', 'glassbars', 'orbit', 'mosaic', 'versus/gauges', 'versus/segbar', 'versus/pairchips',
+  'versus/chipfigures', 'versus/pillrows', 'versus/pillduel', 'versus/vstack', 'versus/overlap2', 'versus/tiltcards',
+  'versus/chipcloud'];
 export const retiredOf = (mode, variant) => RETIRED.find((r) => r === mode || r === `${mode}/${variant}`) || null;
 export const retiredMsg = (x) => `RETIRED LAYOUT: ${x} was retired by the user and never comes back. Pick a live layout (layouts.mjs).`;
 
 // The layouts that paint their own full canvas (render.mjs CANVAS; shared with bgpick.mjs, whose picker page names the ones that
 // refuse a pick). The Gumloop layouts and the Originals (receipt, definition, shortlist, lineup) are GL_LAYOUTS; with the Chatbase
-// headline layouts (white in a grey frame, or black) they are CB_LAYOUTS; prompt paints its own full field too, and frostrow its own light
-// mesh (recorded as "canvas"; a bg or a pick is refused there).
+// headline layouts (white in a grey frame, or black) and the batch-7 canvas layouts (each paints its one approved field; strike and meter
+// take a picked "bg" instead) they are CB_LAYOUTS; prompt paints its own full field too, and frostrow its own light mesh (recorded as "canvas"; a bg or a pick is refused there).
 export const GL_LAYOUTS = ['versus/badges', 'versus/type', 'versus/tiles', 'versus/glass', 'versus/frost', 'versus/bento', 'swap/default', 'badge/default', 'receipt/default', 'definition/default', 'shortlist/default', 'lineup/default'];
-export const CB_LAYOUTS = ['glassbar/default', 'versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', 'dark/default', ...GL_LAYOUTS];
+export const CB_LAYOUTS = ['versus/peecpair', 'versus/glasspair', 'checkcard/default', 'flatcard2/default', 'research/default', 'versus/band', 'squircles/default', 'bluegrid/default', 'versus/duel', 'versus/span', 'versus/inline', 'typehero/default', 'glassbar/default', 'versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', 'dark/default', ...GL_LAYOUTS];
 export const CANVAS_LAYOUTS = [...CB_LAYOUTS, 'prompt/default', 'frostrow/default'];
 // a picked bg shows only where the canvas can step aside (glCanvas layouts); the others paint a full canvas of their own over it
 export const PICK_CANVAS = ['versus/badges', 'versus/type', 'versus/tiles', 'versus/bento', 'swap/default', 'badge/default', 'shortlist/default'];

@@ -1,0 +1,17 @@
+{
+  "articleTitle": "DoseSpot vs RxNT: Which E-Prescribing Platform Fits in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "dosespot-vs-rxnt-which-e-prescribing-platform-fits-in-2026",
+  "mode": "versus",
+  "variant": "band",
+  "equal": true,
+  "left": {
+    "label": "DoseSpot",
+    "logo": "dosespot.com"
+  },
+  "right": {
+    "label": "RxNT",
+    "logo": "rxnt.com"
+  }
+}

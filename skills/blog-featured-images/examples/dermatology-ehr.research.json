@@ -1,0 +1,40 @@
+{
+  "articleTitle": "7 Best EHR Software Options for Dermatology Practices in 2026",
+  "brand": "medsoftwarehub",
+  "category": "specialty-software",
+  "slug": "7-best-ehr-software-options-for-dermatology-practices-in-2026",
+  "mode": "research",
+  "tag": "Dermatology",
+  "headline": "Best EHR Software\nfor Dermatology Practices",
+  "cards": [
+    {
+      "name": "ModMed EMA",
+      "logo": "../assets/modmed-icon.png"
+    },
+    {
+      "name": "Nextech",
+      "logo": "../assets/nextech-icon.png"
+    },
+    {
+      "name": "eClinicalWorks",
+      "logo": "../assets/eclinicalworks-icon.png"
+    },
+    {
+      "name": "NextGen",
+      "logo": "../assets/nextgen-folder-mark.png"
+    },
+    {
+      "name": "Ezderm",
+      "logo": "ezderm.com"
+    },
+    {
+      "name": "Pabau",
+      "logo": "icon:pabau.com"
+    },
+    {
+      "name": "athenaOne",
+      "logo": "../assets/athenahealth-folder-mark.png"
+    }
+  ],
+  "glass": true
+}

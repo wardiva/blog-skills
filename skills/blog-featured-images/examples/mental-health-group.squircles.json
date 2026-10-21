@@ -1,0 +1,34 @@
+{
+  "articleTitle": "7 Best Mental Health EHRs for Group Therapy Practices in 2026",
+  "brand": "medsoftwarehub",
+  "category": "specialty-software",
+  "slug": "7-best-mental-health-ehrs-for-group-therapy-practices-in-2026",
+  "mode": "squircles",
+  "headline": "Best Mental Health EHRs\nfor Group Therapy",
+  "items": [
+    {
+      "label": "TherapyNotes",
+      "logo": "../assets/therapynotes-icon.png"
+    },
+    {
+      "label": "SimplePractice",
+      "logo": "../assets/simplepractice-app-icon.png",
+      "fill": true
+    },
+    {
+      "label": "TheraNest",
+      "logo": "theranest.com"
+    },
+    {
+      "label": "ICANotes",
+      "logo": "../assets/icanotes-icon.png"
+    },
+    {
+      "label": "Valant",
+      "logo": "icon:valant.io",
+      "fill": false,
+      "scale": 0.82
+    }
+  ],
+  "canvas": "grid"
+}

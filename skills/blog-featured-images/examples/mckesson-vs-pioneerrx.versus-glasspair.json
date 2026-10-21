@@ -1,0 +1,19 @@
+{
+  "articleTitle": "McKesson vs PioneerRx: Which Fits Retail Pharmacy Chains in 2026",
+  "brand": "medsoftwarehub",
+  "category": "hospital-and-lab-software",
+  "slug": "mckesson-vs-pioneerrx-which-fits-retail-pharmacy-chains-in-2026",
+  "mode": "versus",
+  "variant": "glasspair",
+  "left": {
+    "label": "McKesson",
+    "logo": "../assets/mckesson-mark.png",
+    "scale": 0.6
+  },
+  "right": {
+    "label": "PioneerRx",
+    "logo": "../assets/pioneerrx-mark.png",
+    "scale": 0.64
+  },
+  "canvas": "dunes"
+}

@@ -1,0 +1,20 @@
+{
+  "articleTitle": "Tecsys vs Cardinal Health: Hospital Supply Chain Software Compared",
+  "brand": "medsoftwarehub",
+  "category": "compliance-and-analytics-software",
+  "slug": "tecsys-vs-cardinal-health-hospital-supply-chain-software-compared",
+  "mode": "typehero",
+  "left": {
+    "label": "Tecsys",
+    "logo": "tecsys.com",
+    "value": "Multi-hospital",
+    "unit": "networks"
+  },
+  "right": {
+    "label": "Cardinal Health",
+    "logo": "icon:cardinalhealth.com",
+    "fill": true,
+    "value": "High-turn",
+    "unit": "supply tracking"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "articleTitle": "7 Best Physical Therapy Software for Multi-Location Clinics",
+  "brand": "medsoftwarehub",
+  "category": "specialty-software",
+  "slug": "7-best-physical-therapy-software-for-multi-location-clinics",
+  "mode": "bluegrid",
+  "headline": "Best Physical Therapy Software\nfor Multi-Location Clinics",
+  "cards": [
+    {
+      "name": "Raintree",
+      "logo": "icon:raintreeinc.com"
+    },
+    {
+      "name": "WebPT",
+      "logo": "icon:webpt.com",
+      "fill": true
+    },
+    {
+      "name": "Prompt Health",
+      "logo": "promptemr.com"
+    },
+    {
+      "name": "Jane",
+      "logo": "icon:jane.app",
+      "fill": true
+    },
+    {
+      "name": "SPRY",
+      "logo": "sprypt.com"
+    },
+    {
+      "name": "Clinicient",
+      "logo": "icon:clinicient.com"
+    },
+    {
+      "name": "TheraOffice",
+      "logo": "icon:theraoffice.com"
+    }
+  ]
+}
