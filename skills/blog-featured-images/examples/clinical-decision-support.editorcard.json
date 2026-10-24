@@ -1,0 +1,27 @@
+{
+  "articleTitle": "7 Best Clinical Decision Support Tools for Hospitals in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "7-best-clinical-decision-support-tools-for-hospitals-in-2026",
+  "mode": "editorcard",
+  "headline": "Clinical Decision Support Tools for Hospitals",
+  "lead": 0,
+  "items": [
+    {
+      "name": "Epic",
+      "logo": "../assets/epic-icon.png"
+    },
+    {
+      "name": "UpToDate",
+      "logo": "../assets/uptodate-mark.png"
+    },
+    {
+      "name": "DynaMed",
+      "logo": "../assets/dynamed-d-icon.png"
+    },
+    {
+      "name": "VisualDx",
+      "logo": "../assets/visualdx-mark.png"
+    }
+  ]
+}

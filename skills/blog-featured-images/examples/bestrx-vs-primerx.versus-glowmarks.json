@@ -1,0 +1,16 @@
+{
+  "articleTitle": "BestRx vs PrimeRx: Which Pharmacy Software Wins in 2026",
+  "brand": "medsoftwarehub",
+  "category": "hospital-and-lab-software",
+  "slug": "bestrx-vs-primerx-which-pharmacy-software-wins-in-2026",
+  "mode": "versus",
+  "variant": "glowmarks",
+  "left": {
+    "label": "BestRx",
+    "logo": "../assets/bestrx-mark.png"
+  },
+  "right": {
+    "label": "PrimeRx",
+    "logo": "../assets/primerx-mark.png"
+  }
+}

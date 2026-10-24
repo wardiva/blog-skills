@@ -30,7 +30,8 @@ export const readJson = (f, empty = []) => { try { return fs.existsSync(f) ? JSO
 export function loadHistory(brand, ledgerFile = null) {
   const bySlug = new Map(), byAt = (x, y) => String(x.at).localeCompare(String(y.at));
   const LOCK = ['final', 'finalizedAt', 'previousFinalizedAt', 'stored', 'superseded'];
-  for (const e of [...readJson(historyFileOf(brand)), ...(ledgerFile ? readJson(ledgerFile) : [])].sort(byAt)) {
+  // the ledger first, so for the same render (same "at") the site history's fields win (they are fixed there, e.g. "vibrant")
+  for (const e of [...(ledgerFile ? readJson(ledgerFile) : []), ...readJson(historyFileOf(brand))].sort(byAt)) {
     const prev = bySlug.get(e.slug);
     if (!prev || prev.at === e.at) { bySlug.set(e.slug, { ...prev, ...e }); continue; }
     const keep = Object.fromEntries(LOCK.filter((k) => prev[k] !== undefined && e[k] === undefined).map((k) => [k, prev[k]]));

@@ -1,0 +1,18 @@
+{
+  "articleTitle": "Luma Health vs Phreesia: Which Patient Engagement Platform Wins in 2026",
+  "brand": "medsoftwarehub",
+  "category": "practice-management-software",
+  "slug": "luma-health-vs-phreesia-which-patient-engagement-platform-wins-in-2026",
+  "mode": "versus",
+  "variant": "wordvs",
+  "left": {
+    "label": "Luma Health",
+    "logo": "../assets/luma-health-color-mark.png",
+    "scale": 0.85
+  },
+  "right": {
+    "label": "Phreesia",
+    "logo": "../assets/phreesia-circle.png",
+    "scale": 0.7
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "articleTitle": "Clinisys vs Epic Beaker: Which LIS Fits Hospital Labs in 2026",
+  "brand": "medsoftwarehub",
+  "category": "hospital-and-lab-software",
+  "slug": "clinisys-vs-epic-beaker-which-lis-fits-hospital-labs-in-2026",
+  "mode": "versus",
+  "variant": "chipvs",
+  "left": {
+    "label": "Clinisys",
+    "logo": "../assets/clinisys-c-mark.png"
+  },
+  "right": {
+    "label": "Epic Beaker",
+    "logo": "../assets/epic-icon.png"
+  }
+}

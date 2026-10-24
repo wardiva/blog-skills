@@ -1,0 +1,16 @@
+{
+  "articleTitle": "Isabel vs UpToDate: Which Diagnostic Support Tool Fits in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "isabel-vs-uptodate-which-diagnostic-support-tool-fits-in-2026",
+  "mode": "versus",
+  "variant": "darkpills",
+  "left": {
+    "label": "Isabel",
+    "logo": "../assets/isabel-tick-mark.png"
+  },
+  "right": {
+    "label": "UpToDate",
+    "logo": "../assets/uptodate-mark.png"
+  }
+}

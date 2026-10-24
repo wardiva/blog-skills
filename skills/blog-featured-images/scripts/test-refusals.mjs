@@ -90,7 +90,7 @@ const got = (r, st) => {
 const passed = (r, st) => st.expect === 'OK' ? r.code === 0 && (st.plan || r.rendered)
   : r.code !== 0 && !r.rendered && (r.err + r.out).includes(st.expect) && (!st.count || (r.err + r.out).split(st.expect).length - 1 === st.count);
 
-// ---- the cases: { name, steps: [{ spec | plan, expect, slug?, args?, out?, count? }], record?, history? } ----
+// ---- the cases: { name, steps: [{ spec | plan, expect, slug?, args?, out?, count? }], record?, history?, ledger? } ----
 const C = [];
 const one = (name, s, expect, { args, ...opts } = {}) => C.push({ name, steps: [{ spec: s, expect, ...(args ? { args } : {}) }], ...opts });
 
@@ -133,6 +133,16 @@ one('"canvas" on a layout without one (duel)', spec('vanta-vs-drata.versus-duel.
 one('meter on sky, not picked', spec('ai-scribe-cost.meter.json', (s) => { s.bg = 'sky'; delete s.bgPick; }), 'BACKGROUND FIT FAILED');
 one('picked blue on strike (never approved on blue)', spec('free-ehr-worth-it.strike.json', (s) => { s.bg = 'blue'; s.bgPick = true; }), 'BACKGROUND PICK FAILED');
 one('versus/span on dunes, local logos', spec('curve-vs-denticon.versus-span.json', (s) => { s.canvas = 'dunes'; local(s); }), 'OK');
+// batch 8 (Oct 24 2026): each batch-8 layout renders only the look the user approved
+one('tilerow frosted on the light glow', spec('telehealth-platforms.tilerow.json', (s) => { s.frosted = true; }), 'FIELD FIT FAILED: tilerow is frosted tiles on our blue noise gradient only');
+one('tilerow off the blue', spec('telehealth-platforms.tilerow.json', (s) => { s.blue = false; }), 'FIELD FIT FAILED: tilerow is frosted tiles on our blue noise gradient only');
+one('bandhero with its waves', spec('online-booking-cost.bandhero.json', (s) => { s.waves = true; }), 'FIELD FIT FAILED: bandhero is the light field with our blue band only');
+one('bandhero on black', spec('online-booking-cost.bandhero.json', (s) => { s.dark = true; }), 'FIELD FIT FAILED: bandhero is the light field with our blue band only');
+one('bandhero with the black band', spec('online-booking-cost.bandhero.json', (s) => { s.bandInk = 'black'; }), 'FIELD FIT FAILED: bandhero is the light field with our blue band only');
+one('darkpills light', spec('isabel-vs-uptodate.versus-darkpills.json', (s) => { s.light = true; }), 'FIELD FIT FAILED: versus/darkpills is dark only');
+one('glowmarks light', spec('bestrx-vs-primerx.versus-glowmarks.json', (s) => { s.light = true; }), 'FIELD FIT FAILED: versus/glowmarks is dark only');
+one('metricrows without its bars', spec('eaglesoft-vs-dentrix.metricrows.json', (s) => { s.bars = false; }), 'FIELD FIT FAILED: metricrows always draws its bars');
+one('dock with placeholder tiles', spec('therapy-pm.dock.json', (s) => { s.items = s.items.slice(0, 5); s.count = 7; }), 'FIELD FIT FAILED: dock shows one real logo per tile');
 one('meter picked on sky (bare: white only)', spec('ai-scribe-cost.meter.json', (s) => { s.bg = 'sky'; }), 'BACKGROUND PICK FAILED: meter has no card behind its tracks');
 
 // 3. content each layout is built on
@@ -265,6 +275,17 @@ one('versus/band after a vibrant neighbour', spec('dosespot-vs-rxnt.versus-band.
 one('versus/glasspair after a vibrant neighbour', spec('mckesson-vs-pioneerrx.versus-glasspair.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-hl', 'checklist/default', 'hospital-and-lab-software', { bg: 'blue', vibrant: true })] });
 one('research (light glass) after a vibrant neighbour', spec('dermatology-ehr.research.json', local), 'OK', { history: [past('blue-sp2', 'checklist/default', 'specialty-software', { bg: 'blue', vibrant: true })] });
 one('versus/span after a vibrant neighbour', spec('curve-vs-denticon.versus-span.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-sp3', 'checklist/default', 'specialty-software', { bg: 'blue', vibrant: true })] });
+// batch 8: tilerow (the blue noise gradient), namehero (the dunes), vssquares, darkpills and glowmarks (black) count as vibrant; the
+// user's knowing pick of a vibrant neighbour is --vibrant-pick (it lifts only this check), never --force
+one('tilerow after a vibrant neighbour', spec('telehealth-platforms.tilerow.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-c8', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true })] });
+one('versus/darkpills after a vibrant neighbour', spec('isabel-vs-uptodate.versus-darkpills.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-c9', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true })] });
+one('versus/vssquares after a vibrant neighbour', spec('meditech-vs-trubridge.versus-vssquares.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-h8', 'checklist/default', 'hospital-and-lab-software', { bg: 'blue', vibrant: true })] });
+one('versus/glowmarks after a vibrant neighbour', spec('bestrx-vs-primerx.versus-glowmarks.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-h9', 'checklist/default', 'hospital-and-lab-software', { bg: 'blue', vibrant: true })] });
+one('namehero after a vibrant neighbour', spec('modmed-worth-it.namehero.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-s8', 'checklist/default', 'specialty-software', { bg: 'blue', vibrant: true })] });
+one('--vibrant-pick: the user chose the dark reference', spec('isabel-vs-uptodate.versus-darkpills.json'), 'OK', { args: ['--vibrant-pick'], history: [past('blue-c10', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true })] });
+one('--vibrant-pick still runs the other checks', spec('isabel-vs-uptodate.versus-darkpills.json', (s) => { s.light = true; }), 'FIELD FIT FAILED', { args: ['--vibrant-pick'], history: [past('blue-c11', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true })] });
+// the site history wins over a stale batch-folder ledger for the same render (a forced final left the ledger's "vibrant" wrong)
+one('history beats a stale ledger (same render)', spec('ehr-interoperability-cost.glassbar.json'), 'OK', { history: [past('ledg-1', 'research/default', 'clinical-software', { bg: 'canvas', vibrant: false, at: '2026-10-05T00:00:00.000Z' })], ledger: [past('ledg-1', 'research/default', 'clinical-software', { bg: 'canvas', vibrant: true, at: '2026-10-05T00:00:00.000Z' })] });
 
 // 7. the spec's category, delivered images, same-topic, plan.mjs syntax
 one('no category', spec(BADGES, (s) => { delete s.category; }), 'CATEGORY MISSING');
@@ -317,6 +338,26 @@ one('versus/span without a side\'s range', spec('curve-vs-denticon.versus-span.j
 one('versus/band without a logo', spec('dosespot-vs-rxnt.versus-band.json', (s) => { delete s.right.logo; }), 'CONTENT CHECK FAILED: versus/band needs');
 one('squircles with 2 items', spec('mental-health-group.squircles.json', (s) => { s.items = s.items.slice(0, 2); }), 'CONTENT CHECK FAILED: squircles needs');
 one('flatcard2 without its figure', spec('ehr-implementation-cost.flatcard2.json', (s) => { delete s.value; }), 'CONTENT CHECK FAILED: flatcard2 needs');
+// batch 8: the content each kept layout is built on
+one('versus/vssquares without a logo', spec('meditech-vs-trubridge.versus-vssquares.json', (s) => { delete s.right.logo; }), 'CONTENT CHECK FAILED: versus/vssquares needs');
+one('versus/capsulevs without its heading', spec('medallion-vs-symplr.versus-capsulevs.json', (s) => { delete s.headline; }), 'CONTENT CHECK FAILED: versus/capsulevs needs');
+one('namehero without the name (its heading)', spec('modmed-worth-it.namehero.json', (s) => { delete s.name; }), 'HEADING CHECK FAILED');
+one('highlight without its phrase', spec('hospital-management.highlight.json', (s) => { delete s.phrase; }), 'CONTENT CHECK FAILED: highlight needs');
+one('dock with 2 items', spec('therapy-pm.dock.json', (s) => { s.items = s.items.slice(0, 2); delete s.count; }), 'CONTENT CHECK FAILED: dock needs 3-7 items');
+one('metricrows with one row', spec('eaglesoft-vs-dentrix.metricrows.json', (s) => { s.rows = s.rows.slice(0, 1); }), 'CONTENT CHECK FAILED: metricrows needs 2 rows');
+one('bandhero without its figure', spec('online-booking-cost.bandhero.json', (s) => { delete s.band; }), 'CONTENT CHECK FAILED: bandhero needs');
+one('versus/markvs without a logo', spec('ecw-vs-nextgen.versus-markvs.json', (s) => { delete s.left.logo; }), 'CONTENT CHECK FAILED: versus/markvs needs');
+one('versus/wordvs without a logo', spec('luma-vs-phreesia.versus-wordvs.json', (s) => { delete s.right.logo; }), 'CONTENT CHECK FAILED: versus/wordvs needs');
+one('versus/chipvs without a logo', spec('clinisys-vs-epic-beaker.versus-chipvs.json', (s) => { delete s.left.logo; }), 'CONTENT CHECK FAILED: versus/chipvs needs');
+one('versus/darkpills without a logo', spec('isabel-vs-uptodate.versus-darkpills.json', (s) => { delete s.right.logo; }), 'CONTENT CHECK FAILED: versus/darkpills needs');
+one('versus/glowmarks without a logo', spec('bestrx-vs-primerx.versus-glowmarks.json', (s) => { delete s.left.logo; }), 'CONTENT CHECK FAILED: versus/glowmarks needs');
+one('titlebox without its headline', spec('psv-cost.titlebox.json', (s) => { delete s.headline; }), 'HEADING CHECK FAILED: titlebox/default draws a heading');
+one('darkpanel with 7 picks', spec('change-healthcare-alternatives.darkpanel.json', (s) => { s.items = [...s.items, s.items[0]]; }), 'CONTENT CHECK FAILED: darkpanel needs 3-6 items');
+one('editorcard with 5 picks', spec('clinical-decision-support.editorcard.json', (s) => { s.items = [...s.items, s.items[0]]; }), 'CONTENT CHECK FAILED: editorcard needs 3-4 items');
+one('tilerow with 7 picks', spec('telehealth-platforms.tilerow.json', (s) => { s.items = [...s.items, ...s.items.slice(0, 3)]; }), 'CONTENT CHECK FAILED: tilerow needs 3-6 items');
+one('tilerow without its headline', spec('telehealth-platforms.tilerow.json', (s) => { delete s.headline; }), 'HEADING CHECK FAILED: tilerow/default draws a heading');
+one('dock without its headline', spec('therapy-pm.dock.json', (s) => { delete s.headline; }), 'HEADING CHECK FAILED: dock/default draws a heading');
+one('squircles without its headline', spec('mental-health-group.squircles.json', (s) => { delete s.headline; }), 'HEADING CHECK FAILED: squircles/default draws a heading');
 one('peecpair heading that shares no words', spec('simplepractice-vs-theranest.versus-peecpair.json', (s) => { s.headline = 'Totally unrelated banana words here'; }), 'HEADING CHECK FAILED');
 // a versus spec with no "variant" is versus/overlap (the default), never a batch-7 variant
 one('versus with no variant is overlap', spec('microsoft-dynamics-365-vs-acumatica-for-growing-businesses-2026.json', (s) => { delete s.variant; }), '"versus/overlap" is already used in the', { record: record({ 'versus/overlap': used(['clinical-software']) }) });
@@ -328,6 +369,7 @@ const runCase = async (c, i) => {
   fs.mkdirSync(box.hist, { recursive: true });
   fs.writeFileSync(box.rec, JSON.stringify(c.record || { layouts: {} }));
   if (c.history) fs.writeFileSync(path.join(box.hist, `history-${BRAND}.json`), JSON.stringify(c.history));
+  if (c.ledger) { fs.mkdirSync(path.join(box.dir, 'batch'), { recursive: true }); fs.writeFileSync(path.join(box.dir, 'batch', '.featured-ledger.json'), JSON.stringify(c.ledger)); }
   const rows = [];
   for (const [k, st] of c.steps.entries()) {
     const r = await step(box, st), ok = passed(r, st);

@@ -129,10 +129,10 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
 
 - **History of the usage rule:** batches 1-2 rotated layouts site-wide ("I don't want you to repeat any illustration, only repeat if it makes actual sense": a repeat only after all 30 were used, or with a written reason); in batch 3 the user judged variety across every image seen; in batch 4 a written reason still didn't make a repeat welcome. The per-category rule below replaced all of it.
 
-- **Four templates deleted** (the approved review, note "Delete"): the checklist on a light field (g5/sky), `versus/type` on blue, `versus/tiles` on black, `swap` on black. Their reference images (01-checklist, 19-gumloop-type-blue, 21-gumloop-tiles-black, 26-gumloop-swap-black) and example specs were archived; `references/approved/` then had 29 images (40 after batch 5's final round, sections 18–20; 46 after batch 6, section 21; 61 after batch 7, section 23).
+- **Four templates deleted** (the approved review, note "Delete"): the checklist on a light field (g5/sky), `versus/type` on blue, `versus/tiles` on black, `swap` on black. Their reference images (01-checklist, 19-gumloop-type-blue, 21-gumloop-tiles-black, 26-gumloop-swap-black) and example specs were archived; `references/approved/` then had 29 images (40 after batch 5's final round, sections 18–20; 46 after batch 6, section 21; 61 after batch 7, section 23; 77 after batch 8, section 25).
 - **What changed in the renderer:** the checklist is blue only. The renderer sets `"bg": "blue"` itself and refuses any other `bg` ("CHECKLIST FIELD FAILED"). It still counts as vibrant (1 in 3 per category, never neighbours), so if a neighbour is vibrant, pick another layout. Field fit: type light; tiles blue, light; swap light.
 - **Versus frost:** "the icons are too big and this is why visual balance off, improve". The marks went from 60% to 48% of each glass tile. 44% and 48% were rendered side by side and 48% was picked by taste: at 44% the marks looked lost in the tile.
-- **The usage rule changed.** The user: "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." A layout not used yet anywhere is free for any article it suits and goes first in line; a used layout can't be used again in the same category, only in a different one. This replaces the site-wide rotation and the repeat with a reason (both gone from the code; only the user's own pick, `--user-pick` or `plan.mjs` `slug=layout!`, or `--force` skips the rule). Restated on Oct 15: "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used again because they aren't used right now, obviously".
+- **The usage rule changed.** The user: "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." A layout not used yet anywhere is free for any article it suits and goes first in line; a used layout can't be used again in the same category, only in a different one. This replaces the site-wide rotation and the repeat with a reason (both gone from the code; only the user's own pick, `--user-pick` or `plan.mjs` `slug=layout!`, skips the rule; `--force` is never used). Restated on Oct 15: "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used again because they aren't used right now, obviously".
 - **Site-wide caps stay on top:** pills at most 2 images in total (the user: "max 2 times"), slash, connect and duo 5, dark 3, logotype 2. Every other layout has no site-wide cap.
 - **Template Usage page** (https://claude.ai/artifact/8wxx5rif2nNTk81bzgaQ6q): one card per layout, "Used" with its categories, or "Not used yet". It is the user's own record. The orchestrator reads its database with ArtifactData (collection `usage`, docs `{code, status, cats}`), writes `references/used-layouts.json` and pushes. `scripts/usage.mjs` combines that file with the site history for render.mjs and plan.mjs.
 - **The record overrides the history**, because the user knows what is live on the site. For every layout it lists, the record is the truth as of its `recordedAt` (or a layout's own `asOf`, which overrides it for that layout): a history image for a layout marked "Not used yet" never went live and doesn't count. Every image rendered (drafts too), reserved or delivered after that cutoff that isn't superseded is added on top; a layout the record doesn't list falls back to the history. What is used right now is in `references/used-layouts.json` itself, never copied here.
@@ -239,10 +239,10 @@ Read this before every batch. Each lesson cost a real batch or a review round; y
   - Oracle Health vs MEDITECH: stays `versus/scores` with the 2025 pair. The 2026 version had a number only for MEDITECH and "Lowest ranked" for Oracle: "ew revert it". `versus/scores` now refuses a non-numeric score ("CONTENT CHECK FAILED": a real number on both sides). The user: "show me reverted one and add that to not used cus i love the design". On the design: "i love the design but is the concept right?" (taste 19).
   - `versus/connect` (the Oracle connect preview): "delete these dot grid from top left and top right" → `"cornerDots": false`.
   - Spotlight: "perfect concept and design" (taste 20). Oracle scores: "i love the design but is the concept right?". The others: "its fine".
-- **Retired in this round (30 in all then):** `versus/plans` ("i dont like the design, try smth else for comparison"), `versus/fit` (disapproved), `versus/spot` (QA: Appointment's spotlight under a new name), `grid` ("7 best pediatric shouldnt be like other logos, this looks off"; both fixes disapproved). Live then: 24 modes / 40 layouts (28 / 46 and 42 retired after batch 6: section 21; 36 / 60 and 134 retired after batch 7: section 23).
+- **Retired in this round (30 in all then):** `versus/plans` ("i dont like the design, try smth else for comparison"), `versus/fit` (disapproved), `versus/spot` (QA: Appointment's spotlight under a new name), `grid` ("7 best pediatric shouldnt be like other logos, this looks off"; both fixes disapproved). Live then: 24 modes / 40 layouts (28 / 46 and 42 retired after batch 6: section 21; 36 / 60 and 134 retired after batch 7: section 23; 45 / 76 and 156 retired after batch 8: section 25).
 - **Usage:** `versus/scores` was marked unused in `references/used-layouts.json` with its own `"asOf"` (`2026-10-19T19:23:25.151Z`, after the delivered Oracle image's render at 18:08:12Z, so the record covers it) and a `"why"` (both dropped by the Oct 20 full save; it is still unused). In `scripts/usage.mjs` a per-layout `asOf` overrides `recordedAt` as that layout's cutoff, so the delivered Oracle image no longer counts and the layout is free in every category; renders after the cutoff still count.
 - **Usage sync (audit, Oct 20):** the user changes the Template Usage page without saying "done with usage". On Oct 19 at 20:09 they marked `versus/frost` used in clinical-software on the page, and it reached `references/used-layouts.json` only when the audit synced it. Rule: before planning any batch, read the page's `usage` collection (ArtifactData) and sync every doc whose `updatedAt` is later than the record (`recordedAt`, or that layout's `asOf`) into the record as that layout's entry with `"asOf": <updatedAt>`. When the user pressed Save all & finish (`usage-meta/done.at` later than `recordedAt`), the whole record is rewritten with `recordedAt = done.at` and no per-layout `asOf` (SKILL.md, Workflow step 2).
-- **Integration:** approved references 36 (badges), 37 (checks) and 46 (ranges) were re-rendered from their updated example specs with the new options; 48 (`48-prompt-logos`, `examples/rxnt-vs-drfirst.prompt.json`) was added; 38 (`versus/plans`) and 47 (`grid`) and their example specs were archived to `~/.blog-featured-images/_archive/batch5-final-2026-10-20/`. 40 approved references and 48 examples then (46 and 54 after batch 6; 61 and 69 after batch 7). The code for `versus/spot`, `versus/fit`, `grid`, `versus/plans` and the word-score path of `versus/scores` was deleted from `render.mjs`.
+- **Integration:** approved references 36 (badges), 37 (checks) and 46 (ranges) were re-rendered from their updated example specs with the new options; 48 (`48-prompt-logos`, `examples/rxnt-vs-drfirst.prompt.json`) was added; 38 (`versus/plans`) and 47 (`grid`) and their example specs were archived to `~/.blog-featured-images/_archive/batch5-final-2026-10-20/`. 40 approved references and 48 examples then (46 and 54 after batch 6; 61 and 69 after batch 7; 77 and 85 after batch 8). The code for `versus/spot`, `versus/fit`, `grid`, `versus/plans` and the word-score path of `versus/scores` was deleted from `render.mjs`.
 - **Lessons:** names never outweigh the key figure; every element earns its place (check boxes, a container, corner dots); a heading never dresses as one more tile; paired figures are two real numbers; check the concept against the article before rendering; repeat what was praised. All are in `taste.md` (principles 1, 2, 4, 10, 18, 19, 20) and its Self-Critique.
 - **Review (Oct 20):** the user pressed Keep on both open changes: the connect headline capped at 1080px (a touch smaller, inside the margins) and the frost marks at 48%. Both are settled; the review page's round was cleared. The old remote branch `batch-4-taste` (Oct 14, content already in main) was deleted at the user's request.
 
@@ -496,6 +496,7 @@ Older layouts used in finals, with no code change: `dark` (PioneerRx), `versus/s
 - **After two failed rounds of inventions, go to references** (browser research or the user's own), not to the approved-looks picker. This replaces section 22's picker rule.
 - **No voice-note button** on review pages: it didn't work inside the artifact ("forget about it"). Don't ship untested features.
 - **Hand-off:** separate files per image; a link page with a Copy button per row (title → Google Doc → file) and "Copy all"; Before/After tables for each change. Every delivered file maps to its article at a glance ("this is for what url?").
+  **Superseded (Oct 25):** a copy-only link page isn't enough ("how am i supposed to download images from here", "i need to be able to copy images", batch 8). Each row now has Copy link, Copy image (the full 1600×900 PNG) and Download, the header "Copy all N" (N counted from the rows) and "Download all" (.zip), and the preview is the full PNG shown small. Section 25.
 - **Ops:** a brand-new review collection name each round, renamed everywhere in the builder; render finals from the project root, not inside `featured-images/`; redo a delivered image with `render.mjs --redo` and finalize it again, never `--force`; cut bare marks from the full logo, not the app icon; read Google Docs via `/export?format=txt`; Brandfetch images need the renderer's browser user agent.
 - **The 1-in-3 vibrant cap:** when it blocks an approved image, say so and offer an override or a different black or blue design. "Use black too" means plain black or the dunes.
 
@@ -505,3 +506,184 @@ Older layouts used in finals, with no code change: `dark` (PioneerRx), `versus/s
 - 69 examples (54 after batch 6); 61 approved reference images (46 after batch 6; new: 55–69).
 - Refusal suite: 277 cases / 296 steps (155 / 174 before); `test-examples`: 69 of 69 render.
 - Taste: 34 principles (24 before; 25–34 are from this batch).
+
+## 24. Batch 8 (Oct 24 2026): the rounds, in order
+
+25 Google-Doc articles, 5 per category. Rounds are numbered as on the review page (collections `reviews-b8-oct24-r1` … `r8`). The bullets below were written during the batch; where a later finding changed them, a **Superseded (Oct 25)** line says so. The outcome is section 25.
+
+### Start and round 1: approved looks rolled out
+- **Oct 24 2026, batch 8 start:** the folder ledger (`featured-images/.featured-ledger.json`) and the site history must agree on `vibrant`. Three finals re-rendered with `--force` in batch 7 left the ledger wrong (Dermatology and Solventum research marked vibrant, McKesson glasspair not), and the renderer merges the ledger over the history, so a light image blocked the next vibrant one in its category ("VIBRANT CHECK FAILED" naming a research image). Fixed by copying the history's flag into the ledger; never use `--force` (use `--redo`).
+- **Batch 8 (Oct 24 2026, 25 articles, one family each):**
+  - Renderer fixes from QA: `versus/duel` fits the whole row inside the 7:5 card crop when a long name (athenahealth) would drop below 80px; `cloud` with ≤4 picks scales pills 1.15 and takes a two-line heading up to 68px (heading-to-name ≥1.7:1; at 1.3 the names read level with the heading); `versus/center` breaks a long label onto two lines at ~52px; `flatcard2` takes `"valueSize"` (≥50px clear inside the selection); `versus/peecpair` sides take `"width"` (size by optical weight: PHILIPS 350 vs GE HealthCare 480); `meter` keeps a figure label inside its track, its right edge on the track end when it can't start at its bar; `versus/duo` shows a logo-less side as its name alone at 72px.
+    **Superseded (Oct 25):** the `cloud`, `versus/center` and `flatcard2` changes were reverted: their only uses (Telehealth platforms, MEDITECH vs TruBridge, ModMed) were disapproved, so the user never approved them. Kept, because their images were approved: the duel row fit, peecpair's per-side `"width"`, the meter label clamp and duo's name-only side.
+  - Content twin: a best-of in a category whose picks repeat a delivered image's picks in a sibling tile-row skeleton (research, frostrow, squircles, lineup) is a repeat; pick a skeleton that isn't a tile row (`cloud`, `ranges`).
+    **Superseded (Oct 25):** both replacements (`cloud`, `ranges`) were disapproved anyway. Lists passed in batch 8 only as copies of the user's references, with the logos in one object (taste 41).
+  - `versus/band` needs two wide text wordmarks (about 4.2:1 or wider); a compact one (Availity 3.25:1) can't reach the shared width.
+  - A best-of drops picks only from the end, never the middle; look for a product's own mark on its provider site before giving up (TriZetto's triangle lives on trizettoprovider.com).
+  - Duo: a light brand colour (Zocdoc yellow) can't carry white: leave `color` out for the duo blue; a plain-shape mark (Phreesia's disc) goes name-only, as Sectra on approved 13.
+  - Folder ledger and history must agree on `vibrant`; batch 7's `--force` finals left them out of sync.
+  - Makers share the scratchpad: each keeps its helpers in its own subfolder.
+- **Batch 8 review (Oct 24 2026): 7 approved, 18 disapproved with no note**, then "The ones that I have disapproved, I want you to create new layout for them. And the ones that I have approved are fine."
+  - Approved: versus/band (athenahealth vs Waystar), versus/duel (MyChart vs athenahealth), versus/peecpair (GE vs Philips), meter (RCM worth it), badge (telehealth worth it), versus/glass (Valant vs ICANotes), versus/duo (Zocdoc vs Phreesia).
+  - Disapproved: every image that reused a layout approved on another article in batch 7 (checkcard, squircles, glasspair, span, inline, flatcard2, research→cloud, frostrow→ranges, typehero) and the older templates the user has seen (spotlight, tiles, table, center, bento, type, costgrid, figures, frost). Diagnosis: the plan rolled approved designs out across the batch, which SKILL §3 forbids ("A design approved in a direction check is approved for the article it was shown on"). The reuse rule must hold for batch-7 finals too: a layout approved on one article is not a template for the next batch.
+    **Superseded (Oct 25):** this reuse diagnosis is wrong (the correction below says why). The round-1 lesson is fit to the new article: judge each look against the new article's type, logos and facts, never "it was approved before" (taste 34 calibration). The 18 disapproved older layouts were not retired; the user approved each on its own article, and they stay live.
+  - Redo: 18 brand-new layouts from Peec and Dub covers not used before (chiprow, rankrows, darkbars, darkhbars, logodialog, sourcetable, trio, optioncards; versus/pillvs, markvs, planstack, headpeek, splitchart, twocards, stackpair, blackmarks, linkcard, pillpair), each translated to our fields, radius and "vs". A first render read as small widgets; everything was scaled ~20–30% before the Makers started (taste 26).
+  - **Correction (same day):** the "reuse" diagnosis above was wrong. All 7 approved images also reused earlier families (band, duel, peecpair, glass, duo, meter, badge), so the disapprovals were about each image's look, not reuse. What the approved set shares: big names or real wordmarks as the object (band, duel, peecpair, glass, duo) or one simple figure in one object (meter, badge). What failed: small card widgets, logo-tile rows, charts inside cards, marks without names.
+    **Superseded (Oct 25):** "marks without names" is not a failure signal. `versus/markvs` (eClinicalWorks vs NextGen: two bare marks, no names, approved in round 2) and `versus/capsulevs` (Medallion vs symplr: marks only, names in the heading, approved in round 3) passed; `versus/glasspair` (eClinicalWorks in round 1) and `versus/tiltpair` (Isabel, reordered) showed marks only and failed. The difference is closer to "a faithful copy of the reference at its own scale" than to names. What separated the passes: a vs with no price unless the title is about pricing (14 of 15 approved vs finals carry no figure; taste 37), and lists and costs that copy one of the user's references (taste 41).
+  - QA predictions are not the user's verdict: both QA agents passed all 25 and the user disapproved 18; on the redesigns Visual QA failed 13 of 18 as re-dresses. Fix the measurable defects QA finds (fields, crop, empty bands, hierarchy) and let the user judge the rest.
+    Added Oct 25: QA's *repeat* calls are the exception. In round 3 Visual QA called every repeat on the page, the session overrode it, and every repeat lost.
+
+### Batch 8, rounds 2 and 3 (Oct 24 2026): the user's own references (added Oct 25)
+- Round 2 (18 layouts from Peec and Dub covers the session found): the user marked one, `versus/markvs` (eClinicalWorks vs NextGen), approve. The other 17 got no verdict. A round left almost blank is a rejection of the direction (taste 43).
+- The user answered with nine references of their own (refs 42–50) and a note per image: "img 1 can be used for comparison / vs", "img 2 can be used for just name of 1 product in our noise blue gradient bg", "img 3 can be used for comparison / vs , replace x with vs", "img 4 can also be used for comparison / vs", "img 5 and img6 can be used for anything just write product name", "img 7 can be used for no of products for example 7 products or whatever, use glass", "img 8 can be used for pricing comparison", "img 9 can be used for any template that fits in this", "use our colors obv". Each note says which article type a reference is eligible for; it is not a quota.
+- Round 3 (17 copies of the nine references): 11 approved (darkpanel, highlight, dock, vssquares ×2, wordvs ×2, metricrows, titlebox, namehero, capsulevs), 3 disapproved, 3 unmarked. Every failure was a second or third use of a family on the page (next section). Several references were used on 2–3 articles, and Visual QA's "once per page" was overridden.
+- Hit rate by source: the user's references 11 of 17 here, then 3 of 4 (round 4) and 2 of 2 (round 8); the covers the session found itself 1 of 18 (taste 35).
+
+### Batch 8, round 4 (Oct 24 2026): "the ones that i have disapproved are repeating the layouts/templates/design"
+- The user's diagnosis: each disapproved image repeated a family already on the page (dock twice, metricrows three times, capsulevs twice, highlight twice). Before every review page, list each family on the page and allow it once (V15).
+  **Superseded (Oct 25):** `capsulevs` was on the page three times (Medallion, Clinisys, Isabel), not twice. And vssquares (MEDITECH, Availity) and wordvs (Luma, EncoderPro) were repeats too, and all four were approved. The user kept the best instance of each family; vssquares and wordvs passed twice only because each copy was the reference's exact form in a different category. That is not a licence: one family and one reference per page, each reference on its best-fit article (taste 36).
+- The round-4 designs came from four incident.io covers the user sent mid-turn at 18:15, as attachments with no text, and from two Mintlify covers the session picked. (Added Oct 25: the incident.io covers were the user's own references, but they were never saved to disk; save every reference the user sends, with its intended use.)
+- Two references from one source ("tiles above a heading", incident.io refs 2 and 4) are one skeleton when used together. Separate them by order, scale and field (tiltpair went onto the dunes with the heading above the tiles).
+  **Superseded (Oct 25):** separating them didn't work. The reordered `tiltpair` got no verdict in four rounds, was replaced by `versus/darkpills` and is retired. Don't use two sibling skeletons from one source in one batch; copy the one that fits, whole (taste 35).
+- A reference that is "a chip plus words" uses one chip. Two chips that each hold a logo and a name make the wordvs/duel family again.
+- A tilted colour band is full-bleed with square ends. A rotated rounded box under 1600px wide is a rotated card (taste 29), and it also reads as the approved highlight.
+- Brand marks keep their colours unless the reference itself is monochrome. Recolouring both sides white on identical blue tiles erases the pair.
+- Including a pick depends on the heading around it. Amwell was fine as one of "the article's seven", but wrong under "for Small Practices", which the article tells small practices to skip. If the count changes, re-check the picks.
+- A one-figure cost layout (bandhero, glassbar) shows the article's own lead answer ("Most clinics pay $250–$800 per provider per month").
+- A row of logo cards with the first one highlighted repeats darkpanel. Two price ranges on one axis repeat meter/metricrows, whatever the dressing.
+- Round 4 verdicts: CDS (editorcard), Clinisys (chipvs), Telehealth (tilerow) and Online Booking (bandhero) approved. Two notes came with them:
+  - Telehealth: "use bg in which frosted glass bg can be used for logos bg". Logo tiles go on frosted glass over the light glow field, with the logos in their real colours (tilerow `"frosted": true`). Solid coloured tiles with recoloured marks were not the look.
+    **Superseded (Oct 25):** not the light glow. The next two rounds put the frosted tiles on our blue noise gradient ("use gradient blue noise bg", then "This is fine now"). `tilerow` is blue only and refuses `"frosted"` and `"blue": false` (taste 38).
+  - Online Booking: "delete the waves from bottom". The reference's waves came out; with `"waves": false` the block re-centres vertically. Don't add decorative shapes just because a reference has them.
+    **Superseded (Oct 25):** the waves code is deleted; `bandhero` refuses `"waves": true`.
+- Round 5 notes:
+  - Telehealth tilerow: "use gradient blue noise bg". The frosted tiles went onto our noisy blue gradient (`"blue": true`, vibrant). Frosted glass needs colour behind it, and the user's pick for that is the blue gradient, not the light glow.
+  - Online Booking bandhero: "use black bg". Plain black with white type and the blue band (`"dark": true`, vibrant).
+    **Superseded (Oct 25):** reversed a round later ("dont use black bg"). `bandhero` is light with the blue band only and refuses `"dark"` and `"bandInk"` (taste 40).
+  - Isabel's tiltpair moved from the dunes to the light glow field, so Telehealth could take the vibrant slot in clinical (never two vibrant neighbours in a category).
+- Round 6/7 verdicts:
+  - Online Booking: after "use black bg" the black field was rejected ("dont use black bg"). A black band on the light field was disapproved too. The blue band on the light field was approved. A one-line field note can be reversed once the user sees it, so offer both readings as options.
+  - Isabel vs UpToDate and BestRx vs PrimeRx went four rounds with no verdict. Asking directly ("approve as is?") brought the answer "I'll provide inspirations". When images sit unmarked, ask in chat instead of re-listing them.
+- Round 8: both references (darkpills, glowmarks) were approved on black, as in the references, over the light versions. The user chose the reference's own dark field even though it put two vibrant images side by side in clinical (Telehealth) and hospital (MEDITECH). When the reference is dark, show the dark version alongside a light one, rendered with --force for review only, and let the user decide.
+  **Superseded (Oct 25):** not "for review only": the Isabel and BestRx finals were rendered with `--force` too, which skipped every check. The light versions were disapproved and their code is deleted, so the dark version is the design (taste 39). A knowing vibrant neighbour now renders with `--vibrant-pick`, which lifts only the VIBRANT CHECK and records `"vibrantPick": true`; never `--force`. The history was corrected (section 25).
+- Batch 8 was finalized Oct 24 2026: 25 images in `_delivery/batch8`, with a link page.
+  **Superseded (Oct 25):** the first link page had only a Copy button per row and a stale "Copy all 20" for 25 rows. After "how am i supposed to download images from here" and "i need to be able to copy images" it got Download per row, Download all (.zip), Copy image per row and full-size previews. After delivery the user had `versus/vssquares`' corner ring markers and the black square's grey stroke removed; MEDITECH vs TruBridge and Availity vs Office Ally were re-finalized with `--redo`.
+
+### After delivery (Oct 24–25 2026): `versus/vssquares` (added Oct 25)
+- The user's requests on the two vssquares finals (MEDITECH vs TruBridge, Availity vs Office Ally): the corner ring markers removed, the black square's grey stroke replaced by a dashed edge (top, left, bottom) in the guide lines' style so it doesn't blend into the black field, and "lighter" dots.
+- "Lighter" was misread: the batch session made the dots brighter, and the user meant subtler, "very subtle" (white dots at 12% opacity). On a dark field "lighter" can mean brighter or fainter: ask which, or show both readings (taste 40).
+- Final look: no corner ring markers, a dashed edge on the black square, very subtle dots. Both finals were re-finalized with `--redo`.
+
+## 25. Batch 8 outcome (Oct 24–25 2026): 25 finals, 16 kept layouts, 22 retired
+
+Batch 8 ran eight review rounds on 25 Google-Doc articles in one day. Round 1 rolled batch-7 approved looks out to the new articles: 7 of 25 approved, 18 disapproved with no notes. Round 2 offered 18 layouts taken from Peec and Dub covers the session found itself: the user marked one (`versus/markvs`) and sent nine references of their own instead. From round 3 on, the designs were copies of the user's references: 11 of 17, then 3 of 4 (the incident.io covers the user sent mid-turn), then 2 of 2 (refs 51 and 52, after "i'll provide inspirations"). What follows is the state the integration left (Oct 25).
+
+### The rounds
+
+| Round | Shown | Result |
+|---|---|---|
+| 1 | 25 images on existing layouts | 7 approved, 18 disapproved, no notes |
+| 2 | 18 layouts from Peec and Dub covers the session found | 1 approved (`versus/markvs`), 17 unmarked; the user sent refs 42–50 |
+| 3 | 17 copies of the user's nine references, several used 2–3 times | 11 approved, 3 disapproved, 3 unmarked: "done the ones that i have disapproved are repeating the layouts/templates/design" |
+| 4 | 4 from the user's incident.io covers, 2 from Mintlify covers | `editorcard`, `versus/chipvs`, `tilerow`, `bandhero` approved (two with notes); `versus/tiltpair`, `versus/dimension` unmarked |
+| 5–7 | `tilerow` and `bandhero` field notes; Isabel and BestRx again | "use gradient blue noise bg", "This is fine now"; "use black bg", "dont use black bg", blue band approved; Isabel and BestRx unmarked, then "i'll provide inspirations" |
+| 8 | Isabel and BestRx from refs 51 and 52, dark and light | both dark approved, both light disapproved |
+| Hand-off | the link page | "how am i supposed to download images from here", "i need to be able to copy images" |
+
+### The 25 finals
+
+| # | Article (slug) | Category | Layout | Field |
+|---|---|---|---|---|
+| 1 | is-telehealth-software-worth-it-for-small-practices-in-2026 | clinical-software | `badge` | light |
+| 2 | athenahealth-vs-waystar-which-rcm-platform-fits-in-2026 | medical-billing | `versus/band` | plain black (vibrant) |
+| 3 | epic-mychart-vs-athenahealth-patient-portal-which-fits-multi-location-practices | clinical-software | `versus/duel` | its faint grid |
+| 4 | valant-vs-icanotes-which-ehr-fits-psychiatric-practices-in-2026 | specialty-software | `versus/glass` | light |
+| 5 | zocdoc-vs-phreesia-which-scheduling-platform-wins-in-2026 | practice-management-software | `versus/duo` | black (vibrant) |
+| 6 | ge-healthcare-vs-philips-pacs-pricing-and-features-in-2026 | hospital-and-lab-software | `versus/peecpair` | its near-white hairline grid |
+| 7 | is-rcm-software-worth-it-for-small-practices-in-2026 | medical-billing | `meter` | white |
+| 8 | eclinicalworks-vs-nextgen-for-dermatology-practices-in-2026 | specialty-software | `versus/markvs` | faint grid |
+| 9 | 7-best-hospital-management-software-for-multi-hospital-systems | hospital-and-lab-software | `highlight` | light dotted map |
+| 10 | how-much-does-primary-source-verification-software-cost-in-2026 | practice-management-software | `titlebox` | light dotted map |
+| 11 | 6-best-change-healthcare-alternatives-for-claims-in-2026 | medical-billing | `darkpanel` | light dotted map, black panel |
+| 12 | optum-encoderpro-vs-aapc-codify-which-coding-tool-wins-in-2026 | medical-billing | `versus/wordvs` | light dotted map |
+| 13 | 7-best-therapy-practice-management-tools-for-solo-therapists-in-2026 | specialty-software | `dock` | light glass |
+| 14 | medallion-vs-symplr-which-credentialing-platform-wins-in-2026 | practice-management-software | `versus/capsulevs` | light |
+| 15 | is-modmed-worth-it-for-solo-dermatology-practices-in-2026 | specialty-software | `namehero` | deep-dunes blue noise (vibrant) |
+| 16 | luma-health-vs-phreesia-which-patient-engagement-platform-wins-in-2026 | practice-management-software | `versus/wordvs` | light dotted map |
+| 17 | eaglesoft-vs-dentrix-pricing-and-features-compared-2026 | specialty-software | `metricrows` | framed light page |
+| 18 | clinisys-vs-epic-beaker-which-lis-fits-hospital-labs-in-2026 | hospital-and-lab-software | `versus/chipvs` | light glow |
+| 19 | 7-best-clinical-decision-support-tools-for-hospitals-in-2026 | clinical-software | `editorcard` | light |
+| 20 | 7-best-telehealth-platforms-for-small-practices-in-2026 | clinical-software | `tilerow` | blue noise gradient (vibrant) |
+| 21 | how-much-does-online-booking-software-cost-for-clinics-in-2026 | practice-management-software | `bandhero` | light, blue band |
+| 22 | isabel-vs-uptodate-which-diagnostic-support-tool-fits-in-2026 | clinical-software | `versus/darkpills` | dark grey (vibrant; `vibrantPick`) |
+| 23 | bestrx-vs-primerx-which-pharmacy-software-wins-in-2026 | hospital-and-lab-software | `versus/glowmarks` | black with our blue glow (vibrant; `vibrantPick`) |
+| 24 | meditech-vs-trubridge-which-fits-rural-hospitals-in-2026 | hospital-and-lab-software | `versus/vssquares` | plain black (vibrant; `vibrantPick`; redone after delivery) |
+| 25 | availity-vs-office-ally-which-clearinghouse-fits-in-2026 | medical-billing | `versus/vssquares` | plain black (vibrant; redone after delivery) |
+
+8 of 25 are vibrant. The user knowingly kept two vibrant neighbours, in clinical (Telehealth, Isabel) and hospital (MEDITECH, BestRx), to keep the dark references dark. The delivered Telehealth final carries a camera mark the batch session drew itself in place of Zoom's logo; the `tilerow` example uses the real Zoom icon (`"icon:zoom.us"`). Never draw a brand logo.
+
+### The 16 kept layouts (each in a delivered final, an example and an approved reference, 70–85)
+
+| Layout | Final (category) | Source | Approved look (only) | The user's words |
+|---|---|---|---|---|
+| `versus/markvs` | eClinicalWorks vs NextGen (specialty) | Dub "Rebrandly vs" cover | two bare marks (no names) at lockup scale, small "vs", faint grid | approved, no note (round 2) |
+| `versus/vssquares` | MEDITECH vs TruBridge (hospital); Availity vs Office Ally (billing) | user img 1 | plain black, dot grid, dashed guides; a black square (white mark) beside a white square (black mark), "vs" disc on the seam, names under the marks; no corner ring markers, a dashed edge (top, left, bottom) on the black square, very subtle dots (white, 12% opacity); vibrant | "img 1 can be used for comparison / vs"; after delivery, "lighter" dots, meaning "very subtle" |
+| `namehero` | Is ModMed Worth It (specialty) | user img 2 | "IS IT WORTH IT? / MODMED" in big white caps on our deep-dunes blue noise; vibrant | "img 2 can be used for just name of 1 product in our noise blue gradient bg" |
+| `versus/wordvs` | Luma Health vs Phreesia (PM); Optum EncoderPro vs AAPC Codify (billing) | user img 3 | two mark + name lockups in brand colours, a black "vs", the light dotted-map field with blue accent dots | "replace x with vs" |
+| `versus/capsulevs` | Medallion vs symplr (PM) | user img 4 | heading on top, one white capsule holding two circles with the real marks, grey "vs" for the "+" | "img 4 can also be used for comparison / vs" |
+| `titlebox` | Primary Source Verification cost (PM) | user img 5 | the title alone in a long box with our blue border, square corner handles and hatched ends; no figure | "img 5 and img6 can be used for anything just write product name" |
+| `highlight` | Hospital management for multi-hospital systems (hospital) | user img 6 | the title with its key phrase in our blue-gradient box with square handles, white type; title only | as img 5 |
+| `dock` | Therapy PM for solo therapists (specialty) | user img 7 | heading, one frosted dock with one real app tile per pick, the lead raised; light glass; no placeholder tiles | "use glass" |
+| `metricrows` | Eaglesoft vs Dentrix pricing (specialty) | user img 8 | a framed light page: title, two rows each a label, a split bar (always on) and a big blue figure with unit | "img 8 can be used for pricing comparison" |
+| `darkpanel` | Change Healthcare alternatives for claims (billing) | user img 9 | a big two-line title left, a plain black panel right listing the picks (logo + name), fading out | "img 9 can be used for any template that fits in this" |
+| `editorcard` | Clinical decision support for hospitals (clinical) | Mintlify editor cover | one white app window holding a row of 4 logo tiles, a cursor on the lead | approved, no note |
+| `versus/chipvs` | Clinisys vs Epic Beaker (hospital) | the user's incident.io cover | one tilted white chip holding both real marks and a "vs", the names as a big title beside it, light glow | approved, no note |
+| `tilerow` | Telehealth platforms for small practices (clinical) | the user's incident.io cover | overlapping frosted tiles with real-colour logos above a big white heading, on our blue noise gradient only; vibrant | "use bg in which frosted glass bg can be used for logos bg"; "use gradient blue noise bg"; "This is fine now" |
+| `bandhero` | Online booking cost (PM) | the user's incident.io "PagerDuty" cover | a kicker, one big word and one figure on a full-bleed tilted blue band, light field only | "delete the waves from bottom"; "use black bg", then "dont use black bg"; the black band disapproved |
+| `versus/darkpills` | Isabel vs UpToDate (clinical) | user ref 51 ("ChatGPT vs Google") | two white pills (real logo + name) with dark rings, a white "vs", dark grey with a faint grid and a band of small squares; dark only; vibrant | "i'll provide inspirations"; light version disapproved |
+| `versus/glowmarks` | BestRx vs PrimeRx (hospital) | user ref 52 ("Lovable \| Microsoft") | real marks, white names and a "vs" on black with our blue glow rising from the bottom edge in two humps; dark only; vibrant | "I'll provide inspirations"; light version disapproved |
+
+Older layouts in batch-8 finals (round 1, approved again on new articles): `badge` (telehealth worth it), `versus/band` (athenahealth vs Waystar), `versus/duel` (MyChart vs athenahealth; long names fit the row), `versus/glass` (Valant vs ICANotes), `versus/duo` (Zocdoc vs Phreesia; a side without a logo shows its name), `versus/peecpair` (GE vs Philips; per-side `"width"`), `meter` (RCM worth it; a long figure label stops at the track end).
+
+### The 22 retired (in `RETIRED` in `layouts.mjs`, code deleted)
+
+- **Round-2 layouts from Peec and Dub covers, never marked (17):** the user sent their own references instead. `chiprow`, `rankrows`, `darkbars`, `darkhbars`, `logodialog`, `sourcetable`, `trio`, `optioncards`, `versus/pillvs`, `planstack`, `headpeek`, `splitchart`, `twocards`, `stackpair`, `blackmarks`, `linkcard`, `pillpair` (the last eight are `versus/` variants).
+- **No verdict for four rounds, then "i'll provide inspirations" (2):** `versus/tiltpair` (the user's incident.io cover, reordered), `versus/dimension` (a Mintlify drawing with two prices).
+- **Never shown (3):** `steptiles`, `versus/filecard`, `versus/bandcard`.
+
+### Not retired: the 18 older layouts disapproved in round 1
+
+`cloud`, `checkcard`, `inline`, `glasspair`, `ranges`, `type`, `flatcard2`, `squircles`, `table` on blue, `span`, `center`, `spotlight`, `tiles`, `bento`, `costgrid`, `figures`, `typehero`, `frost`. The user approved each on its own article; round 1 failed on fit to the new articles (lists, costs, priced vs), not on the layouts. They stay live. The lesson: judge a look against the new article (type, logos, facts), never "it was approved before" (taste 34 calibration).
+
+### Code changes in the integration (render.mjs, layouts.mjs, usage.mjs)
+
+- **`LAYOUTS` order restored:** the published order first, new entries appended. A versus spec without `"variant"` is `versus/overlap` again; the batch session had put its new variants first, and the suite's "versus with no variant is overlap" case caught it.
+- **Approved looks only** ("FIELD FIT FAILED" for a turned-down option): `tilerow` refuses `"frosted"` and `"blue": false`; `bandhero` refuses `"waves": true`, `"dark"` and `"bandInk"` (the waves code is deleted); `versus/darkpills` and `versus/glowmarks` refuse `"light"` (light code deleted); `metricrows` refuses `"bars"` (bars always on); `dock` refuses a `"count"` different from its items (placeholder code deleted).
+- **CONTENT minimums** (`thin8`): markvs, vssquares, wordvs, chipvs, darkpills and glowmarks need both logos; capsulevs both logos and the headline; titlebox the headline; highlight `"lead"` and `"phrase"`; dock 3–7 items; darkpanel 3–6; editorcard 3–4; tilerow 3–6; metricrows 2 rows, each with a label, a display and a numeric amount; bandhero `"name"` and `"band"`. namehero without its name fails the heading check.
+- **VIVID:** namehero, tilerow, versus/vssquares, darkpills and glowmarks count as vibrant.
+- **New flag `--vibrant-pick`:** for the user's knowing choice of a vibrant image beside a vibrant neighbour. It lifts only the VIBRANT CHECK and records `"vibrantPick": true` in the history. Isabel vs UpToDate, BestRx vs PrimeRx and MEDITECH vs TruBridge are recorded with it (they had been forced with `--force`).
+- **`usage.mjs` loadHistory:** for the same render (same `"at"`), the site history's fields win over a stale batch-folder ledger (batch 7's forced finals had left a wrong ledger `"vibrant"` flag that refused a batch-8 render).
+- **Reverted:** the unapproved changes to `cloud` (≤4-pick scaling), `versus/center` (two-line labels) and `flatcard2` (`"valueSize"`). Kept: the duel row fit, peecpair's per-side `"width"`, the meter label clamp and duo's name-only side.
+- `versus/vssquares`: no corner ring markers; the black square has a dashed edge on its top, left and bottom sides (the guide lines' dashed style); the dot grid is very subtle (white dots at 12% opacity). The user's post-delivery requests; both finals re-finalized with `--redo`.
+- The console line prints `bg=canvas` for canvas layouts (it printed the unused light field).
+- All 25 finals re-render pixel-identical with every check on (the two vssquares against their redone finals).
+
+### Process rules that hold (agents.md, SKILL.md workflow)
+
+- **One family and one reference per review page.** Assign each reference to its single best-fit article first (taste 36). Visual QA's repeat calls are right: don't override them to fill a page.
+- **The user's own references beat covers the session finds** (11 of 17, 3 of 4, 2 of 2 against 1 of 18; taste 35). Copy them whole; translate only colour, type and "vs"; drop ornaments.
+- **When a round comes back nearly blank, or an image is unmarked twice, ask for references** (offer "send a reference" as an option); don't invent another round (taste 43).
+- **Save every reference the user sends**, mid-turn attachments included, to the batch's refs folder with its intended use, so later sessions can see it (the four incident.io covers were never saved).
+- **Never draw a brand logo:** a missing mark is fetched (`icon:<domain>`), cut from the brand's own logo, or left out (the typed name).
+- **`--vibrant-pick`** for the user's knowing vibrant neighbour; `--redo` for a delivered image the user asks to change; never `--force`.
+- **A field note gets both readings (A/B)** before committing; on a dark field, "lighter" is asked about or shown both ways (brighter / fainter) (taste 40).
+- **Hand-off link page:** per row the title, the Google Doc link, the filename, Copy link, Copy image (the full 1600×900 PNG) and Download; the header "Copy all N", with N computed from the rows, and "Download all" (.zip); the preview is the full PNG shown small, so right-click → Copy image works. Test it in the claude.ai viewer before handing over.
+- **Restate each message as a prompt;** Before/After tables for fixes.
+- **Another session may be editing the skill at the same time:** re-read a file right before writing it, keep the other session's changes, and tell it what you changed.
+
+### Counts after batch 8 (snapshot, Oct 25 2026)
+
+- 45 modes / 76 layouts live (36 / 60 after batch 7); 156 retired (134 after batch 7).
+- 85 examples (69 after batch 7); 77 approved reference images (61 after batch 7; new: 70–85).
+- Refusal suite: 335 cases / 354 steps (277 / 296 before); `test-examples`: 85 of 85 render; a SKILL.md frontmatter check.
+- Taste: 43 principles (34 before; 35–43 are from this batch).

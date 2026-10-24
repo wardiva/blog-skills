@@ -1,5 +1,5 @@
 // The single list of layouts (mode -> variants, default first). Shared by render.mjs, plan.mjs, usage.mjs and bgpick.mjs.
-export const LAYOUTS = { glassbar: ['default'], 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'pills', 'connect', 'slash', 'duo', 'type', 'tiles', 'glass', 'frost', 'bento', 'badges', 'checks', 'center', 'lanes', 'scores', 'fan', 'stacked', 'peecpair', 'inline', 'span', 'duel', 'band', 'glasspair'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'], dark: ['default'], logotype: ['default'], swap: ['default'], badge: ['default'], receipt: ['default'], definition: ['default'], shortlist: ['default'], lineup: ['default'], spotlight: ['default'], picks: ['default'], frostrow: ['default'], figures: ['default'], costgrid: ['default'], cloud: ['default'], ranges: ['default'], count: ['default'], checkcard: ['default'], flatcard2: ['default'], research: ['default'], squircles: ['default'], bluegrid: ['default'], typehero: ['default'], strike: ['default'], meter: ['default'] };
+export const LAYOUTS = { glassbar: ['default'], 'before-after': ['default', 'flow'], versus: ['overlap', 'table', 'pills', 'connect', 'slash', 'duo', 'type', 'tiles', 'glass', 'frost', 'bento', 'badges', 'checks', 'center', 'lanes', 'scores', 'fan', 'stacked', 'peecpair', 'inline', 'span', 'duel', 'band', 'glasspair', 'darkpills', 'glowmarks', 'chipvs', 'vssquares', 'wordvs', 'capsulevs', 'markvs'], prompt: ['default'], hub: ['default'], stack: ['default'], window: ['default'], timeline: ['default'], checklist: ['default'], stat: ['default'], ranked: ['default'], focus: ['default'], dark: ['default'], logotype: ['default'], swap: ['default'], badge: ['default'], receipt: ['default'], definition: ['default'], shortlist: ['default'], lineup: ['default'], spotlight: ['default'], picks: ['default'], frostrow: ['default'], figures: ['default'], costgrid: ['default'], cloud: ['default'], ranges: ['default'], count: ['default'], checkcard: ['default'], flatcard2: ['default'], research: ['default'], squircles: ['default'], bluegrid: ['default'], typehero: ['default'], strike: ['default'], meter: ['default'], tilerow: ['default'], bandhero: ['default'], editorcard: ['default'], namehero: ['default'], titlebox: ['default'], highlight: ['default'], dock: ['default'], darkpanel: ['default'], metricrows: ['default'] };
 
 // A layout is used at most once per category (usage.mjs). These layouts also have a site-wide cap: at most this many images
 // across all categories (the user: pills "max 2 times").
@@ -52,16 +52,25 @@ export const RETIRED = ['brandline', 'folder', 'versus/scale', 'versus/chat', 'v
   'lockupwall', 'blueprint', 'plus', 'aurarow', 'byline', 'gridcells', 'collection', 'eyebrow', 'pillstat', 'fan', 'bento',
   'editorial', 'cascade', 'glassbars', 'orbit', 'mosaic', 'versus/gauges', 'versus/segbar', 'versus/pairchips',
   'versus/chipfigures', 'versus/pillrows', 'versus/pillduel', 'versus/vstack', 'versus/overlap2', 'versus/tiltcards',
-  'versus/chipcloud'];
+  'versus/chipcloud',
+  // batch 8 (Oct 24 2026): layouts taken from Peec and Dub covers in round 2; the user marked none of them and sent their own nine references
+  // instead ("img 1 can be used for comparison / vs …"). Only versus/markvs from that round was approved
+  'chiprow', 'rankrows', 'darkbars', 'darkhbars', 'logodialog', 'sourcetable', 'trio', 'optioncards', 'versus/pillvs',
+  'versus/planstack', 'versus/headpeek', 'versus/splitchart', 'versus/twocards', 'versus/stackpair', 'versus/blackmarks',
+  'versus/linkcard', 'versus/pillpair',
+  // batch 8: shown for four rounds with no verdict, then "i'll provide inspirations" (Isabel and BestRx got the user's own references)
+  'versus/tiltpair', 'versus/dimension',
+  // batch 8: never shown (built from Mintlify covers, not used)
+  'steptiles', 'versus/filecard', 'versus/bandcard'];
 export const retiredOf = (mode, variant) => RETIRED.find((r) => r === mode || r === `${mode}/${variant}`) || null;
 export const retiredMsg = (x) => `RETIRED LAYOUT: ${x} was retired by the user and never comes back. Pick a live layout (layouts.mjs).`;
 
 // The layouts that paint their own full canvas (render.mjs CANVAS; shared with bgpick.mjs, whose picker page names the ones that
 // refuse a pick). The Gumloop layouts and the Originals (receipt, definition, shortlist, lineup) are GL_LAYOUTS; with the Chatbase
-// headline layouts (white in a grey frame, or black) and the batch-7 canvas layouts (each paints its one approved field; strike and meter
-// take a picked "bg" instead) they are CB_LAYOUTS; prompt paints its own full field too, and frostrow its own light mesh (recorded as "canvas"; a bg or a pick is refused there).
+// headline layouts (white in a grey frame, or black) and the batch-7 and batch-8 canvas layouts (each paints its one approved
+// field; strike and meter take a picked "bg" instead) they are CB_LAYOUTS; prompt paints its own full field too, and frostrow its own light mesh (recorded as "canvas"; a bg or a pick is refused there).
 export const GL_LAYOUTS = ['versus/badges', 'versus/type', 'versus/tiles', 'versus/glass', 'versus/frost', 'versus/bento', 'swap/default', 'badge/default', 'receipt/default', 'definition/default', 'shortlist/default', 'lineup/default'];
-export const CB_LAYOUTS = ['versus/peecpair', 'versus/glasspair', 'checkcard/default', 'flatcard2/default', 'research/default', 'versus/band', 'squircles/default', 'bluegrid/default', 'versus/duel', 'versus/span', 'versus/inline', 'typehero/default', 'glassbar/default', 'versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', 'dark/default', ...GL_LAYOUTS];
+export const CB_LAYOUTS = ['versus/darkpills', 'versus/glowmarks', 'tilerow/default', 'bandhero/default', 'versus/chipvs', 'editorcard/default', 'namehero/default', 'titlebox/default', 'highlight/default', 'dock/default', 'darkpanel/default', 'metricrows/default', 'versus/vssquares', 'versus/wordvs', 'versus/capsulevs', 'versus/markvs', 'versus/peecpair', 'versus/glasspair', 'checkcard/default', 'flatcard2/default', 'research/default', 'versus/band', 'squircles/default', 'bluegrid/default', 'versus/duel', 'versus/span', 'versus/inline', 'typehero/default', 'glassbar/default', 'versus/pills', 'versus/connect', 'versus/slash', 'versus/duo', 'dark/default', ...GL_LAYOUTS];
 export const CANVAS_LAYOUTS = [...CB_LAYOUTS, 'prompt/default', 'frostrow/default'];
 // a picked bg shows only where the canvas can step aside (glCanvas layouts); the others paint a full canvas of their own over it
 export const PICK_CANVAS = ['versus/badges', 'versus/type', 'versus/tiles', 'versus/bento', 'swap/default', 'badge/default', 'shortlist/default'];

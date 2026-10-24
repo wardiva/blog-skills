@@ -1,0 +1,35 @@
+{
+  "articleTitle": "6 Best Change Healthcare Alternatives for Claims in 2026",
+  "brand": "medsoftwarehub",
+  "category": "medical-billing",
+  "slug": "6-best-change-healthcare-alternatives-for-claims-in-2026",
+  "mode": "darkpanel",
+  "headline": "Change\nHealthcare\nAlternatives",
+  "label": "Best for claims",
+  "items": [
+    {
+      "name": "Waystar",
+      "logo": "../assets/waystar-lineup-mark.png"
+    },
+    {
+      "name": "Availity",
+      "logo": "../assets/availity-lineup-mark.png"
+    },
+    {
+      "name": "Office Ally",
+      "logo": "../assets/officeally-lineup-mark.png"
+    },
+    {
+      "name": "Claim.MD",
+      "logo": "../assets/claimmd-lineup-mark.png"
+    },
+    {
+      "name": "TriZetto",
+      "logo": "../assets/trizetto-mark.png"
+    },
+    {
+      "name": "Optum",
+      "logo": "../assets/optum-o-mark.png"
+    }
+  ]
+}

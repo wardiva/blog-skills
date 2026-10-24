@@ -1,6 +1,7 @@
 // blog-featured-images renderer: one article spec -> a featured image in the approved design language.
-// Usage: node render.mjs <spec.json> [--brand <brand.json>] [--out <dir>] [--user-pick] [--redo] [--check-only] [--pick-fields] [--force]
-//   spec  : article content + "mode" (36 modes / 60 layouts, listed in layouts.mjs). See references/spec-format.md
+// Usage: node render.mjs <spec.json> [--brand <brand.json>] [--out <dir>] [--user-pick] [--redo] [--vibrant-pick] [--check-only] [--pick-fields]
+//   (--force also exists but is never used: it skips every check; a redo is --redo, a knowing vibrant neighbour --vibrant-pick)
+//   spec  : article content + "mode" (45 modes / 76 layouts, listed in layouts.mjs). See references/spec-format.md
 //   brand : colour overrides (default: brands/<spec.brand>.json, or brands/default.json when the spec has no "brand"). See brands/_template.json
 //   out   : output folder (default: ./featured-images/<slug>)
 // Writes master.png (1600x900), 7x5.webp (theme crop), 16x9-1200.webp (social), card-350x250.png (check size), page.html
@@ -25,6 +26,9 @@ const spec = JSON.parse(fs.readFileSync(specFile, 'utf8'));
 const force = args.includes('--force');
 // --redo: the user asked for a delivered image to be redone; it lifts only the FINAL IMAGE LOCKED lock for that slug, every other check runs
 const redo = args.includes('--redo');
+// --vibrant-pick: the user chose this vibrant image although a neighbour in its category is vibrant too (batch 8: "dark" over "light" for
+// the dark references); it lifts only the VIBRANT CHECK and is recorded in the history ("vibrantPick": true)
+const VIBRANT_PICK = args.includes('--vibrant-pick');
 // ---- the layout first: a retired or unknown layout is refused before any other check ----
 const MODE = spec.mode || 'before-after';
 const RETIRED_HIT = retiredOf(MODE, spec.variant);
@@ -133,6 +137,13 @@ function versus() {
   if (VARIANT === 'duel') return b15Duel();
   if (VARIANT === 'band') return b23Band();
   if (VARIANT === 'glasspair') return b26GlassPair();
+  if (VARIANT === 'darkpills') return b32DarkPills();
+  if (VARIANT === 'glowmarks') return b32GlowMarks();
+  if (VARIANT === 'chipvs') return b31ChipVs();
+  if (VARIANT === 'vssquares') return b29VsSquares();
+  if (VARIANT === 'wordvs') return b29WordVs();
+  if (VARIANT === 'capsulevs') return b29CapsuleVs();
+  if (VARIANT === 'markvs') return b28MarkVs();
   if (VARIANT === 'peecpair') return b27PeecPair();
   if (VARIANT === 'span') return b10Span();
   const L = spec.left, R = spec.right, dims = spec.dimensions || [];
@@ -602,7 +613,8 @@ document.querySelectorAll('img[data-white]').forEach((im)=>{const go=()=>duoWhit
 const WM_CSS = `<style>.wm .lg{background:transparent!important;box-shadow:none!important;padding:0!important;width:auto!important;height:110px!important;overflow:visible}.wm .lg img{width:auto;max-width:200px;height:110px;object-fit:contain}.wm .lg.full{border-radius:0}</style>`;
 const whiteMark = (d, label, size = 110) => `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px"><span class="wm" style="width:200px;height:${size + 10}px;display:grid;place-items:center">${logo(d, size, label).replace('<img ', '<img data-white="1" ')}</span><b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#fff">${esc(label)}</b></div>`;
 // "versus/duo" (user reference, Chatbase "Zendesk and Zendesk Sunshine"): black field, tag pill and a big Inter 500 Medium white
-// headline top-left (no site mark); two watercolour panels below, each in that brand's own colour (or the subtle blue),
+// headline top-left (no site mark); a side with no "logo" (a plain-shape mark that turns into a blank white disc: Phreesia) shows its name
+// alone, bigger; two watercolour panels below, each in that brand's own colour (or the subtle blue),
 // carrying the brand's mark in white plus its name. The mark is turned white in the page: background removed, ink kept as alpha.
 function cbVersusDuo() {
   const L = spec.left, R = spec.right, head = spec.headline || `${L.label} vs\n${R.label}`, fs = cbFs(head, 116, 1100);
@@ -611,8 +623,8 @@ function cbVersusDuo() {
     return `<div style="position:absolute;left:${x}px;top:520px;width:756px;height:352px;border-radius:24px;overflow:hidden">
 <svg width="756" height="352" style="position:absolute;inset:0"><defs>${wcDefs('du' + i, P, 5 + i * 6, [0, 0, 1, 1])}</defs><rect width="756" height="352" fill="url(#du${i}g)" filter="url(#du${i}f)"/></svg>
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px">
-<span class="wm" style="width:200px;height:120px;display:grid;place-items:center">${logo(d.logo, 110, d.label).replace('<img ', '<img data-white="1" ')}</span>
-<b style="font-size:46px;font-weight:500;letter-spacing:-.02em;color:#fff">${esc(d.label)}</b></div></div>`;
+${d.logo ? `<span class="wm" style="width:200px;height:120px;display:grid;place-items:center">${logo(d.logo, 110, d.label).replace('<img ', '<img data-white="1" ')}</span>` : ''}
+<b style="font-size:${d.logo ? 46 : 72}px;font-weight:500;letter-spacing:-.02em;color:#fff">${esc(d.label)}</b></div></div>`;
   };
   return `${CB_CSS}<style>.wm .lg{background:transparent!important;box-shadow:none!important;padding:0!important;width:auto!important;height:110px!important;overflow:visible}.wm .lg img{width:auto;max-width:200px;height:110px;object-fit:contain}.wm .lg.full{border-radius:0}</style>
 <div class="cbf" style="background:#0A0A0B"></div>
@@ -1162,7 +1174,7 @@ function b7Meter() {
     return `<div style="position:absolute;left:${x0 + 60}px;top:${y + 52}px;height:84px;display:flex;align-items:center;gap:22px">${r.logo ? b7Tile(r, 76) : ''}<b style="font-size:${nfs}px;font-weight:600;letter-spacing:-.025em;color:#0A0A0B;white-space:nowrap">${esc(r.label)}</b></div>
 <i style="position:absolute;left:${t0}px;top:${y + 100}px;width:${t1 - t0}px;height:18px;border-radius:9px;background:#E1E5EC"></i>
 <i style="position:absolute;left:${a}px;top:${y + 96}px;width:${Math.max(26, b - a)}px;height:26px;border-radius:13px;${lead ? ANCHOR : 'background:#B9C3D1'}"></i>
-<span style="position:absolute;left:${Math.min(a, t1 - 340)}px;top:${y + 30}px;font-size:52px;font-weight:600;letter-spacing:-.04em;line-height:1;white-space:nowrap;color:${lead ? '#0A5FD8' : '#5D6675'}">${esc(r.display)}</span>`; };
+<span style="position:absolute;${a + Math.max(340, Math.ceil(String(r.display).length * 52 * 0.58)) > t1 ? `right:${1600 - t1}px` : `left:${a}px`};top:${y + 30}px;font-size:52px;font-weight:600;letter-spacing:-.04em;line-height:1;white-space:nowrap;color:${lead ? '#0A5FD8' : '#5D6675'}">${esc(r.display)}</span>`; };
   return `${B7_CSS}<div class="o8"><div style="position:absolute;left:0;right:0;top:${top - 168}px;text-align:center;font-size:${b7Fit(spec.headline, 1150, 56, 0.55)}px;font-weight:600;letter-spacing:-.03em;color:#0A0A0B;white-space:nowrap">${esc(spec.headline)}</div>
 <div style="position:absolute;left:0;right:0;top:${top - 90}px;text-align:center;font-size:34px;font-weight:500;color:#5D6675;white-space:nowrap">${esc(spec.sub || '')}</div>
 ${rows.map(row).join('')}</div>`;
@@ -1243,7 +1255,11 @@ const b15Tile = (s, T) => `<div style="filter:drop-shadow(0 14px 30px rgba(20,40
 // versus/duel (from Dub's "Dub vs X" covers; Vanta vs Drata: "wow love it"): the two products as big lockups (logo tile and name), a
 // small grey "vs" between them, centred on the faint grid with pastel corner glows; the title's angle in small mono caps above (optional).
 function b15Duel() {
-  const L = spec.left, R = spec.right, nfs = Math.min(120, ...[L.label, R.label].map((t) => b7Fit(t, 360, 120, 0.56))), T = Math.round(nfs * 1.15);
+  // a long name ("athenahealth", 12 letters) fitted alone into 360px fell to ~53px, a strip, not the approved ~120px lockups: below 80px
+  // the size comes from the whole row (two tiles, two names, the "vs" and the gaps) fitted into ~1150px instead, inside the 7:5 card crop (x 170-1430)
+  const L = spec.left, R = spec.right, each = Math.min(120, ...[L.label, R.label].map((t) => b7Fit(t, 360, 120, 0.56)));
+  const row = Math.floor(1080 / (2 * (1.15 + 0.22) + 0.3 + (String(L.label).length + String(R.label).length) * 0.56));
+  const nfs = each >= 80 ? each : Math.min(120, row), T = Math.round(nfs * 1.15);
   const lock = (s) => `<div style="display:flex;align-items:center;gap:${Math.round(nfs * 0.22)}px">${b15Tile(s, T)}<b style="font-size:${nfs}px;font-weight:600;letter-spacing:-.045em;color:#0A0A0B;white-space:nowrap">${esc(s.label)}</b></div>`;
   return `${B15_FIELD}${B7_CSS}<div class="o8"><div style="position:absolute;left:0;right:0;top:262px;text-align:center;font:500 40px/1 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#5D6675">${esc(spec.eyebrow || '')}</div>
 <div style="position:absolute;left:0;right:0;top:360px;display:flex;justify-content:center;align-items:center;gap:56px">${lock(L)}<span style="font-size:${Math.round(nfs * 0.5)}px;font-weight:500;color:#9AA2AF">vs</span>${lock(R)}</div></div>`;
@@ -1342,7 +1358,7 @@ function b27PeecPair() {
   const lock = (sd, cx) => {
     const inner = sd.mark
       ? `<span style="display:flex;align-items:center;gap:${Math.round(LW * 0.05)}px"><img src="${localLogo(sd.mark) || sd.mark}" style="height:${Math.round(LW * 0.12)}px;width:auto;display:block"><b style="font-size:${Math.round(LW * 0.145)}px;font-weight:600;letter-spacing:-.03em;line-height:1;color:${sd.ink || '#0A0A0B'};white-space:nowrap">${esc(sd.label)}</b></span>`
-      : `<img src="${localLogo(sd.logo) || sd.logo}" style="width:${LW}px;height:auto;display:block">`;
+      : `<img src="${localLogo(sd.logo) || sd.logo}" style="width:${Number(sd.width) || LW}px;height:auto;display:block">`;
     return `<div style="position:absolute;left:${cx - 300}px;width:600px;top:314px;height:271px;display:flex;align-items:center;justify-content:center">${inner}</div>`;
   };
   return `<style>.bgn,body:before,body:after{display:none!important}body{background:#FDFDFD!important}</style><div style="position:absolute;inset:0;background:#FDFDFD"></div>${grid}
@@ -1388,13 +1404,198 @@ ${p.map((v) => `<i style="position:absolute;left:${x(v) - 17}px;top:${y - 17}px;
 <div style="position:absolute;left:210px;top:280px;width:1180px;height:470px;${O8_CARD}"></div>${lane(spec.left, 440)}${lane(spec.right, 630)}</div>`;
 }
 
-const modes = { checkcard: b25CheckCard, flatcard2: b24FlatCard, research: b23Research, squircles: b21Squircles, bluegrid: b21BlueGrid, typehero: b8TypeHero, strike: b7Strike, meter: b7Meter, glassbar: o15GlassBar, frostrow: o12FrostRow, figures: o11Figures, costgrid: o11CostGrid, cloud: o8Cloud, ranges: o8Ranges, count: o8Count, spotlight: o7Spotlight, picks: o7Picks, lineup, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, receipt, definition };
+// ---- Batch 8, round 2 (Oct 24 2026): layouts from Peec and Dub covers; only versus/markvs was approved (the others are RETIRED: the
+// user sent their own references instead). B28_GLASS (light glass) and B28_BARE / b28Mark are shared with the batch-8 layouts below. ----
+const B28_GLASS = () => `${CB_CSS}${glBg('background:linear-gradient(135deg,#F4F8FF 0%,#DFECFF 55%,#C2DAFF 100%)')}${glBg('background:radial-gradient(42% 55% at 88% 92%,rgba(47,123,255,.32),transparent 70%)')}`;
+const B28_BARE = `<style>.o8 .bm .lg{box-shadow:none!important;background:transparent!important;padding:0!important;display:flex!important;align-items:center;justify-content:center}.o8 .bm .lg img{width:auto!important;height:auto!important;max-width:100%;max-height:100%}</style>`;
+const b28Mark = (s, box) => `<span class="bm" style="width:${box}px;height:${box}px;display:grid;place-items:center;flex:none">${logo(s.logo, Math.round(box * (Number(s.scale) || 0.9)), s.label)}</span>`;
+const b28Card = 'background:#fff;border-radius:28px;box-shadow:0 0 0 1.5px rgba(20,26,38,.06),0 24px 56px rgba(30,60,110,.10)';
+const b28Vs = (fs = 44, ink = '#9AA2AF') => `<span style="font-size:${fs}px;font-weight:500;color:${ink};flex:none">vs</span>`;
+// markvs (Dub "Rebrandly vs …"): the two products' marks big and bare, a small grey "vs" between them, on the near-white field. No
+// names: the title already names them.
+function b28MarkVs() {
+  const L = spec.left, R = spec.right, B = Number(spec.box) || 300;
+  return `${B15_FIELD}${B7_CSS}${B28_BARE}<div class="o8"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:110px">${b28Mark(L, B)}${b28Vs(56)}${b28Mark(R, B)}</div></div>`;
+}
+
+// ---- Batch 8, round 3 (Oct 24 2026): the user's nine references with their own notes ("img 1 can be used for comparison / vs …
+// use our colors obv"): each reference redrawn in our colours (our blue and black, Inter) on our fields. ----
+const B29_DOTS = (ink = 'rgba(30,50,90,.16)', accent = '#2F7BE8') => `<div style="position:absolute;inset:0;background-image:radial-gradient(${ink} 1.6px,transparent 1.8px);background-size:22px 22px;-webkit-mask-image:radial-gradient(34% 40% at 16% 26%,#000 30%,transparent 72%),radial-gradient(30% 36% at 86% 30%,#000 30%,transparent 72%),radial-gradient(34% 30% at 70% 92%,#000 30%,transparent 72%),radial-gradient(22% 24% at 22% 88%,#000 30%,transparent 72%);mask-image:radial-gradient(34% 40% at 16% 26%,#000 30%,transparent 72%),radial-gradient(30% 36% at 86% 30%,#000 30%,transparent 72%),radial-gradient(34% 30% at 70% 92%,#000 30%,transparent 72%),radial-gradient(22% 24% at 22% 88%,#000 30%,transparent 72%)"></div>${[[168, 150], [254, 293], [1406, 174], [1265, 290], [1493, 316], [222, 524], [480, 724], [1060, 734], [1380, 812], [310, 842]].map(([x, y]) => `<i style="position:absolute;left:${x}px;top:${y}px;width:6px;height:6px;background:${accent}"></i>`).join('')}`;
+const B29_LIGHT = `<style>.bgn,body:before,body:after{display:none!important}</style><div style="position:absolute;inset:0;background:#F2F5FA"></div>`;
+const b29Inv = (s, box, ink) => `<span class="b29m" style="width:${box}px;height:${box}px;display:grid;place-items:center;flex:none">${logo(s.logo, Math.round(box * (Number(s.scale) || 1)), s.label).replace('<img ', `<img style="filter:${ink === 'white' ? 'brightness(0) invert(1)' : 'brightness(0)'}" `)}</span>`;
+const B29_CSS = `<style>.o8 .b29m .lg,.o8 .bm .lg{box-shadow:none!important;background:transparent!important;padding:0!important;display:flex!important;align-items:center;justify-content:center}.o8 .b29m .lg img,.o8 .bm .lg img{width:auto!important;height:auto!important;max-width:100%;max-height:100%}</style>`;
+
+// vssquares (ref 1, "can be used for comparison / vs"): plain black with a very subtle white dot grid (12%) and faint dashed guide lines
+// through the pair's edges; two squares side by side, the left black with its mark in white and a dashed edge on its outer sides so it
+// doesn't blend into the field, the right white with its mark in black; the "vs" disc on the seam and each name under its mark. No corner
+// ring markers (the user, after delivery).
+function b29VsSquares() {
+  const L = spec.left, R = spec.right, S = 540, x0 = 800 - S, y0 = 180, x1 = 800 + S, y1 = y0 + S;
+  const dash = (h, at) => `<i style="position:absolute;${h ? `left:0;right:0;top:${at}px;height:0;border-top` : `top:0;bottom:0;left:${at}px;width:0;border-left`}:1.5px dashed rgba(255,255,255,.2)"></i>`;
+  return `<div style="position:absolute;inset:0;background:#000"></div><div style="position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.12) 1.4px,transparent 1.6px);background-size:26px 26px"></div>
+${dash(true, y0)}${dash(true, y1)}${dash(false, x0)}${dash(false, x1)}${B7_CSS}${B29_CSS}<div class="o8">
+<div style="position:absolute;left:${x0}px;top:${y0}px;width:${S}px;height:${S}px;box-sizing:border-box;border:1.5px dashed rgba(255,255,255,.2);border-right:none;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px">${b29Inv(L, Math.round(S * 0.44), 'white')}<span style="font-size:40px;font-weight:500;letter-spacing:-.02em;color:#fff">${esc(L.label)}</span></div>
+<div style="position:absolute;left:800px;top:${y0}px;width:${S}px;height:${S}px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px">${b29Inv(R, Math.round(S * 0.44), 'black')}<span style="font-size:40px;font-weight:500;letter-spacing:-.02em;color:#0A0A0B">${esc(R.label)}</span></div>
+<span style="position:absolute;left:764px;top:${y0 + S / 2 - 36}px;width:72px;height:72px;border-radius:50%;box-sizing:border-box;background:#0A0A0B;border:2px solid rgba(255,255,255,.85);display:grid;place-items:center;font-size:28px;font-weight:600;color:#fff;z-index:3">vs</span></div>`;
+}
+
+// namehero (ref 2, "just name of 1 product in our noise blue gradient bg"): our deep-dunes blue with grain; a short line and the
+// product's name big under it, bold caps, white, centred.
+function b29NameHero() {
+  const a = String(spec.kicker || ''), b = String(spec.name || ''), fb = b7Fit(b, 1200, 200, 0.7), fa = Math.min(Math.round(fb * 0.62), b7Fit(a, 1200, 140, 0.7));
+  return `${b7BlueCanvas()}${B7_CSS}<div class="o8"><div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;color:#fff;font-weight:800;text-transform:uppercase;letter-spacing:-.01em;line-height:1.02">
+<div style="font-size:${fa}px">${esc(a)}</div><div style="font-size:${fb}px">${esc(b)}</div></div></div>`;
+}
+
+// wordvs (ref 3, "replace x with vs"): each side's mark (in its own colours) and name (black) as one lockup, a black "vs" between, on our light
+// field with the dotted-map pattern and a few square accents in our blue.
+function b29WordVs() {
+  const L = spec.left, R = spec.right, fs = Math.min(116, Math.floor(1100 / (2 * 1.05 + 0.53 * (String(L.label).length + String(R.label).length) + 0.44 + 0.62 + 1.4))), M = Math.round(fs * 1.05);
+  const lock = (s) => s.wordmark ? `<img src="${localLogo(s.wordmark) || s.wordmark}" style="height:${Math.round(fs * 1.15)}px;width:auto;display:block">` : `<span style="display:inline-flex;align-items:center;gap:${Math.round(fs * 0.22)}px">${b28Mark(s, M)}<b style="font-size:${fs}px;font-weight:600;letter-spacing:-.035em;color:#0A0A0B;white-space:nowrap">${esc(s.label)}</b></span>`;
+  return `${B29_LIGHT}${B29_DOTS()}${B7_CSS}${B29_CSS}<div class="o8"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:${Math.round(fs * 0.7)}px">${lock(L)}<span style="font-size:${Math.round(fs * 0.62)}px;font-weight:600;color:#0A0A0B">vs</span>${lock(R)}</div></div>`;
+}
+
+// capsulevs (ref 4, "can also be used for comparison / vs"): the heading on top, then one white capsule holding two pale circles with
+// each product's mark in its own colours, a grey "vs" between them. Light field with faint arcs.
+function b29CapsuleVs() {
+  const L = spec.left, R = spec.right, CW = 860, CH = 420, D = 330, top = 330;
+  const circ = (s) => `<span style="width:${D}px;height:${D}px;border-radius:50%;background:#F2F4F8;display:grid;place-items:center;flex:none">${b28Mark(s, Math.round(D * 0.56))}</span>`;
+  return `${B29_LIGHT}<div style="position:absolute;inset:0;background:radial-gradient(circle at 14% 120%,transparent 46%,rgba(30,50,90,.05) 46.2%,transparent 46.6%),radial-gradient(circle at 86% 120%,transparent 46%,rgba(30,50,90,.05) 46.2%,transparent 46.6%),radial-gradient(circle at 50% -40%,transparent 52%,rgba(30,50,90,.05) 52.2%,transparent 52.6%)"></div>${B7_CSS}${B29_CSS}<div class="o8">${b13Head(spec.headline, 200, 140, 1200, 88, '#0A0A0B', 'center')}
+<div style="position:absolute;left:${800 - CW / 2}px;top:${top}px;width:${CW}px;height:${CH}px;border-radius:${CH / 2}px;background:#fff;box-shadow:0 0 0 1.5px rgba(20,26,38,.04),0 24px 60px rgba(30,60,110,.08);display:flex;align-items:center;justify-content:center;gap:34px">${circ(L)}<span style="font-size:48px;font-weight:500;color:#A9B0BC">vs</span>${circ(R)}</div></div>`;
+}
+
+// titlebox (ref 5, "can be used for anything, just write product name"): the title inside one long box with a thin blue border, blue
+// corner squares, blue hatching beyond its ends and dotted guide lines down both sides, on the dotted-map field.
+function b29TitleBox() {
+  const x0 = 330, x1 = 1270, y0 = 350, y1 = 550, fs = b7Fit(spec.headline, 860, 86, 0.47), sq = (x, y) => `<i style="position:absolute;left:${x - 14}px;top:${y - 14}px;width:28px;height:28px;background:#0A5FD8"></i>`;
+  const hatch = 'background:repeating-linear-gradient(135deg,transparent 0 13px,rgba(47,123,232,.55) 13px 15px)';
+  return `${B29_LIGHT}${B29_DOTS()}<i style="position:absolute;top:0;bottom:0;left:${x0}px;border-left:2px dotted rgba(30,50,90,.18)"></i><i style="position:absolute;top:0;bottom:0;left:${x1}px;border-left:2px dotted rgba(30,50,90,.18)"></i>
+<div style="position:absolute;left:0;width:${x0}px;top:${y0}px;height:${y1 - y0}px;${hatch}"></div><div style="position:absolute;left:${x1}px;right:0;top:${y0}px;height:${y1 - y0}px;${hatch}"></div>
+<div style="position:absolute;left:${x0}px;top:${y0}px;width:${x1 - x0}px;height:${y1 - y0}px;box-sizing:border-box;border:2px solid #0A5FD8;background:#F2F5FA;display:grid;place-items:center"><span style="font-size:${fs}px;font-weight:500;letter-spacing:-.03em;color:#0A0A0B;white-space:nowrap">${esc(spec.headline)}</span></div>
+${sq(x0, y0)}${sq(x1, y0)}${sq(x0, y1)}${sq(x1, y1)}`;
+}
+
+// highlight (ref 6): the title (on two lines when it runs long), its key phrase in our blue-gradient box with white type and blue corner squares, the rest in
+// black, on the dotted-map field.
+function b29Highlight() {
+  const a = String(spec.lead || ''), b = String(spec.phrase || ''), two = a.length + b.length > 24, fs = two ? Math.min(104, Math.floor(1060 / (Math.max(a.length, b.length + 1.2) * 0.52))) : Math.min(104, Math.floor(1300 / ((a.length + b.length + 2) * 0.5 + 1.2)));
+  const sq = (pos) => `<i style="position:absolute;${pos};width:${Math.round(fs * 0.36)}px;height:${Math.round(fs * 0.36)}px;background:#3B86F0"></i>`, o = Math.round(fs * 0.36);
+  return `${B29_LIGHT}${B29_DOTS()}<div style="position:absolute;inset:0;display:flex;${two ? 'flex-direction:column;' : ''}align-items:center;justify-content:center;gap:${Math.round(fs * (two ? 0.42 : 0.3))}px;font-size:${fs}px;font-weight:500;letter-spacing:-.03em;white-space:nowrap">
+<span style="color:#0A0A0B">${esc(a)}</span><span style="position:relative;padding:${Math.round(fs * 0.12)}px ${Math.round(fs * 0.3)}px ${Math.round(fs * 0.2)}px;background:linear-gradient(150deg,#3B86F0,#0A5FD8);color:#fff">${esc(b)}${sq(`left:${-o}px;top:${-o}px`)}${sq(`right:${-o}px;top:${-o}px`)}${sq(`left:${-o}px;bottom:${-o}px`)}${sq(`right:${-o}px;bottom:${-o}px`)}</span></div>`;
+}
+
+// dock (ref 7, "for no of products … use glass"): the title on top, then one frosted glass dock holding a tile per product (each real logo
+// on white, one tile per pick, never a placeholder); the lead tile raised and bigger with a dot under it. Our light glass.
+function b29Dock() {
+  const it = b13Items(), n = it.length, lead = spec.lead == null ? 0 : Number(spec.lead);
+  const DW = 1140, G = 20, T = Math.min(150, Math.floor((DW - 48 - (n - 1) * G) / (n + 0.28))), BIG = Math.round(T * 1.28);
+  const tile = (c, i) => { const big = i === lead; const s = big ? BIG : T;
+    return `<div style="position:relative;display:flex;flex-direction:column;align-items:center;${big ? `margin-top:${-Math.round(T * 0.42)}px` : ''}">${c.fill ? `<span class="o8fill" style="width:${s}px;height:${s}px;border-radius:${Math.round(s * 0.22)}px;overflow:hidden;display:grid;place-items:center;box-shadow:0 8px 18px rgba(30,60,110,.1)">${logo(c.logo, s, c.label)}</span>` : `<span style="width:${s}px;height:${s}px;border-radius:${Math.round(s * 0.22)}px;background:#fff;box-shadow:0 ${big ? 22 : 8}px ${big ? 44 : 18}px rgba(30,60,110,${big ? 0.22 : 0.1});display:grid;place-items:center">${logo(c.logo, Math.round(s * (Number(c.scale) || 0.62)), c.label)}</span>`}${big ? `<i style="margin-top:16px;width:14px;height:14px;border-radius:50%;background:#fff"></i>` : ''}</div>`; };
+  const tiles = Array.from({ length: n }, (_, i) => tile(it[i], i)).join('');
+  return `${B28_GLASS()}${B7_CSS}<style>.o8 .dk .lg{box-shadow:none!important;background:transparent!important;padding:0!important}</style><div class="o8 dk">${b13Head(spec.headline, 200, 160, 1200, 92, '#0A0A0B', 'center')}
+<div style="position:absolute;left:${800 - DW / 2}px;top:470px;width:${DW}px;height:${T + 80}px;box-sizing:border-box;border-radius:${Math.round((T + 80) * 0.3)}px;background:rgba(255,255,255,.4);box-shadow:inset 0 0 0 2px rgba(255,255,255,.85),0 24px 60px rgba(30,70,140,.12);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:center;gap:${G}px">${tiles}</div></div>`;
+}
+
+// metricrows (ref 8, "can be used for pricing comparison"): a framed light page with two vertical hairlines; the title big on top with
+// a hairline under it; then one row per product: its tile and name, a split bar (its share of the scale in our blue, the rest pale),
+// and its figure big in blue with the unit beside it.
+function b29MetricRows() {
+  const rows = (spec.rows || []).slice(0, 2), max = Number(spec.max) || Math.max(...rows.map((r) => Number(r.amount) || 0)), xa = 230, xb = 1370;
+  const row = (r, i) => { const y = 280 + i * 262, w = Math.max(0.04, Math.min(1, (Number(r.amount) || 0) / max)) * (xb - xa);
+    return `<div style="position:absolute;left:${xa + 40}px;top:${y}px;display:flex;align-items:center;gap:18px">${r.logo ? b7Tile(r, 54, 12) : ''}<span style="font-size:38px;font-weight:500;letter-spacing:-.02em;color:#0A0A0B">${esc(r.label)}</span></div>
+<i style="position:absolute;left:${xa}px;top:${y + 76}px;width:${w}px;height:8px;background:#2F7BE8"></i><i style="position:absolute;left:${xa + w}px;top:${y + 76}px;width:${xb - xa - w}px;height:8px;background:#BFD6F7"></i>
+<div style="position:absolute;left:${xa + 40}px;top:${y + 108}px;display:flex;align-items:baseline;gap:26px;white-space:nowrap"><span style="font-size:104px;font-weight:500;letter-spacing:-.045em;line-height:1;color:#1F6FE8">${esc(r.display)}</span><span style="font-size:52px;font-weight:500;letter-spacing:-.02em;color:#1F6FE8">${esc(r.unit || '')}</span></div>`; };
+  return `${B29_LIGHT}<div style="position:absolute;inset:0;background:#F8F9FB"></div><i style="position:absolute;top:0;bottom:0;left:${xa}px;width:2px;background:#E1E5EC"></i><i style="position:absolute;top:0;bottom:0;left:${xb}px;width:2px;background:#E1E5EC"></i>
+<i style="position:absolute;left:${xa}px;width:${xb - xa}px;top:240px;height:2px;background:#E1E5EC"></i>${B7_CSS}<div class="o8"><div style="position:absolute;left:${xa + 40}px;top:92px;font-size:${b7Fit(spec.headline, 1060, 86, 0.52)}px;font-weight:500;letter-spacing:-.035em;color:#0A0A0B;white-space:nowrap">${esc(spec.headline)}</div>${rows.map(row).join('')}</div>`;
+}
+
+// darkpanel (ref 9, "any template that fits"): the title big on the left of a light dotted field; on the right a dark UI panel bleeding
+// off the right and bottom edges: a check and a label line, then the article's picks as rows (logo tile + name) fading downward.
+function b29DarkPanel() {
+  const it = b13Items().slice(0, 6), px = 760, py = 130, op = (i) => Math.max(0.55, 1 - i * 0.09);
+  const row = (c, i) => `<div style="display:flex;align-items:center;gap:26px">${b7Tile(c, 64, 15)}<span style="font-size:44px;font-weight:500;letter-spacing:-.02em;color:rgba(255,255,255,${op(i)});white-space:nowrap">${esc(c.label)}</span></div>`;
+  return `${B29_LIGHT}${B29_DOTS('rgba(30,50,90,.18)', 'rgba(0,0,0,0)')}${B7_CSS}<div class="o8">${b13Head(spec.headline, 230, 190, 480, 96, '#0A0A0B')}
+<div style="position:absolute;left:${px}px;top:${py}px;right:-60px;bottom:-60px;border-radius:56px 0 0 0;background:#0A0A0B;box-shadow:0 30px 70px rgba(10,20,50,.25)"><div style="position:absolute;inset:0;border-radius:56px 0 0 0;background-image:radial-gradient(rgba(255,255,255,.08) 1.4px,transparent 1.6px);background-size:22px 22px;-webkit-mask-image:linear-gradient(90deg,transparent 40%,#000);mask-image:linear-gradient(90deg,transparent 40%,#000)"></div>
+<div style="position:absolute;left:90px;top:84px;display:flex;align-items:center;gap:26px"><span style="width:66px;height:66px;border-radius:50%;box-sizing:border-box;border:6px solid #2F7BE8;display:grid;place-items:center"><i class="ph-bold ph-check" style="font-size:34px;color:#2F7BE8"></i></span><span style="font-size:52px;font-weight:500;letter-spacing:-.02em;color:#fff;white-space:nowrap">${esc(spec.label || '')}</span></div>
+<div style="position:absolute;left:96px;top:210px;display:flex;flex-direction:column;gap:30px">${it.map(row).join('')}</div></div></div>`;
+}
+// ---- Batch 8, round 4 (Oct 24 2026): from Mintlify's covers, only editorcard was approved (the others are RETIRED). B30_GUIDES is the
+// faint guide grid versus/darkpills sits on; b30Cursor is editorcard's cursor. ----
+const B30_GUIDES = (ink) => `<div style="position:absolute;inset:0;background-image:linear-gradient(${ink} 1px,transparent 1px),linear-gradient(90deg,${ink} 1px,transparent 1px);background-size:400px 300px;background-position:-1px 149px"></div>`;
+const b30Cursor = (x, y, s = 64) => `<svg style="position:absolute;left:${x}px;top:${y}px" width="${s}" height="${s}" viewBox="0 0 24 24"><path d="M4 3l16 7.2-7 1.8L9.6 19z" fill="#2F7BE8" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+
+// editorcard (Mintlify's editor cover): one white app window on our light field: a title bar with three dots and the heading as its
+// tab, then one row of 3-4 logo tiles with their names; the lead tile carries a blue ring and our cursor.
+function b30EditorCard() {
+  const it = b13Items().slice(0, 4), W = 1140, x = 800 - W / 2, BH = 104, body = 380, top = Math.round(450 - (BH + body) / 2), T = 156, lead = spec.lead == null ? 0 : Number(spec.lead);
+  const cell = (c, i) => `<div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:22px">${i === lead ? `<i style="position:absolute;left:-14px;top:-14px;width:${T + 28}px;height:${T + 28}px;box-sizing:border-box;border:3px solid #3B86F0;border-radius:${Math.round((T + 28) * 0.22)}px;background:rgba(59,134,240,.08)"></i>` : ''}<span style="position:relative">${b7Tile(c, T, Math.round(T * 0.22))}</span><span style="font-size:40px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B;white-space:nowrap">${esc(c.label)}</span>${i === lead ? b30Cursor(T - 24, T - 30, 64) : ''}</div>`;
+  return `${B29_LIGHT}<div style="position:absolute;inset:0;background:#EEF2F7"></div>${B7_CSS}<div class="o8"><div style="position:absolute;left:${x}px;top:${top}px;width:${W}px;height:${BH + body}px;${b28Card};overflow:hidden">
+<div style="height:${BH}px;display:flex;align-items:center;gap:14px;padding:0 34px;border-bottom:1.5px solid #EEF1F5"><i style="width:16px;height:16px;border-radius:50%;background:#E1E5EC"></i><i style="width:16px;height:16px;border-radius:50%;background:#E1E5EC"></i><i style="width:16px;height:16px;border-radius:50%;background:#E1E5EC"></i><b style="margin-left:22px;font-size:${b7Fit(spec.headline, 960, 46, 0.55)}px;font-weight:600;letter-spacing:-.02em;color:#0A0A0B;white-space:nowrap">${esc(spec.headline)}</b></div>
+<div style="height:${body}px;display:flex;align-items:center;justify-content:space-evenly">${it.map(cell).join('')}</div></div></div>`;
+}
+
+// ---- Batch 8, round 8 (Oct 24 2026): the user's two references for the last two articles, measured on the originals and put on
+// our black and blues. ----
+
+// darkpills (ref "ChatGPT vs Google", 1200x630, so x1.333 here): plain black lifted a little in the middle, faint large grid lines,
+// a band of small grey squares across the middle fading at both ends; two white pill chips (the real logo and the name in black)
+// each in a dark ring, a white "vs" between them.
+function b32DarkPills() {
+  const L = spec.left, R = spec.right, n = String(L.label).length + String(R.label).length;
+  const fs = Math.min(56, Math.floor(1060 / (0.56 * n + 2 * (1.25 + 0.3 + 1.4) + 1.6))), H = Math.round(fs * 2.3), M = Math.round(fs * 1.2);
+  const pill = (s) => `<span style="display:flex;align-items:center;gap:${Math.round(fs * 0.42)}px;height:${H}px;padding:0 ${Math.round(fs * 0.85)}px 0 ${Math.round(fs * 0.62)}px;border-radius:${H}px;background:#fff;box-shadow:0 0 0 8px #232326,0 0 0 9.5px rgba(255,255,255,.08),0 18px 40px rgba(0,0,0,.5)"><span class="b29m" style="width:${M}px;height:${M}px;display:grid;place-items:center">${logo(s.logo, Math.round(M * (Number(s.scale) || 1)), s.label)}</span><b style="font-size:${fs}px;font-weight:500;letter-spacing:-.01em;color:#0A0A0B;white-space:nowrap">${esc(s.label)}</b></span>`;
+  const dots = `<div style="position:absolute;left:0;right:0;top:430px;height:200px;background-image:linear-gradient(90deg,transparent 7px,#0A0A0B 7px),linear-gradient(transparent 7px,#0A0A0B 7px);background-color:rgba(255,255,255,.10);background-size:11px 11px;-webkit-mask-image:radial-gradient(60% 70% at 50% 50%,#000 20%,transparent 80%);mask-image:radial-gradient(60% 70% at 50% 50%,#000 20%,transparent 80%)"></div>`;
+  return `<div style="position:absolute;inset:0;background:#0A0A0B"></div><div style="position:absolute;inset:0;background:radial-gradient(48% 56% at 50% 46%,rgba(255,255,255,.075),transparent 72%)"></div>${B30_GUIDES('rgba(255,255,255,.045)')}${dots}${B7_CSS}${B29_CSS}<div class="o8"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:${Math.round(fs * 0.9)}px">${pill(L)}<span style="font-size:${Math.round(fs * 0.9)}px;font-weight:500;color:#fff">vs</span>${pill(R)}</div></div>`;
+}
+
+// glowmarks (ref "Lovable | Microsoft", 1920x1080, so x0.833 here): black, with a glow rising from the bottom in two humps that
+// leave a dark notch in the middle, our blue over a pale sky blue (the reference's pink); each product as its real mark in colour and
+// its name in heavy white type; "vs" in place of the reference's thin divider.
+function b32GlowMarks() {
+  const L = spec.left, R = spec.right, n = String(L.label).length + String(R.label).length;
+  const fs = Math.min(100, Math.floor(1120 / (0.56 * n + 2 * (0.95 + 0.26) + 2.2))), M = Math.round(fs * 0.95);
+  const lock = (s) => `<span style="display:flex;align-items:center;gap:${Math.round(fs * 0.26)}px"><span class="b29m" style="width:${M}px;height:${M}px;display:grid;place-items:center">${logo(s.logo, Math.round(M * (Number(s.scale) || 1)), s.label)}</span><b style="font-size:${fs}px;font-weight:700;letter-spacing:-.035em;color:#fff;white-space:nowrap">${esc(s.label)}</b></span>`;
+  return `<div style="position:absolute;inset:0;background:#0A0A0B"></div><div style="position:absolute;inset:-60px;background:radial-gradient(60% 66% at 6% 104%,#CFE2FF 0%,#8DB8F7 22%,#2F7BE8 44%,rgba(10,95,216,.3) 62%,rgba(10,95,216,.08) 80%,transparent 100%),radial-gradient(60% 66% at 94% 104%,#CFE2FF 0%,#8DB8F7 22%,#2F7BE8 44%,rgba(10,95,216,.3) 62%,rgba(10,95,216,.08) 80%,transparent 100%),radial-gradient(80% 44% at 50% 110%,#3B86F0 0%,rgba(10,95,216,.5) 45%,transparent 80%);filter:blur(28px)"></div><div style="position:absolute;inset:0;background:radial-gradient(17% 34% at 50% 70%,rgba(10,10,11,.85),transparent 80%)"></div>${B7_CSS}${B29_CSS}<div class="o8"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:${Math.round(fs * 0.8)}px">${lock(L)}<span style="font-size:${Math.round(fs * 0.62)}px;font-weight:400;color:rgba(255,255,255,.62)">vs</span>${lock(R)}</div></div>`;
+}
+// ---- Batch 8, round 4b (Oct 24 2026): the user's four incident.io covers, measured on the originals (2000x1125, so x0.8 here) and
+// put on our light field in our blues and Inter. ----
+const B31_GLOW = (x, y, w, h) => `<div style="position:absolute;left:${x - w / 2}px;top:${y - h / 2}px;width:${w}px;height:${h}px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,134,240,.22),rgba(59,134,240,.08) 55%,transparent);filter:blur(10px)"></div>`;
+// chipvs (the user's "Scribe impact review" reference): one tilted white chip holding both real marks with a small "vs" between them,
+// a soft blue glow behind it, and the two names as a big title beside it, on our light field.
+function b31ChipVs() {
+  const L = spec.left, R = spec.right, M = 132, lines = [L.label + ' vs', R.label], fs = Math.min(100, ...lines.map((l) => b7Fit(l, 640, 100, 0.55)));
+  const mark = (s) => `<span class="b29m" style="width:${M}px;height:${M}px;display:grid;place-items:center">${logo(s.logo, Math.round(M * (Number(s.scale) || 0.9)), s.label)}</span>`;
+  return `${B29_LIGHT}${B31_GLOW(470, 450, 620, 440)}${B7_CSS}${B29_CSS}<div class="o8"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:56px">
+<span style="display:flex;align-items:center;gap:26px;padding:40px 48px;border-radius:34px;background:#FDFEFF;transform:rotate(-2.5deg);box-shadow:0 8px 0 #E3E9F2,0 22px 46px rgba(30,60,110,.13)">${mark(L)}<span style="font-size:46px;font-weight:500;color:#8A94A6">vs</span>${mark(R)}</span>
+<span style="font-size:${fs}px;font-weight:600;letter-spacing:-.04em;line-height:1.08;color:#0A0A0B;white-space:nowrap">${esc(L.label)} vs<br>${esc(R.label)}</span></div></div>`;
+}
+
+// tilerow (the user's "Engineering teams in 2027" reference): one row of frosted tiles, each laid a little over the last, the logos in
+// their real colours, above a big white heading, on our blue noise gradient only ("use gradient blue noise bg").
+function b31TileRow() {
+  const it = b13Items().slice(0, 6), T = 180, step = 155;
+  const lines = String(spec.headline).split('\n'), fs = Math.min(100, ...lines.map((l) => b7Fit(l, 1120, 100, 0.55))), H = T + 64 + lines.length * fs * 1.1, top = Math.round(450 - H / 2);
+  const frost = (c) => `<span style="width:${T}px;height:${T}px;flex:none;border-radius:${Math.round(T * 0.22)}px;background:linear-gradient(135deg,rgba(255,255,255,.42),rgba(255,255,255,.72));box-shadow:inset 0 0 0 2px rgba(255,255,255,.9),0 18px 40px rgba(30,70,140,.16);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:grid;place-items:center">${c.fill ? `<span class="o8fill" style="width:${Math.round(T * 0.6)}px;height:${Math.round(T * 0.6)}px;border-radius:${Math.round(T * 0.6 * 0.22)}px;overflow:hidden;display:grid;place-items:center">${logo(c.logo, Math.round(T * 0.6), c.label)}</span>` : `<span class="b29m" style="width:${Math.round(T * 0.56)}px;height:${Math.round(T * 0.56)}px;display:grid;place-items:center">${logo(c.logo, Math.round(T * 0.56 * (Number(c.scale) || 1)), c.label)}</span>`}</span>`;
+  return `${b7BlueCanvas()}${B7_CSS}${B29_CSS}<div class="o8"><div style="position:absolute;left:0;right:0;top:${top}px;display:flex;justify-content:center">${it.map((c, i) => `<span style="margin-left:${i ? step - T : 0}px;position:relative;z-index:${i + 1}">${frost(c)}</span>`).join('')}</div>
+<div style="position:absolute;left:0;right:0;top:${top + T + 64}px;text-align:center;font-size:${fs}px;font-weight:600;letter-spacing:-.04em;line-height:1.1;color:#fff">${esc(spec.headline).replace(/\n/g, '<br>')}</div></div>`;
+}
+
+// bandhero (ref "Introducing PagerDuty Rescue Program"): a small kicker, a big word, then a wide band in our blue gradient tipped a
+// little uphill with the figure in white, on our light field (no waves: "delete the waves from bottom"; not black: "dont use black bg").
+function b31BandHero() {
+  const band = String(spec.band || ''), unit = String(spec.unit || ''), bfs = Math.min(112, Math.floor(1080 / ((band.length + unit.length * 0.5) * 0.56))), nfs = Math.min(120, b7Fit(spec.name, 1000, 120, 0.56));
+  return `${B29_LIGHT}${B7_CSS}<div class="o8">
+<div style="position:absolute;left:0;right:0;top:212px;text-align:center;font-size:58px;font-weight:400;letter-spacing:-.03em;color:#0A0A0B">${esc(spec.kicker)}</div>
+<div style="position:absolute;left:0;right:0;top:302px;text-align:center;font-size:${nfs}px;font-weight:700;letter-spacing:-.04em;color:#0A0A0B">${esc(spec.name)}</div>
+<div style="position:absolute;left:-80px;width:1760px;top:472px;height:184px;${ANCHOR};transform:rotate(-3deg);display:flex;align-items:center;justify-content:center;gap:14px;box-shadow:0 18px 40px rgba(10,95,216,.22)"><b style="font-size:${bfs}px;font-weight:700;letter-spacing:-.03em;color:#fff;white-space:nowrap">${esc(band)}</b>${unit ? `<span style="font-size:${Math.round(bfs * 0.5)}px;font-weight:500;letter-spacing:-.02em;color:rgba(255,255,255,.78);white-space:nowrap;margin-top:${Math.round(bfs * 0.3)}px">${esc(unit)}</span>` : ''}</div></div>`;
+}
+const modes = { tilerow: b31TileRow, bandhero: b31BandHero, editorcard: b30EditorCard, namehero: b29NameHero, titlebox: b29TitleBox, highlight: b29Highlight, dock: b29Dock, darkpanel: b29DarkPanel, metricrows: b29MetricRows, checkcard: b25CheckCard, flatcard2: b24FlatCard, research: b23Research, squircles: b21Squircles, bluegrid: b21BlueGrid, typehero: b8TypeHero, strike: b7Strike, meter: b7Meter, glassbar: o15GlassBar, frostrow: o12FrostRow, figures: o11Figures, costgrid: o11CostGrid, cloud: o8Cloud, ranges: o8Ranges, count: o8Count, spotlight: o7Spotlight, picks: o7Picks, lineup, shortlist, versus, hub, prompt, stack, window: appwin, timeline, checklist, stat, ranked, focus, dark: cbDark, logotype, swap: glSwap, badge: glBadge, receipt, definition };
 
 // ---- heading must mirror the blog title: same key words, same meaning, just shorter. Every headline is black #0A0A0B (user). ----
 const STOP = new Set('a an the and or of for to in on at by with your you our is are be how what why when which who vs versus its it this that from into without about best top guide per 2024 2025 2026 2027'.split(' '));
 const stem = (w) => w.endsWith('sses') ? w.slice(0, -2) : w.endsWith('ss') ? w : w.length > 4 && /(ches|shes|xes|zes)$/.test(w) ? w.slice(0, -2) : w.length > 3 && w.endsWith('s') ? w.slice(0, -1) : w;
 const words = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9+ ]/g, ' ').split(/\s+/).filter((w) => w && !STOP.has(w)).map(stem);
-const HEADING = { checkcard: spec.headline, flatcard2: spec.headline, research: spec.headline && spec.headline.split(String.fromCharCode(10)).join(' '), squircles: spec.headline && spec.headline.split(String.fromCharCode(10)).join(" "), bluegrid: spec.headline && spec.headline.split(String.fromCharCode(10)).join(" "), typehero: spec.left && spec.right ? `${spec.left.label} vs ${spec.right.label}` : undefined, strike: spec.headline, meter: spec.headline, glassbar: spec.headline, frostrow: spec.headline, figures: spec.headline, costgrid: spec.headline, focus: spec.headline && spec.headline.replace(/\{\{|\}\}/g, ''), cloud: spec.headline, ranges: spec.headline, count: spec.caption, spotlight: spec.headline && spec.headline.replace(/\{\{|\}\}/g, ''), picks: spec.title, dark: spec.headline, versus: VARIANT === 'peecpair' ? spec.headline : VARIANT === 'inline' ? (spec.left.wordmark || spec.right.wordmark ? spec.headline : `${spec.left.label} vs ${spec.right.label}`) : ['pills', 'connect', 'duo', 'tiles', 'lanes'].includes(VARIANT) ? spec.headline : VARIANT === 'checks' ? spec.title : undefined, receipt: spec.headline, shortlist: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
+const HEADING = { tilerow: spec.headline && String(spec.headline).split(String.fromCharCode(10)).join(' '), bandhero: [spec.kicker, spec.name].join(' '), editorcard: spec.headline, namehero: [spec.kicker, spec.name].filter(Boolean).join(' '), titlebox: spec.headline, highlight: [spec.lead, spec.phrase].filter(Boolean).join(' '), dock: spec.headline && String(spec.headline).split(String.fromCharCode(10)).join(' '), darkpanel: spec.headline && String(spec.headline).split(String.fromCharCode(10)).join(' '), metricrows: spec.headline, checkcard: spec.headline, flatcard2: spec.headline, research: spec.headline && spec.headline.split(String.fromCharCode(10)).join(' '), squircles: spec.headline && spec.headline.split(String.fromCharCode(10)).join(" "), bluegrid: spec.headline && spec.headline.split(String.fromCharCode(10)).join(" "), typehero: spec.left && spec.right ? `${spec.left.label} vs ${spec.right.label}` : undefined, strike: spec.headline, meter: spec.headline, glassbar: spec.headline, frostrow: spec.headline, figures: spec.headline, costgrid: spec.headline, focus: spec.headline && spec.headline.replace(/\{\{|\}\}/g, ''), cloud: spec.headline, ranges: spec.headline, count: spec.caption, spotlight: spec.headline && spec.headline.replace(/\{\{|\}\}/g, ''), picks: spec.title, dark: spec.headline, versus: VARIANT === 'peecpair' ? spec.headline : ['capsulevs'].includes(VARIANT) ? spec.headline && String(spec.headline).split(String.fromCharCode(10)).join(' ') : VARIANT === 'inline' ? (spec.left.wordmark || spec.right.wordmark ? spec.headline : `${spec.left.label} vs ${spec.right.label}`) : ['pills', 'connect', 'duo', 'tiles', 'lanes'].includes(VARIANT) ? spec.headline : VARIANT === 'checks' ? spec.title : undefined, receipt: spec.headline, shortlist: spec.headline, definition: spec.term, badge: spec.logo ? undefined : spec.title, prompt: spec.headline, timeline: spec.headline, ranked: spec.headline, stack: spec.title, checklist: spec.title, window: spec.list && spec.list.heading, stat: spec.caption };
 const heading = HEADING[MODE];
 if (heading !== undefined && !force) {
   if (!spec.articleTitle) { console.error('HEADING CHECK FAILED: add "articleTitle" (the blog post\'s real title) to the spec. The image heading must reuse its words.'); process.exit(3); }
@@ -1585,7 +1786,8 @@ if (LAYOUT === 'versus/slash' && !args.includes('--force')) {
 // canvas) and the Gumloop layouts on the black or blue field (glass on black, tiles on blue); the Originals and every light field are calm
 // batch 7: bluegrid (the blue field), versus/band (plain black), versus/span and versus/glasspair (the deep-dunes blue) count as vibrant;
 // research is light glass, so it doesn't
-const VIVID = MODE === 'dark' || MODE === 'glassbar' || MODE === 'bluegrid' || ['versus/band', 'versus/span', 'versus/glasspair', 'versus/slash', 'versus/duo'].includes(LAYOUT) || (GL_LAYOUTS.includes(LAYOUT) && GL_FIELD !== 'light');
+// batch 8: namehero and tilerow (the blue noise gradient), vssquares, darkpills and glowmarks (black) count as vibrant
+const VIVID = MODE === 'dark' || MODE === 'glassbar' || MODE === 'bluegrid' || MODE === 'namehero' || MODE === 'tilerow' || ['versus/band', 'versus/span', 'versus/glasspair', 'versus/slash', 'versus/duo', 'versus/vssquares', 'versus/darkpills', 'versus/glowmarks'].includes(LAYOUT) || (GL_LAYOUTS.includes(LAYOUT) && GL_FIELD !== 'light');
 // Gumloop layouts: fetch each brand's full wordmark (icon + typography) before rendering. Both Brandfetch themes are tried and the
 // darkest-ink version kept (shown in its original colours); a white background is keyed out; a solid tile is not a
 // wordmark, and a brand without one is typeset in Inter instead.
@@ -1726,6 +1928,32 @@ const thin7 = {
   'research/default': () => n(spec.cards || spec.items) < 2 && 'research needs 2-7 picks', 'checkcard/default': () => n(spec.items) < 3 && 'checkcard needs 3+ items',
   'flatcard2/default': () => !spec.value && 'flatcard2 needs the figure ("value")',
 }[LAYOUT]?.();
+// batch 8: options the user turned down (each layout renders only its approved look)
+const turnedDown = {
+  'tilerow/default': () => (spec.frosted != null || spec.blue === false) && 'tilerow is frosted tiles on our blue noise gradient only ("use gradient blue noise bg"); remove "frosted" / "blue": false',
+  'bandhero/default': () => (spec.waves === true || spec.dark != null || spec.bandInk != null) && 'bandhero is the light field with our blue band only ("delete the waves from bottom", "dont use black bg"; the black band was disapproved); remove "waves", "dark" and "bandInk"',
+  'versus/darkpills': () => spec.light != null && 'versus/darkpills is dark only (its light version was disapproved); remove "light"',
+  'versus/glowmarks': () => spec.light != null && 'versus/glowmarks is dark only (its light version was disapproved); remove "light"',
+  'metricrows/default': () => spec.bars != null && 'metricrows always draws its bars (the bar-less rows were never approved); remove "bars"',
+  'dock/default': () => spec.count != null && Number(spec.count) !== n(spec.items) && 'dock shows one real logo per tile: "count" must equal the number of items (placeholder tiles were never approved)',
+}[LAYOUT]?.();
+if (turnedDown && !force) { console.error(`FIELD FIT FAILED: ${turnedDown}.`); process.exit(2); }
+const thin8 = {
+  'versus/markvs': () => !sides() && 'versus/markvs needs both brands\' logos', 'versus/vssquares': () => !sides() && 'versus/vssquares needs both brands\' logos',
+  'versus/wordvs': () => !sides() && 'versus/wordvs needs both brands\' logos', 'versus/chipvs': () => !sides() && 'versus/chipvs needs both brands\' logos',
+  'versus/darkpills': () => !sides() && 'versus/darkpills needs both brands\' logos', 'versus/glowmarks': () => !sides() && 'versus/glowmarks needs both brands\' logos',
+  'versus/capsulevs': () => !(sides() && spec.headline) && 'versus/capsulevs needs both brands\' logos and the "headline"',
+  'titlebox/default': () => !spec.headline && 'titlebox needs the "headline"',
+  'highlight/default': () => !(spec.lead && spec.phrase) && 'highlight needs the "lead" and the highlighted "phrase"',
+  'dock/default': () => (n(spec.items) < 3 || n(spec.items) > 7) && 'dock needs 3-7 items', 'darkpanel/default': () => (n(spec.items) < 3 || n(spec.items) > 6) && 'darkpanel needs 3-6 items',
+  'editorcard/default': () => (n(spec.items) < 3 || n(spec.items) > 4) && 'editorcard needs 3-4 items', 'tilerow/default': () => (n(spec.items) < 3 || n(spec.items) > 6) && 'tilerow needs 3-6 items',
+  'metricrows/default': () => !(n(spec.rows) === 2 && spec.rows.every((x) => x.label && x.display && num(Number(x.amount)))) && 'metricrows needs 2 rows, each with "label", "display" and a numeric "amount"',
+  'bandhero/default': () => !(spec.name && spec.band) && 'bandhero needs the "name" and the figure on the band ("band")',
+}[LAYOUT]?.();
+// a layout that draws a "headline" needs one: without it the heading check had nothing to check and the image rendered with no title
+const NEEDS_HEADLINE = ['tilerow', 'dock', 'darkpanel', 'editorcard', 'metricrows', 'titlebox', 'checkcard', 'cloud', 'squircles', 'bluegrid', 'research', 'flatcard2', 'strike', 'meter'];
+if (NEEDS_HEADLINE.includes(MODE) && !spec.headline && !force) { console.error(`HEADING CHECK FAILED: ${LAYOUT} draws a heading: add "headline" (the blog title's own words, shorter).`); process.exit(2); }
+if (thin8 && !force) { console.error(`CONTENT CHECK FAILED: ${thin8}. Use the article's facts to fill it, or pick a layout that suits fewer facts.`); process.exit(2); }
 if (thin7 && !force) { console.error(`CONTENT CHECK FAILED: ${thin7}. Use the article's facts to fill it, or pick a layout that suits fewer facts.`); process.exit(2); }
 if (thin && !force) { console.error(`CONTENT CHECK FAILED: ${thin}. Use the article's facts to fill it, or pick a layout that suits fewer facts.`); process.exit(2); }
 // ---- comparison fairness: an "X vs Y" article shows both products (dark features one brand, so it is for single-brand articles) ----
@@ -1774,7 +2002,7 @@ Used only in other categories (free here): ${free.elsewhere.join(', ') || 'none'
   process.exit(2);
 }
 // vibrant images (deep-dunes blue, black headline layouts): at most 1 in 3 per category, never two neighbours
-if ((spec.bg === 'blue' || VIVID) && !force) {
+if ((spec.bg === 'blue' || VIVID) && !force && !VIBRANT_PICK) {
   const lastTwo = prior.slice(-2);
   if (lastTwo.some((e) => e.vibrant || e.bg === 'blue')) {
     console.error(`VIBRANT CHECK FAILED: a recent "${category}" image already uses a vibrant field (the deep-dunes blue or a black layout) (${lastTwo.filter((e) => e.vibrant || e.bg === 'blue').map((e) => e.slug).join(', ')}).
@@ -1975,7 +2203,7 @@ fs.rmSync(raw);
 // bg = what the image is painted on: the card layouts' field, or "canvas" for a layout that paints its own, prompt included (plus its
 // "field" when it has a choice); a picked bg (bgPick) is recorded as itself, canvas layouts included, so the next card's background
 // check compares like with like
-const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: CANVAS && !BG_PICK ? 'canvas' : BG, ...(BG_PICK ? { bgPick: true } : {}), ...(GL_FIT && !BG_PICK ? { field: GL_FIELD } : {}), series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, ...(USER_PICK ? { userPick: true } : {}), out: path.resolve(outDir), at: new Date().toISOString() };
+const entry = { slug, brand: brandKey, category, topic, mode: MODE, variant: VARIANT, layout: LAYOUT, bg: CANVAS && !BG_PICK ? 'canvas' : BG, ...(BG_PICK ? { bgPick: true } : {}), ...(VIBRANT_PICK ? { vibrantPick: true } : {}), ...(GL_FIT && !BG_PICK ? { field: GL_FIELD } : {}), series: !!(CRAFT && spec.series), vibrant: BG === 'blue' || VIVID, ...(USER_PICK ? { userPick: true } : {}), out: path.resolve(outDir), at: new Date().toISOString() };
 // Parallel renders share these files: take the lock (usage.mjs), re-read, then write, so no entry is lost. A re-render replaces the
 // slug's entry but keeps what finalize.mjs and the user set on it.
 const KEEP = ['final', 'finalizedAt', 'previousFinalizedAt', 'stored', 'superseded'];
@@ -1987,4 +2215,4 @@ withLock(historyFile, () => {
   fs.writeFileSync(historyFile, JSON.stringify([...H.filter((x) => x.slug !== slug), e], null, 1));
 });
 console.log(`${outDir}
-  layout=${LAYOUT} ${GL_LAYOUTS.includes(LAYOUT) && !BG_PICK ? `field=${GL_FIELD}` : `bg=${BG}${BG_PICK ? ' (picked)' : ''}`} category=${category} words=${WORDS}/${MAX_WORDS}`);
+  layout=${LAYOUT} ${GL_LAYOUTS.includes(LAYOUT) && !BG_PICK ? `field=${GL_FIELD}` : `bg=${CANVAS && !BG_PICK ? 'canvas' : BG}${BG_PICK ? ' (picked)' : ''}`} category=${category} words=${WORDS}/${MAX_WORDS}`);

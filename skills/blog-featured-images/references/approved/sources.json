@@ -60,5 +60,21 @@
  "66-versus-span": "curve-vs-denticon.versus-span.json",
  "67-versus-duel": "vanta-vs-drata.versus-duel.json",
  "68-versus-band": "dosespot-vs-rxnt.versus-band.json",
- "69-versus-glasspair": "mckesson-vs-pioneerrx.versus-glasspair.json"
+ "69-versus-glasspair": "mckesson-vs-pioneerrx.versus-glasspair.json",
+ "70-versus-markvs": "ecw-vs-nextgen.versus-markvs.json",
+ "71-versus-vssquares": "meditech-vs-trubridge.versus-vssquares.json",
+ "72-namehero": "modmed-worth-it.namehero.json",
+ "73-versus-wordvs": "luma-vs-phreesia.versus-wordvs.json",
+ "74-versus-capsulevs": "medallion-vs-symplr.versus-capsulevs.json",
+ "75-titlebox": "psv-cost.titlebox.json",
+ "76-highlight": "hospital-management.highlight.json",
+ "77-dock": "therapy-pm.dock.json",
+ "78-metricrows": "eaglesoft-vs-dentrix.metricrows.json",
+ "79-darkpanel": "change-healthcare-alternatives.darkpanel.json",
+ "80-editorcard": "clinical-decision-support.editorcard.json",
+ "81-versus-chipvs": "clinisys-vs-epic-beaker.versus-chipvs.json",
+ "82-tilerow": "telehealth-platforms.tilerow.json",
+ "83-bandhero": "online-booking-cost.bandhero.json",
+ "84-versus-darkpills": "isabel-vs-uptodate.versus-darkpills.json",
+ "85-versus-glowmarks": "bestrx-vs-primerx.versus-glowmarks.json"
 }

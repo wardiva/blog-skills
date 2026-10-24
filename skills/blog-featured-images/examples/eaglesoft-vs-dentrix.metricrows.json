@@ -1,0 +1,23 @@
+{
+  "articleTitle": "Eaglesoft vs Dentrix: Pricing and Features Compared (2026)",
+  "brand": "medsoftwarehub",
+  "category": "specialty-software",
+  "slug": "eaglesoft-vs-dentrix-pricing-and-features-compared-2026",
+  "mode": "metricrows",
+  "headline": "Eaglesoft vs Dentrix",
+  "max": 400,
+  "rows": [
+    {
+      "label": "Eaglesoft, single user",
+      "amount": 200,
+      "display": "From $200",
+      "unit": "/month"
+    },
+    {
+      "label": "Dentrix, single user",
+      "amount": 300,
+      "display": "From $300",
+      "unit": "/month"
+    }
+  ]
+}

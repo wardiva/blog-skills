@@ -1,0 +1,26 @@
+{
+  "articleTitle": "7 Best Telehealth Platforms for Small Practices in 2026",
+  "brand": "medsoftwarehub",
+  "category": "clinical-software",
+  "slug": "7-best-telehealth-platforms-for-small-practices-in-2026",
+  "mode": "tilerow",
+  "headline": "Best Telehealth Platforms\nfor Small Practices",
+  "items": [
+    {
+      "name": "Doxy.me",
+      "logo": "../assets/doxyme-mark.png"
+    },
+    {
+      "name": "SimplePractice",
+      "logo": "../assets/simplepractice-mark.png"
+    },
+    {
+      "name": "Zoom",
+      "logo": "icon:zoom.us"
+    },
+    {
+      "name": "VSee",
+      "logo": "../assets/vsee-v-mark.png"
+    }
+  ]
+}

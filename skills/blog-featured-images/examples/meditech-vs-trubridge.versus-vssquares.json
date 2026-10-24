@@ -1,0 +1,18 @@
+{
+  "articleTitle": "MEDITECH vs TruBridge: Which Fits Rural Hospitals in 2026",
+  "brand": "medsoftwarehub",
+  "category": "hospital-and-lab-software",
+  "slug": "meditech-vs-trubridge-which-fits-rural-hospitals-in-2026",
+  "mode": "versus",
+  "variant": "vssquares",
+  "left": {
+    "label": "MEDITECH",
+    "logo": "../assets/meditech-m-mark.png",
+    "scale": 0.8
+  },
+  "right": {
+    "label": "TruBridge",
+    "logo": "../assets/trubridge-bridge-mark.png",
+    "scale": 0.9
+  }
+}
