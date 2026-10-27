@@ -4,7 +4,7 @@ You are expected to make images the user would approve without asking them. This
 
 ## The Principles
 
-There are **43 principles** (1–43), and the Self-Critique below checks every one of them. Before any image goes to the user, predict the user's verdict (the last section, "Predict the Verdict").
+There are **45 principles** (1–45), and the Self-Critique below checks every one of them. Before any image goes to the user, predict the user's verdict (the last section, "Predict the Verdict").
 
 ### 1. Balance and hierarchy: nothing outweighs its partner, and the key figure leads
 
@@ -18,6 +18,7 @@ Every image is a conversation between two masses: a number and its card, a headl
 - **Connect:** "Decrease the font size of the heading so it comes in one line, because 2 lines look visually off." A short pair like "Waystar vs Availity" reads as one phrase; split over two big lines it outweighed the tiles. It now sits on one line, centred above the divider.
 - **Receipt** (batch 4): "heading placement feels off" with the headline centred beside the receipt. From top and bottom options, bottom was picked: the headline now sits on the total line (`"place": "bottom"`).
 - **TheraNest vs Valant** (`versus/badges`, batch 5 final round): "the heading of theranest and valant are too bold and big, visual hierrachy is not good and balanced". The names were 72px bold black, as heavy as the prices they label. The approved fix turned the hierarchy round: names 44px at 600, prices up to 84px, the two sides spread apart (`nameSize`, `nameWeight`, `valueSize`, `spread`). The figures lead; the names say whose they are.
+- **WebPT Cost** (`demohero`, batch 9 round 3): "The text hierarchy is not right." A 136px title fought the "Book a Demo" button for the lead. The picked variation sets the title at 84px semibold, the plan names in grey under it, and the big flat button leads: one element leads, and everything else steps down from it.
 
 **Ask:** what is the heaviest thing in the image, and should it be? Squint: does one side of the canvas feel emptier or heavier than the other? Read the image in the order the eye takes it: is the key figure first, and does every name sit a step below the figure it labels?
 
@@ -342,12 +343,13 @@ Black means plain black. Blue means the deep-dunes blue with grain (or the `blue
 - **The navy-blob black lost:** nearly every rejected black option sat on black with big navy and blue glows (rows, routes, glow tiles, big type, `heroglass`: "its too bad not visually appealing at all"; `versus/underline`: "too bad visual"). Glass rows, glass split and big type on it were all retired. Curve's span, approved on it in round 5, came back as a final: "change bg, this bg doesnt look good". Of black, the dunes and the glow, the dunes won.
 - **Outside gradients:** "you can also use calendly gradient cus it matches with ours", then, on the result: "the gradient looks awful" (sky and aurora). The user's verdict on the image overrules their own suggestion.
 - **Hand-mixed blue:** "this looks better but use our good gradient bg" (McKesson). Our gradient is the dunes.
+- **No drop shadow on black** (WebPT Cost, `demohero`, batch 9 round 3): "Drop shadow is not right." A heavy shadow under the button on the near-black field. Plain black takes no shadow (SKILL.md, "Shadows follow the background"); the picked button is flat.
 
-**Ask:** is the black plain black? Is the blue the dunes (or the `bluegrid` blue)? Is any gradient on the image one we didn't approve?
+**Ask:** is the black plain black? Is the blue the dunes (or the `bluegrid` blue)? Is any gradient on the image one we didn't approve? Is there a drop shadow on the black or the blue?
 
-### 29. Flat shapes: card corners, no rotation, no blobs
+### 29. Flat shapes: card corners, no rotation, no blobs, no 3D
 
-Big panels take card corners (about 40px), never pill ends. Cards never rotate; only small tiles (240px or less) may tilt, by 8° at most. No liquid joins, bursts, bubbles, Venn diagrams, rims, orbits or org-chart trees.
+Big panels take card corners (about 40px), never pill ends. Cards never rotate; only small tiles (240px or less) may tilt, by 8° at most. No liquid joins, bursts, bubbles, Venn diagrams, rims, orbits or org-chart trees. No 3D: no perspective or isometric plane, no stack of ghost copies, even when the reference has one.
 
 - **Capsule** (PT, the seven marks in one white pill): "i dont like this rounded it looks weird".
 - **`cursorcard`** (tilted, from Peec; retired): "not tilted rectangle pls also use our bgs". Rebuilt flat as `flatcard`, approved, then improved into `flatcard2`, the one kept.
@@ -355,9 +357,10 @@ Big panels take card corners (about 40px), never pill ends. Cards never rotate; 
 - **Burst:** "disgusting shapes". **Bubbles:** "ew". **Horizon:** "i like the shape you used but over alll its too much., not visually apealing at all"; kept for round 7 and failed every time after (horizon2, side glow, eclipse, crescent): a liked part is not a direction.
 - Disapproved with no note: `versus/venn`, `versus/bands`, `versus/butterfly`, `waffle`, `arc`, `versus/medallions`, `tree`.
 - **Tilt survived once:** Solventum's two 230px tiles at 8°, corners touching.
+- **No 3D** (WebPT Cost, `wp-peecplans`, batch 9 round 3, from Peec's "Less Cost. More Value." cover): the plan cards lay in an isometric plane with a ghost stack behind them. The user loved the design and still sent it back: "it looks really good, but it looks 3D and we're not using 3D anymore". The approved `demohero` is flat and straight. The reference's 3D is dropped like an ornament (principle 35).
 - **Scope (batch 8): the user's reference may keep a pill or a tilt** (principle 35). `versus/capsulevs` (img 4's white capsule with pill ends), `bandhero` (a full-bleed tilted band with square ends) and `versus/chipvs` (one tilted white chip) were approved because each copies the user's own reference. The override holds for that layout only: an invented pill-ended panel or rotated card still fails, and a rotated rounded box narrower than the canvas is a rotated card (an early `bandhero` draft also read as the approved `highlight`).
 
-**Ask:** is any panel pill-ended, any card rotated, any tile tilted past 8°? Is there a shape that isn't a card, a tile, a track or type?
+**Ask:** is any panel pill-ended, any card rotated, any tile tilted past 8°? Is there a shape that isn't a card, a tile, a track or type? Is anything in perspective, isometric or stacked as ghost copies?
 
 ### 30. Say each thing once
 
@@ -496,6 +499,28 @@ A round with almost no verdicts, or an image left unmarked for two rounds, is a 
 
 **Ask:** how many images in the last round came back with no verdict? Has any image been unmarked twice? Then ask for references.
 
+### 44. Real logos only
+
+A tile shaped like an app icon or a logo holds the brand's real logo, and nothing else. Never a code, a letter, a number or a symbol dressed as an icon: the user reads any icon tile as a logo and asks whose it is. Terms (billing codes, rule names, units) stay typed words in the article's own wording. This extends principles 2 (a label tile is not a logo) and 8 (brands as they really are).
+
+- **PT Billing Software for Medicare** (`pt-peecrows`, batch 9 round 3, from Peec's "AI search reranks sources"): Peec's rows carry real favicons; the copy put "8", "GP" and "KX" in their tiles. The user loved the design and asked: "why did you use these logos? 8-minute rule why what is this? Thumbnail, a logo, what". The tiles went, and the rows say the rules in the article's words (`rulerows`, approved: no icon tiles).
+- **Round 2** (`pt-modifiers`, batch 9): the modifier codes GP / CQ / KX set as big type tiles, KX in blue: "yukh".
+
+**Ask:** does every tile shaped like an app icon or a logo hold a real brand's real logo? Is any code, letter, number or symbol dressed as one? Then drop the tile and type the term.
+
+### 45. Your library first, several variations
+
+When no reference comes with a batch, take each design's structure from what the user has already given: their own references (refs 42–52, the incident.io covers), the sources they named (Peec, Calendly, Dub, Mintlify, incident.io) and the approved set in `references/approved/` (the user's "test file … all the templates"). Never from a new site the session finds, and never an invention from our own parts. In round 1, show 2–3 variations per article, each from a different reference, and let the user pick. This narrows principles 17 and 32: "browser research" means the user's named sources, not any SaaS blog; and it answers principle 43's ask when the user says "you create" instead of sending references.
+
+- **Batch 9 (Oct 27 2026, PT Billing Software for Medicare and WebPT Cost):** all 76 templates were used and no reference came. Asked how to source new designs, the user answered "you create". That meant create from the library, not from anywhere:
+  - **Round 1, two covers the session found on Clerk's blog** (`pt-plates`, `wp-statuscard`): "this is bullshit, this is AI scope. Look at the images, then we finalized this is impossible, bro.", and "these have already been used". Visual QA had passed both.
+  - **Round 2, four inventions from our own parts** (code letters as type tiles, an equation card, a wordmark as the headline's first word, blurred prices): "yukh" and "I have given you thousands of references". Predicted 3 approvals; got 0.
+  - **Round 3, two Peec covers** (the user's named source): "Interesting. I really like these two images that you have created. I love them, honestly." Two fixes followed (no 3D, principle 29; real logos only, principle 44), and two looks were questioned: "I'm not sure about these three boxes. Rethink of these boxes, like what other way to present it." and "it looks too white".
+  - **Round 4, variations:** "Make another variation. Make multiple variations. According to our taste. We have all the data. We have the learning MD file. We have the taste MD file. We have the rule MD file. Why are you not creating". From the variations the user picked PT billing "C" (the faint grid, a one-line title: `rulerows`) and WebPT "A" (the dark button with the blue bar: `demohero`).
+- Earlier evidence for the same order: batch 8's own references passed 11 of 17 against 1 of 18 for found covers (principle 35); batch 7's inventions passed at about 10% (principle 17).
+
+**Ask:** where does this design's structure come from: a reference the user gave, a source they named, or an approved image? If it came from a new site or from our own parts, replace it. Does each article have 2–3 variations from different references in round 1?
+
 ## Self-Critique (Required)
 
 Makers run this on their own image before returning it; Visual QA runs it on every image. Look at `master.png` and `card-350x250.png`, next to two approved images from the same family. Answer in a table:
@@ -539,8 +564,8 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Once per page | No other option on the review page, and no other image of this category in the batch, shares this skeleton, counted by skeleton, not by name (25) |
 | Full stage | One object at confident scale (names about 120px, tiles 200–400px, a card about 900–1100px wide); not a ~600px widget of 14–22px labels floating in a field (26); a copy of the user's own reference keeps the reference's scale, for that layout only (35) |
 | Figure in an object | Every figure sits inside a card, a track, a struck claim, a type pair or a prompt; none stands alone on the field, and none outweighs the heading (27) |
-| Our black, our blue | Black is plain black; blue is the dunes (or the `bluegrid` blue); no navy-blob black, no outside or hand-mixed gradient (28) |
-| Flat shapes | No pill-ended panel, no rotated card, tile tilt only on tiles of 240px or less and at most 8°; no liquid joins, bursts, bubbles, Venn, rims, orbits or trees (29); a pill or tilt the user's own reference has is kept, for that layout only (35) |
+| Our black, our blue | Black is plain black; blue is the dunes (or the `bluegrid` blue); no navy-blob black, no outside or hand-mixed gradient; no drop shadow on black or blue (28) |
+| Flat shapes | No pill-ended panel, no rotated card, tile tilt only on tiles of 240px or less and at most 8°; no liquid joins, bursts, bubbles, Venn, rims, orbits or trees; no 3D (no perspective or isometric plane, no ghost stack) (29); a pill or tilt the user's own reference has is kept, for that layout only (35) |
 | Said once | No word or name appears twice; no tag repeats the title; no names under tiles the heading already names; no typed name beside its own wordmark (30) |
 | Wordmark pair | Real text wordmarks (or mark + name in ink), equal width by eye, lettering white on black and black on light, marks in their colours (31) |
 | Reference numbers | The spec carries the reference's measured numbers; only the field, colour, the 22% radius and "vs" were translated to ours (9, 32) |
@@ -555,6 +580,8 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | One thing | A cost image has one figure (the lead answer) or none; a list's logos sit in one object, every tile a real product, no loose strip of small tiles on a light field (41) |
 | Type cover | A type-only image copies the user's typographic reference; an invented one fails Illustration (5, 42) |
 | Silence | No image goes back for a third round unmarked: after a nearly blank round, or an image unmarked twice, references were asked for instead (43) |
+| Real logos | Every tile shaped like an app icon or a logo holds a brand's real logo; no code, letter, number or symbol dressed as one; terms stay typed words (44) |
+| Library first | With no reference for the batch, the structure comes from the user's references, their named sources (Peec, Calendly, Dub, Mintlify, incident.io) or the approved set, never a new site or our own parts; round 1 shows 2–3 variations per article from different references (45) |
 | Predicted verdict | Its closest match is an approved image, not a rejected pattern; the prediction is written down (Predict the Verdict) |
 
 Any "no" is a fix before the image moves on.
@@ -601,9 +628,13 @@ The user should rarely have to say no. Before any image or option goes to the us
 | The same family repeated on one review page (36) | "done the ones that i have disapproved are repeating the layouts/templates/design" | the second and third `versus/capsulevs`, `highlight`, `dock` and `metricrows` (batch 8 round 3) |
 | A light version of the user's dark reference (39) | no note; disapproved | `versus/darkpills` and `versus/glowmarks` on light (batch 8 round 8) |
 | Decorative ornaments copied from a reference (35) | "delete the waves from bottom" | `bandhero` with the waves (batch 8 round 4) |
+| Generic SaaS-blog UI pieces copied from a found cover: cards joined by thin connector lines (the retired `link` again), a toast/status card with empty ghost cards, logo, card and title in three corners (21, 22, 35, 45) | "this is bullshit, this is AI scope. Look at the images, then we finalized this is impossible, bro." | `pt-plates` and `wp-statuscard` from Clerk covers (batch 9 round 1, Oct 27 2026); Visual QA passed both, the prediction should have been reject |
+| Inventions from our own parts with no reference: code letters as type tiles (GP/CQ/KX), an equation card (40 = 3), a wordmark as the headline's first word, blurred prices (17, 35, 43, 44, 45) | "yukh"; "I have given you thousands of references" | `pt-modifiers`, `pt-units`, `wp-logoword`, `wp-hidden` (batch 9 round 2, Oct 27 2026); predicted 3 approvals, got 0 |
+| 3D: a perspective or isometric plane, a stack of ghost copies (29) | "it looks really good, but it looks 3D and we're not using 3D anymore" | `wp-peecplans` before the fix (batch 9 round 3; the rest of the design: "I love them") |
+| An app-icon tile holding a code or a letter, not a real logo (8, 15, 44) | "why did you use these logos? 8-minute rule why what is this?" | `pt-peecrows` before the fix ("8", "GP", "KX" tiles in place of Peec's favicons) |
 | Covers the session found itself, offered instead of the user's references (35, 43) | no verdict on 17 of 18; the user sent nine references of their own; later "i'll provide inspirations" | `chiprow`, `rankrows`, `darkbars`, `darkhbars`, `logodialog`, `sourcetable`, `trio`, `optioncards`, `versus/pillvs`, `versus/planstack`, `versus/headpeek`, `versus/splitchart`, `versus/twocards`, `versus/stackpair`, `versus/blackmarks`, `versus/linkcard`, `versus/pillpair` (batch 8 round 2); `versus/dimension` and the reordered `versus/tiltpair` (rounds 4–7) |
 
-**What the user praises** (repeat these first, principle 20): `spotlight` "perfect concept and design" (the title's angle in the selection box over a card of real products); `versus/scores` "i love the design" (two real numbers set big, no chart); `versus/stacked` "love it. The concept, visual , everything looks so appealing and perfect" (two clear rows, logo + name left, figure right, a slight tilt, on a calm light field); frosted glass for logos ("I like how you have used logos with these glass bgs", then "for logos bg glass bg would look better": `versus/frost`, `lineup`, `frostrow`); "wow love it, everything is perfect" for `shortlist`, `definition`, `versus/glass`, `versus/tiles` and `versus/type`; `figures` and `costgrid`, approved at once with no note (big blue figures, one anchor). From batch 7, only what was kept: `strike` "Love it" (the claim struck through, the truth beside it); `versus/duel` "wow love it" (two big lockups on a quiet grid); `versus/band` "this is perfect" (two white wordmarks on plain black); `flatcard2` and `research` "perfect" (one flat product card; a pill, a heading and frosted tiles on light glass with blue guide lines); `bluegrid` "i like this layout and design"; `checkcard`, `versus/peecpair` and `versus/glasspair` (copies of the user's own references on our fields). From batch 8, only what was kept (16, principle 20): `tilerow` "This is fine now" (frosted real-colour logos on our blue noise); `bandhero` after "delete the waves from bottom" (one figure on a full-bleed blue band, light field); `versus/darkpills` and `versus/glowmarks` (the dark references kept dark); and, approved with no note, `versus/markvs`, `versus/vssquares`, `namehero`, `versus/wordvs`, `versus/capsulevs`, `titlebox`, `highlight`, `dock`, `metricrows`, `darkpanel`, `editorcard` and `versus/chipvs`: every one a whole copy of one reference, fourteen of them the user's own. Never repeat the reversed praise listed under principle 20.
+**What the user praises** (repeat these first, principle 20): `spotlight` "perfect concept and design" (the title's angle in the selection box over a card of real products); `versus/scores` "i love the design" (two real numbers set big, no chart); `versus/stacked` "love it. The concept, visual , everything looks so appealing and perfect" (two clear rows, logo + name left, figure right, a slight tilt, on a calm light field); frosted glass for logos ("I like how you have used logos with these glass bgs", then "for logos bg glass bg would look better": `versus/frost`, `lineup`, `frostrow`); "wow love it, everything is perfect" for `shortlist`, `definition`, `versus/glass`, `versus/tiles` and `versus/type`; `figures` and `costgrid`, approved at once with no note (big blue figures, one anchor). From batch 7, only what was kept: `strike` "Love it" (the claim struck through, the truth beside it); `versus/duel` "wow love it" (two big lockups on a quiet grid); `versus/band` "this is perfect" (two white wordmarks on plain black); `flatcard2` and `research` "perfect" (one flat product card; a pill, a heading and frosted tiles on light glass with blue guide lines); `bluegrid` "i like this layout and design"; `checkcard`, `versus/peecpair` and `versus/glasspair` (copies of the user's own references on our fields). From batch 8, only what was kept (16, principle 20): `tilerow` "This is fine now" (frosted real-colour logos on our blue noise); `bandhero` after "delete the waves from bottom" (one figure on a full-bleed blue band, light field); `versus/darkpills` and `versus/glowmarks` (the dark references kept dark); and, approved with no note, `versus/markvs`, `versus/vssquares`, `namehero`, `versus/wordvs`, `versus/capsulevs`, `titlebox`, `highlight`, `dock`, `metricrows`, `darkpanel`, `editorcard` and `versus/chipvs`: every one a whole copy of one reference, fourteen of them the user's own. From batch 9: `rulerows` and `demohero`, copies of two Peec covers ("I love them"; flat, no 3D, the dark button with a blue bar). Never repeat the reversed praise listed under principle 20.
 
 **How the predictions went in batch 6** (calibration): the plain, strong layouts (`figures`, `costgrid`) and the never-used approved templates passed at once; every layout with more pieces than an approved one failed. Of nine round-4 options, the one approved (`versus/fan`) was the closest to an approved image (the tilted card on blue, 07); the eight rejected ones had no close approved match.
 
@@ -624,6 +655,12 @@ The user should rarely have to say no. Before any image or option goes to the us
 - **What didn't:** prices on a non-pricing vs, loose small-tile strips on light, placeholder tiles, repeats on a page, light versions of dark references, decorative waves, a reference reordered to dodge a sibling, and the session's own sourced covers when the user's references were the way.
 - **Predict from the user's references first.** When the user has sent references for this article type, predict "approve" only for a faithful copy of one of them; a design that departs from them is a predicted reject. A round left almost blank is a reject, not "pending".
 
+**How the predictions went in batch 9** (calibration, 2 articles, 4 rounds, Oct 27 2026):
+- **Round 1, two Clerk covers the session found: 0 of 2.** Both QA agents passed them; the user: "this is bullshit, this is AI scope". QA passing is not a predicted approval.
+- **Round 2, four inventions from our own parts: 0 of 4,** against a prediction of 3 approvals ("yukh").
+- **Round 3, two Peec covers (the user's named source): 2 of 2 loved** ("I love them"), each with fixes (no 3D, real logos only, the text hierarchy, no drop shadow on black), settled by picking from variations in round 4.
+- **Only reference-led passed.** With no reference for the batch, predict "approve" only for a design whose structure comes from the user's library: their references, their named sources or the approved set (principle 45). A cover from a new site or an invention from our own parts is a predicted reject, whatever QA says.
+
 ## How to Keep Learning
 
 Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named; a new one also gets a Self-Critique row, named in SKILL.md's Review Checklist and in agents.md's Maker and Visual QA templates, and raises the principle count here, in SKILL.md, in the README and in memory), a lesson, a renderer check where it can be measured, with a case in `scripts/test-refusals.mjs` for every decision the renderer or `plan.mjs` can enforce (otherwise a V- or F-check in `agents.md` and a line in the Maker template), a generalisation when the same correction comes twice, the decision recorded (a rejection in `agents.md` V9 and, for a layout, `RETIRED` in `layouts.mjs`; a newly approved image as an example spec and a `sources.json` line; every count it changes (modes/layouts, retired, approved images, examples, refusal cases and steps, taste principles) updated across the skill, the README, the `scripts/render.mjs` header comment and memory), every running Maker and QA told, the inspiration log for references, refreshed approved images, and a push.
@@ -633,3 +670,5 @@ Batch 6 (Oct 20 2026) added principles 21–24 (pro craft, one focal group, a co
 Batch 7 (Oct 21–22 2026) added principles 25–34 (one skeleton per page, big object, a figure inside an object, plain black and the dunes, flat shapes, say each thing once, real and equal wordmarks, a reference as a spec, close pairs, approval that holds only with the batch), grew 4 (no dot fade), 9 (the checkcard numbers, "exact ditto"), 10 (meter bare), 12 (cost words), 14 (approved templates are not new), 17 (references beat invention), 20 (only what was kept; the reversed praise) and 24 (which black, which blue; the vibrant cap), and calibrated Predict the Verdict. The history is in `lessons.md` sections 22 and 23.
 
 Batch 8 (Oct 24–25 2026) added principles 35–43 (the user's reference is the brief, repeats on a page lose, a comparison is two identities, frosted tiles on our blue, a dark reference stays dark, a field note is a question, cost and lists show one thing, type can be the image, silence is a no), scoped 5 (and its Illustration row), 26 and 29 to designs the session invents or sources (a user reference sets its own scale and may keep a pill or a tilt, for that layout only), added the batch-8 praise to 20 and the batch-8 rejects, and calibrated Predict the Verdict. The history is in `lessons.md` sections 24 and 25.
+
+Batch 9 (Oct 27 2026) added principles 44–45 (real logos only; your library first, several variations), grew 1 (the text hierarchy on `demohero`), 28 (no drop shadow on black) and 29 (no 3D), added the batch-9 rejects, and calibrated Predict the Verdict. The history is in `lessons.md`, "Batch 9".

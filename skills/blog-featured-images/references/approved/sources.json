@@ -76,5 +76,7 @@
  "82-tilerow": "telehealth-platforms.tilerow.json",
  "83-bandhero": "online-booking-cost.bandhero.json",
  "84-versus-darkpills": "isabel-vs-uptodate.versus-darkpills.json",
- "85-versus-glowmarks": "bestrx-vs-primerx.versus-glowmarks.json"
+ "85-versus-glowmarks": "bestrx-vs-primerx.versus-glowmarks.json",
+ "86-rulerows": "pt-billing-medicare.rulerows.json",
+ "87-demohero": "webpt-cost.demohero.json"
 }

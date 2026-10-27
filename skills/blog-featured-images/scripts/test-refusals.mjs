@@ -144,6 +144,8 @@ one('glowmarks light', spec('bestrx-vs-primerx.versus-glowmarks.json', (s) => { 
 one('metricrows without its bars', spec('eaglesoft-vs-dentrix.metricrows.json', (s) => { s.bars = false; }), 'FIELD FIT FAILED: metricrows always draws its bars');
 one('dock with placeholder tiles', spec('therapy-pm.dock.json', (s) => { s.items = s.items.slice(0, 5); s.count = 7; }), 'FIELD FIT FAILED: dock shows one real logo per tile');
 one('meter picked on sky (bare: white only)', spec('ai-scribe-cost.meter.json', (s) => { s.bg = 'sky'; }), 'BACKGROUND PICK FAILED: meter has no card behind its tracks');
+// batch 9 (Oct 27 2026): demohero paints its own near-black field, so a bg is refused
+one('bg on demohero (canvas)', spec('webpt-cost.demohero.json', (s) => { s.bg = 'sky'; }), 'BACKGROUND CHECK FAILED: demohero/default paints its own canvas');
 
 // 3. content each layout is built on
 one('versus/scores with a word score', spec('oracle-health-vs-meditech.versus-scores.json', (s) => { s.left.score = 'High'; }), 'CONTENT CHECK FAILED');
@@ -284,6 +286,10 @@ one('versus/glowmarks after a vibrant neighbour', spec('bestrx-vs-primerx.versus
 one('namehero after a vibrant neighbour', spec('modmed-worth-it.namehero.json'), 'VIBRANT CHECK FAILED', { history: [past('blue-s8', 'checklist/default', 'specialty-software', { bg: 'blue', vibrant: true })] });
 one('--vibrant-pick: the user chose the dark reference', spec('isabel-vs-uptodate.versus-darkpills.json'), 'OK', { args: ['--vibrant-pick'], history: [past('blue-c10', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true })] });
 one('--vibrant-pick still runs the other checks', spec('isabel-vs-uptodate.versus-darkpills.json', (s) => { s.light = true; }), 'FIELD FIT FAILED', { args: ['--vibrant-pick'], history: [past('blue-c11', 'checklist/default', 'clinical-software', { bg: 'blue', vibrant: true })] });
+// batch 9: demohero (black) counts as vibrant and was the user's knowing pick next to the ModMed namehero; rulerows (the faint grid) does not
+one('demohero after a vibrant neighbour', spec('webpt-cost.demohero.json'), 'VIBRANT CHECK FAILED', { history: [past('dunes-s9', 'namehero/default', 'specialty-software', { bg: 'canvas', vibrant: true })] });
+one('--vibrant-pick: the user chose demohero', spec('webpt-cost.demohero.json'), 'OK', { args: ['--vibrant-pick'], history: [past('dunes-s10', 'namehero/default', 'specialty-software', { bg: 'canvas', vibrant: true })] });
+one('rulerows after a vibrant neighbour (not vibrant)', spec('pt-billing-medicare.rulerows.json'), 'OK', { history: [past('blue-mb9', 'checklist/default', 'medical-billing', { bg: 'blue', vibrant: true })] });
 // the site history wins over a stale batch-folder ledger for the same render (a forced final left the ledger's "vibrant" wrong)
 one('history beats a stale ledger (same render)', spec('ehr-interoperability-cost.glassbar.json'), 'OK', { history: [past('ledg-1', 'research/default', 'clinical-software', { bg: 'canvas', vibrant: false, at: '2026-10-05T00:00:00.000Z' })], ledger: [past('ledg-1', 'research/default', 'clinical-software', { bg: 'canvas', vibrant: true, at: '2026-10-05T00:00:00.000Z' })] });
 
@@ -359,6 +365,11 @@ one('tilerow without its headline', spec('telehealth-platforms.tilerow.json', (s
 one('dock without its headline', spec('therapy-pm.dock.json', (s) => { delete s.headline; }), 'HEADING CHECK FAILED: dock/default draws a heading');
 one('squircles without its headline', spec('mental-health-group.squircles.json', (s) => { delete s.headline; }), 'HEADING CHECK FAILED: squircles/default draws a heading');
 one('peecpair heading that shares no words', spec('simplepractice-vs-theranest.versus-peecpair.json', (s) => { s.headline = 'Totally unrelated banana words here'; }), 'HEADING CHECK FAILED');
+// batch 9: the content each new layout is built on
+one('rulerows with one row', spec('pt-billing-medicare.rulerows.json', (s) => { s.rows = s.rows.slice(0, 1); }), 'CONTENT CHECK FAILED: rulerows needs 2-4 rows');
+one('rulerows with its lead out of range', spec('pt-billing-medicare.rulerows.json', (s) => { s.lead = 5; }), 'CONTENT CHECK FAILED: rulerows "lead" must be a row index');
+one('rulerows labels over the word budget (row numbers don\'t count, words do)', spec('pt-billing-medicare.rulerows.json', (s) => { s.rows = s.rows.map((r) => ({ ...r, label: r.label + ' billing rules for clinics' })); }), 'TEXT CHECK FAILED');
+one('demohero without its button', spec('webpt-cost.demohero.json', (s) => { delete s.button; }), 'CONTENT CHECK FAILED: demohero needs the "button"');
 // a versus spec with no "variant" is versus/overlap (the default), never a batch-7 variant
 one('versus with no variant is overlap', spec('microsoft-dynamics-365-vs-acumatica-for-growing-businesses-2026.json', (s) => { delete s.variant; }), '"versus/overlap" is already used in the', { record: record({ 'versus/overlap': used(['clinical-software']) }) });
 

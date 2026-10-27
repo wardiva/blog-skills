@@ -141,3 +141,27 @@ Not a design reference: a screenshot of the batch-8 link page, with "how am i su
 ### What batch 8 taught about references
 
 **The user's own references beat covers the session finds: 11 of 17, 3 of 4 and 2 of 2, against 1 of 18** (taste 35). When the user sends references, copy each one whole (structure, order, scale, field tone), translate only colour, type and "vs", drop ornaments, and put it on the one article it fits best (taste 36). When a round comes back almost blank, ask for references instead of finding more covers (taste 43). **Save every reference the user sends**, mid-turn attachments included, to the batch's refs folder with its intended use, and log it here before building.
+
+## Batch 9 (Oct 27 2026): PT Billing Software for Medicare, WebPT Cost
+
+Every live layout was already on the site, so both articles needed new designs. Two rounds failed before the user's own named source was used.
+
+### Found covers, rejected (round 1)
+
+Clerk (clerk.com/blog), found by the session after the user said "you create":
+- "Accountless setup" → `statuscard`: the logo top-left, a success toast with empty ghost cards, the title bottom-left (WebPT Cost).
+- "MCP Server" → `plates`: three white cards joined by connector lines, 40 timed min → 8-minute rule → 3 units (PT Billing).
+
+Both passed QA; the user: "this is bullshit, this is AI scope. Look at the images, then we finalized this is impossible, bro.". `plates` is the retired `link` again; `statuscard` scatters logo, card and title to three corners around a UI toast. Never built into the renderer. A found cover from another design language is not a reference.
+
+### Our own parts, no reference, rejected (round 2)
+
+`pt-modifiers` (GP / CQ / KX as big type tiles), `pt-units` ("40 timed minutes = 3 billable units" on one card), `wp-logoword` (the WebPT wordmark as the headline's first word), `wp-hidden` (three plans with blurred prices). The user: "yukh". Two failed invention rounds mean the user's reference next, not a third round.
+
+### Peec AI covers, approved (round 3)
+
+From peec.ai/blog, the user's own named source ("go to https://peec.ai/blog and take inspirations and design ours"). Of the design family: "I love them".
+1. "AI search reranks sources" (peec.ai/blog/rerankers-for-geo-aeo-how-ai-search-chooses-passages-and-sources) → `rulerows` (PT Billing Software for Medicare, image 86). **Taken:** a one-line semibold title over white row cards on a faint grid, each a grey rank number and a label, the lead row ringed in blue with a pill, minimal tinted shadows. **Turned down:** app-icon tiles holding "8", "GP", "KX" standing in for Peec's favicons ("why did you use these logos? … what is this?"); the near-white and light-glass fields; a two-line title; a 100px medium-weight title ("looks weird").
+2. "Less Cost. More Value." (peec.ai/blog/pricing-update) → `demohero` (WebPT Cost, image 87; vibrant, rendered with `--vibrant-pick` next to the ModMed `namehero`). **Taken:** the near-black field with faint frame lines and a dot band, the title, and one big flat button ("Book a Demo": WebPT publishes no price), the plan names in grey ("Starter · Enhanced · Ultimate"); the approved variant was "dark button with a blue bar". **Turned down:** 3D isometric plan cards ("it looks 3D and we're not using 3D anymore"), three flat plan boxes ("not sure about these three boxes"), a price-list panel, columns, a blue-gradient button, the plans in one card, a heavy drop shadow on black, a 136px title fighting the button ("text hierarchy is not right", "drop shadow is not right").
+
+**What batch 9 taught:** when the user names a source, use it before any site the session finds; copy its structure but never its 3D, and never fill an app-icon tile with anything but a real logo.
