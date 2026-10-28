@@ -38,9 +38,10 @@ if (!ALL_MODES.includes(MODE)) { console.error(`Unknown mode "${MODE}". Modes: $
 const VARIANT = spec.variant || LAYOUTS[MODE][0];
 if (!LAYOUTS[MODE].includes(VARIANT)) { console.error(`Unknown variant "${VARIANT}" for ${MODE}. Variants: ${LAYOUTS[MODE].join(', ')}`); process.exit(1); }
 const LAYOUT = `${MODE}/${VARIANT}`;
-// the article's category: a layout is used once per category, so a spec without one is refused (the brand name is no stand-in)
+// the article's category: the site history, the vibrant and series rules and the user's record are kept per category, so a spec
+// without one is refused (the brand name is no stand-in)
 const category = normCat(spec.category);
-if (!category) { console.error('CATEGORY MISSING: add "category" (the article\'s blog category, e.g. "clinical-software") to the spec. A layout is used once per category, so the renderer needs it.'); process.exit(2); }
+if (!category) { console.error('CATEGORY MISSING: add "category" (the article\'s blog category, e.g. "clinical-software") to the spec. The site history, the vibrant rule and the usage record need it.'); process.exit(2); }
 const brandFile = opt('--brand') || (spec.brand ? path.resolve(HERE, '..', 'brands', spec.brand + '.json') : path.resolve(HERE, '..', 'brands', 'default.json'));
 const brand = JSON.parse(fs.readFileSync(brandFile, 'utf8'));
 const slug = spec.slug || path.basename(specFile, '.json');
@@ -2011,12 +2012,12 @@ if (sameTopic.some((e) => e.mode === MODE) && !force) {
 Same-topic articles must use different compositions. Used for this topic: ${sameTopic.map((e) => e.mode).join(', ')}`);
   process.exit(2);
 }
-// Layout usage (the user's rule, Oct 2026): a layout not used yet is free for any article it suits; a used layout can't be used again
-// in the same category, only in a different one. Usage = site history + the user's record (references/used-layouts.json), see usage.mjs.
+// Layout usage (the user's rule, Oct 28 2026): every new article gets a new design; a layout already used on the site (any category) is
+// not used again for a new article. Usage = site history + the user's record (references/used-layouts.json), see usage.mjs.
 const REC = userRecord(brandKey);
 warnRecord(REC);
 const USE = usageOf(priorSite, REC);
-// the user's own pick skips the category rule and the site-wide cap (never the same-topic check above): --user-pick, or this slug's
+// the user's own pick skips the no-reuse rule (never the same-topic check above): --user-pick, or this slug's
 // reservation made as a user pick in plan.mjs ("slug=layout!") for this same layout. The render entry keeps "userPick" but not
 // "reserved", so re-renders (QA fixes, the final render after a bgpick apply, bgpick's options) go by either
 const myRes = history.find((e) => e.slug === slug && (e.reserved || e.userPick));
@@ -2027,8 +2028,7 @@ const usedHere = force || USER_PICK || SAME_IMAGE ? null : blocked(USE, LAYOUT, 
 if (usedHere) {
   const free = freeFor(USE, category);
   console.error(`VARIETY CHECK FAILED: ${usedHere}
-Not used yet (first in line): ${free.fresh.join(', ') || 'none'}
-Used only in other categories (free here): ${free.elsewhere.join(', ') || 'none'}
+Not used yet: ${free.fresh.join(', ') || 'none — design a new layout for this article'}
 (set "mode", and "variant" when it is not "default")`);
   process.exit(2);
 }

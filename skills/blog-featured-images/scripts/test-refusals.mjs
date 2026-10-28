@@ -14,7 +14,7 @@
 //   3. Content              the facts a layout is built on, and every minimum in render.mjs "thin" (one row per layout, from a table)
 //   4. Heading and text     the heading reuses the blog title's words (and needs "articleTitle"), 2+ shared and 75% of its words;
 //                           the 15-word budget and the 7-word element limit, each on its own
-//   5. Usage                a layout once per category, every site-wide cap (and the record's own images toward it), the user's
+//   5. Usage                no reuse: a layout used anywhere on the site is refused for a new article (the record's and the history's), the user's
 //                           pick (for its own layout only; --user-pick in render and plan), the record per brand and its "asOf",
 //                           superseded images
 //   6. Neighbours           vibrant and series mark at most 1 in 3 in a category (a neighbour or two back); a reservation is none
@@ -201,13 +201,15 @@ one('heading at exactly 75%', spec(FOCUS, (s) => { s.headline = 'EMR cost by pra
 one('more than 15 words, no long element', spec('e-prescribing-cost.figures.json', (s) => { s.sub = 'per provider per month for small practices'; s.rows[0].label = 'Standalone e-prescribing tool'; s.rows[1].label = 'Bundled with your EMR'; }), 'words on the image (max 15).');
 one('one element over 7 words, 15 in all', spec('e-prescribing-cost.figures.json', (s) => { s.sub = 'per provider per month for small independent practices'; }), 'sentence-like text (max 7 words per element)');
 
-// 5. usage: a used layout once per category (the user's record + the site history)
+// 5. usage: every new article gets a new design: a layout used anywhere on the site is refused (the user's record + the site history)
 one('used layout in its category', spec(BADGES), 'VARIETY CHECK FAILED', { record: record({ 'versus/badges': used(['specialty-software']) }) });
-one('same layout in another category', spec(BADGES, (s) => { s.category = 'medical-billing'; }), 'OK', { record: record({ 'versus/badges': used(['specialty-software']) }) });
+one('same layout in another category (no reuse, Oct 28 2026)', spec(BADGES, (s) => { s.category = 'medical-billing'; }), 'is already used on the site', { record: record({ 'versus/badges': used(['specialty-software']) }) });
+C.push({ name: 'plan refuses a layout used in another category', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [{ plan: ['--category', 'medical-billing', '--reserve', 'used-b=versus/badges'], expect: 'is already used on the site' }] });
+one('a layout used in another category, from the history', spec(BADGES), 'is already used on the site', { history: [past('badges-elsewhere', 'versus/badges', 'medical-billing')] });
 C.push({ name: 'plan refuses a used layout in its category', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [{ plan: ['--category', 'specialty-software', '--reserve', 'used-a=versus/badges'], expect: 'is already used in the "specialty-software" category' }] });
 one('record without "brand" applies to no brand', spec(BADGES), 'OK', { record: { recordedAt: '2026-01-01T00:00:00.000Z', layouts: { 'versus/badges': used(['specialty-software']) } } });
-one('record "used" with no category refuses no category', spec(BADGES), 'OK', { record: record({ 'versus/badges': used([]) }) });
-// the user's pick ("slug=layout!" in plan.mjs) skips the category rule for that slug only, re-renders included
+one('record "used" with no category is still used', spec(BADGES), 'is already used on the site', { record: record({ 'versus/badges': used([]) }) });
+// the user's pick ("slug=layout!" in plan.mjs) skips the no-reuse rule for that slug only, re-renders included
 C.push({ name: 'user pick: plan, render, re-render; another slug refused', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [
   { plan: ['--category', 'specialty-software', '--reserve', 'pick-a=versus/badges!'], expect: 'OK' },
   { spec: spec(BADGES), slug: 'pick-a', expect: 'OK' },
@@ -230,36 +232,20 @@ one('per-layout asOf (scores marked unused)', SCORES, 'OK', { history: [ORACLE],
 one('no asOf: the delivered scores counts', SCORES, 'VARIETY CHECK FAILED', { history: [ORACLE], record: record({ 'versus/scores': { status: 'unused', cats: [] } }, { recordedAt: '2026-10-14T19:46:04.294Z' }) });
 // the record belongs to one brand: medsoftwarehub's "used" doesn't block another brand's render
 one('record of another brand does not apply', spec(BADGES, (s) => { s.brand = 'default'; }), 'OK', { record: record({ 'versus/badges': used(['specialty-software']) }) });
-// the site-wide cap (REPEATABLE: versus/pills 2): two pills in other categories refuse a third anywhere; the user's pick skips the cap
+// the user's own pick reuses a layout used elsewhere (render and plan); without it, plan and render refuse
 const PILLS = spec('dynamics-vs-acumatica.versus-pills.json', (s) => { delete s.left.logo; delete s.right.logo; });   // no logos: no logo fetch
-C.push({ name: 'pills cap: render, plan; a user pick skips it', history: [past('pills-1', 'versus/pills', 'medical-billing'), past('pills-2', 'versus/pills', 'specialty-software', { at: '2026-10-02T00:00:00.000Z' })], steps: [
-  { spec: PILLS, expect: 'has reached its site-wide limit of 2' },
-  { plan: ['--category', 'clinical-software', '--reserve', 'pills-3=versus/pills'], expect: 'has reached its site-wide limit of 2' },
+C.push({ name: 'a used layout: refused, unless the user picks it', history: [past('pills-1', 'versus/pills', 'medical-billing')], steps: [
+  { spec: PILLS, expect: 'is already used on the site' },
+  { plan: ['--category', 'clinical-software', '--reserve', 'pills-3=versus/pills'], expect: 'is already used on the site' },
   { plan: ['--category', 'clinical-software', '--reserve', 'pills-4=versus/pills!'], expect: 'OK' },
-] });
-// the record's own images count toward the cap: pills used in one recorded category, where the history holds 2 images from before the
-// record's cutoff, counts as 2, so a third (in another category) is refused
-one('record with 2 pre-cutoff images reaches the pills cap', PILLS, 'has reached its site-wide limit of 2', { record: record({ 'versus/pills': used(['medical-billing']) }),
-  history: [past('pills-old-1', 'versus/pills', 'medical-billing', { at: '2025-12-01T00:00:00.000Z' }), past('pills-old-2', 'versus/pills', 'medical-billing', { at: '2025-12-02T00:00:00.000Z' })] });
-// every other site-wide cap (REPEATABLE): the cap's count of images in other categories refuses one more, render and plan
-const CAPS = [
-  ['dark/default', 3, spec('sage-intacct-review.dark.json')],
-  ['logotype/default', 2, spec('notion-review.logotype.json', (s) => { s.logotype = LOCKUP; })],   // a local black lockup: no logo fetch
-  ['versus/slash', 5, spec('advancedmd-vs-curemd.versus-slash.json')],
-  ['versus/connect', 5, spec('netsuite-vs-sage-intacct.versus-connect.json', (s) => { s.left.logo = fixLogos(SP); s.right.logo = fixLogos(SP); })],   // local app icons: no logo fetch
-  ['versus/duo', 5, spec('sectra-vs-intelerad.versus-duo.json')],
-];
-for (const [layout, cap, s] of CAPS) C.push({ name: `${layout} cap ${cap}`, history: Array.from({ length: cap }, (_, i) => past(`cap-${i}`, layout, `other-${i}`, { at: `2026-10-0${i + 1}T00:00:00.000Z` })), steps: [
-  { spec: s, expect: `has reached its site-wide limit of ${cap}` },
-  { plan: ['--category', s.category, '--reserve', `cap-next=${layout}`], expect: `has reached its site-wide limit of ${cap}` },
 ] });
 // a user pick is for its own layout only: a slug reserved as a pick for versus/checks can't render versus/badges where it is used
 C.push({ name: 'user pick is for its own layout only', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [
   { plan: ['--category', 'specialty-software', '--reserve', 'pick-x=versus/checks!'], expect: 'OK' },
   { spec: spec(BADGES), slug: 'pick-x', expect: 'VARIETY CHECK FAILED' },
 ] });
-one('render --user-pick skips the category rule', spec(BADGES), 'OK', { record: record({ 'versus/badges': used(['specialty-software']) }), args: ['--user-pick'] });
-C.push({ name: 'plan --user-pick skips the category rule', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [{ plan: ['--category', 'specialty-software', '--reserve', 'pick-y=versus/badges', '--user-pick'], expect: 'OK' }] });
+one('render --user-pick skips the no-reuse rule', spec(BADGES), 'OK', { record: record({ 'versus/badges': used(['specialty-software']) }), args: ['--user-pick'] });
+C.push({ name: 'plan --user-pick skips the no-reuse rule', record: record({ 'versus/badges': used(['specialty-software']) }), steps: [{ plan: ['--category', 'specialty-software', '--reserve', 'pick-y=versus/badges', '--user-pick'], expect: 'OK' }] });
 // a superseded image (rejected and replaced) is no longer on the site: its layout is free in its category again
 one('superseded image does not count', spec(BADGES), 'OK', { history: [past('old-badges', 'versus/badges', 'specialty-software', { superseded: true })] });
 
@@ -316,7 +302,7 @@ C.push({ name: 'plan --release: a reservation goes, once', steps: [
 ] });
 one('same topic, same mode (render)', spec(FOCUS), 'VARIETY CHECK FAILED: another article on topic "emr-cost"', { history: [past('emr-cost-other', 'focus/default', 'medical-billing', { topic: 'emr-cost' })] });
 one('superseded same-topic image does not count', spec(FOCUS), 'OK', { history: [past('emr-cost-old', 'focus/default', 'medical-billing', { topic: 'emr-cost', superseded: true })] });
-// plan.mjs: same topic and mode refused even for the user's pick (it skips the category rule and the cap, never the topic rule)
+// plan.mjs: same topic and mode refused even for the user's pick (it skips the no-reuse rule, never the topic rule)
 C.push({ name: 'same topic, same mode (plan, even a pick)', steps: [
   { plan: ['--category', 'medical-billing', '--reserve', 'topic-a=focus@emr-cost'], expect: 'OK' },
   { plan: ['--category', 'clinical-software', '--reserve', 'topic-b=focus!@emr-cost'], expect: 'topic "emr-cost" already has mode focus' },

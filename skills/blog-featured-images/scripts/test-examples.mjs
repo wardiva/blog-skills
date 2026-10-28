@@ -3,7 +3,8 @@
 //   node test-examples.mjs              render every examples/*.json with the current rules; report any that fail
 //   node test-examples.mjs --refresh    also re-render every approved reference image from references/approved/sources.json
 //   node test-examples.mjs --examples-only   skip the refusal suite
-// Then it runs test-refusals.mjs (the user's rules as refusal cases, on temp history and record) and fails if either part fails.
+// Then it checks the taste model (taste.mjs selftest) and runs test-refusals.mjs (the user's rules as refusal cases, on temp history and
+// record), and fails if any part fails.
 // Renders go to a temporary folder, each example with its own empty history, ledger and usage record, so results are the same every
 // run and the real site history, the user's record and delivered images are never touched. No --force: every real check runs (heading,
 // text, logo, field and background fit), so an example the rules refuse fails here.
@@ -67,6 +68,9 @@ fs.rmSync(tmp, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 })
   const bad = !fm.includes('name: blog-featured-images') ? 'no name' : !desc ? 'no description' : desc.length > 1024 ? `description is ${desc.length} characters (max 1024)` : !quoted && /: /.test(desc) ? 'unquoted description holds ": "' : '';
   if (bad) { console.log(`FAIL  SKILL.md frontmatter: ${bad}`); failed.push({ file: 'SKILL.md' }); } else console.log(`SKILL.md frontmatter ok (description ${desc.length}/1024)`);
 }
+// the taste model (references/taste-data.json): it ranks held-out batches better than chance, and its vetoes and novelty check fire
+const tasteOk = spawnSync(process.execPath, [path.join(here, 'taste.mjs'), 'selftest'], { stdio: 'inherit' }).status === 0;
+if (!tasteOk) failed.push({ file: 'taste.mjs selftest' });
 // the refusal suite: every rule the user decided, each a spec that must be refused (or must render)
 const refusals = process.argv.includes('--examples-only') ? 0 : spawnSync(process.execPath, [path.join(here, 'test-refusals.mjs')], { stdio: 'inherit' }).status;
 process.exitCode = failed.length || refusals ? 1 : 0;

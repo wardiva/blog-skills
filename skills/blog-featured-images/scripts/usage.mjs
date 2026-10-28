@@ -1,7 +1,8 @@
 // Layout usage and the site history, shared by render.mjs, plan.mjs, finalize.mjs, sheet.mjs and bgpick.mjs.
-// The user's rule (Oct 2026): "the ones that are used shouldn't be used again unless the category is different. The ones that aren't
-// used can easily be used". So a layout not used yet is free for any article it suits and goes first in line; a used layout is refused
-// only in a category it was already used in. REPEATABLE (layouts.mjs) adds a site-wide cap for a few layouts.
+// The user's rule (Oct 28 2026, replacing the per-category rule of Oct 15): every new article gets a new design. A layout already used
+// on the site (any category) is not used again for a new article; only the user's own pick (--user-pick, or "slug=layout!" in plan.mjs)
+// reuses one. The approved layouts stay live as the taste library the new designs are learned from (never retired for this).
+// the user (Oct 28 2026): "For different articles, I want new image for each article… you don't repeat the images that has already been used, you create a new images with the taste and training that you have acquired so far".
 // Usage = the site history (every rendered, reserved or delivered image that isn't superseded) plus the user's own record,
 // references/used-layouts.json, kept on the Template Usage page (one card per layout: Used + categories, or Not used yet). The record
 // belongs to one brand (its "brand" key) and applies only to that brand's renders and plans; other brands go by their history alone.
@@ -9,7 +10,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LAYOUTS, REPEATABLE } from './layouts.mjs';
+import { LAYOUTS } from './layouts.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 // FEATURED_USED_FILE: test-examples.mjs points it at an empty record, so the fixtures render whatever the live site has used
@@ -65,8 +66,8 @@ export function userRecord(brand) {
   for (const [l, r] of Object.entries(j.layouts || {})) {
     if (!ALL_LAYOUTS.includes(l)) { warnings.push(`the record lists "${l}", which is not a live layout (ignored)`); continue; }
     const used = !!r && r.status === 'used', cats = [...new Set(((r && r.cats) || []).map(normCat).filter(Boolean))];
-    // used with no category: still used (never "not used yet"), refused in no category until the user names one
-    if (used && !cats.length) warnings.push(`the record marks "${l}" used but names no category: it counts as used, and no category refuses it`);
+    // used with no category: still used (never "not used yet"), so it is not reused for a new article; the user can tick its categories
+    if (used && !cats.length) warnings.push(`the record marks "${l}" used but names no category: it counts as used (not reused for a new article); tick its categories on the Template Usage page`);
     layouts[l] = { used, cats, at: r && r.asOf ? String(r.asOf) : '' };
   }
   return { layouts, at: String(j.recordedAt || ''), warnings };
@@ -92,17 +93,17 @@ export function usage(history, record) {
   return out;
 }
 
-// why a layout can't go on an article in this category, or null when it can
+// why a layout can't go on a new article, or null when it can
+const NEW_DESIGN = 'Every new article gets a new design: pick a layout not used yet, or design a new one from the taste (references/taste-grammar.md); only the user\'s own pick reuses a layout.';
 export function blocked(u, layout, category) {
   const x = u[layout], cat = normCat(category);
   if (!x) return `unknown layout ${layout}`;
-  if (x.cats.has(cat)) return `"${layout}" is already used in the "${cat}" category (${x.by.filter((b) => b.endsWith(`(${cat})`)).join(', ') || 'marked used by the user'}). A used layout can't be used again in the same category.`;
-  if (REPEATABLE[layout] && x.count >= REPEATABLE[layout]) return `"${layout}" has reached its site-wide limit of ${REPEATABLE[layout]}.`;
+  if (x.cats.has(cat)) return `"${layout}" is already used in the "${cat}" category (${x.by.filter((b) => b.endsWith(`(${cat})`)).join(', ') || 'marked used by the user'}). ${NEW_DESIGN}`;
+  if (x.used) return `"${layout}" is already used on the site (${[...x.cats].join(', ') || 'marked used by the user'}). ${NEW_DESIGN}`;
   return null;
 }
 
-// free layouts for a category: never used anywhere first (first in line), then used only in other categories; capped ones in neither
+// the layouts a new article can take: those not used anywhere on the site yet
 export function freeFor(u, category) {
-  const ok = ALL_LAYOUTS.filter((l) => !blocked(u, l, category));
-  return { fresh: ok.filter((l) => !u[l].used), elsewhere: ok.filter((l) => u[l].used) };
+  return { fresh: ALL_LAYOUTS.filter((l) => !blocked(u, l, category)) };
 }

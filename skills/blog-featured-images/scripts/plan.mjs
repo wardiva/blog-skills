@@ -1,12 +1,12 @@
 // Batch planner: shows which layouts are free for a category and reserves layouts for a batch, so Makers can render in parallel.
-// The user's rule: a layout not used yet is free for any article it suits (first in line); a used layout can't be used again in the
-// same category, only in a different one. Usage = site history + the user's record (references/used-layouts.json), see usage.mjs.
+// The user's rule (Oct 28 2026): every new article gets a new design; a layout already used on the site (any category) is not used
+// again for a new article. Usage = site history + the user's record (references/used-layouts.json), see usage.mjs.
 // Usage:
 //   node plan.mjs --brand <brand> --category <cat>                                        # free layouts for this category
 //   node plan.mjs --brand <brand> --category <cat> --reserve <slug>=<mode>[/<variant>][!][@<topic>] ...
 //   node plan.mjs --brand <brand> --release <slug> ...                                     # drop reservations that were never rendered
-// A reservation list stops at the next --flag. "!" after the layout means the user picked it for that slug: it skips the category rule
-// and the site-wide cap (never the same-topic rule), and render.mjs honours it for that slug; --user-pick does the same for every
+// A reservation list stops at the next --flag. "!" after the layout means the user picked it for that slug: it skips the no-reuse rule
+// (never the same-topic rule), and render.mjs honours it for that slug; --user-pick does the same for every
 // reservation in the call. Reservations are written to the site-wide history under its lock, so the renderer's check stays correct
 // when renders run in parallel.
 import fs from 'node:fs';
@@ -60,8 +60,8 @@ if (reqs.length) {
       if (!ALL.includes(layout)) { errs.push(`${slug}: unknown layout ${layout}`); continue; }
       if (history.some((e) => e.slug === slug && e.final)) { errs.push(`${slug}: already delivered (final); delivered images aren't re-planned (a redo the user asks for goes straight to render.mjs --redo)`); continue; }
       const live = countable(hist, [slug]);
-      const why = pick ? null : blocked(usage(live, rec), layout, category);   // the user's pick skips the category rule and the cap
-      if (why) { const f = freeFor(usage(live, rec), category); errs.push(`${slug}: ${why} Not used yet: ${f.fresh.join(', ') || 'none'}. Used only in other categories: ${f.elsewhere.join(', ') || 'none'}`); continue; }
+      const why = pick ? null : blocked(usage(live, rec), layout, category);   // the user's pick skips the no-reuse rule
+      if (why) { const f = freeFor(usage(live, rec), category); errs.push(`${slug}: ${why} Not used yet: ${f.fresh.join(', ') || 'none (design a new layout)'}.`); continue; }
       if (topic && live.some((e) => e.topic === topic && e.mode === mode)) { errs.push(`${slug}: topic "${topic}" already has mode ${mode}`); continue; }
       hist.push({ slug, brand, category, topic: topic || null, mode, variant, layout, reserved: true, ...(pick ? { userPick: true } : {}), at: new Date().toISOString() });
     }
@@ -74,8 +74,7 @@ if (reqs.length) {
 
 if (category) {
   const u = usage(countable(loadHistory(brand)), rec), f = freeFor(u, category);
-  console.log(`Layouts for "${category}" (give each article the best fit; not-used-yet layouts go first):`);
-  console.log(`  Not used yet (first in line): ${f.fresh.join(', ') || 'none'}`);
-  console.log(`  Used only in other categories: ${f.elsewhere.join(', ') || 'none'}`);
-  console.log(`  Not again in "${category}": ${ALL.filter((l) => blocked(u, l, category)).join(', ') || 'none'}`);
+  console.log(`Layouts a new "${category}" article can take (every new article gets a new design):`);
+  console.log(`  Not used yet: ${f.fresh.join(', ') || 'none: design a new layout for each article (references/taste-grammar.md)'}`);
+  console.log(`  Already used on the site (not again, unless the user picks one): ${ALL.filter((l) => blocked(u, l, category)).length} layouts`);
 }

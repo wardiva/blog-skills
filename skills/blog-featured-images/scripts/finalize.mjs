@@ -1,7 +1,7 @@
 // Finalize delivered images: marks them permanent in the site-wide history and in their folder's ledger.
 // A finalized image is never re-created or overwritten (the renderer refuses with "FINAL IMAGE LOCKED") unless the user asks for that image
 // to be redone (render.mjs --redo, then finalize it again: a new finalizedAt, the earlier ones in "previousFinalizedAt"); its files stay where
-// they are, a copy goes to ~/.blog-featured-images/delivered/<brand>/<slug>/, and it keeps counting as used in its category (unless
+// they are, a copy goes to ~/.blog-featured-images/delivered/<brand>/<slug>/, and it keeps counting as used on the site (unless
 // the user's record, references/used-layouts.json, says otherwise; see usage.mjs).
 // Usage:
 //   node finalize.mjs --brand <brand> <slug> [<slug> ...]      # after QA passes and the images are delivered

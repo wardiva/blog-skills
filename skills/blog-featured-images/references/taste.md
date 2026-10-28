@@ -4,7 +4,7 @@ You are expected to make images the user would approve without asking them. This
 
 ## The Principles
 
-There are **45 principles** (1–45), and the Self-Critique below checks every one of them. Before any image goes to the user, predict the user's verdict (the last section, "Predict the Verdict").
+There are **46 principles** (1–46), and the Self-Critique below checks every one of them. Before any image goes to the user, predict the user's verdict (the last section, "Predict the Verdict").
 
 ### 1. Balance and hierarchy: nothing outweighs its partner, and the key figure leads
 
@@ -142,23 +142,23 @@ Fifteen words is a ceiling, not a target. "Too much text" (stack): keep the titl
 
 ### 14. Every image is new
 
-The user sees every image together, across categories and batches, so a layout used twice in one category reads as lazy. A layout not used yet goes first; a used one may come back only in a different category (the current rule, last bullet).
+The user sees every image together, across categories and batches, so a layout used twice reads as lazy. The current rule is principle 46 (Oct 28 2026): every new article gets a new design, and a layout already used on the site, in any category, is not used again for a new article. The bullets below are how the rule got there; the per-category rule and the site-wide caps in them are history.
 
 - **Batch 3:** "This template is already used": a layout recognised from an earlier batch was rejected in a different category (history, from before the per-category rule).
 - "I don't want you to repeat any illustration, only repeat if it makes actual sense." (History: this made layouts rotate across the whole site, with a favourite allowed back only with a written reason. Replaced below.)
 - **Batch 4:** a second pills image came back with a written reason and was still rejected: "this template is already being used". A written reason didn't make a repeat welcome.
-- **Template Usage (Oct 2026):** "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." A layout not used yet anywhere is free for any article it suits and goes first; a used layout never comes back in the same category, only in a different one. There is no repeat with a reason any more. The user marks what is used on the Template Usage page (`references/used-layouts.json`), and that record is the truth over the history, since the user knows what is live; pills stays at "max 2 times" across the site.
-- **Restated on Oct 15, the current rule:** "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used again because they aren't used right now, obviously".
-- **Batch 5, fresh over reuse (the current refinement):** "you created most of the designs that were already being used. So I want you to create a new version of them." The record's "free" is not enough: a layout the user has already seen reads as used. A batch gets new designs, not a refill of known ones.
+- **Template Usage (Oct 2026):** "the ones that hasnt used yet can be used now if suitable for any article and the ones that have used cant be used again unless the category is different." (History, superseded by principle 46 on Oct 28 2026: a used layout came back only in a different category, and pills, slash, connect, duo, dark and logotype had site-wide caps.) There is no repeat with a reason. The user marks what is used on the Template Usage page (`references/used-layouts.json`), and that record is the truth over the history, since the user knows what is live; that part still holds.
+- **Restated on Oct 15** (history, superseded by principle 46): "the ones that are used shouldn't be used again unless the category is different. The ones that aren't used can easily be used again because they aren't used right now, obviously".
+- **Batch 5, fresh over reuse (the first step toward principle 46):** "you created most of the designs that were already being used. So I want you to create a new version of them." The record's "free" is not enough: a layout the user has already seen reads as used. A batch gets new designs, not a refill of known ones.
 - **Batch 5, round b8, approval is per article:** after four layouts were approved in a direction check, they were rolled out to all 12 articles. The user: "I want like the designs that I have approved. Those are fine. Now I want more designs for the rest of the URLs." A design approved for one article is approved for that article; three badges side by side read as one template.
 - **Siblings are one template:** `picks` and `versus/checks` grow from the same checklist card, so they never share a category, and a new layout never shares a skeleton with one already in the category (horizontal price rows were `ranked` again).
 - **A new name is not a new design** (batch 5 final round): `versus/spot`, offered for RXNT, was rejected by QA as Appointment's `spotlight` under a new name, and retired before the user saw it.
 - **Variety in backgrounds too:** "we have so many background why are you fixated on just one. show me 12 images and options for backgrounds and i'll selevt the bg for each". Given the choice, the user picked seven different fields for 12 images (glow, mesh, soft, blue, cream, paper, white). Colour across a batch is principle 24.
 - **Batch 6, "dont repeat the template that is already being used":** the first pass used three templates never used anywhere (`versus/tiles`, `versus/type`, `swap`), and all three were approved.
 - **Batch 6, options round, "not used here" is not "new":** after six disapprovals, ten of the twelve options were approved templates not yet used in their category, and the user approved only three. Then: "the images that I have disapproved has already been used multiple times, so I wanted to create new ones. But keep in mind what you have learned, what tools you have built." A template the user has seen many times on the site reads as a repeat in any category. When the user asks for new designs, every option is a new layout built from parts the user approved, in this batch first (big blue figures from `figures`, frosted glass from `frostrow`, the blue anchor from `costgrid`).
-- **Batch 7, approved templates are not "new":** asked for images "that hasnt been used before", the user chose brand-new designs for all 20. Round 2 rolled approved looks out instead (glass split ×4, stacked ×5, fan ×2) and most were rejected: "that I approved in this feature image review and in my last feature image review is fine. For the others, used a brand new layout that haven't been used before, and follow our design language." Then, with one family on several articles of one page: "done stop repeating designs now , use black bg too in some". One skeleton per page and per category is principle 25; approval that holds only once the batch is seen together is principle 34.
+- **Batch 7, approved templates are not "new":** asked for images "that hasnt been used before", the user chose brand-new designs for all 20. Round 2 rolled approved looks out instead (glass split ×4, stacked ×5, fan ×2) and most were rejected: "that I approved in this feature image review and in my last feature image review is fine. For the others, used a brand new layout that haven't been used before, and follow our design language." Then, with one family on several articles of one page: "done stop repeating designs now , use black bg too in some". One skeleton per page and per batch is principle 25; approval that holds only once the batch is seen together is principle 34.
 
-**Ask:** is this layout already used in this category, or has the user already seen it in this batch? Has the user seen it many times across the site? Then pick another. Is a sibling of it (built from the same approved part) already in the category? Is there a layout not used yet anywhere that suits the article? Then it goes first.
+**Ask:** is this layout already used anywhere on the site, or has the user already seen it in this batch? Then design a new one (principle 46). Is a sibling of it (built from the same approved part) already on the site? Then change the skeleton, not the styling.
 
 ### 15. No clip-art metaphors
 
@@ -302,16 +302,16 @@ Variety comes from layout, and colour varies across a batch too. Our fields rang
 
 **Ask:** lay the batch out as thumbnails. Are the strong fields (black, the blue) there as well as the light ones? Does any single field take over? Within a category, do the vibrant images stay 1 in 3 and apart?
 
-### 25. One skeleton per review page, once per category per batch
+### 25. One skeleton per review page, once per batch
 
-A review page shows each skeleton once. A delivered batch uses a layout at most once per category, even when the user approved it on two articles.
+A review page shows each skeleton once. A delivered batch uses a skeleton at most once, even when the user approved it on two articles (and under principle 46 no layout already on the site is used again for a new article).
 
 - **Batch 7, every round:** a family shown on N articles of one page won at most once, often never. Round 4 put big type on 6 articles and notepad on 3; one big type won. Round 2's rollout: stacked 0 of 5, fan 0 of 2, glass split 1 of 4. The user: "done stop repeating designs now , use black bg too in some".
 - **Two lineups in specialty** (derm and PT, both approved in round 2) were both flagged after delivery ("need new templates for these") and replaced. Approving both didn't make the repeat welcome.
 - **Visual QA's "repeat" calls were right almost every time.** Count families by skeleton, not by name: QA flagged glass split as `versus/table`, meter as `ranked`, glassbars as `versus/stacked`.
-- A loved design may come back in a different category (the duel: Vanta in compliance, then Nextech in specialty, approved), never twice in one (the user declined "Reuse the looks you loved" for the last specialty articles).
+- History, under the per-category rule: a loved design came back in a different category (the duel: Vanta in compliance, then Nextech in specialty, approved), never twice in one (the user declined "Reuse the looks you loved" for the last specialty articles). Since Oct 28 2026 a loved design is not reused for a new article at all (principle 46).
 
-**Ask:** does any other option on this page, or any other image of this category in the batch, share this skeleton?
+**Ask:** does any other option on this page, or any other image in the batch, share this skeleton?
 
 ### 26. Big object, full stage
 
@@ -521,6 +521,24 @@ When no reference comes with a batch, take each design's structure from what the
 
 **Ask:** where does this design's structure come from: a reference the user gave, a source they named, or an approved image? If it came from a new site or from our own parts, replace it. Does each article have 2–3 variations from different references in round 1?
 
+### 46. Every article a new design; the approved images are the library
+
+Every new article gets a new design. A layout already used on the site, in any category, is not used again for a new article; only the user's own pick (`render.mjs --user-pick`, or `plan.mjs` "slug=layout!") reuses one. The approved images are never retired for this: they are the library the taste is learned from and the examples every new design starts from. This replaces the per-category rule of Oct 15 2026 and the site-wide caps (principle 14 keeps them as history). A `--redo` of a delivered image is the same image again, not a reuse.
+
+- **The user, Oct 28 2026:** "So you need to understand the approved images are not retired, I love those images and I want you to learn and build your taste from those images. So that you can create new images and don't repeat the images again and again and again. Because now what the skill does, it repeats the layout template design. For different articles, I want new image for each article. Do you get my point? And for that, I want you to train yourself. So if you need to orchestrate multiple agents work, do it, but you have to train yourself with each feedback I give you, with each image that approves, with each image that disapproves, so that you can, so that when I share for example 20 URL articles with you, you don't repeat the images that has already been used, you create a new images with the taste and training that you have acquired so far."
+- **Batch 8, round 1:** approved batch-7 looks rolled out to 25 new articles; 7 of 25 passed (principle 34).
+- **Batch 9, round 1:** "these have already been used". All 76 templates were on the site, and only new designs from the library passed (principle 45).
+- **Batches 6 and 7:** "the images that I have disapproved has already been used multiple times, so I wanted to create new ones" (principle 14).
+
+**How to apply:**
+1. **Plan N new skeletons for N articles** with `references/taste-grammar.md` (read it fully: the recipe in section 4, the 48 starting skeleton ideas, the descriptor in section 6). Only 2 layouts are still unused on the site (`before-after/default`, `logotype/default`), so nearly every article needs a new layout.
+2. **Check the plan** with `node scripts/taste.mjs batch plan.json` before anything is rendered: every design new against every live and retired layout on at least 2 of the 4 skeleton axes (object, composition, logo treatment, figure home), distinct within the batch, no veto, predicted to pass. Never relabel a descriptor to pass novelty.
+3. **Build each as a new layout** (a new mode or variant in `render.mjs` and `layouts.mjs`, registered, with an example) and **show 2–3 variations per article that differ in skeleton** (an object or composition change, not a field or colour), each from a different reference in the library (principle 45).
+4. **Never roll an approved look onto a new article,** however loved. It stays live as an example to learn from.
+5. **Learn from the round:** every judged option (approved, disapproved, unmarked) goes into `references/taste-data.json` with `taste.mjs add`, then `taste.mjs eval`; rejected new layouts are retired, approved ones kept, and the grammar and these principles updated.
+
+**Ask:** is this layout already on the site? Is the skeleton new against every live and retired layout, and against the rest of the batch (`taste.mjs batch`)? Does its structure come from the library? Is an approved look being rolled onto this article? Are there 2–3 variations that differ in skeleton?
+
 ## Self-Critique (Required)
 
 Makers run this on their own image before returning it; Visual QA runs it on every image. Look at `master.png` and `card-350x250.png`, next to two approved images from the same family. Answer in a table:
@@ -547,12 +565,12 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Amount | Each fix moves as far as the note asked, compared with the original (11) |
 | Words | 15 is a ceiling, not a target; nothing reads as filler (12) |
 | Optics | Centred by eye at full size and at 350×250, not by the numbers (13) |
-| New | Not used in this category; layouts not used yet anywhere come first (14) |
+| New | Not used on the site for any other article (only the user's own pick reuses a layout; a `--redo` is the same image) (14, 46) |
 | Headline ink | Headlines black `#0A0A0B` (white on dark fields), never blue or navy, no blue words (3) |
 | Real things | The article's own logos, names and figures; no clip-art stand-in (15) |
 | Fresh | The newest facts and version; nothing describes a retired layout or option (16) |
 | Our parts | Built only from approved parts, checked against the map of the approved sheet; no device, prop or material (17) |
-| Own skeleton | Its skeleton isn't shared with a layout already in the category, siblings from the same approved part included (14, 17) |
+| Own skeleton | Its skeleton isn't shared with any layout, live or retired (`taste.mjs novelty`), siblings from the same approved part included (14, 17, 46) |
 | Fresh batch | The batch isn't filled with reuse: no layout the user has already seen in it, no template the user has seen many times across the site offered as "new", no approved option rolled out to other articles (14) |
 | Field variety | Across the batch the colour range is used: black (plain black for new designs) and the blue (the dunes) as well as the light fields, no single field taking over; the user's picks (`bgPick`) are kept; vibrant stays 1 in 3 per category (6, 14, 24) |
 | One glance | Any chart reads in one glance at 350×250; grey tracks sit on a white card, or bare on the white field only (18) |
@@ -561,7 +579,7 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Pro craft | It looks made by a senior designer: one hero at a confident size, aligned edges, even gaps, sizes from one scale; nothing small, staggered or squeezed in (21) |
 | Not scattered | One tight group on the optical centre, about 940–1000px wide; nothing floats alone near an edge (22) |
 | Reads as comparison | An X vs Y image shows two equal sides with the same kind of fact and a clear "vs"; covering the "vs" still leaves an obvious pair (23) |
-| Once per page | No other option on the review page, and no other image of this category in the batch, shares this skeleton, counted by skeleton, not by name (25) |
+| Once per page | No other option on the review page, and no other image in the batch, shares this skeleton, counted by skeleton, not by name (25) |
 | Full stage | One object at confident scale (names about 120px, tiles 200–400px, a card about 900–1100px wide); not a ~600px widget of 14–22px labels floating in a field (26); a copy of the user's own reference keeps the reference's scale, for that layout only (35) |
 | Figure in an object | Every figure sits inside a card, a track, a struck claim, a type pair or a prompt; none stands alone on the field, and none outweighs the heading (27) |
 | Our black, our blue | Black is plain black; blue is the dunes (or the `bluegrid` blue); no navy-blob black, no outside or hand-mixed gradient; no drop shadow on black or blue (28) |
@@ -582,13 +600,16 @@ Makers run this on their own image before returning it; Visual QA runs it on eve
 | Silence | No image goes back for a third round unmarked: after a nearly blank round, or an image unmarked twice, references were asked for instead (43) |
 | Real logos | Every tile shaped like an app icon or a logo holds a brand's real logo; no code, letter, number or symbol dressed as one; terms stay typed words (44) |
 | Library first | With no reference for the batch, the structure comes from the user's references, their named sources (Peec, Calendly, Dub, Mintlify, incident.io) or the approved set, never a new site or our own parts; round 1 shows 2–3 variations per article from different references (45) |
-| Predicted verdict | Its closest match is an approved image, not a rejected pattern; the prediction is written down (Predict the Verdict) |
+| New design | A new skeleton for this article, planned with `taste-grammar.md`; `taste.mjs batch` passes it (new against every live and retired layout on 2 of 4 axes, distinct in the batch, no veto); no approved look rolled onto it; 2–3 variations that differ in skeleton (46) |
+| Predicted verdict | Its closest match is an approved image, not a rejected pattern; `taste.mjs predict` was run and the prediction is written down (Predict the Verdict) |
 
 Any "no" is a fix before the image moves on.
 
 ## Predict the Verdict (Required)
 
 The user should rarely have to say no. Before any image or option goes to the user, put it next to the approved images (`references/approved/`) and the site sheet (`scripts/sheet.mjs`), and next to the rejected patterns below. Name the closest match on each side, and write one line: **"Predict: approve, closest to 54 versus/stacked (two clear rows, figure right, on glow)"** or **"Predict: reject, looks like round 3 (pieces spread to the edges, pale sky only)"**. A predicted reject is fixed or replaced before the user sees it; never send an image you expect to be rejected. When the verdict comes back, compare it with the prediction, and turn a miss into a principle here.
+
+**The taste model** (Oct 28 2026). `node scripts/taste.mjs predict design.json` learns from `references/taste-data.json`: 734 designs (697 judged by the user) the user judged across batches 1–9 (approved, final, disapproved, no-verdict, retired-before-shown), each with its features. It applies 8 vetoes the user (almost) never approved (props, devices or clip-art; a figure alone on the field; decorative shapes; 3D; a cover from a site the user never named; another brand's gradient; a code dressed as a logo tile; scattered pieces) and 2 current rules (no prices on a vs unless the title is about pricing, principle 37; at most one figure on a cost image, principle 41), gives a learned logistic score, names the closest approved and rejected designs with the user's words, and runs the novelty check. Trained on earlier batches and tested on later ones (`taste.mjs eval`), it ranks held-out designs with an AUC of 0.693 and is right 70% of the time overall; when it predicts approve it is right 45% of the time, against a 28% base rate. So it is a filter and a ranker, not a judge: a veto or a predicted reject is strong evidence and is fixed before the user sees the design; a predicted approve only means "worth showing". It reads a descriptor, not the pixels, so it can't see craft (balance, spacing, scale), a reference copied badly or a wrong fact: the Self-Critique, both QA agents and the user's eye still decide. Write its verdict next to yours on every option, and after every round compare both with the user's.
 
 **What the user rejects** (the pattern, the user's words, where it happened):
 
@@ -600,7 +621,7 @@ The user should rarely have to say no. Before any image or option goes to the us
 | Off our vibe | "i dont like this it looks off and doesnt match our design vibe" | `versus/halves` |
 | Clutter and mixed shapes | "numbers looks so weird and visually cluttered and unbalanced and corner radius of logo bg is not consistent" | `numbered` |
 | Many cards where one fact would do | "it's 3 cards, they are like too much. There should be some minimal way for this" | the EHR tier cards (batch 6 rounds 5–6) |
-| A template the user has seen many times | "this template is already being used"; "the images that I have disapproved has already been used multiple times, so I wanted to create new ones" | a second `versus/pills` (batch 4); the batch-6 options round |
+| A template the user has seen many times, or an approved look on a new article (46) | "this template is already being used"; "the images that I have disapproved has already been used multiple times, so I wanted to create new ones"; "these have already been used" | a second `versus/pills` (batch 4); the batch-6 options round; batch 8 round 1 (7 of 25); batch 9 round 1 |
 | Props, devices, materials | "why are you using mobile mockups" | the 12 batch-5 props |
 | A clip-art metaphor | "looks like a law illustration, the concept is so bad" | `versus/scale` |
 | A clever but confusing chart | "i like the design but it is confusing" | `versus/range` |
@@ -663,7 +684,7 @@ The user should rarely have to say no. Before any image or option goes to the us
 
 ## How to Keep Learning
 
-Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named; a new one also gets a Self-Critique row, named in SKILL.md's Review Checklist and in agents.md's Maker and Visual QA templates, and raises the principle count here, in SKILL.md, in the README and in memory), a lesson, a renderer check where it can be measured, with a case in `scripts/test-refusals.mjs` for every decision the renderer or `plan.mjs` can enforce (otherwise a V- or F-check in `agents.md` and a line in the Maker template), a generalisation when the same correction comes twice, the decision recorded (a rejection in `agents.md` V9 and, for a layout, `RETIRED` in `layouts.mjs`; a newly approved image as an example spec and a `sources.json` line; every count it changes (modes/layouts, retired, approved images, examples, refusal cases and steps, taste principles) updated across the skill, the README, the `scripts/render.mjs` header comment and memory), every running Maker and QA told, the inspiration log for references, refreshed approved images, and a push.
+Every note, reference, "this is right", "this is wrong", "love it" or "disgusting" goes through the learning loop in SKILL.md ("Keep Learning (Required)"): a prompt, a principle in this file (the note quoted, the image named; a new one also gets a Self-Critique row, named in SKILL.md's Review Checklist and in agents.md's Maker and Visual QA templates, and raises the principle count here, in SKILL.md, in the README and in memory), a lesson, the round's verdicts added to `references/taste-data.json` (`taste.mjs add`, then `taste.mjs eval`), a renderer check where it can be measured, with a case in `scripts/test-refusals.mjs` for every decision the renderer or `plan.mjs` can enforce (otherwise a V- or F-check in `agents.md` and a line in the Maker template), a generalisation when the same correction comes twice, the decision recorded (a rejection in `agents.md` V9 and, for a layout, `RETIRED` in `layouts.mjs`; a newly approved image as an example spec and a `sources.json` line; every count it changes (modes/layouts, retired, approved images, examples, refusal cases and steps, taste principles) updated across the skill, the README, the `scripts/render.mjs` header comment and memory), every running Maker and QA told, the inspiration log for references, refreshed approved images, and a push.
 
 Batch 6 (Oct 20 2026) added principles 21–24 (pro craft, one focal group, a comparison that reads as one, the whole palette across a batch), grew 2 (radii), 8 (names), 10 (minimal means one fact), 14 (seen-before is not new), 17 (map first) and 20 (what was praised), and the Predict the Verdict section. The history is in `lessons.md` section 21.
 
@@ -672,3 +693,5 @@ Batch 7 (Oct 21–22 2026) added principles 25–34 (one skeleton per page, big 
 Batch 8 (Oct 24–25 2026) added principles 35–43 (the user's reference is the brief, repeats on a page lose, a comparison is two identities, frosted tiles on our blue, a dark reference stays dark, a field note is a question, cost and lists show one thing, type can be the image, silence is a no), scoped 5 (and its Illustration row), 26 and 29 to designs the session invents or sources (a user reference sets its own scale and may keep a pill or a tilt, for that layout only), added the batch-8 praise to 20 and the batch-8 rejects, and calibrated Predict the Verdict. The history is in `lessons.md` sections 24 and 25.
 
 Batch 9 (Oct 27 2026) added principles 44–45 (real logos only; your library first, several variations), grew 1 (the text hierarchy on `demohero`), 28 (no drop shadow on black) and 29 (no 3D), added the batch-9 rejects, and calibrated Predict the Verdict. The history is in `lessons.md`, "Batch 9".
+
+Oct 28 2026 added principle 46 (every article a new design; the approved images are the library), moved principle 14's per-category rule and the site-wide caps to history, added the taste model to Predict the Verdict and the "New design" Self-Critique row. The history is in `lessons.md`, "Oct 28 2026: no reuse, and the taste training".
